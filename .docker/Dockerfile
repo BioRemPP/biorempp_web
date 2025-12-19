@@ -185,4 +185,4 @@ LABEL maintainer="BioRemPP Development Team" \
     version="1.0.0" \
     description="BioRemPP Web Service - Unified Docker Image" \
     org.opencontainers.image.source="https://github.com/BioRemPP" \
-    org.opencontainers.image.licenses="MIT"
+    org.opencontainers.image.licenses="Apache-2.0"

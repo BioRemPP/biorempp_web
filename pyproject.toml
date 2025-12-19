@@ -14,7 +14,7 @@ version = "1.0.0"
 description = "BioRemPP Web - Bioremediation Potential Profile"
 readme = "README.md"
 requires-python = ">=3.11"
-license = {text = "MIT"}
+license = {text = "Apache-2.0"}
 authors = [
     {name = "BioRemPP Development Team"}
 ]
