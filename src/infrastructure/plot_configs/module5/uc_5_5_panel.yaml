@@ -1,0 +1,77 @@
+# UC-5.5: Gene-Gene Functional Interaction Network
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-5"
+
+scientific_question: >
+  Which genes exhibit potential functional relationships, as inferred by their
+  shared interactions with the same chemical compounds, and what is the
+  structure of these functional modules?
+
+description: >
+  This visualization constructs a network to map the functional relationships
+  between genes. In this graph, nodes represent individual gene symbols. An
+  edge (a connecting line) is drawn between two genes if they are both
+  associated with at least one common chemical compound. This approach allows
+  for the identification of "functional modules" - groups of genes that likely
+  operate in related pathways or on similar substrates.
+
+visual_elements:
+  - label: "Nodes (Points)"
+    description: >
+      Each point represents a single Gene Symbol. The position is determined
+      by a force-directed layout algorithm that groups connected genes together.
+
+  - label: "Edges (Lines)"
+    description: >
+      A line connecting two genes indicates that they share at least one
+      chemical compound target. The width of the edge is proportional to the
+      number of shared compounds.
+
+  - label: "Node Color"
+    description: >
+      The color of a node represents its degree - the number of other genes
+      it is connected to within this network. The color bar provides a
+      quantitative scale, with brighter/warmer colors indicating "hub" genes
+      that are connected to many other genes.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over a node displays the gene symbol and its connection count.
+      Hovering over an edge shows the two connected genes and the number of
+      shared compounds.
+
+  - label: "Network Layout"
+    description: >
+      The spring layout algorithm positions nodes so that connected genes are
+      closer together, naturally revealing cluster structures in the network.
+
+interpretation_guidelines:
+  - >
+    Functional Modules: Dense clusters of interconnected nodes represent
+    functional modules - groups of genes that are likely co-regulated or part
+    of the same or related metabolic pathways, given that they target a
+    similar set of chemical substrates.
+
+  - >
+    Hub Genes: Brightly colored nodes are highly connected "hubs" within the
+    network. These may represent key regulatory genes, genes encoding enzymes
+    with broad substrate specificity, or central components that link
+    different metabolic functions.
+
+  - >
+    Bridge Genes: A gene that connects two otherwise distinct clusters can be
+    interpreted as a functional bridge, potentially linking two different
+    metabolic pathways.
+
+  - >
+    Edge Weight: Thicker edges between genes may indicate they share more compounds,
+    potentially suggesting stronger functional relationships and potentially coordinated
+    regulation or sequential enzymatic activity.
+
+  - >
+    Isolated Genes: Genes with few or no connections may be specialists with
+    unique substrate specificities, or they may represent rare functions in
+    the dataset that don't overlap with other genetic capabilities.
+
+color_scheme: "success"

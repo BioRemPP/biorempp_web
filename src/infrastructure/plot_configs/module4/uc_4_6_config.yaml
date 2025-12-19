@@ -1,0 +1,358 @@
+# ============================================================================
+# UC-4.6: Interactive Analysis of Functional Potential by Chemical Compound
+# ============================================================================
+# Description: Bubble chart showing functional potential (KO diversity) by compound
+# Module: module4
+# Plot Type: Dot Plot (Bubble Chart)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.6"
+  module: "module4"
+  title: "Interactive Analysis of Functional Potential by Chemical Compound"
+  description: >
+    Bubble chart showing functional potential (KO diversity) for each
+    sample-compound interaction within a selected chemical class.
+    Bubble size and color intensity encode the count of unique KOs,
+    revealing which compounds have the highest metabolic potential
+    across different samples.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "dot_plot"
+    - "bubble_chart"
+    - "functional_potential"
+    - "ko_diversity"
+    - "biorempp"
+  plot_type: "dot_plot"
+  scientific_context:
+    domain: "Functional Potential Analysis and Metabolic Diversity"
+    application: "Identifying compounds with highest KO diversity across samples"
+    interpretation: "Larger bubbles indicate higher functional potential (more unique KOs); color intensity reinforces this encoding"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound_Class"
+    - "Compound_Name"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "group_and_count"
+        enabled: true
+        params:
+          group_by: ["Sample", "Compound_Name"]
+          agg_column: "KO"
+          agg_function: "nunique"
+          result_column: "unique_ko_count"
+        description: "Count unique KO identifiers per sample-compound combination"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "DotPlotStrategy"
+  
+  plotly:
+    scatter:
+      x: "Sample"
+      y: "Compound_Name"
+      mode: "bubble"  # Bubble chart (size and color encode values)
+      
+      # Size encoding
+      size: "unique_ko_count"
+      size_max: 30
+      
+      # Color encoding (same as size for redundant encoding)
+      color: "unique_ko_count"
+      color_continuous_scale: "Viridis"
+      colorbar_title: "Unique KO Count"
+      
+      # Hover configuration
+      hover_name: "Compound_Name"
+      hover_data:
+        Sample: true
+        Compound_Name: true
+        unique_ko_count: true
+    
+    # Layout configuration
+    layout:
+      # Title configuration
+      title:
+        show: true
+        text: "Functional Potential by Chemical Compound"
+        x: 0.5
+      
+      # Dimensions
+      height: 750
+      autosize: true
+      
+      # Template and colors
+      template: "simple_white"
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      # X-axis configuration
+      xaxis:
+        title: "Sample"
+        tickangle: -45
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Y-axis configuration
+      yaxis:
+        title: "Compound Name"
+        tickangle: 0
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Hover mode
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font:
+          size: 12
+      
+      # Margins
+      margin:
+        l: 150
+        r: 80
+        t: 80
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-6-compound-class-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render bubble chart when compound class selected"
+  
+  outputs:
+    - component_id: "uc-4-6-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Functional potential bubble chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-4-6-compound-class-dropdown"
+      type: "dropdown"
+      label: "Select Chemical Compound Class"
+      options_source: "dynamic"
+      description: "Filter compounds by chemical class"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound_Class", "Compound_Name", "KO"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_points"
+      min_count: 1
+      message: "At least 1 compound required for visualization"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_6_df_{data_hash}_{filters_hash}"
+        description: "Cache processed data by compound class"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_6_bubble_{data_hash}_{filters_hash}"
+        description: "Cache generated bubble chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Functional potential analysis requires 'Sample', 'Compound_Class', 'Compound_Name', and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No compound data available. Please check BioRemPP dataset."
+    
+    no_compounds_found:
+      action: "display_message"
+      message: "No compounds found for selected class: {compound_class}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate KO data: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bubble chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - scatter.mode: "bubble" (variable size/color)
+# - scatter.size: Column for bubble size encoding
+# - scatter.size_max: Maximum bubble size in pixels (default: 30)
+# - scatter.color: Column for color encoding
+# - scatter.color_continuous_scale: "Viridis", "Plasma", "Inferno", "Magma", "Cividis", etc.
+# - scatter.colorbar_title: Title for color scale legend
+# - scatter.hover_name: Column for hover label
+# - scatter.hover_data: Additional columns to show on hover
+# - layout.title.show: true/false (toggle title)
+# - layout.title.text: Title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.xaxis.title: X-axis label
+# - layout.yaxis.title: Y-axis label
+# - layout.xaxis.tickangle: X-axis label rotation (-90 to 90)
+# - layout.yaxis.tickangle: Y-axis label rotation (-90 to 90)
+# - layout.xaxis.tickfont.size: X-axis tick font size
+# - layout.yaxis.tickfont.size: Y-axis tick font size
+# - layout.xaxis.automargin: Auto-adjust margins for long labels
+# - layout.yaxis.automargin: Auto-adjust margins for long labels
+# - layout.margin: {l, r, t, b} margins
+# - layout.hovermode: "closest", "x", "y", "x unified", "y unified"
+# - layout.hoverlabel.bgcolor: Hover label background color
+# - layout.hoverlabel.font.size: Hover label font size
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_6_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - Sample: "Sample", "sample", "sample_id"
+#    - Compound_Class: "Compound_Class", "compound_class", "CompoundClass", "Class"
+#    - Compound_Name: "Compound_Name", "compound_name", "CompoundName", "Compound"
+#    - KO: "KO", "ko", "ko_id"
+# 3. Filter by selected compound class from dropdown
+# 4. Remove rows with missing Compound_Name
+# 5. Pass to PlotService
+#
+# STRATEGY (DotPlotStrategy - Bubble Mode):
+# 1. Receives data with ['Sample', 'Compound_Class', 'Compound_Name', 'KO']
+# 2. Applies group_and_count processing:
+#    - GROUP BY Sample, Compound_Name
+#    - COUNT(DISTINCT KO) AS unique_ko_count
+# 3. Creates bubble chart:
+#    - X-axis: Sample names
+#    - Y-axis: Compound names
+#    - Bubble size: unique_ko_count
+#    - Bubble color: unique_ko_count (Viridis scale)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample', 'Compound_Class', 'Compound_Name', 'KO' columns
+# - KEGG: ❌ Does NOT contain compound-level data
+# - HADEG: ❌ Does NOT contain compound data
+# - ToxCSM: ❌ Does NOT contain compound data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open (active_item trigger)
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Visualization Details:
+# - Plot type: Bubble chart (quantitative encoding)
+# - X-axis: Sample identifiers
+# - Y-axis: Compound names
+# - Bubble size: Unique KO count (functional potential)
+# - Bubble color: Unique KO count (redundant encoding for clarity)
+# - Color scale: Viridis (perceptually uniform)
+# - Hover: Shows sample, compound name, and unique KO count
+# - Interpretation:
+#   * Large bubbles: High functional potential (many unique KOs)
+#   * Small bubbles: Low functional potential (few unique KOs)
+#   * Dark color: High KO diversity
+#   * Light color: Low KO diversity
+#   * Horizontal patterns: Compounds with similar potential across samples
+#   * Vertical patterns: Samples with similar compound profiles
+#
+# Column Mapping (Flexible):
+# - Sample: "Sample", "sample", "sample_id"
+# - Compound_Class: "Compound_Class", "compound_class", "CompoundClass", "Class"
+# - Compound_Name: "Compound_Name", "compound_name", "CompoundName", "Compound"
+# - KO: "KO", "ko", "ko_id"
+#
+# Aggregation Logic:
+# 1. Filter data by selected compound class
+# 2. Group by (Sample, Compound_Name)
+# 3. Count unique KO identifiers per group
+# 4. Result: One row per (Sample, Compound_Name) combination
+# 5. unique_ko_count: Number of distinct KOs for that compound in that sample
+#
+# Scientific Interpretation:
+# - High KO count: Compound degradation involves diverse metabolic pathways
+# - Low KO count: Compound degradation uses specialized pathways
+# - Use for: Identifying compounds with broad metabolic potential
+# - Compound class context: Each class has characteristic KO diversity patterns
+# - Sample variation: Reveals which samples have richer functional profiles
+#
+# Bubble Chart vs Simple Scatter:
+# - Bubble chart: Encodes quantitative variable (KO count) via size/color
+# - Simple scatter: Binary presence/absence (uniform markers)
+# - Use bubble when: Quantitative differences are important
+# - Use simple when: Only presence/absence matters

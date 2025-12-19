@@ -1,0 +1,5756 @@
+{
+  "metadata": {
+    "extraction_date": "2025-11-13T13:26:57.446153",
+    "base_path": "D:\\Doutorado\\my_dash\\my_dash_app\\biorempp_web",
+    "purpose": "Generate realistic test fixtures with actual data patterns"
+  },
+  "representative_data": {
+    "biorempp": {
+      "column_representatives": {
+        "ko": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "K14579",
+              "frequency": 104
+            },
+            "typical_values": [
+              "K18243",
+              "K15067",
+              "K20814",
+              "K14674",
+              "K11413"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "K00001",
+              "contains_pipe": true
+            }
+          }
+        },
+        "genesymbol": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "nahAc",
+              "frequency": 104
+            },
+            "typical_values": [
+              "metK",
+              "msmA",
+              "GATM",
+              "cmlI",
+              "gltD"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "K11646",
+              "contains_pipe": true
+            }
+          }
+        },
+        "genename": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "naphthalene 1,2-dioxygenase subunit alpha ",
+              "frequency": 104
+            },
+            "typical_values": [
+              "L-arginine dehydrogenase ",
+              "3-hydroxy-2-methylquinolin-4-one 2,4-dioxygenase ",
+              "dimethylsulfone monooxygenase ",
+              "maleamate amidohydrolase ",
+              "para-aminobenzoate synthetase "
+            ],
+            "patterns": {
+              "contains_comma": true,
+              "contains_pipe": true
+            }
+          }
+        },
+        "cpd": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "C00014",
+              "frequency": 384
+            },
+            "typical_values": [
+              "C19239",
+              "C02846",
+              "C07591",
+              "C00469",
+              "C17383"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "C19302",
+              "contains_pipe": true
+            }
+          }
+        },
+        "compoundclass": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Aromatic",
+              "frequency": 1430
+            },
+            "typical_values": [
+              "Organophosphorus",
+              "Organometallic",
+              "Nitrogen-containing",
+              "Halogenated",
+              "Sulfur-containing"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "referenceAG": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "ATSDR",
+              "frequency": 1513
+            },
+            "typical_values": [
+              "WFD",
+              "ATSDR",
+              "IARC1",
+              "IARC2B",
+              "CONAMA"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "compoundname": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Ammonia",
+              "frequency": 384
+            },
+            "typical_values": [
+              "1,2-Epoxybutane",
+              "Ethyl methanesulfonate",
+              "Styrene",
+              "Ethanol",
+              "Tamoxifen"
+            ],
+            "patterns": {
+              "contains_comma": true,
+              "contains_pipe": true
+            }
+          }
+        },
+        "enzyme_activity": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "dioxygenase",
+              "frequency": 905
+            },
+            "typical_values": [
+              "chitinase",
+              "dismutase",
+              "peroxygenase",
+              "amidohydrolase",
+              "hydrolase"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        }
+      },
+      "complete_row_samples": [
+        {
+          "index": 0,
+          "data": {
+            "ko": "K00001",
+            "genesymbol": "E1.1.1.1",
+            "genename": "alcohol dehydrogenase ",
+            "cpd": "C19302",
+            "compoundclass": "Nitrogen-containing",
+            "referenceAG": "IARC2B",
+            "compoundname": "Thioacetamide",
+            "enzyme_activity": "dehydrogenase"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 1,
+          "data": {
+            "ko": "K00001",
+            "genesymbol": "E1.1.1.1",
+            "genename": "alcohol dehydrogenase ",
+            "cpd": "C06696",
+            "compoundclass": "Metal",
+            "referenceAG": "ATSDR",
+            "compoundname": "Lead",
+            "enzyme_activity": "dehydrogenase"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 2,
+          "data": {
+            "ko": "K00001",
+            "genesymbol": "E1.1.1.1",
+            "genename": "alcohol dehydrogenase ",
+            "cpd": "C11344",
+            "compoundclass": "Aliphatic",
+            "referenceAG": "PSL",
+            "compoundname": "Methyl tert-butyl ether",
+            "enzyme_activity": "dehydrogenase"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 3310,
+          "data": {
+            "ko": "K16245",
+            "genesymbol": "dmpO",
+            "genename": "phenol/toluene 2-monooxygenase (NADH) P4/A4 ",
+            "cpd": "C01407",
+            "compoundclass": "Aromatic",
+            "referenceAG": "WFD",
+            "compoundname": "Benzene",
+            "enzyme_activity": "monooxygenase"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 3311,
+          "data": {
+            "ko": "K16245",
+            "genesymbol": "dmpO",
+            "genename": "phenol/toluene 2-monooxygenase (NADH) P4/A4 ",
+            "cpd": "C01455",
+            "compoundclass": "Aromatic",
+            "referenceAG": "PSL",
+            "compoundname": "Toluene",
+            "enzyme_activity": "monooxygenase"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 3312,
+          "data": {
+            "ko": "K16245",
+            "genesymbol": "dmpO",
+            "genename": "phenol/toluene 2-monooxygenase (NADH) P4/A4 ",
+            "cpd": "C01407",
+            "compoundclass": "Aromatic",
+            "referenceAG": "EPA",
+            "compoundname": "Benzene",
+            "enzyme_activity": "monooxygenase"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 3827,
+          "data": {
+            "ko": "K17690",
+            "genesymbol": "CYP3A5",
+            "genename": "cytochrome P450 family 3 subfamily A5 ",
+            "cpd": "C14343",
+            "compoundclass": "Nitrogen-containing",
+            "referenceAG": "EPC",
+            "compoundname": "Trifluralin",
+            "enzyme_activity": "cytochrome P450 family 3 subfamily A5 "
+          },
+          "source": "random"
+        },
+        {
+          "index": 6620,
+          "data": {
+            "ko": "K27109",
+            "genesymbol": "ctaF",
+            "genename": "cytochrome c oxidase subunit IV ",
+            "cpd": "C00070",
+            "compoundclass": "Metal",
+            "referenceAG": "ATSDR",
+            "compoundname": "Copper",
+            "enzyme_activity": "oxidase"
+          },
+          "source": "end"
+        },
+        {
+          "index": 6621,
+          "data": {
+            "ko": "K27109",
+            "genesymbol": "ctaF",
+            "genename": "cytochrome c oxidase subunit IV ",
+            "cpd": "C00070",
+            "compoundclass": "Metal",
+            "referenceAG": "EPA",
+            "compoundname": "Copper",
+            "enzyme_activity": "oxidase"
+          },
+          "source": "end"
+        },
+        {
+          "index": 6622,
+          "data": {
+            "ko": "K27109",
+            "genesymbol": "ctaF",
+            "genename": "cytochrome c oxidase subunit IV ",
+            "cpd": "C00070",
+            "compoundclass": "Metal",
+            "referenceAG": "PSL",
+            "compoundname": "Copper",
+            "enzyme_activity": "oxidase"
+          },
+          "source": "end"
+        }
+      ],
+      "relationships": {
+        "ko_to_genesymbol": {
+          "type": "one_to_one",
+          "from": "ko",
+          "to": "genesymbol",
+          "example": {
+            "ko": "K00001",
+            "genesymbol": "E1.1.1.1"
+          }
+        },
+        "ko_to_genename": {
+          "type": "one_to_one",
+          "from": "ko",
+          "to": "genename",
+          "example": {
+            "ko": "K00001",
+            "genename": "alcohol dehydrogenase "
+          }
+        },
+        "ko_to_enzyme_activity": {
+          "type": "one_to_one",
+          "from": "ko",
+          "to": "enzyme_activity",
+          "example": {
+            "ko": "K00001",
+            "enzyme_activity": "dehydrogenase"
+          }
+        },
+        "genename_to_enzyme_activity": {
+          "type": "one_to_one",
+          "from": "genename",
+          "to": "enzyme_activity",
+          "example": {
+            "genename": "alcohol dehydrogenase ",
+            "enzyme_activity": "dehydrogenase"
+          }
+        },
+        "cpd_to_compoundname": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "compoundname",
+          "example": {
+            "cpd": "C19302",
+            "compoundname": "Thioacetamide"
+          }
+        }
+      },
+      "data_patterns": {
+        "genename_comma_separated": {
+          "column": "genename",
+          "separator": ",",
+          "example": "(R,R)-butanediol dehydrogenase / meso-butanediol dehydrogenase / diacetyl reductase "
+        },
+        "compoundname_comma_separated": {
+          "column": "compoundname",
+          "separator": ",",
+          "example": "1,4-Dioxane"
+        }
+      }
+    },
+    "kegg": {
+      "column_representatives": {
+        "ko": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "K14579",
+              "frequency": 7
+            },
+            "typical_values": [
+              "K15514",
+              "K23528",
+              "K20458",
+              "K06282",
+              "K23548"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "K00001",
+              "contains_pipe": true
+            }
+          }
+        },
+        "pathname": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Aromatic",
+              "frequency": 215
+            },
+            "typical_values": [
+              "Naphthalene",
+              "Steroid",
+              "Ethylbenzene",
+              "Cytochrome P450",
+              "Aminobenzoate"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "genesymbol": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "nahAa",
+              "frequency": 7
+            },
+            "typical_values": [
+              "nmsB",
+              "gcoB",
+              "hcl",
+              "hyaA",
+              "E1.6.5.7"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "K16901",
+              "contains_pipe": true
+            }
+          }
+        }
+      },
+      "complete_row_samples": [
+        {
+          "index": 0,
+          "data": {
+            "ko": "K00001",
+            "pathname": "Naphthalene",
+            "genesymbol": "E1.1.1.1"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 1,
+          "data": {
+            "ko": "K00001",
+            "pathname": "Cytochrome P450",
+            "genesymbol": "E1.1.1.1"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 2,
+          "data": {
+            "ko": "K00001",
+            "pathname": "Aromatic",
+            "genesymbol": "E1.1.1.1"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 434,
+          "data": {
+            "ko": "K14541",
+            "pathname": "Atrazine",
+            "genesymbol": "DUR1"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 435,
+          "data": {
+            "ko": "K14578",
+            "pathname": "Ethylbenzene",
+            "genesymbol": "nahAb"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 436,
+          "data": {
+            "ko": "K14578",
+            "pathname": "Aminobenzoate",
+            "genesymbol": "nahAb"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 662,
+          "data": {
+            "ko": "K16515",
+            "pathname": "Benzoate",
+            "genesymbol": "galB"
+          },
+          "source": "random"
+        },
+        {
+          "index": 868,
+          "data": {
+            "ko": "K25936",
+            "pathname": "Aminobenzoate",
+            "genesymbol": "ppsA"
+          },
+          "source": "end"
+        },
+        {
+          "index": 869,
+          "data": {
+            "ko": "K25937",
+            "pathname": "Aminobenzoate",
+            "genesymbol": "ppsB"
+          },
+          "source": "end"
+        },
+        {
+          "index": 870,
+          "data": {
+            "ko": "K25938",
+            "pathname": "Aminobenzoate",
+            "genesymbol": "ppsC"
+          },
+          "source": "end"
+        }
+      ],
+      "relationships": {
+        "ko_to_genesymbol": {
+          "type": "one_to_one",
+          "from": "ko",
+          "to": "genesymbol",
+          "example": {
+            "ko": "K00001",
+            "genesymbol": "E1.1.1.1"
+          }
+        }
+      },
+      "data_patterns": {}
+    },
+    "hadeg": {
+      "column_representatives": {
+        "Gene": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "phaZ",
+              "frequency": 220
+            },
+            "typical_values": [
+              "styA",
+              "paaE",
+              "xylC",
+              "alkH_ald",
+              "hpaH"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "ko": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "K05973",
+              "frequency": 149
+            },
+            "typical_values": [
+              "K03801",
+              "K14581",
+              "K08953",
+              "K18223",
+              "K01856"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "K24119",
+              "contains_pipe": true
+            }
+          }
+        },
+        "Pathway": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "D_PCL",
+              "frequency": 84
+            },
+            "typical_values": [
+              "C_1-Methylnaphthalene/2-Methylnaphthalene_degradation",
+              "A_Finnerty_pathway",
+              "D_PE",
+              "A_Subterminal_oxidation",
+              "D_PHO"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "compound_pathway": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Polymers",
+              "frequency": 598
+            },
+            "typical_values": [
+              "Alkenes",
+              "Biosurfactant",
+              "Aromatics",
+              "Alkanes",
+              "Polymers"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        }
+      },
+      "complete_row_samples": [
+        {
+          "index": 0,
+          "data": {
+            "Gene": "ahpC",
+            "ko": "K24119",
+            "Pathway": "A_Finnerty_pathway",
+            "compound_pathway": "Alkanes"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 1,
+          "data": {
+            "Gene": "ahpC",
+            "ko": "K03386",
+            "Pathway": "A_Finnerty_pathway",
+            "compound_pathway": "Alkanes"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 2,
+          "data": {
+            "Gene": "ahpF",
+            "ko": "K03387",
+            "Pathway": "A_Finnerty_pathway",
+            "compound_pathway": "Alkanes"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 583,
+          "data": {
+            "Gene": "cut1",
+            "ko": "K21104",
+            "Pathway": "D_PET",
+            "compound_pathway": "Polymers"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 584,
+          "data": {
+            "Gene": "cut1",
+            "ko": "K21104",
+            "Pathway": "D_PLA",
+            "compound_pathway": "Polymers"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 585,
+          "data": {
+            "Gene": "cut1",
+            "ko": "K21104",
+            "Pathway": "D_PMCL",
+            "compound_pathway": "Polymers"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 1110,
+          "data": {
+            "Gene": "WG66_16246",
+            "ko": "K08095",
+            "Pathway": "D_PES",
+            "compound_pathway": "Polymers"
+          },
+          "source": "random"
+        },
+        {
+          "index": 1165,
+          "data": {
+            "Gene": "wzb",
+            "ko": "K20945",
+            "Pathway": "E_Emulsan",
+            "compound_pathway": "Biosurfactant"
+          },
+          "source": "end"
+        },
+        {
+          "index": 1166,
+          "data": {
+            "Gene": "wzb",
+            "ko": "K25307",
+            "Pathway": "E_Emulsan",
+            "compound_pathway": "Biosurfactant"
+          },
+          "source": "end"
+        },
+        {
+          "index": 1167,
+          "data": {
+            "Gene": "wzc",
+            "ko": "K16692",
+            "Pathway": "E_Emulsan",
+            "compound_pathway": "Biosurfactant"
+          },
+          "source": "end"
+        }
+      ],
+      "relationships": {
+        "Gene_to_compound_pathway": {
+          "type": "one_to_one",
+          "from": "Gene",
+          "to": "compound_pathway",
+          "example": {
+            "Gene": "ahpC",
+            "compound_pathway": "Alkanes"
+          }
+        },
+        "Pathway_to_compound_pathway": {
+          "type": "one_to_one",
+          "from": "Pathway",
+          "to": "compound_pathway",
+          "example": {
+            "Pathway": "A_Finnerty_pathway",
+            "compound_pathway": "Alkanes"
+          }
+        }
+      },
+      "data_patterns": {}
+    },
+    "toxcsm": {
+      "column_representatives": {
+        "SMILES": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Oc1ccccc1",
+              "frequency": 4
+            },
+            "typical_values": [
+              "Cc1cn([C@H]2C[C@H](N=[N+]=[N-])[C@@H](CO)O2)c(=O)[nH]c1=O",
+              "[Na+].[O-][As]=O",
+              "COc1cc2O[C@H]3OC=C[C@H]3c2c2oc(=O)c3C(=O)C[C@H](O)c3c12",
+              "C[N+](C)(C)CCOP([O-])(=O)OC[C@H](O)CO[*]",
+              "O[N+]([O-])=O"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "cpd": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "C00146",
+              "frequency": 2
+            },
+            "typical_values": [
+              "C19425",
+              "C14399",
+              "C14707",
+              "C04468",
+              "C19586"
+            ],
+            "patterns": {
+              "id_pattern": "Starts with letter + digits",
+              "id_example": "C13881",
+              "contains_pipe": true
+            }
+          }
+        },
+        "ChEBI": {
+          "data_type": "int64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 15882,
+              "frequency": 4
+            },
+            "typical_values": [
+              10110,
+              29678,
+              78582,
+              30909,
+              48107
+            ],
+            "range": {
+              "min": 920,
+              "max": 348530,
+              "typical_value": 30725.0
+            }
+          }
+        },
+        "compoundname": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Phenol",
+              "frequency": 4
+            },
+            "typical_values": [
+              "1.1-Dichloro-2.2-bis(4-chlorophenyl)ethylene",
+              "Sodium arsenite",
+              "Cadmium chloride",
+              "Benzo[a]pyrene",
+              "Isoprene"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_AR": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 222
+            },
+            "typical_values": [
+              0.05,
+              0.01,
+              0.14,
+              0.38,
+              0.0
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.0
+            }
+          }
+        },
+        "label_NR_AR": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 316
+            },
+            "typical_values": [
+              "Low Safety",
+              "Low Toxicity",
+              "Medium Safety",
+              "High Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_AR_LBD": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 223
+            },
+            "typical_values": [
+              0.08,
+              0.99,
+              0.1,
+              0.13,
+              0.06
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.0
+            }
+          }
+        },
+        "label_NR_AR_LBD": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 313
+            },
+            "typical_values": [
+              "High Toxicity",
+              "Medium Safety",
+              "Low Toxicity",
+              "High Safety",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_AhR": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 107
+            },
+            "typical_values": [
+              0.79,
+              0.0,
+              0.74,
+              0.02,
+              0.4
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.03
+            }
+          }
+        },
+        "label_NR_AhR": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 247
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Toxicity",
+              "Medium Toxicity",
+              "Low Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_Aromatase": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 200
+            },
+            "typical_values": [
+              0.15,
+              0.41,
+              0.57,
+              0.61,
+              0.02
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.0
+            }
+          }
+        },
+        "label_NR_Aromatase": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 304
+            },
+            "typical_values": [
+              "High Safety",
+              "High Toxicity",
+              "Low Toxicity",
+              "Medium Safety",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_ER": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.07,
+              "frequency": 33
+            },
+            "typical_values": [
+              0.05,
+              0.18,
+              0.22,
+              0.27,
+              0.36
+            ],
+            "range": {
+              "min": 0.02,
+              "max": 0.95,
+              "typical_value": 0.09
+            }
+          }
+        },
+        "label_NR_ER": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 234
+            },
+            "typical_values": [
+              "High Safety",
+              "Medium Safety",
+              "Medium Toxicity",
+              "Low Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_ER_LBD": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 85
+            },
+            "typical_values": [
+              0.49,
+              0.1,
+              0.19,
+              0.09,
+              0.03
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.97,
+              "typical_value": 0.01
+            }
+          }
+        },
+        "label_NR_ER_LBD": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 285
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Toxicity",
+              "Medium Toxicity",
+              "Medium Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_PPAR_gamma": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 167
+            },
+            "typical_values": [
+              0.56,
+              0.81,
+              0.01,
+              0.66,
+              0.06
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.81,
+              "typical_value": 0.01
+            }
+          }
+        },
+        "label_NR_PPAR_gamma": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 308
+            },
+            "typical_values": [
+              "Medium Toxicity",
+              "Medium Safety",
+              "Low Toxicity",
+              "High Safety",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_GR": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 95
+            },
+            "typical_values": [
+              0.82,
+              0.04,
+              0.23,
+              0.11,
+              0.22
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.98,
+              "typical_value": 0.02
+            }
+          }
+        },
+        "label_NR_GR": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 261
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Safety",
+              "High Toxicity",
+              "Low Toxicity",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_NR_TR": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 111
+            },
+            "typical_values": [
+              0.12,
+              0.44,
+              0.5,
+              0.29,
+              0.38
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.87,
+              "typical_value": 0.03
+            }
+          }
+        },
+        "label_NR_TR": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 259
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Safety",
+              "High Toxicity",
+              "Low Toxicity",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_SR_ARE": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 39
+            },
+            "typical_values": [
+              0.15,
+              0.11,
+              0.7,
+              0.46,
+              0.07
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.96,
+              "typical_value": 0.08
+            }
+          }
+        },
+        "label_SR_ARE": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 199
+            },
+            "typical_values": [
+              "High Safety",
+              "Medium Safety",
+              "Low Toxicity",
+              "Low Safety",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_SR_ATAD5": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 94
+            },
+            "typical_values": [
+              0.03,
+              0.2,
+              0.19,
+              0.47,
+              0.01
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.95,
+              "typical_value": 0.01
+            }
+          }
+        },
+        "label_SR_ATAD5": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 306
+            },
+            "typical_values": [
+              "Medium Safety",
+              "High Toxicity",
+              "Low Toxicity",
+              "High Safety",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_SR_HSE": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 188
+            },
+            "typical_values": [
+              0.13,
+              0.02,
+              0.11,
+              0.15,
+              0.76
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.0
+            }
+          }
+        },
+        "label_SR_HSE": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 277
+            },
+            "typical_values": [
+              "High Safety",
+              "High Toxicity",
+              "Medium Toxicity",
+              "Medium Safety",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_SR_MMP": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 69
+            },
+            "typical_values": [
+              0.01,
+              0.17,
+              0.33,
+              0.44,
+              0.59
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.04
+            }
+          }
+        },
+        "label_SR_MMP": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 222
+            },
+            "typical_values": [
+              "Low Safety",
+              "High Safety",
+              "High Toxicity",
+              "Medium Toxicity",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_SR_p53": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 64
+            },
+            "typical_values": [
+              0.1,
+              0.38,
+              0.06,
+              0.23,
+              0.66
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.77,
+              "typical_value": 0.03
+            }
+          }
+        },
+        "label_SR_p53": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 272
+            },
+            "typical_values": [
+              "Low Toxicity",
+              "Medium Toxicity",
+              "Medium Safety",
+              "High Safety",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Gen_AMES_Mutagenesis": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 118
+            },
+            "typical_values": [
+              0.3,
+              0.18,
+              0.19,
+              0.31,
+              0.05
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.22
+            }
+          }
+        },
+        "label_Gen_AMES_Mutagenesis": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 144
+            },
+            "typical_values": [
+              "Medium Safety",
+              "High Safety",
+              "Low Toxicity",
+              "Low Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Gen_Carcinogenesis": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.15,
+              "frequency": 228
+            },
+            "typical_values": [
+              0.15,
+              0.3,
+              0.66,
+              0.9,
+              0.24
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.15
+            }
+          }
+        },
+        "label_Gen_Carcinogenesis": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 301
+            },
+            "typical_values": [
+              "High Safety",
+              "High Toxicity",
+              "Medium Safety",
+              "Low Toxicity",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Gen_Micronucleus": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.5,
+              "frequency": 245
+            },
+            "typical_values": [
+              0.47,
+              0.51,
+              0.52,
+              0.5,
+              0.46
+            ],
+            "range": {
+              "min": 0.46,
+              "max": 0.56,
+              "typical_value": 0.5
+            }
+          }
+        },
+        "label_Gen_Micronucleus": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Low Toxicity",
+              "frequency": 298
+            },
+            "typical_values": [
+              "Low Safety",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_Fathead_Minnow": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.99,
+              "frequency": 24
+            },
+            "typical_values": [
+              0.46,
+              0.34,
+              0.6,
+              0.98,
+              0.0
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.73
+            }
+          }
+        },
+        "label_Env_Fathead_Minnow": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Toxicity",
+              "frequency": 134
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Toxicity",
+              "Low Safety",
+              "Medium Safety",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_T_Pyriformis": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 1.0,
+              "frequency": 60
+            },
+            "typical_values": [
+              0.63,
+              0.73,
+              0.14,
+              0.28,
+              0.07
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.91
+            }
+          }
+        },
+        "label_Env_T_Pyriformis": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Toxicity",
+              "frequency": 196
+            },
+            "typical_values": [
+              "Medium Toxicity",
+              "Low Safety",
+              "High Safety",
+              "Medium Safety",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_Honey_Bee": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 1.0,
+              "frequency": 40
+            },
+            "typical_values": [
+              0.86,
+              1.0,
+              0.53,
+              0.22,
+              0.67
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.53
+            }
+          }
+        },
+        "label_Env_Honey_Bee": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 84
+            },
+            "typical_values": [
+              "High Toxicity",
+              "Low Toxicity",
+              "Medium Safety",
+              "High Safety",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_Biodegradation": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 48
+            },
+            "typical_values": [
+              0.51,
+              0.01,
+              0.17,
+              0.7,
+              0.0
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.99,
+              "typical_value": 0.12
+            }
+          }
+        },
+        "label_Env_Biodegradation": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 175
+            },
+            "typical_values": [
+              "High Safety",
+              "Medium Toxicity",
+              "Low Toxicity",
+              "Medium Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_Crustacean": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 1.0,
+              "frequency": 52
+            },
+            "typical_values": [
+              0.67,
+              0.05,
+              0.72,
+              0.81,
+              0.16
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.48
+            }
+          }
+        },
+        "label_Env_Crustacean": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Toxicity",
+              "frequency": 94
+            },
+            "typical_values": [
+              "High Safety",
+              "High Toxicity",
+              "Low Toxicity",
+              "Low Safety",
+              "Medium Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Env_Avian": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.01,
+              "frequency": 154
+            },
+            "typical_values": [
+              0.22,
+              0.74,
+              0.37,
+              0.38,
+              0.71
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 0.99,
+              "typical_value": 0.01
+            }
+          }
+        },
+        "label_Env_Avian": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 261
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Toxicity",
+              "Medium Toxicity",
+              "High Toxicity",
+              "Medium Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Skin_Sensitisation": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.46,
+              "frequency": 10
+            },
+            "typical_values": [
+              0.6,
+              0.88,
+              0.35,
+              0.46,
+              0.98
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.69
+            }
+          }
+        },
+        "label_Org_Skin_Sensitisation": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Medium Toxicity",
+              "frequency": 96
+            },
+            "typical_values": [
+              "Low Safety",
+              "Medium Toxicity",
+              "High Safety",
+              "Low Toxicity",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_hERG_I_Inhibitor": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.02,
+              "frequency": 73
+            },
+            "typical_values": [
+              0.16,
+              0.24,
+              0.17,
+              0.23,
+              0.04
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.04
+            }
+          }
+        },
+        "label_Org_hERG_I_Inhibitor": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 292
+            },
+            "typical_values": [
+              "Medium Safety",
+              "Low Safety",
+              "High Safety",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_hERG_II_Inhibitor": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.29,
+              "frequency": 21
+            },
+            "typical_values": [
+              0.16,
+              0.45,
+              0.31,
+              0.73,
+              0.3
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.22
+            }
+          }
+        },
+        "label_Org_hERG_II_Inhibitor": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 121
+            },
+            "typical_values": [
+              "Medium Safety",
+              "Low Safety",
+              "Medium Toxicity",
+              "High Toxicity",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Liver_Injury_I": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 33
+            },
+            "typical_values": [
+              0.74,
+              0.01,
+              0.21,
+              0.72,
+              0.69
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.21
+            }
+          }
+        },
+        "label_Org_Liver_Injury_I": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 139
+            },
+            "typical_values": [
+              "High Safety",
+              "Low Safety",
+              "High Toxicity",
+              "Medium Safety",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Liver_Injury_II": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.42,
+              "frequency": 16
+            },
+            "typical_values": [
+              0.64,
+              0.65,
+              0.38,
+              0.08,
+              0.66
+            ],
+            "range": {
+              "min": 0.02,
+              "max": 0.86,
+              "typical_value": 0.35
+            }
+          }
+        },
+        "label_Org_Liver_Injury_II": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "Low Safety",
+              "frequency": 136
+            },
+            "typical_values": [
+              "Low Safety",
+              "Low Toxicity",
+              "High Toxicity",
+              "Medium Safety",
+              "Medium Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Eye_Irritation": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.99,
+              "frequency": 58
+            },
+            "typical_values": [
+              0.96,
+              0.01,
+              0.72,
+              0.27,
+              0.68
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.97
+            }
+          }
+        },
+        "label_Org_Eye_Irritation": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Toxicity",
+              "frequency": 234
+            },
+            "typical_values": [
+              "High Toxicity",
+              "High Safety",
+              "Low Toxicity",
+              "Medium Toxicity",
+              "Low Safety"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Eye_Corrosion": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 23
+            },
+            "typical_values": [
+              0.7,
+              0.73,
+              0.21,
+              0.97,
+              0.99
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.59
+            }
+          }
+        },
+        "label_Org_Eye_Corrosion": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Toxicity",
+              "frequency": 101
+            },
+            "typical_values": [
+              "Low Safety",
+              "Medium Toxicity",
+              "Medium Safety",
+              "Low Toxicity",
+              "High Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        },
+        "value_Org_Respiratory_Disease": {
+          "data_type": "float64",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": 0.0,
+              "frequency": 74
+            },
+            "typical_values": [
+              0.65,
+              0.3,
+              0.1,
+              0.48,
+              0.19
+            ],
+            "range": {
+              "min": 0.0,
+              "max": 1.0,
+              "typical_value": 0.25
+            }
+          }
+        },
+        "label_Org_Respiratory_Disease": {
+          "data_type": "object",
+          "has_nulls": false,
+          "examples": {
+            "most_common": {
+              "value": "High Safety",
+              "frequency": 117
+            },
+            "typical_values": [
+              "Medium Safety",
+              "High Safety",
+              "Medium Toxicity",
+              "Low Safety",
+              "Low Toxicity"
+            ],
+            "patterns": {
+              "contains_pipe": true
+            }
+          }
+        }
+      },
+      "complete_row_samples": [
+        {
+          "index": 0,
+          "data": {
+            "SMILES": "[Ba++]",
+            "cpd": "C13881",
+            "ChEBI": 37136,
+            "compoundname": "Barium cation",
+            "value_NR_AR": 0.05,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.08,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.12,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.15,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.11,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.11,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.01,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.44,
+            "label_SR_MMP": "Low Safety",
+            "value_SR_p53": 0.05,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.3,
+            "label_Gen_AMES_Mutagenesis": "Medium Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.12,
+            "label_Env_Fathead_Minnow": "High Safety",
+            "value_Env_T_Pyriformis": 0.73,
+            "label_Env_T_Pyriformis": "Medium Toxicity",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.01,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 0.16,
+            "label_Env_Crustacean": "High Safety",
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.46,
+            "label_Org_Skin_Sensitisation": "Low Safety",
+            "value_Org_hERG_I_Inhibitor": 0.06,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.31,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.01,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.38,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.96,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.49,
+            "label_Org_Eye_Corrosion": "Low Safety",
+            "value_Org_Respiratory_Disease": 0.3,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 1,
+          "data": {
+            "SMILES": "[Br-]",
+            "cpd": "C01324",
+            "ChEBI": 15858,
+            "compoundname": "Bromide",
+            "value_NR_AR": 0.05,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.13,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.12,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.0,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.08,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.0,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.0,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.01,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.0,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.0,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.09,
+            "label_Gen_AMES_Mutagenesis": "High Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.16,
+            "label_Env_Fathead_Minnow": "High Safety",
+            "value_Env_T_Pyriformis": 0.34,
+            "label_Env_T_Pyriformis": "Low Safety",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.67,
+            "label_Env_Biodegradation": "Medium Toxicity",
+            "value_Env_Crustacean": 0.04,
+            "label_Env_Crustacean": "High Safety",
+            "value_Env_Avian": 0.0,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.48,
+            "label_Org_Skin_Sensitisation": "Low Safety",
+            "value_Org_hERG_I_Inhibitor": 0.02,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.29,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.01,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.63,
+            "label_Org_Liver_Injury_II": "Low Toxicity",
+            "value_Org_Eye_Irritation": 0.96,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.49,
+            "label_Org_Eye_Corrosion": "Low Safety",
+            "value_Org_Respiratory_Disease": 0.08,
+            "label_Org_Respiratory_Disease": "High Safety"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 2,
+          "data": {
+            "SMILES": "[C-]#[N+]C1CCCCC1",
+            "cpd": "C11520",
+            "ChEBI": 17966,
+            "compoundname": "Cyclohexyl isocyanide",
+            "value_NR_AR": 0.01,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.03,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.03,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.0,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.0,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.0,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.03,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.0,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.09,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.0,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.21,
+            "label_Gen_AMES_Mutagenesis": "Medium Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.56,
+            "label_Env_Fathead_Minnow": "Low Toxicity",
+            "value_Env_T_Pyriformis": 0.71,
+            "label_Env_T_Pyriformis": "Medium Toxicity",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.28,
+            "label_Env_Biodegradation": "Medium Safety",
+            "value_Env_Crustacean": 1.0,
+            "label_Env_Crustacean": "High Toxicity",
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.72,
+            "label_Org_Skin_Sensitisation": "Medium Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.27,
+            "label_Org_hERG_I_Inhibitor": "Medium Safety",
+            "value_Org_hERG_II_Inhibitor": 0.41,
+            "label_Org_hERG_II_Inhibitor": "Low Safety",
+            "value_Org_Liver_Injury_I": 0.38,
+            "label_Org_Liver_Injury_I": "Low Safety",
+            "value_Org_Liver_Injury_II": 0.33,
+            "label_Org_Liver_Injury_II": "Medium Safety",
+            "value_Org_Eye_Irritation": 0.98,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.82,
+            "label_Org_Eye_Corrosion": "Medium Toxicity",
+            "value_Org_Respiratory_Disease": 0.25,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          },
+          "source": "beginning"
+        },
+        {
+          "index": 139,
+          "data": {
+            "SMILES": "CCc1cccc(CC)c1N(COC)C(=O)CCl",
+            "cpd": "C10928",
+            "ChEBI": 2533,
+            "compoundname": "Alachlor",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.06,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.09,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.17,
+            "label_NR_ER": "Medium Safety",
+            "value_NR_ER_LBD": 0.01,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.02,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.09,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.48,
+            "label_NR_TR": "Low Safety",
+            "value_SR_ARE": 0.79,
+            "label_SR_ARE": "Medium Toxicity",
+            "value_SR_ATAD5": 0.01,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.26,
+            "label_SR_HSE": "Medium Safety",
+            "value_SR_MMP": 0.15,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.04,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 1.0,
+            "label_Gen_AMES_Mutagenesis": "High Toxicity",
+            "value_Gen_Carcinogenesis": 0.0,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.99,
+            "label_Env_Fathead_Minnow": "High Toxicity",
+            "value_Env_T_Pyriformis": 0.99,
+            "label_Env_T_Pyriformis": "High Toxicity",
+            "value_Env_Honey_Bee": 0.03,
+            "label_Env_Honey_Bee": "High Safety",
+            "value_Env_Biodegradation": 0.25,
+            "label_Env_Biodegradation": "Medium Safety",
+            "value_Env_Crustacean": 1.0,
+            "label_Env_Crustacean": "High Toxicity",
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.55,
+            "label_Org_Skin_Sensitisation": "Low Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.03,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.05,
+            "label_Org_hERG_II_Inhibitor": "High Safety",
+            "value_Org_Liver_Injury_I": 0.08,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.18,
+            "label_Org_Liver_Injury_II": "Medium Safety",
+            "value_Org_Eye_Irritation": 0.64,
+            "label_Org_Eye_Irritation": "Low Toxicity",
+            "value_Org_Eye_Corrosion": 0.13,
+            "label_Org_Eye_Corrosion": "High Safety",
+            "value_Org_Respiratory_Disease": 0.28,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          },
+          "source": "random"
+        },
+        {
+          "index": 160,
+          "data": {
+            "SMILES": "CCOP(=S)(OCC)SCCSCC",
+            "cpd": "C18400",
+            "ChEBI": 38661,
+            "compoundname": "Disulfoton",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.04,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.08,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.01,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.01,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.02,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.02,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.06,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.04,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.0,
+            "label_Gen_AMES_Mutagenesis": "High Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.81,
+            "label_Env_Fathead_Minnow": "Medium Toxicity",
+            "value_Env_T_Pyriformis": 0.95,
+            "label_Env_T_Pyriformis": "High Toxicity",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.01,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 0.94,
+            "label_Env_Crustacean": "High Toxicity",
+            "value_Env_Avian": 0.95,
+            "label_Env_Avian": "High Toxicity",
+            "value_Org_Skin_Sensitisation": 0.71,
+            "label_Org_Skin_Sensitisation": "Medium Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.08,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.29,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.7,
+            "label_Org_Liver_Injury_I": "Medium Toxicity",
+            "value_Org_Liver_Injury_II": 0.38,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.98,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.61,
+            "label_Org_Eye_Corrosion": "Low Toxicity",
+            "value_Org_Respiratory_Disease": 0.0,
+            "label_Org_Respiratory_Disease": "High Safety"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 161,
+          "data": {
+            "SMILES": "CCOP(=S)(OCC)SCSCC",
+            "cpd": "C18690",
+            "ChEBI": 38764,
+            "compoundname": "Phorate",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.07,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.01,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.07,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.05,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.01,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.01,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.02,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.02,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.04,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.04,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.0,
+            "label_Gen_AMES_Mutagenesis": "High Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.7,
+            "label_Env_Fathead_Minnow": "Medium Toxicity",
+            "value_Env_T_Pyriformis": 0.94,
+            "label_Env_T_Pyriformis": "High Toxicity",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.01,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 0.9,
+            "label_Env_Crustacean": "High Toxicity",
+            "value_Env_Avian": 0.95,
+            "label_Env_Avian": "High Toxicity",
+            "value_Org_Skin_Sensitisation": 0.71,
+            "label_Org_Skin_Sensitisation": "Medium Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.07,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.27,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.71,
+            "label_Org_Liver_Injury_I": "Medium Toxicity",
+            "value_Org_Liver_Injury_II": 0.33,
+            "label_Org_Liver_Injury_II": "Medium Safety",
+            "value_Org_Eye_Irritation": 0.98,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.62,
+            "label_Org_Eye_Corrosion": "Low Toxicity",
+            "value_Org_Respiratory_Disease": 0.0,
+            "label_Org_Respiratory_Disease": "High Safety"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 162,
+          "data": {
+            "SMILES": "CCOS(C)(=O)=O",
+            "cpd": "C19239",
+            "ChEBI": 23994,
+            "compoundname": "Ethyl methanesulfonate",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.03,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.0,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.0,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.0,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.01,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.0,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.01,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.0,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 1.0,
+            "label_Gen_AMES_Mutagenesis": "High Toxicity",
+            "value_Gen_Carcinogenesis": 0.99,
+            "label_Gen_Carcinogenesis": "High Toxicity",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.49,
+            "label_Env_Fathead_Minnow": "Low Safety",
+            "value_Env_T_Pyriformis": 0.07,
+            "label_Env_T_Pyriformis": "High Safety",
+            "value_Env_Honey_Bee": 0.0,
+            "label_Env_Honey_Bee": "High Safety",
+            "value_Env_Biodegradation": 0.47,
+            "label_Env_Biodegradation": "Low Safety",
+            "value_Env_Crustacean": 0.22,
+            "label_Env_Crustacean": "Medium Safety",
+            "value_Env_Avian": 0.05,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.97,
+            "label_Org_Skin_Sensitisation": "High Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.03,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.21,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.04,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.47,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.97,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.97,
+            "label_Org_Eye_Corrosion": "High Toxicity",
+            "value_Org_Respiratory_Disease": 0.21,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          },
+          "source": "middle"
+        },
+        {
+          "index": 320,
+          "data": {
+            "SMILES": "OS(=O)(=O)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)C(F)(F)F",
+            "cpd": "C18142",
+            "ChEBI": 39421,
+            "compoundname": "Perfluorooctanesulfonic acid",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.01,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.06,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.11,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.0,
+            "label_NR_TR": "High Safety",
+            "value_SR_ARE": 0.43,
+            "label_SR_ARE": "Low Safety",
+            "value_SR_ATAD5": 0.01,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.59,
+            "label_SR_MMP": "Low Toxicity",
+            "value_SR_p53": 0.3,
+            "label_SR_p53": "Medium Safety",
+            "value_Gen_AMES_Mutagenesis": 0.16,
+            "label_Gen_AMES_Mutagenesis": "High Safety",
+            "value_Gen_Carcinogenesis": 0.99,
+            "label_Gen_Carcinogenesis": "High Toxicity",
+            "value_Gen_Micronucleus": 0.51,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.69,
+            "label_Env_Fathead_Minnow": "Medium Toxicity",
+            "value_Env_T_Pyriformis": 0.89,
+            "label_Env_T_Pyriformis": "High Toxicity",
+            "value_Env_Honey_Bee": 0.27,
+            "label_Env_Honey_Bee": "Medium Safety",
+            "value_Env_Biodegradation": 0.03,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 0.0,
+            "label_Env_Crustacean": "High Safety",
+            "value_Env_Avian": 0.95,
+            "label_Env_Avian": "High Toxicity",
+            "value_Org_Skin_Sensitisation": 0.62,
+            "label_Org_Skin_Sensitisation": "Low Toxicity",
+            "value_Org_hERG_I_Inhibitor": 0.02,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.13,
+            "label_Org_hERG_II_Inhibitor": "High Safety",
+            "value_Org_Liver_Injury_I": 0.65,
+            "label_Org_Liver_Injury_I": "Low Toxicity",
+            "value_Org_Liver_Injury_II": 0.44,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.89,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.5,
+            "label_Org_Eye_Corrosion": "Low Toxicity",
+            "value_Org_Respiratory_Disease": 0.39,
+            "label_Org_Respiratory_Disease": "Low Safety"
+          },
+          "source": "end"
+        },
+        {
+          "index": 321,
+          "data": {
+            "SMILES": "S=C=S",
+            "cpd": "C19033",
+            "ChEBI": 23012,
+            "compoundname": "Carbon disulfide",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.0,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.07,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.02,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.0,
+            "label_NR_GR": "High Safety",
+            "value_NR_TR": 0.19,
+            "label_NR_TR": "Medium Safety",
+            "value_SR_ARE": 0.05,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.02,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.04,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.05,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.0,
+            "label_Gen_AMES_Mutagenesis": "High Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.11,
+            "label_Env_Fathead_Minnow": "High Safety",
+            "value_Env_T_Pyriformis": 0.88,
+            "label_Env_T_Pyriformis": "High Toxicity",
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity",
+            "value_Env_Biodegradation": 0.02,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 0.8,
+            "label_Env_Crustacean": "Medium Toxicity",
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.42,
+            "label_Org_Skin_Sensitisation": "Low Safety",
+            "value_Org_hERG_I_Inhibitor": 0.24,
+            "label_Org_hERG_I_Inhibitor": "Medium Safety",
+            "value_Org_hERG_II_Inhibitor": 0.28,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.01,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.42,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.95,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.59,
+            "label_Org_Eye_Corrosion": "Low Toxicity",
+            "value_Org_Respiratory_Disease": 0.09,
+            "label_Org_Respiratory_Disease": "High Safety"
+          },
+          "source": "end"
+        },
+        {
+          "index": 322,
+          "data": {
+            "SMILES": "SC#N",
+            "cpd": "C01755",
+            "ChEBI": 29200,
+            "compoundname": "Thiocyanate",
+            "value_NR_AR": 0.0,
+            "label_NR_AR": "High Safety",
+            "value_NR_AR_LBD": 0.13,
+            "label_NR_AR_LBD": "High Safety",
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety",
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety",
+            "value_NR_ER": 0.07,
+            "label_NR_ER": "High Safety",
+            "value_NR_ER_LBD": 0.0,
+            "label_NR_ER_LBD": "High Safety",
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety",
+            "value_NR_GR": 0.51,
+            "label_NR_GR": "Low Toxicity",
+            "value_NR_TR": 0.38,
+            "label_NR_TR": "Low Safety",
+            "value_SR_ARE": 0.01,
+            "label_SR_ARE": "High Safety",
+            "value_SR_ATAD5": 0.14,
+            "label_SR_ATAD5": "High Safety",
+            "value_SR_HSE": 0.12,
+            "label_SR_HSE": "High Safety",
+            "value_SR_MMP": 0.0,
+            "label_SR_MMP": "High Safety",
+            "value_SR_p53": 0.04,
+            "label_SR_p53": "High Safety",
+            "value_Gen_AMES_Mutagenesis": 0.2,
+            "label_Gen_AMES_Mutagenesis": "Medium Safety",
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety",
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity",
+            "value_Env_Fathead_Minnow": 0.3,
+            "label_Env_Fathead_Minnow": "Medium Safety",
+            "value_Env_T_Pyriformis": 0.77,
+            "label_Env_T_Pyriformis": "Medium Toxicity",
+            "value_Env_Honey_Bee": 0.4,
+            "label_Env_Honey_Bee": "Low Safety",
+            "value_Env_Biodegradation": 0.04,
+            "label_Env_Biodegradation": "High Safety",
+            "value_Env_Crustacean": 1.0,
+            "label_Env_Crustacean": "High Toxicity",
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety",
+            "value_Org_Skin_Sensitisation": 0.39,
+            "label_Org_Skin_Sensitisation": "Low Safety",
+            "value_Org_hERG_I_Inhibitor": 0.04,
+            "label_Org_hERG_I_Inhibitor": "High Safety",
+            "value_Org_hERG_II_Inhibitor": 0.29,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety",
+            "value_Org_Liver_Injury_I": 0.0,
+            "label_Org_Liver_Injury_I": "High Safety",
+            "value_Org_Liver_Injury_II": 0.36,
+            "label_Org_Liver_Injury_II": "Low Safety",
+            "value_Org_Eye_Irritation": 0.95,
+            "label_Org_Eye_Irritation": "High Toxicity",
+            "value_Org_Eye_Corrosion": 0.77,
+            "label_Org_Eye_Corrosion": "Medium Toxicity",
+            "value_Org_Respiratory_Disease": 0.04,
+            "label_Org_Respiratory_Disease": "High Safety"
+          },
+          "source": "end"
+        }
+      ],
+      "relationships": {
+        "SMILES_to_ChEBI": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "ChEBI",
+          "example": {
+            "SMILES": "[Ba++]",
+            "ChEBI": 37136
+          }
+        },
+        "SMILES_to_value_NR_AR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_AR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_AR": 0.05
+          }
+        },
+        "SMILES_to_label_NR_AR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_AR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_AR": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_AR_LBD",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_AR_LBD": 0.08
+          }
+        },
+        "SMILES_to_label_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_AR_LBD",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_AR_LBD": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_AhR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_AhR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_AhR": 0.0
+          }
+        },
+        "SMILES_to_label_NR_AhR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_AhR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_AhR": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_Aromatase",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_Aromatase": 0.0
+          }
+        },
+        "SMILES_to_label_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_Aromatase",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_Aromatase": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_ER": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_ER",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_ER": 0.12
+          }
+        },
+        "SMILES_to_label_NR_ER": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_ER",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_ER": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_ER_LBD",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_ER_LBD": 0.02
+          }
+        },
+        "SMILES_to_label_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_ER_LBD",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_ER_LBD": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_PPAR_gamma",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_PPAR_gamma": 0.01
+          }
+        },
+        "SMILES_to_label_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_PPAR_gamma",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_PPAR_gamma": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_GR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_GR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_GR": 0.15
+          }
+        },
+        "SMILES_to_label_NR_GR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_GR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_GR": "High Safety"
+          }
+        },
+        "SMILES_to_value_NR_TR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_NR_TR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_NR_TR": 0.11
+          }
+        },
+        "SMILES_to_label_NR_TR": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_NR_TR",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_NR_TR": "High Safety"
+          }
+        },
+        "SMILES_to_value_SR_ARE": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_SR_ARE",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_SR_ARE": 0.11
+          }
+        },
+        "SMILES_to_label_SR_ARE": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_SR_ARE",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_SR_ARE": "High Safety"
+          }
+        },
+        "SMILES_to_value_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_SR_ATAD5",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_SR_ATAD5": 0.01
+          }
+        },
+        "SMILES_to_label_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_SR_ATAD5",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_SR_ATAD5": "High Safety"
+          }
+        },
+        "SMILES_to_value_SR_HSE": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_SR_HSE",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_SR_HSE": 0.0
+          }
+        },
+        "SMILES_to_label_SR_HSE": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_SR_HSE",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_SR_HSE": "High Safety"
+          }
+        },
+        "SMILES_to_value_SR_MMP": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_SR_MMP",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_SR_MMP": 0.44
+          }
+        },
+        "SMILES_to_label_SR_MMP": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_SR_MMP",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_SR_MMP": "Low Safety"
+          }
+        },
+        "SMILES_to_value_SR_p53": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_SR_p53",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_SR_p53": 0.05
+          }
+        },
+        "SMILES_to_label_SR_p53": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_SR_p53",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_SR_p53": "High Safety"
+          }
+        },
+        "SMILES_to_value_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Gen_AMES_Mutagenesis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Gen_AMES_Mutagenesis": 0.3
+          }
+        },
+        "SMILES_to_label_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Gen_AMES_Mutagenesis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Gen_AMES_Mutagenesis": "Medium Safety"
+          }
+        },
+        "SMILES_to_value_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Gen_Carcinogenesis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Gen_Carcinogenesis": 0.15
+          }
+        },
+        "SMILES_to_label_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Gen_Carcinogenesis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Gen_Carcinogenesis": "High Safety"
+          }
+        },
+        "SMILES_to_value_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Gen_Micronucleus",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Gen_Micronucleus": 0.5
+          }
+        },
+        "SMILES_to_label_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Gen_Micronucleus",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Gen_Micronucleus": "Low Toxicity"
+          }
+        },
+        "SMILES_to_value_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_Fathead_Minnow",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_Fathead_Minnow": 0.12
+          }
+        },
+        "SMILES_to_label_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_Fathead_Minnow",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_Fathead_Minnow": "High Safety"
+          }
+        },
+        "SMILES_to_value_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_T_Pyriformis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_T_Pyriformis": 0.73
+          }
+        },
+        "SMILES_to_label_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_T_Pyriformis",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_T_Pyriformis": "Medium Toxicity"
+          }
+        },
+        "SMILES_to_value_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_Honey_Bee",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_Honey_Bee": 1.0
+          }
+        },
+        "SMILES_to_label_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_Honey_Bee",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_Honey_Bee": "High Toxicity"
+          }
+        },
+        "SMILES_to_value_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_Biodegradation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_Biodegradation": 0.01
+          }
+        },
+        "SMILES_to_label_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_Biodegradation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_Biodegradation": "High Safety"
+          }
+        },
+        "SMILES_to_value_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_Crustacean",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_Crustacean": 0.16
+          }
+        },
+        "SMILES_to_label_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_Crustacean",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_Crustacean": "High Safety"
+          }
+        },
+        "SMILES_to_value_Env_Avian": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Env_Avian",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Env_Avian": 0.01
+          }
+        },
+        "SMILES_to_label_Env_Avian": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Env_Avian",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Env_Avian": "High Safety"
+          }
+        },
+        "SMILES_to_value_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Skin_Sensitisation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Skin_Sensitisation": 0.46
+          }
+        },
+        "SMILES_to_label_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Skin_Sensitisation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Skin_Sensitisation": "Low Safety"
+          }
+        },
+        "SMILES_to_value_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_hERG_I_Inhibitor",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_hERG_I_Inhibitor": 0.06
+          }
+        },
+        "SMILES_to_label_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_hERG_I_Inhibitor",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_hERG_I_Inhibitor": "High Safety"
+          }
+        },
+        "SMILES_to_value_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_hERG_II_Inhibitor",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_hERG_II_Inhibitor": 0.31
+          }
+        },
+        "SMILES_to_label_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_hERG_II_Inhibitor",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_hERG_II_Inhibitor": "Medium Safety"
+          }
+        },
+        "SMILES_to_value_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Liver_Injury_I",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Liver_Injury_I": 0.01
+          }
+        },
+        "SMILES_to_label_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Liver_Injury_I",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Liver_Injury_I": "High Safety"
+          }
+        },
+        "SMILES_to_value_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Liver_Injury_II",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Liver_Injury_II": 0.38
+          }
+        },
+        "SMILES_to_label_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Liver_Injury_II",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Liver_Injury_II": "Low Safety"
+          }
+        },
+        "SMILES_to_value_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Eye_Irritation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Eye_Irritation": 0.96
+          }
+        },
+        "SMILES_to_label_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Eye_Irritation",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Eye_Irritation": "High Toxicity"
+          }
+        },
+        "SMILES_to_value_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Eye_Corrosion",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Eye_Corrosion": 0.49
+          }
+        },
+        "SMILES_to_label_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Eye_Corrosion",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Eye_Corrosion": "Low Safety"
+          }
+        },
+        "SMILES_to_value_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "value_Org_Respiratory_Disease",
+          "example": {
+            "SMILES": "[Ba++]",
+            "value_Org_Respiratory_Disease": 0.3
+          }
+        },
+        "SMILES_to_label_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "SMILES",
+          "to": "label_Org_Respiratory_Disease",
+          "example": {
+            "SMILES": "[Ba++]",
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          }
+        },
+        "cpd_to_ChEBI": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "ChEBI",
+          "example": {
+            "cpd": "C13881",
+            "ChEBI": 37136
+          }
+        },
+        "cpd_to_compoundname": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "compoundname",
+          "example": {
+            "cpd": "C13881",
+            "compoundname": "Barium cation"
+          }
+        },
+        "cpd_to_value_NR_AR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_AR",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_AR": 0.05
+          }
+        },
+        "cpd_to_label_NR_AR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_AR",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_AR": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_AR_LBD",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_AR_LBD": 0.08
+          }
+        },
+        "cpd_to_label_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_AR_LBD",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_AR_LBD": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_AhR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_AhR",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_AhR": 0.0
+          }
+        },
+        "cpd_to_label_NR_AhR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_AhR",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_AhR": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_Aromatase",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_Aromatase": 0.0
+          }
+        },
+        "cpd_to_label_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_Aromatase",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_Aromatase": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_ER": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_ER",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_ER": 0.12
+          }
+        },
+        "cpd_to_label_NR_ER": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_ER",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_ER": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_ER_LBD",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_ER_LBD": 0.02
+          }
+        },
+        "cpd_to_label_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_ER_LBD",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_ER_LBD": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_PPAR_gamma",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_PPAR_gamma": 0.01
+          }
+        },
+        "cpd_to_label_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_PPAR_gamma",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_PPAR_gamma": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_GR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_GR",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_GR": 0.15
+          }
+        },
+        "cpd_to_label_NR_GR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_GR",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_GR": "High Safety"
+          }
+        },
+        "cpd_to_value_NR_TR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_NR_TR",
+          "example": {
+            "cpd": "C13881",
+            "value_NR_TR": 0.11
+          }
+        },
+        "cpd_to_label_NR_TR": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_NR_TR",
+          "example": {
+            "cpd": "C13881",
+            "label_NR_TR": "High Safety"
+          }
+        },
+        "cpd_to_value_SR_ARE": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_SR_ARE",
+          "example": {
+            "cpd": "C13881",
+            "value_SR_ARE": 0.11
+          }
+        },
+        "cpd_to_label_SR_ARE": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_SR_ARE",
+          "example": {
+            "cpd": "C13881",
+            "label_SR_ARE": "High Safety"
+          }
+        },
+        "cpd_to_value_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_SR_ATAD5",
+          "example": {
+            "cpd": "C13881",
+            "value_SR_ATAD5": 0.01
+          }
+        },
+        "cpd_to_label_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_SR_ATAD5",
+          "example": {
+            "cpd": "C13881",
+            "label_SR_ATAD5": "High Safety"
+          }
+        },
+        "cpd_to_value_SR_HSE": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_SR_HSE",
+          "example": {
+            "cpd": "C13881",
+            "value_SR_HSE": 0.0
+          }
+        },
+        "cpd_to_label_SR_HSE": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_SR_HSE",
+          "example": {
+            "cpd": "C13881",
+            "label_SR_HSE": "High Safety"
+          }
+        },
+        "cpd_to_value_SR_MMP": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_SR_MMP",
+          "example": {
+            "cpd": "C13881",
+            "value_SR_MMP": 0.44
+          }
+        },
+        "cpd_to_label_SR_MMP": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_SR_MMP",
+          "example": {
+            "cpd": "C13881",
+            "label_SR_MMP": "Low Safety"
+          }
+        },
+        "cpd_to_value_SR_p53": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_SR_p53",
+          "example": {
+            "cpd": "C13881",
+            "value_SR_p53": 0.05
+          }
+        },
+        "cpd_to_label_SR_p53": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_SR_p53",
+          "example": {
+            "cpd": "C13881",
+            "label_SR_p53": "High Safety"
+          }
+        },
+        "cpd_to_value_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Gen_AMES_Mutagenesis",
+          "example": {
+            "cpd": "C13881",
+            "value_Gen_AMES_Mutagenesis": 0.3
+          }
+        },
+        "cpd_to_label_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Gen_AMES_Mutagenesis",
+          "example": {
+            "cpd": "C13881",
+            "label_Gen_AMES_Mutagenesis": "Medium Safety"
+          }
+        },
+        "cpd_to_value_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Gen_Carcinogenesis",
+          "example": {
+            "cpd": "C13881",
+            "value_Gen_Carcinogenesis": 0.15
+          }
+        },
+        "cpd_to_label_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Gen_Carcinogenesis",
+          "example": {
+            "cpd": "C13881",
+            "label_Gen_Carcinogenesis": "High Safety"
+          }
+        },
+        "cpd_to_value_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Gen_Micronucleus",
+          "example": {
+            "cpd": "C13881",
+            "value_Gen_Micronucleus": 0.5
+          }
+        },
+        "cpd_to_label_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Gen_Micronucleus",
+          "example": {
+            "cpd": "C13881",
+            "label_Gen_Micronucleus": "Low Toxicity"
+          }
+        },
+        "cpd_to_value_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_Fathead_Minnow",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_Fathead_Minnow": 0.12
+          }
+        },
+        "cpd_to_label_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_Fathead_Minnow",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_Fathead_Minnow": "High Safety"
+          }
+        },
+        "cpd_to_value_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_T_Pyriformis",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_T_Pyriformis": 0.73
+          }
+        },
+        "cpd_to_label_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_T_Pyriformis",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_T_Pyriformis": "Medium Toxicity"
+          }
+        },
+        "cpd_to_value_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_Honey_Bee",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_Honey_Bee": 1.0
+          }
+        },
+        "cpd_to_label_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_Honey_Bee",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_Honey_Bee": "High Toxicity"
+          }
+        },
+        "cpd_to_value_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_Biodegradation",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_Biodegradation": 0.01
+          }
+        },
+        "cpd_to_label_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_Biodegradation",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_Biodegradation": "High Safety"
+          }
+        },
+        "cpd_to_value_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_Crustacean",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_Crustacean": 0.16
+          }
+        },
+        "cpd_to_label_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_Crustacean",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_Crustacean": "High Safety"
+          }
+        },
+        "cpd_to_value_Env_Avian": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Env_Avian",
+          "example": {
+            "cpd": "C13881",
+            "value_Env_Avian": 0.01
+          }
+        },
+        "cpd_to_label_Env_Avian": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Env_Avian",
+          "example": {
+            "cpd": "C13881",
+            "label_Env_Avian": "High Safety"
+          }
+        },
+        "cpd_to_value_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Skin_Sensitisation",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Skin_Sensitisation": 0.46
+          }
+        },
+        "cpd_to_label_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Skin_Sensitisation",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Skin_Sensitisation": "Low Safety"
+          }
+        },
+        "cpd_to_value_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_hERG_I_Inhibitor",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_hERG_I_Inhibitor": 0.06
+          }
+        },
+        "cpd_to_label_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_hERG_I_Inhibitor",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_hERG_I_Inhibitor": "High Safety"
+          }
+        },
+        "cpd_to_value_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_hERG_II_Inhibitor",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_hERG_II_Inhibitor": 0.31
+          }
+        },
+        "cpd_to_label_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_hERG_II_Inhibitor",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_hERG_II_Inhibitor": "Medium Safety"
+          }
+        },
+        "cpd_to_value_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Liver_Injury_I",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Liver_Injury_I": 0.01
+          }
+        },
+        "cpd_to_label_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Liver_Injury_I",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Liver_Injury_I": "High Safety"
+          }
+        },
+        "cpd_to_value_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Liver_Injury_II",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Liver_Injury_II": 0.38
+          }
+        },
+        "cpd_to_label_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Liver_Injury_II",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Liver_Injury_II": "Low Safety"
+          }
+        },
+        "cpd_to_value_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Eye_Irritation",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Eye_Irritation": 0.96
+          }
+        },
+        "cpd_to_label_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Eye_Irritation",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Eye_Irritation": "High Toxicity"
+          }
+        },
+        "cpd_to_value_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Eye_Corrosion",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Eye_Corrosion": 0.49
+          }
+        },
+        "cpd_to_label_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Eye_Corrosion",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Eye_Corrosion": "Low Safety"
+          }
+        },
+        "cpd_to_value_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "value_Org_Respiratory_Disease",
+          "example": {
+            "cpd": "C13881",
+            "value_Org_Respiratory_Disease": 0.3
+          }
+        },
+        "cpd_to_label_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "cpd",
+          "to": "label_Org_Respiratory_Disease",
+          "example": {
+            "cpd": "C13881",
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          }
+        },
+        "ChEBI_to_value_NR_AR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_AR",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_AR": 0.05
+          }
+        },
+        "ChEBI_to_label_NR_AR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_AR",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_AR": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_AR_LBD",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_AR_LBD": 0.08
+          }
+        },
+        "ChEBI_to_label_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_AR_LBD",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_AR_LBD": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_AhR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_AhR",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_AhR": 0.0
+          }
+        },
+        "ChEBI_to_label_NR_AhR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_AhR",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_AhR": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_Aromatase",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_Aromatase": 0.0
+          }
+        },
+        "ChEBI_to_label_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_Aromatase",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_Aromatase": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_ER": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_ER",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_ER": 0.12
+          }
+        },
+        "ChEBI_to_label_NR_ER": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_ER",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_ER": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_ER_LBD",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_ER_LBD": 0.02
+          }
+        },
+        "ChEBI_to_label_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_ER_LBD",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_ER_LBD": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_PPAR_gamma",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_PPAR_gamma": 0.01
+          }
+        },
+        "ChEBI_to_label_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_PPAR_gamma",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_PPAR_gamma": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_GR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_GR",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_GR": 0.15
+          }
+        },
+        "ChEBI_to_label_NR_GR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_GR",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_GR": "High Safety"
+          }
+        },
+        "ChEBI_to_value_NR_TR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_NR_TR",
+          "example": {
+            "ChEBI": 37136,
+            "value_NR_TR": 0.11
+          }
+        },
+        "ChEBI_to_label_NR_TR": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_NR_TR",
+          "example": {
+            "ChEBI": 37136,
+            "label_NR_TR": "High Safety"
+          }
+        },
+        "ChEBI_to_value_SR_ARE": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_SR_ARE",
+          "example": {
+            "ChEBI": 37136,
+            "value_SR_ARE": 0.11
+          }
+        },
+        "ChEBI_to_label_SR_ARE": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_SR_ARE",
+          "example": {
+            "ChEBI": 37136,
+            "label_SR_ARE": "High Safety"
+          }
+        },
+        "ChEBI_to_value_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_SR_ATAD5",
+          "example": {
+            "ChEBI": 37136,
+            "value_SR_ATAD5": 0.01
+          }
+        },
+        "ChEBI_to_label_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_SR_ATAD5",
+          "example": {
+            "ChEBI": 37136,
+            "label_SR_ATAD5": "High Safety"
+          }
+        },
+        "ChEBI_to_value_SR_HSE": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_SR_HSE",
+          "example": {
+            "ChEBI": 37136,
+            "value_SR_HSE": 0.0
+          }
+        },
+        "ChEBI_to_label_SR_HSE": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_SR_HSE",
+          "example": {
+            "ChEBI": 37136,
+            "label_SR_HSE": "High Safety"
+          }
+        },
+        "ChEBI_to_value_SR_MMP": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_SR_MMP",
+          "example": {
+            "ChEBI": 37136,
+            "value_SR_MMP": 0.44
+          }
+        },
+        "ChEBI_to_label_SR_MMP": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_SR_MMP",
+          "example": {
+            "ChEBI": 37136,
+            "label_SR_MMP": "Low Safety"
+          }
+        },
+        "ChEBI_to_value_SR_p53": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_SR_p53",
+          "example": {
+            "ChEBI": 37136,
+            "value_SR_p53": 0.05
+          }
+        },
+        "ChEBI_to_label_SR_p53": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_SR_p53",
+          "example": {
+            "ChEBI": 37136,
+            "label_SR_p53": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Gen_AMES_Mutagenesis",
+          "example": {
+            "ChEBI": 37136,
+            "value_Gen_AMES_Mutagenesis": 0.3
+          }
+        },
+        "ChEBI_to_label_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Gen_AMES_Mutagenesis",
+          "example": {
+            "ChEBI": 37136,
+            "label_Gen_AMES_Mutagenesis": "Medium Safety"
+          }
+        },
+        "ChEBI_to_value_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Gen_Carcinogenesis",
+          "example": {
+            "ChEBI": 37136,
+            "value_Gen_Carcinogenesis": 0.15
+          }
+        },
+        "ChEBI_to_label_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Gen_Carcinogenesis",
+          "example": {
+            "ChEBI": 37136,
+            "label_Gen_Carcinogenesis": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Gen_Micronucleus",
+          "example": {
+            "ChEBI": 37136,
+            "value_Gen_Micronucleus": 0.5
+          }
+        },
+        "ChEBI_to_label_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Gen_Micronucleus",
+          "example": {
+            "ChEBI": 37136,
+            "label_Gen_Micronucleus": "Low Toxicity"
+          }
+        },
+        "ChEBI_to_value_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_Fathead_Minnow",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_Fathead_Minnow": 0.12
+          }
+        },
+        "ChEBI_to_label_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_Fathead_Minnow",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_Fathead_Minnow": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_T_Pyriformis",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_T_Pyriformis": 0.73
+          }
+        },
+        "ChEBI_to_label_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_T_Pyriformis",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_T_Pyriformis": "Medium Toxicity"
+          }
+        },
+        "ChEBI_to_value_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_Honey_Bee",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_Honey_Bee": 1.0
+          }
+        },
+        "ChEBI_to_label_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_Honey_Bee",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_Honey_Bee": "High Toxicity"
+          }
+        },
+        "ChEBI_to_value_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_Biodegradation",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_Biodegradation": 0.01
+          }
+        },
+        "ChEBI_to_label_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_Biodegradation",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_Biodegradation": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_Crustacean",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_Crustacean": 0.16
+          }
+        },
+        "ChEBI_to_label_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_Crustacean",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_Crustacean": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Env_Avian": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Env_Avian",
+          "example": {
+            "ChEBI": 37136,
+            "value_Env_Avian": 0.01
+          }
+        },
+        "ChEBI_to_label_Env_Avian": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Env_Avian",
+          "example": {
+            "ChEBI": 37136,
+            "label_Env_Avian": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Skin_Sensitisation",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Skin_Sensitisation": 0.46
+          }
+        },
+        "ChEBI_to_label_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Skin_Sensitisation",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Skin_Sensitisation": "Low Safety"
+          }
+        },
+        "ChEBI_to_value_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_hERG_I_Inhibitor",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_hERG_I_Inhibitor": 0.06
+          }
+        },
+        "ChEBI_to_label_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_hERG_I_Inhibitor",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_hERG_I_Inhibitor": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_hERG_II_Inhibitor",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_hERG_II_Inhibitor": 0.31
+          }
+        },
+        "ChEBI_to_label_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_hERG_II_Inhibitor",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety"
+          }
+        },
+        "ChEBI_to_value_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Liver_Injury_I",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Liver_Injury_I": 0.01
+          }
+        },
+        "ChEBI_to_label_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Liver_Injury_I",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Liver_Injury_I": "High Safety"
+          }
+        },
+        "ChEBI_to_value_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Liver_Injury_II",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Liver_Injury_II": 0.38
+          }
+        },
+        "ChEBI_to_label_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Liver_Injury_II",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Liver_Injury_II": "Low Safety"
+          }
+        },
+        "ChEBI_to_value_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Eye_Irritation",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Eye_Irritation": 0.96
+          }
+        },
+        "ChEBI_to_label_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Eye_Irritation",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Eye_Irritation": "High Toxicity"
+          }
+        },
+        "ChEBI_to_value_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Eye_Corrosion",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Eye_Corrosion": 0.49
+          }
+        },
+        "ChEBI_to_label_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Eye_Corrosion",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Eye_Corrosion": "Low Safety"
+          }
+        },
+        "ChEBI_to_value_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "value_Org_Respiratory_Disease",
+          "example": {
+            "ChEBI": 37136,
+            "value_Org_Respiratory_Disease": 0.3
+          }
+        },
+        "ChEBI_to_label_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "ChEBI",
+          "to": "label_Org_Respiratory_Disease",
+          "example": {
+            "ChEBI": 37136,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          }
+        },
+        "compoundname_to_value_NR_AR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_AR",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_AR": 0.05
+          }
+        },
+        "compoundname_to_label_NR_AR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_AR",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_AR": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_AR_LBD",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_AR_LBD": 0.08
+          }
+        },
+        "compoundname_to_label_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_AR_LBD",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_AR_LBD": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_AhR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_AhR",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_AhR": 0.0
+          }
+        },
+        "compoundname_to_label_NR_AhR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_AhR",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_AhR": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_Aromatase",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_Aromatase": 0.0
+          }
+        },
+        "compoundname_to_label_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_Aromatase",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_Aromatase": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_ER": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_ER",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_ER": 0.12
+          }
+        },
+        "compoundname_to_label_NR_ER": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_ER",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_ER": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_ER_LBD",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_ER_LBD": 0.02
+          }
+        },
+        "compoundname_to_label_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_ER_LBD",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_ER_LBD": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_PPAR_gamma",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_PPAR_gamma": 0.01
+          }
+        },
+        "compoundname_to_label_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_PPAR_gamma",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_PPAR_gamma": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_GR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_GR",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_GR": 0.15
+          }
+        },
+        "compoundname_to_label_NR_GR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_GR",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_GR": "High Safety"
+          }
+        },
+        "compoundname_to_value_NR_TR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_NR_TR",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_NR_TR": 0.11
+          }
+        },
+        "compoundname_to_label_NR_TR": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_NR_TR",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_NR_TR": "High Safety"
+          }
+        },
+        "compoundname_to_value_SR_ARE": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_SR_ARE",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_SR_ARE": 0.11
+          }
+        },
+        "compoundname_to_label_SR_ARE": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_SR_ARE",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_SR_ARE": "High Safety"
+          }
+        },
+        "compoundname_to_value_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_SR_ATAD5",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_SR_ATAD5": 0.01
+          }
+        },
+        "compoundname_to_label_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_SR_ATAD5",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_SR_ATAD5": "High Safety"
+          }
+        },
+        "compoundname_to_value_SR_HSE": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_SR_HSE",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_SR_HSE": 0.0
+          }
+        },
+        "compoundname_to_label_SR_HSE": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_SR_HSE",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_SR_HSE": "High Safety"
+          }
+        },
+        "compoundname_to_value_SR_MMP": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_SR_MMP",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_SR_MMP": 0.44
+          }
+        },
+        "compoundname_to_label_SR_MMP": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_SR_MMP",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_SR_MMP": "Low Safety"
+          }
+        },
+        "compoundname_to_value_SR_p53": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_SR_p53",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_SR_p53": 0.05
+          }
+        },
+        "compoundname_to_label_SR_p53": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_SR_p53",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_SR_p53": "High Safety"
+          }
+        },
+        "compoundname_to_value_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Gen_AMES_Mutagenesis",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Gen_AMES_Mutagenesis": 0.3
+          }
+        },
+        "compoundname_to_label_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Gen_AMES_Mutagenesis",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Gen_AMES_Mutagenesis": "Medium Safety"
+          }
+        },
+        "compoundname_to_value_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Gen_Carcinogenesis",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Gen_Carcinogenesis": 0.15
+          }
+        },
+        "compoundname_to_label_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Gen_Carcinogenesis",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Gen_Carcinogenesis": "High Safety"
+          }
+        },
+        "compoundname_to_value_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Gen_Micronucleus",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Gen_Micronucleus": 0.5
+          }
+        },
+        "compoundname_to_label_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Gen_Micronucleus",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Gen_Micronucleus": "Low Toxicity"
+          }
+        },
+        "compoundname_to_value_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_Fathead_Minnow",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_Fathead_Minnow": 0.12
+          }
+        },
+        "compoundname_to_label_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_Fathead_Minnow",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_Fathead_Minnow": "High Safety"
+          }
+        },
+        "compoundname_to_value_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_T_Pyriformis",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_T_Pyriformis": 0.73
+          }
+        },
+        "compoundname_to_label_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_T_Pyriformis",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_T_Pyriformis": "Medium Toxicity"
+          }
+        },
+        "compoundname_to_value_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_Honey_Bee",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_Honey_Bee": 1.0
+          }
+        },
+        "compoundname_to_label_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_Honey_Bee",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_Honey_Bee": "High Toxicity"
+          }
+        },
+        "compoundname_to_value_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_Biodegradation",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_Biodegradation": 0.01
+          }
+        },
+        "compoundname_to_label_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_Biodegradation",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_Biodegradation": "High Safety"
+          }
+        },
+        "compoundname_to_value_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_Crustacean",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_Crustacean": 0.16
+          }
+        },
+        "compoundname_to_label_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_Crustacean",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_Crustacean": "High Safety"
+          }
+        },
+        "compoundname_to_value_Env_Avian": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Env_Avian",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Env_Avian": 0.01
+          }
+        },
+        "compoundname_to_label_Env_Avian": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Env_Avian",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Env_Avian": "High Safety"
+          }
+        },
+        "compoundname_to_value_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Skin_Sensitisation",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Skin_Sensitisation": 0.46
+          }
+        },
+        "compoundname_to_label_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Skin_Sensitisation",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Skin_Sensitisation": "Low Safety"
+          }
+        },
+        "compoundname_to_value_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_hERG_I_Inhibitor",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_hERG_I_Inhibitor": 0.06
+          }
+        },
+        "compoundname_to_label_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_hERG_I_Inhibitor",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_hERG_I_Inhibitor": "High Safety"
+          }
+        },
+        "compoundname_to_value_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_hERG_II_Inhibitor",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_hERG_II_Inhibitor": 0.31
+          }
+        },
+        "compoundname_to_label_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_hERG_II_Inhibitor",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_hERG_II_Inhibitor": "Medium Safety"
+          }
+        },
+        "compoundname_to_value_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Liver_Injury_I",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Liver_Injury_I": 0.01
+          }
+        },
+        "compoundname_to_label_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Liver_Injury_I",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Liver_Injury_I": "High Safety"
+          }
+        },
+        "compoundname_to_value_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Liver_Injury_II",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Liver_Injury_II": 0.38
+          }
+        },
+        "compoundname_to_label_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Liver_Injury_II",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Liver_Injury_II": "Low Safety"
+          }
+        },
+        "compoundname_to_value_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Eye_Irritation",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Eye_Irritation": 0.96
+          }
+        },
+        "compoundname_to_label_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Eye_Irritation",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Eye_Irritation": "High Toxicity"
+          }
+        },
+        "compoundname_to_value_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Eye_Corrosion",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Eye_Corrosion": 0.49
+          }
+        },
+        "compoundname_to_label_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Eye_Corrosion",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Eye_Corrosion": "Low Safety"
+          }
+        },
+        "compoundname_to_value_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "value_Org_Respiratory_Disease",
+          "example": {
+            "compoundname": "Barium cation",
+            "value_Org_Respiratory_Disease": 0.3
+          }
+        },
+        "compoundname_to_label_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "compoundname",
+          "to": "label_Org_Respiratory_Disease",
+          "example": {
+            "compoundname": "Barium cation",
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          }
+        },
+        "value_NR_AR_to_label_NR_AR": {
+          "type": "one_to_one",
+          "from": "value_NR_AR",
+          "to": "label_NR_AR",
+          "example": {
+            "value_NR_AR": 0.05,
+            "label_NR_AR": "High Safety"
+          }
+        },
+        "value_NR_AR_LBD_to_label_NR_AR_LBD": {
+          "type": "one_to_one",
+          "from": "value_NR_AR_LBD",
+          "to": "label_NR_AR_LBD",
+          "example": {
+            "value_NR_AR_LBD": 0.08,
+            "label_NR_AR_LBD": "High Safety"
+          }
+        },
+        "value_NR_AhR_to_label_NR_AhR": {
+          "type": "one_to_one",
+          "from": "value_NR_AhR",
+          "to": "label_NR_AhR",
+          "example": {
+            "value_NR_AhR": 0.0,
+            "label_NR_AhR": "High Safety"
+          }
+        },
+        "value_NR_Aromatase_to_label_NR_Aromatase": {
+          "type": "one_to_one",
+          "from": "value_NR_Aromatase",
+          "to": "label_NR_Aromatase",
+          "example": {
+            "value_NR_Aromatase": 0.0,
+            "label_NR_Aromatase": "High Safety"
+          }
+        },
+        "value_NR_ER_to_label_NR_ER": {
+          "type": "one_to_one",
+          "from": "value_NR_ER",
+          "to": "label_NR_ER",
+          "example": {
+            "value_NR_ER": 0.12,
+            "label_NR_ER": "High Safety"
+          }
+        },
+        "value_NR_ER_LBD_to_label_NR_ER_LBD": {
+          "type": "one_to_one",
+          "from": "value_NR_ER_LBD",
+          "to": "label_NR_ER_LBD",
+          "example": {
+            "value_NR_ER_LBD": 0.02,
+            "label_NR_ER_LBD": "High Safety"
+          }
+        },
+        "value_NR_PPAR_gamma_to_label_NR_PPAR_gamma": {
+          "type": "one_to_one",
+          "from": "value_NR_PPAR_gamma",
+          "to": "label_NR_PPAR_gamma",
+          "example": {
+            "value_NR_PPAR_gamma": 0.01,
+            "label_NR_PPAR_gamma": "High Safety"
+          }
+        },
+        "value_NR_GR_to_label_NR_GR": {
+          "type": "one_to_one",
+          "from": "value_NR_GR",
+          "to": "label_NR_GR",
+          "example": {
+            "value_NR_GR": 0.15,
+            "label_NR_GR": "High Safety"
+          }
+        },
+        "value_NR_TR_to_label_NR_TR": {
+          "type": "one_to_one",
+          "from": "value_NR_TR",
+          "to": "label_NR_TR",
+          "example": {
+            "value_NR_TR": 0.11,
+            "label_NR_TR": "High Safety"
+          }
+        },
+        "value_SR_ARE_to_label_SR_ARE": {
+          "type": "one_to_one",
+          "from": "value_SR_ARE",
+          "to": "label_SR_ARE",
+          "example": {
+            "value_SR_ARE": 0.11,
+            "label_SR_ARE": "High Safety"
+          }
+        },
+        "value_SR_ATAD5_to_label_SR_ATAD5": {
+          "type": "one_to_one",
+          "from": "value_SR_ATAD5",
+          "to": "label_SR_ATAD5",
+          "example": {
+            "value_SR_ATAD5": 0.01,
+            "label_SR_ATAD5": "High Safety"
+          }
+        },
+        "value_SR_HSE_to_label_SR_HSE": {
+          "type": "one_to_one",
+          "from": "value_SR_HSE",
+          "to": "label_SR_HSE",
+          "example": {
+            "value_SR_HSE": 0.0,
+            "label_SR_HSE": "High Safety"
+          }
+        },
+        "value_SR_MMP_to_label_SR_MMP": {
+          "type": "one_to_one",
+          "from": "value_SR_MMP",
+          "to": "label_SR_MMP",
+          "example": {
+            "value_SR_MMP": 0.44,
+            "label_SR_MMP": "Low Safety"
+          }
+        },
+        "value_SR_p53_to_label_SR_p53": {
+          "type": "one_to_one",
+          "from": "value_SR_p53",
+          "to": "label_SR_p53",
+          "example": {
+            "value_SR_p53": 0.05,
+            "label_SR_p53": "High Safety"
+          }
+        },
+        "value_Gen_AMES_Mutagenesis_to_label_Gen_AMES_Mutagenesis": {
+          "type": "one_to_one",
+          "from": "value_Gen_AMES_Mutagenesis",
+          "to": "label_Gen_AMES_Mutagenesis",
+          "example": {
+            "value_Gen_AMES_Mutagenesis": 0.3,
+            "label_Gen_AMES_Mutagenesis": "Medium Safety"
+          }
+        },
+        "value_Gen_Carcinogenesis_to_label_Gen_Carcinogenesis": {
+          "type": "one_to_one",
+          "from": "value_Gen_Carcinogenesis",
+          "to": "label_Gen_Carcinogenesis",
+          "example": {
+            "value_Gen_Carcinogenesis": 0.15,
+            "label_Gen_Carcinogenesis": "High Safety"
+          }
+        },
+        "value_Gen_Micronucleus_to_label_Gen_Micronucleus": {
+          "type": "one_to_one",
+          "from": "value_Gen_Micronucleus",
+          "to": "label_Gen_Micronucleus",
+          "example": {
+            "value_Gen_Micronucleus": 0.5,
+            "label_Gen_Micronucleus": "Low Toxicity"
+          }
+        },
+        "value_Env_Fathead_Minnow_to_label_Env_Fathead_Minnow": {
+          "type": "one_to_one",
+          "from": "value_Env_Fathead_Minnow",
+          "to": "label_Env_Fathead_Minnow",
+          "example": {
+            "value_Env_Fathead_Minnow": 0.12,
+            "label_Env_Fathead_Minnow": "High Safety"
+          }
+        },
+        "value_Env_T_Pyriformis_to_label_Env_T_Pyriformis": {
+          "type": "one_to_one",
+          "from": "value_Env_T_Pyriformis",
+          "to": "label_Env_T_Pyriformis",
+          "example": {
+            "value_Env_T_Pyriformis": 0.73,
+            "label_Env_T_Pyriformis": "Medium Toxicity"
+          }
+        },
+        "value_Env_Honey_Bee_to_label_Env_Honey_Bee": {
+          "type": "one_to_one",
+          "from": "value_Env_Honey_Bee",
+          "to": "label_Env_Honey_Bee",
+          "example": {
+            "value_Env_Honey_Bee": 1.0,
+            "label_Env_Honey_Bee": "High Toxicity"
+          }
+        },
+        "value_Env_Biodegradation_to_label_Env_Biodegradation": {
+          "type": "one_to_one",
+          "from": "value_Env_Biodegradation",
+          "to": "label_Env_Biodegradation",
+          "example": {
+            "value_Env_Biodegradation": 0.01,
+            "label_Env_Biodegradation": "High Safety"
+          }
+        },
+        "value_Env_Crustacean_to_label_Env_Crustacean": {
+          "type": "one_to_one",
+          "from": "value_Env_Crustacean",
+          "to": "label_Env_Crustacean",
+          "example": {
+            "value_Env_Crustacean": 0.16,
+            "label_Env_Crustacean": "High Safety"
+          }
+        },
+        "value_Env_Avian_to_label_Env_Avian": {
+          "type": "one_to_one",
+          "from": "value_Env_Avian",
+          "to": "label_Env_Avian",
+          "example": {
+            "value_Env_Avian": 0.01,
+            "label_Env_Avian": "High Safety"
+          }
+        },
+        "value_Org_Skin_Sensitisation_to_label_Org_Skin_Sensitisation": {
+          "type": "one_to_one",
+          "from": "value_Org_Skin_Sensitisation",
+          "to": "label_Org_Skin_Sensitisation",
+          "example": {
+            "value_Org_Skin_Sensitisation": 0.46,
+            "label_Org_Skin_Sensitisation": "Low Safety"
+          }
+        },
+        "value_Org_hERG_I_Inhibitor_to_label_Org_hERG_I_Inhibitor": {
+          "type": "one_to_one",
+          "from": "value_Org_hERG_I_Inhibitor",
+          "to": "label_Org_hERG_I_Inhibitor",
+          "example": {
+            "value_Org_hERG_I_Inhibitor": 0.06,
+            "label_Org_hERG_I_Inhibitor": "High Safety"
+          }
+        },
+        "value_Org_hERG_II_Inhibitor_to_label_Org_hERG_II_Inhibitor": {
+          "type": "one_to_one",
+          "from": "value_Org_hERG_II_Inhibitor",
+          "to": "label_Org_hERG_II_Inhibitor",
+          "example": {
+            "value_Org_hERG_II_Inhibitor": 0.31,
+            "label_Org_hERG_II_Inhibitor": "Medium Safety"
+          }
+        },
+        "value_Org_Liver_Injury_I_to_label_Org_Liver_Injury_I": {
+          "type": "one_to_one",
+          "from": "value_Org_Liver_Injury_I",
+          "to": "label_Org_Liver_Injury_I",
+          "example": {
+            "value_Org_Liver_Injury_I": 0.01,
+            "label_Org_Liver_Injury_I": "High Safety"
+          }
+        },
+        "value_Org_Liver_Injury_II_to_label_Org_Liver_Injury_II": {
+          "type": "one_to_one",
+          "from": "value_Org_Liver_Injury_II",
+          "to": "label_Org_Liver_Injury_II",
+          "example": {
+            "value_Org_Liver_Injury_II": 0.38,
+            "label_Org_Liver_Injury_II": "Low Safety"
+          }
+        },
+        "value_Org_Eye_Irritation_to_label_Org_Eye_Irritation": {
+          "type": "one_to_one",
+          "from": "value_Org_Eye_Irritation",
+          "to": "label_Org_Eye_Irritation",
+          "example": {
+            "value_Org_Eye_Irritation": 0.96,
+            "label_Org_Eye_Irritation": "High Toxicity"
+          }
+        },
+        "value_Org_Eye_Corrosion_to_label_Org_Eye_Corrosion": {
+          "type": "one_to_one",
+          "from": "value_Org_Eye_Corrosion",
+          "to": "label_Org_Eye_Corrosion",
+          "example": {
+            "value_Org_Eye_Corrosion": 0.49,
+            "label_Org_Eye_Corrosion": "Low Safety"
+          }
+        },
+        "value_Org_Respiratory_Disease_to_label_Org_Respiratory_Disease": {
+          "type": "one_to_one",
+          "from": "value_Org_Respiratory_Disease",
+          "to": "label_Org_Respiratory_Disease",
+          "example": {
+            "value_Org_Respiratory_Disease": 0.3,
+            "label_Org_Respiratory_Disease": "Medium Safety"
+          }
+        }
+      },
+      "data_patterns": {}
+    },
+    "sample_data": {
+      "total_samples": 9,
+      "representative_samples": [
+        {
+          "type": "smallest",
+          "species": "Nannochloropsis gaditana",
+          "code": "ngd",
+          "ko_count": 865,
+          "kos_sample": [
+            "K25191",
+            "K19269",
+            "K18914",
+            "K24350",
+            "K18932",
+            "K24029",
+            "K21456",
+            "K19604",
+            "K08679",
+            "K08907"
+          ]
+        },
+        {
+          "type": "medium",
+          "species": "Enterobacter asburiae",
+          "code": "eau",
+          "ko_count": 2480,
+          "kos_sample": [
+            "K02014",
+            "K03187",
+            "K01429",
+            "K01430",
+            "K01644",
+            "K01460",
+            "K05964",
+            "K03762",
+            "K01185",
+            "K06903"
+          ]
+        },
+        {
+          "type": "largest",
+          "species": "Fusarium graminearum",
+          "code": "fgr",
+          "ko_count": 4459,
+          "kos_sample": [
+            "K11567",
+            "K06116",
+            "K08192",
+            "K01537",
+            "K12158",
+            "K06685",
+            "K11778",
+            "K03687",
+            "K11560",
+            "K17081"
+          ]
+        }
+      ],
+      "common_kos": [
+        {
+          "ko": "K08192",
+          "frequency": 129
+        },
+        {
+          "ko": "K01981",
+          "frequency": 62
+        },
+        {
+          "ko": "K00799",
+          "frequency": 54
+        },
+        {
+          "ko": "K16261",
+          "frequency": 47
+        },
+        {
+          "ko": "K02014",
+          "frequency": 43
+        },
+        {
+          "ko": "K05349",
+          "frequency": 39
+        },
+        {
+          "ko": "K14228",
+          "frequency": 36
+        },
+        {
+          "ko": "K14219",
+          "frequency": 33
+        },
+        {
+          "ko": "K01426",
+          "frequency": 31
+        },
+        {
+          "ko": "K14230",
+          "frequency": 30
+        },
+        {
+          "ko": "K08141",
+          "frequency": 30
+        },
+        {
+          "ko": "K00059",
+          "frequency": 28
+        },
+        {
+          "ko": "K08711",
+          "frequency": 28
+        },
+        {
+          "ko": "K14225",
+          "frequency": 27
+        },
+        {
+          "ko": "K02030",
+          "frequency": 27
+        },
+        {
+          "ko": "K14233",
+          "frequency": 26
+        },
+        {
+          "ko": "K00128",
+          "frequency": 25
+        },
+        {
+          "ko": "K14218",
+          "frequency": 24
+        },
+        {
+          "ko": "K03671",
+          "frequency": 23
+        },
+        {
+          "ko": "K01358",
+          "frequency": 22
+        }
+      ],
+      "unique_kos_sample": [
+        "K09483",
+        "K05819",
+        "K09961",
+        "K03308",
+        "K09960",
+        "K01708",
+        "K00795",
+        "K18137",
+        "K14159",
+        "K01596",
+        "K07098",
+        "K07276",
+        "K07386",
+        "K07154",
+        "K00823",
+        "K08984",
+        "K07017",
+        "K06904",
+        "K01590",
+        "K04045"
+      ]
+    }
+  },
+  "cross_database_samples": {
+    "common_kos": {
+      "all_three_databases": [
+        "K14578",
+        "K14580",
+        "K22357",
+        "K22356",
+        "K16249",
+        "K16246",
+        "K18252",
+        "K16269",
+        "K00448",
+        "K16243"
+      ],
+      "biorempp_and_kegg": [
+        "K14578",
+        "K14580",
+        "K22357",
+        "K22356",
+        "K16249",
+        "K15568",
+        "K16246",
+        "K13951",
+        "K15751",
+        "K18252"
+      ],
+      "counts": {
+        "all_three": 88,
+        "biorempp_and_kegg": 209
+      }
+    },
+    "linked_data_examples": [
+      {
+        "ko": "K14578",
+        "biorempp": {
+          "ko": "K14578",
+          "genesymbol": "nahAb",
+          "genename": "naphthalene 1,2-dioxygenase ferredoxin component",
+          "cpd": "C11006",
+          "compoundclass": "Nitrogen-containing",
+          "referenceAG": "EPA",
+          "compoundname": "2,4-Dinitrotoluene",
+          "enzyme_activity": "dioxygenase"
+        },
+        "kegg": {
+          "ko": "K14578",
+          "pathname": "Ethylbenzene",
+          "genesymbol": "nahAb"
+        },
+        "hadeg": {
+          "Gene": "doxA",
+          "ko": "K14578",
+          "Pathway": "C_Naphthalene_degradation",
+          "compound_pathway": "Aromatics"
+        }
+      },
+      {
+        "ko": "K14580",
+        "biorempp": {
+          "ko": "K14580",
+          "genesymbol": "nahAd",
+          "genename": "naphthalene 1,2-dioxygenase subunit beta ",
+          "cpd": "C11006",
+          "compoundclass": "Aromatic",
+          "referenceAG": "ATSDR",
+          "compoundname": "2,4-Dinitrotoluene",
+          "enzyme_activity": "dioxygenase"
+        },
+        "kegg": {
+          "ko": "K14580",
+          "pathname": "Naphthalene",
+          "genesymbol": "nahAd"
+        },
+        "hadeg": {
+          "Gene": "bedC2",
+          "ko": "K14580",
+          "Pathway": "C_Benzene_degradation",
+          "compound_pathway": "Aromatics"
+        }
+      },
+      {
+        "ko": "K22357",
+        "biorempp": {
+          "ko": "K22357",
+          "genesymbol": "amoA",
+          "genename": "alkene monooxygenase alpha subunit ",
+          "cpd": "C19237",
+          "compoundclass": "Aliphatic",
+          "referenceAG": "IARC2B",
+          "compoundname": "1,2-Epoxybutane",
+          "enzyme_activity": "monooxygenase"
+        },
+        "kegg": {
+          "ko": "K22357",
+          "pathname": "Cl. alkane and Cl.alkene",
+          "genesymbol": "amoA"
+        },
+        "hadeg": {
+          "Gene": "xamoA",
+          "ko": "K22357",
+          "Pathway": "B_Propene_degradation",
+          "compound_pathway": "Alkenes"
+        }
+      }
+    ]
+  },
+  "fixture_templates": {
+    "domain_fixtures": {
+      "valid_kos": [
+        "K00001",
+        "K00002",
+        "K00003",
+        "K00004",
+        "K00005"
+      ],
+      "invalid_kos": [
+        "",
+        "K0001",
+        "K000001",
+        "00001",
+        "KXXXXX",
+        null
+      ],
+      "valid_sample_ids": [
+        "Sample1",
+        "Sample2",
+        "Genome_ABC"
+      ],
+      "invalid_sample_ids": [
+        "",
+        "  ",
+        null
+      ]
+    },
+    "csv_test_data": {
+      "minimal_csv": {
+        "columns": [
+          "ko",
+          "gene",
+          "pathway"
+        ],
+        "rows": [
+          {
+            "ko": "K00001",
+            "gene": "geneA",
+            "pathway": "path1"
+          },
+          {
+            "ko": "K00002",
+            "gene": "geneB",
+            "pathway": "path1"
+          }
+        ]
+      },
+      "with_nulls": {
+        "note": "Test handling of NULL values",
+        "columns": [
+          "ko",
+          "gene",
+          "description"
+        ],
+        "rows": [
+          {
+            "ko": "K00001",
+            "gene": "geneA",
+            "description": null
+          },
+          {
+            "ko": "K00002",
+            "gene": null,
+            "description": "desc2"
+          }
+        ]
+      }
+    },
+    "dataframe_samples": {
+      "small_10_rows": "10 rows for basic tests",
+      "medium_100_rows": "100 rows for performance tests",
+      "large_10000_rows": "10000 rows for compression tests"
+    }
+  }
+}

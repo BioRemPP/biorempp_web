@@ -1,0 +1,248 @@
+# ============================================================================
+# UC-1.3: Proportional Contribution of Regulatory References
+# ============================================================================
+# Description: 100% stacked bar chart showing proportional KO contribution
+# Module: module1
+# Plot Type: Stacked Bar Chart
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-1.3"
+  module: "module1"
+  title: "Proportional Contribution of Regulatory References"
+  description: >
+    100% stacked bar chart showing the relative contribution of each
+    regulatory agency's associated functional potential to total unique
+    KO diversity. Visualizes which agencies cover the most functionally
+    diverse chemical spaces.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-30"
+  tags:
+    - "proportional_contribution"
+    - "stacked_bar"
+    - "ko_diversity"
+    - "regulatory_agencies"
+  plot_type: "stacked_bar"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Comparative assessment of regulatory frameworks' functional breadth"
+    interpretation: "Quantifies relative functional diversity contribution per regulatory agency"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "referenceAG"
+    - "ko"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter_complete"
+        enabled: true
+        description: "Filter to retain only records with non-empty referenceAG and ko"
+      
+      - name: "normalize_identifiers"
+        enabled: true
+        params:
+          strip_whitespace: true
+          convert_uppercase: true
+          remove_empty: true
+        description: "Normalize KO identifiers and agency names"
+      
+      - name: "aggregate_by_agency"
+        enabled: true
+        params:
+          group_by: "referenceAG"
+          value_column: "ko"
+          aggregation: "nunique"
+        description: "Count unique KOs per regulatory agency"
+      
+      - name: "normalize_percentages"
+        enabled: true
+        description: "Normalize counts to percentages for 100% stacked bar"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "StackedBarChartStrategy"
+  
+  plotly:
+    # Strategy-specific parameters
+    category_column: "referenceAG"
+    value_column: "ko"
+    aggregation_function: "nunique"
+    constant_x_label: "Total Unique KOs"
+    
+    # Chart configuration
+    chart:
+      # Title configuration
+      title:
+        text: "Proportional Contribution of Reference Agencies to Unique KO Diversity"
+        font:
+          size: 16
+          family: "Arial"
+          color: "#2c3e50"
+        x: 0.5
+        xanchor: "center"
+      
+      # Axis configuration
+      xaxis:
+        title: null
+        showticklabels: false
+        title_font:
+          size: 14
+      
+      yaxis:
+        title: "Percentage of Unique KOs"
+        ticksuffix: "%"
+        title_font:
+          size: 14
+      
+      # Legend configuration
+      legend:
+        title: "Reference AG"
+        orientation: "v"
+        yanchor: "top"
+        y: 0.98
+        xanchor: "left"
+        x: 1.02
+        font:
+          size: 10
+      
+      # Color scheme
+      color_discrete_sequence: "Set3"
+      
+      # Hover template
+      hovertemplate: >
+        Reference AG=%{customdata[0]}<br>
+        Unique KOs=%{y}<br>
+        Share=%{customdata[1]}<extra></extra>
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true
+      margin:
+        l: 60
+        r: 280
+        t: 90
+        b: 60
+      showlegend: true
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-1-3-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render stacked bar chart when accordion opens"
+  
+  outputs:
+    - component_id: "uc-1-3-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Stacked bar chart visualization"
+  
+  states: []
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["referenceAG", "ko"]
+      message: "Data must contain 'referenceAG' and 'ko' columns for proportional analysis"
+    
+    - rule: "minimum_agencies"
+      min_count: 1
+      message: "At least 1 regulatory agency required for proportional analysis"
+    
+    - rule: "no_nulls"
+      columns: ["referenceAG", "ko"]
+      message: "Null values not allowed in 'referenceAG' or 'ko' columns"
+    
+    - rule: "minimum_data"
+      min_rows: 1
+      message: "Insufficient data to generate visualization"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_1_3_df_{data_hash}"
+        description: "Cache aggregated KO counts per agency"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_1_3_stacked_{data_hash}_{filters_hash}"
+        description: "Cache generated stacked bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Stacked bar chart requires 'referenceAG' and 'ko' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No KO data found in BioRemPP results."
+    
+    insufficient_agencies:
+      action: "display_message"
+      message: "At least 1 regulatory agency required for proportional analysis. Found: {count}"
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"

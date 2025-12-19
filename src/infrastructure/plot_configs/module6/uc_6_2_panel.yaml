@@ -1,0 +1,75 @@
+# UC-6.2: Biological Interaction Flow
+# Panel Configuration (YAML)
+
+use_case_id: "uc-6-2"
+
+scientific_question: >
+  How is the functional potential of each microbial sample distributed across
+  different chemical classes, and which enzymatic activities are predominantly
+  employed for each?
+
+description: >
+  This alluvial diagram visualizes the biological flow of interactions across
+  three distinct stages: from the source sample, through the chemical class it
+  targets, to the specific enzymatic function used. The width of the flows
+  represents the number of observed interactions, providing a quantitative map
+  of the dominant metabolic strategies for each organism.
+
+visual_elements:
+  - label: "Stages (Vertical Columns)"
+    description: >
+      The three vertical columns represent the hierarchical flow of biological
+      interactions: Sample, Compound Class, and Enzyme Activity. Each column
+      represents a distinct level in the metabolic process.
+
+  - label: "Nodes"
+    description: >
+      Each node represents a unique entity at its respective stage. From left
+      to right: microbial samples, chemical compound classes, and enzymatic
+      activities. Node size reflects the total flow passing through it.
+
+  - label: "Flows (Ribbons)"
+    description: >
+      The ribbons connecting nodes represent the flow of interactions between
+      stages. Each flow traces a pathway from a sample through the compound
+      class it targets to the enzymatic function employed.
+
+  - label: "Flow Thickness"
+    description: >
+      The thickness of a flow is proportional to the number of interactions
+      it represents. Thicker flows indicate more dominant or frequently
+      observed metabolic pathways in the dataset.
+
+  - label: "Interactivity"
+    description: >
+      Hover over nodes and flows to see their names and values. Nodes can
+      be dragged vertically to improve readability and explore specific
+      pathways of interest.
+
+interpretation_guidelines:
+  - >
+    Dominant Metabolic Strategies: The thickest flows can help identify the primary
+    metabolic strategies employed by the biological community, showing which
+    compound classes are most frequently targeted by which enzyme activities.
+
+  - >
+    Sample Specialization: A sample with a few thick, dominant flows can be
+    considered a "specialist." An organism whose flow branches out to many
+    different classes and activities is a functional "generalist."
+
+  - >
+    Enzyme Versatility: An enzyme activity node that receives flows from
+    many different compound classes can be interpreted as a versatile or
+    broadly applicable function within the consortium.
+
+  - >
+    Chemical Class Coverage: Identify which compound classes receive the
+    most attention from the consortium and which may represent gaps in
+    the bioremediation potential.
+
+  - >
+    Consortium Optimization: Use this visualization to identify redundant
+    capabilities or gaps that could inform the design of optimized
+    microbial consortia for specific bioremediation targets.
+
+color_scheme: "success"

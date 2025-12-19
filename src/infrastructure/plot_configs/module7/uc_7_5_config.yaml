@@ -1,0 +1,321 @@
+# ============================================================================
+# UC-7.5: Interactive Distribution of Toxicity Scores by Endpoint Category
+# ============================================================================
+# Description: Density plot showing toxicity score distributions by endpoint within super-categories
+# Module: module7
+# Plot Type: Density Plot (KDE - Kernel Density Estimation)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-7.5"
+  module: "module7"
+  title: "Interactive Distribution of Toxicity Scores by Endpoint Category"
+  description: >
+    Visualizes probability distributions of predicted toxicity scores across
+    specific endpoints within broad toxicological domains using overlaid
+    density curves (KDE). Enables comparison of risk profiles and identification
+    of endpoints with highest median toxicity or greatest variability within
+    selected super-categories (Nuclear Response, Stress Response, Genomic,
+    Environmental, Organ-specific).
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-02"
+  tags:
+    - "density_plot"
+    - "kde"
+    - "toxicity_distribution"
+    - "risk_profiling"
+    - "toxcsm"
+  plot_type: "density_plot"
+  scientific_context:
+    domain: "Toxicological Risk Profiling and Endpoint Analysis"
+    application: "Comparing toxicity score distributions across endpoints within toxicological domains"
+    interpretation: "Overlaid density curves reveal median risk levels, distribution shapes, and variability patterns across related endpoints"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "toxcsm-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "super_category"
+    - "endpoint"
+    - "toxicity_score"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "DensityPlotStrategy"
+  
+  plotly:
+    # Data mapping
+    value_column: "toxicity_score"
+    group_column: "endpoint"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: ""  # Set dynamically in callback
+        x: 0.5
+      
+      # Density plot styling
+      show_hist: false       # Hide histogram bars (clean KDE only)
+      show_rug: false        # Hide rug plot (data point ticks)
+      fill: "tozeroy"        # Fill area under curve to y=0
+      opacity: 0.5           # Semi-transparent for overlapping curves
+    
+    # Layout configuration
+    layout:
+      height: 800
+      autosize: true
+      template: "simple_white"
+      
+      # X-axis: Toxicity scores
+      xaxis:
+        title: "Predicted Toxicity Score (0-1)"
+        gridcolor: "lightgray"
+        showgrid: true
+      
+      # Y-axis: Probability density
+      yaxis:
+        title: "Probability Density"
+        gridcolor: "lightgray"
+        showgrid: true
+      
+      # Legend: Horizontal below chart
+      legend:
+        orientation: "h"     # Horizontal layout
+        yanchor: "bottom"    # Anchor to bottom
+        y: 0                 # Position at y=0 (below chart)
+        xanchor: "center"    # Center horizontally
+        x: 0.5               # Center position
+        title_text: "Toxicological Endpoint"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-7-5-category-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render density plot when super-category selected"
+  
+  outputs:
+    - component_id: "uc-7-5-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Density plot with overlaid KDE curves"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-7-5-category-dropdown"
+      type: "dropdown"
+      label: "Select Toxicity Super-Category"
+      options_source: "dynamic"
+      description: "Filter endpoints by super-category"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["super_category", "endpoint", "toxicity_score"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_groups"
+      min_count: 1
+      message: "At least 1 endpoint required for density plot"
+    
+    - rule: "minimum_points_per_group"
+      min_count: 2
+      message: "Each endpoint needs at least 2 data points for KDE"
+    
+    - rule: "toxcsm_data_required"
+      message: "This use case requires ToxCSM database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_7_5_df_{data_hash}_{filters_hash}"
+        description: "Cache filtered data by super-category"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_7_5_density_{data_hash}_{filters_hash}"
+        description: "Cache generated density plot"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Density plot requires 'super_category', 'endpoint', and 'toxicity_score' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No toxicity data available. Please check ToxCSM dataset."
+    
+    insufficient_data:
+      action: "display_message"
+      message: "Each endpoint needs at least 2 data points for KDE. Found: {count}"
+    
+    toxcsm_data_missing:
+      action: "display_message"
+      message: "ToxCSM database data not found. This use case requires ToxCSM data."
+  
+  processing_errors:
+    kde_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to compute density curves: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render density plot: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - value_column: "toxicity_score" (numeric column for KDE)
+# - group_column: "endpoint" (categorical grouping)
+# - chart.title.show: true/false (toggle title)
+# - chart.title.text: Title text (set dynamically in callback)
+# - chart.title.x: Title position (0-1)
+# - chart.show_hist: true/false (show/hide histogram bars)
+# - chart.show_rug: true/false (show/hide rug plot)
+# - chart.fill: "tozeroy", "tonexty", etc. (fill style)
+# - chart.opacity: 0-1 (curve transparency)
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.xaxis.title: X-axis label
+# - layout.yaxis.title: Y-axis label
+# - layout.legend.orientation: "h" (horizontal), "v" (vertical)
+# - layout.legend.title_text: Legend title
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_7_5_callbacks.py):
+# 1. Extract ToxCSM DataFrame from merged-result-store
+# 2. Data is ALREADY PRE-PROCESSED with columns:
+#    - compoundname: lowercase
+#    - endpoint: e.g., 'NR_AR', 'Gen_Ames'
+#    - toxicity_score: numeric (0-1)
+#    - prefix: e.g., 'NR', 'Gen'
+#    - super_category: e.g., 'Nuclear Response', 'Genomic'
+# 3. Filter by selected super-category from dropdown
+# 4. Pass filtered data to PlotService
+# 5. Title updated dynamically with selected category
+#
+# STRATEGY (DensityPlotStrategy):
+# 1. Receives data with ['endpoint', 'toxicity_score']
+# 2. Groups data by endpoint
+# 3. Filters groups with <2 data points
+# 4. Creates KDE curves using ff.create_distplot()
+# 5. Applies fill and opacity
+# 6. Configures layout (axes, legend, template)
+# 7. Returns Plotly figure
+#
+# Database Support:
+# - ToxCSM: ✅ Contains toxicity prediction columns (value_*)
+# - BioRemPP: ❌ Does NOT contain toxicity scores
+# - HADEG: ❌ Does NOT contain toxicity data
+# - KEGG: ❌ Does NOT contain toxicity data
+#
+# Super-Categories (from endpoint prefixes):
+# - NR (value_NR_*) → Nuclear Response
+# - SR (value_SR_*) → Stress Response
+# - Gen (value_Gen_*) → Genomic
+# - Env (value_Env_*) → Environmental
+# - Org (value_Org_*) → Organ-specific
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open (active_item trigger)
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Visualization Details:
+# - Plot type: Overlaid density curves (KDE)
+# - X-axis: Toxicity Score (0-1)
+# - Y-axis: Probability Density
+# - Curves: One per endpoint within selected super-category
+# - Fill: Semi-transparent area under curve
+# - Legend: Horizontal below chart
+# - Hover: Endpoint name and density value
+# - Interpretation:
+#   * Peak position: Median toxicity score
+#   * Peak height: Concentration of scores
+#   * Curve width: Variability/spread
+#   * Multiple peaks: Bimodal distribution
+#
+# KDE (Kernel Density Estimation):
+# - Smooth probability distribution estimate
+# - Bandwidth automatically selected
+# - No histogram or rug plot (clean visualization)
+# - Semi-transparent fill allows comparison of overlapping curves
+#
+# Scientific Interpretation:
+# - High peak at high scores: Endpoint predicts high toxicity
+# - Wide distribution: High variability in predictions
+# - Narrow distribution: Consistent predictions
+# - Multiple peaks: Distinct compound subgroups
+# - Use for: Identifying high-risk endpoints, comparing endpoint sensitivity
+#
+# Column Mapping (Pre-processed):
+# - super_category: Created from endpoint prefix
+# - endpoint: Original ToxCSM endpoint name
+# - toxicity_score: Predicted toxicity (0-1)
+#
+# Example Super-Category Filtering:
+# - Select "Genomic" → Shows endpoints: Gen_Ames, Gen_Micronucleus, etc.
+# - Select "Nuclear Response" → Shows endpoints: NR_AR, NR_ER, NR_Aromatase, etc.
+# - Each endpoint gets its own KDE curve

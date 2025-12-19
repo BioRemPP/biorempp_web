@@ -1,0 +1,58 @@
+# UC-4.4: Interactive Functional Fingerprint of Samples by Pathway (KEGG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-4"
+
+scientific_question: >
+  What is the specific functional fingerprint of each biological sample, as
+  defined by the distribution and richness of its annotated metabolic pathways?
+
+description: >
+  This interactive visualization allows for the detailed functional profiling
+  of individual samples. By selecting a sample from the dropdown menu, the
+  radar chart dynamically updates to display its "functional fingerprint"—the
+  richness of each metabolic pathway it possesses, measured by the count of
+  unique KEGG Orthology (KO) identifiers.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Sample to analyze. The plot will update
+      automatically.
+
+  - label: "Axes (theta)"
+    description: >
+      Each axis radiating from the center represents an individual Metabolic
+      Pathway.
+
+  - label: "Value (r)"
+    description: >
+      The distance of a point from the center along a pathway's axis indicates
+      the count of unique KOs that the selected sample possesses for that
+      pathway.
+
+  - label: "Shape"
+    description: >
+      The blue shape connecting the points represents the sample's overall
+      "functional fingerprint," showing its strengths across different
+      metabolic functions.
+
+interpretation_guidelines:
+  - >
+    Functional Specialization: The shape of the radar plot can help
+    identify a sample's functional specializations. A shape that is heavily
+    skewed towards a particular set of related pathways (e.g., several for
+    hydrocarbon biotransformation) may indicate a strong specialization in that area.
+
+  - >
+    Metabolic Breadth: A more balanced, circular shape may suggest a functional
+    "generalist" with a broad and evenly distributed metabolic potential
+    across many different types of pathways.
+
+  - >
+    Comparative Profiling: By switching between samples in the dropdown, one
+    can directly compare their functional fingerprints, quickly identifying
+    key differences in their metabolic strategies and potential ecological
+    niches.
+
+color_scheme: "success"

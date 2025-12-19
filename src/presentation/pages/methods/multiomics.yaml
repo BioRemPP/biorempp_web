@@ -1,0 +1,497 @@
+metadata:
+  title: "Multi-omics Integration & Interoperability"
+  description: "BioRemPP's multi-omics integration capabilities, current features, future expansions, and interoperability with external multi-omics tools and pipelines"
+  version: "1.0"
+  icon: "fa-layer-group"
+
+# ============================================================================
+# SECTION 1: BIOREMPP MULTI-OMICS FRAMEWORK
+# Current implementation and planned expansions
+# ============================================================================
+
+biorempp_framework:
+  title: "BioRemPP Multi-omics Framework"
+  subtitle: "Current Features & Future Expansions"
+  description: >
+    Although BioRemPP is primarily based on genomic data analysis, it is inherently
+    interoperable with other multi-omics technologies through the standardized identifiers
+    used in its integrated databases (KEGG KO, KEGG Compound, ChEBI, SMILES, Gene Symbols).
+  
+  core_identifiers:
+    title: "Core Interoperable Identifiers"
+    description: "Standardized identifiers enabling cross-platform integration"
+    identifiers:
+      - id: "ko"
+        label: "KEGG Orthology (KO)"
+        description: "K-numbers for functional gene annotation"
+        example: "K00001"
+        databases: ["BioRemPP_Results", "HADEG", "KEGG"]
+      
+      - id: "cpd"
+        label: "KEGG Compound"
+        description: "C-numbers for chemical compounds"
+        example: "C00001"
+        databases: ["BioRemPP_Results", "KEGG", "ToxCSM"]
+      
+      - id: "chebi"
+        label: "ChEBI ID"
+        description: "Chemical Entities of Biological Interest"
+        example: "CHEBI:15377"
+        databases: ["ToxCSM"]
+      
+      - id: "smiles"
+        label: "SMILES"
+        description: "Simplified Molecular Input Line Entry System"
+        example: "CC(=O)O"
+        databases: ["ToxCSM"]
+      
+      - id: "genesymbol"
+        label: "Gene Symbol"
+        description: "Standard gene nomenclature"
+        example: "alkB"
+        databases: ["KEGG", "BioRemPP_Results"]
+
+  omics_layers:
+    genomics:
+      label: "Genomics"
+      icon: "fa-dna"
+      color: "primary"
+      status: "implemented"
+      description: "DNA sequences, gene content, and genetic potential"
+      biorempp_data:
+        - "Genome assemblies"
+        - "Gene predictions"
+        - "KEGG Orthology annotations"
+        - "Pathway completeness"
+      analysis_modules: ["Module 2", "Module 3", "Module 4"]
+      key_identifiers: ["ko", "genesymbol"]
+    
+    metagenomics:
+      label: "Metagenomics"
+      icon: "fa-bacteria"
+      color: "success"
+      status: "implemented"
+      description: "Community-level genetic composition and functional potential"
+      biorempp_data:
+        - "Metagenomic assemblies"
+        - "Taxonomic profiles"
+        - "Functional gene abundance"
+        - "KO richness metrics"
+      analysis_modules: ["Module 1", "Module 2", "Module 5", "Module 8"]
+      key_identifiers: ["ko", "cpd"]
+    
+    transcriptomics:
+      label: "Transcriptomics"
+      icon: "fa-stream"
+      color: "info"
+      status: "planned"
+      description: "Gene expression patterns under environmental conditions"
+      biorempp_data:
+        - "RNA-seq data"
+        - "Differential expression"
+        - "Pathway activation"
+      analysis_modules: ["Module 6", "Module 7"]
+      future_integration: true
+      key_identifiers: ["ko", "genesymbol", "cpd"]
+    
+    proteomics:
+      label: "Proteomics"
+      icon: "fa-cubes"
+      color: "warning"
+      status: "planned"
+      description: "Protein abundance and post-translational modifications"
+      biorempp_data:
+        - "Protein identifications"
+        - "Enzyme activities"
+        - "Functional guilds"
+      analysis_modules: ["Module 4", "Module 5"]
+      future_integration: true
+      key_identifiers: ["ko", "genesymbol"]
+    
+    metabolomics:
+      label: "Metabolomics"
+      icon: "fa-flask-vial"
+      color: "danger"
+      status: "planned"
+      description: "Small molecule profiles and metabolic intermediates"
+      biorempp_data:
+        - "Compound identifications"
+        - "Degradation intermediates"
+        - "Toxicity assessments"
+      analysis_modules: ["Module 5", "Module 7"]
+      future_integration: true
+      key_identifiers: ["cpd", "chebi", "smiles"]
+
+  integration_strategies:
+    title: "Integration Strategies"
+    description: "Computational approaches for combining multi-omics data"
+    
+    strategies:
+      id_mapping:
+        label: "Cross-database ID Mapping"
+        icon: "fa-link"
+        description: "Convert between different identifier systems to enable data integration"
+        implementations:
+          - "KEGG KO ↔ UniProt ID ↔ Gene names"
+          - "KEGG Compound ↔ PubChem CID ↔ ChEBI ID ↔ SMILES"
+          - "Pathway IDs across KEGG, MetaCyc, and HADEG"
+        biorempp_example: "Map genes from BioRemPP_Results to KEGG pathways and link to degradable compounds in ToxCSM"
+      
+      functional_annotation:
+        label: "Functional Annotation Integration"
+        icon: "fa-tags"
+        description: "Combine annotations from multiple sources for comprehensive functional profiles"
+        implementations:
+          - "KEGG Orthology + HADEG genes + custom annotations"
+          - "Pathway completeness across multiple databases"
+          - "Enzyme commission numbers + substrate specificities"
+        biorempp_example: "Integrate KEGG pathway annotations with HADEG hydrocarbon degradation genes to identify specialized degradation capabilities"
+      
+      network_integration:
+        label: "Network-based Integration"
+        icon: "fa-project-diagram"
+        description: "Build multi-layer networks connecting genes, pathways, and compounds"
+        implementations:
+          - "Gene-pathway-compound networks"
+          - "Sample-KO co-occurrence networks"
+          - "Functional guild clustering"
+        biorempp_example: "Module 5 (UC-5.1 to UC-5.7) builds bipartite and chord networks connecting samples to compounds via shared KOs"
+      
+      statistical_integration:
+        label: "Statistical Integration"
+        icon: "fa-chart-line"
+        description: "Use multivariate methods to integrate omics layers"
+        implementations:
+          - "Multi-block PCA/PLS"
+          - "Canonical correlation analysis"
+          - "Joint dimensionality reduction"
+        biorempp_example: "Module 3 (UC-3.1, UC-3.2) uses PCA to reduce dimensionality of KO abundance matrices for sample clustering"
+
+  biorempp_roadmap:
+    title: "BioRemPP Integration Roadmap"
+    description: "Current and planned multi-omics integration features"
+    
+    current_features:
+      - feature: "Genomics + Pathway Integration"
+        status: "Implemented"
+        modules: ["Module 1", "Module 2", "Module 3", "Module 4"]
+        description: "Integration of gene annotations with KEGG pathways and compound mappings"
+      
+      - feature: "Metagenomics + Compound Mapping"
+        status: "Implemented"
+        modules: ["Module 5", "Module 8"]
+        description: "Linking metagenomic KO profiles to degradable compound spectra"
+      
+      - feature: "Multi-database Cross-referencing"
+        status: "Implemented"
+        modules: ["All modules"]
+        description: "KEGG, HADEG, ToxCSM integration via shared identifiers"
+    
+    planned_features:
+      - feature: "Transcriptomics Integration"
+        status: "Planned"
+        priority: "High"
+        description: "Incorporate gene expression data to validate pathway activity predictions"
+        target_modules: ["Module 6", "Module 7"]
+      
+      - feature: "Proteomics Integration"
+        status: "Planned"
+        priority: "Medium"
+        description: "Add protein abundance data to confirm enzyme availability"
+        target_modules: ["Module 4", "Module 5"]
+      
+      - feature: "Metabolomics Integration"
+        status: "Planned"
+        priority: "High"
+        description: "Link predicted degradation pathways to measured metabolite profiles"
+        target_modules: ["Module 5", "Module 7"]
+      
+      - feature: "Multi-omics Statistical Integration"
+        status: "Planned"
+        priority: "Medium"
+        description: "Implement multi-block PCA/PLS for joint analysis of omics layers"
+        target_modules: ["Module 3", "Module 8"]
+
+# ============================================================================
+# SECTION 2: INTEROPERABILITY WITH EXTERNAL MULTI-OMICS TOOLS
+# Tools, pipelines, and frameworks that generate interoperable outputs
+# ============================================================================
+
+interoperability_catalog:
+  title: "Interoperability with Multi-omics Technologies"
+  subtitle: "External Tools & Pipelines with Compatible Identifiers"
+  description: >
+    BioRemPP's use of standardized identifiers (KEGG KO, KEGG Compound, ChEBI, SMILES, Gene Symbols)
+    enables seamless integration with outputs from major multi-omics analysis tools and pipelines.
+    This catalog documents external resources whose outputs can be directly integrated with BioRemPP databases.
+  
+  version: "1.0.0"
+  generated_at: "2025-12-07"
+
+  # GENOMICS & METAGENOMICS TOOLS
+  genomics_metagenomics:
+    title: "Genomics & Metagenomics"
+    icon: "fa-dna"
+    color: "primary"
+    description: "Tools for genome and metagenome functional annotation"
+    
+    tools:
+      - id: "humann3"
+        name: "HUMAnN 3 (bioBakery 3)"
+        omics_layers: ["metagenomics", "metatranscriptomics"]
+        description: "Functional profiling of metagenomes producing KO and pathway abundance tables"
+        interoperable_ids:
+          ko: "Native KO output joins directly with BioRemPP.ko and HADEG.ko"
+          cpd: "Indirect via KEGG/MetaCyc pathway-compound mappings"
+          genesymbol: "Via UniRef to gene symbol mapping"
+        integration_example: "Compare HUMAnN KO abundance with BioRemPP/HADEG catalogs to assess bioremediation potential"
+        reference:
+          title: "Integrating taxonomic, functional, and strain-level profiling of diverse microbial communities with bioBakery 3"
+          authors: "Beghini F. et al."
+          journal: "eLife"
+          year: 2021
+          doi: "https://doi.org/10.7554/eLife.65088"
+      
+      - id: "dram"
+        name: "DRAM (Distilled and Refined Annotation of Metabolism)"
+        omics_layers: ["genomics", "metagenomics", "MAGs"]
+        description: "Metabolic annotation for genomes and MAGs with KOfam/KEGG assignments"
+        interoperable_ids:
+          ko: "Native KOfam/KEGG KO directly joins with BioRemPP.ko"
+          cpd: "Indirect via KEGG module compound definitions"
+          genesymbol: "Retained from input annotations"
+        integration_example: "Rank genomes/MAGs by bioremediation potential using DRAM KO matrices + BioRemPP KO tables"
+        reference:
+          title: "DRAM for distilling microbial metabolism to automate the curation of microbiome functions"
+          authors: "Shaffer M. et al."
+          journal: "Nucleic Acids Research"
+          year: 2020
+          doi: "https://doi.org/10.1093/nar/gkaa621"
+      
+      - id: "anvio"
+        name: "anvi'o multi-omics platform"
+        omics_layers: ["genomics", "metagenomics", "metatranscriptomics", "pangenomics"]
+        description: "Comprehensive platform with KEGG module completeness and coverage profiles"
+        interoperable_ids:
+          ko: "Native KOfam/KEGG joins with BioRemPP.ko and HADEG.ko"
+          cpd: "Indirect via KEGG pathway/module definitions"
+          genesymbol: "Importable from external annotations"
+        integration_example: "Overlay anvi'o KEGG module completeness with BioRemPP compound-centric KOs and ToxCSM toxicity"
+        reference:
+          title: "Anvi'o: an advanced analysis and visualization platform for 'omics data"
+          authors: "Eren A.M. et al."
+          journal: "PeerJ"
+          year: 2015
+          doi: "https://doi.org/10.7717/peerj.1319"
+      
+      - id: "eggnog_mapper"
+        name: "eggNOG-mapper v2"
+        omics_layers: ["genomics", "metagenomics", "transcriptomics"]
+        description: "Fast functional annotation with KO, GO, and pathway links"
+        interoperable_ids:
+          ko: "Native KO annotations ingest directly into BioRemPP.ko/HADEG.ko"
+          cpd: "Indirect via KEGG pathway/reaction links"
+          genesymbol: "Inherited from input sequences"
+        integration_example: "Annotate novel genomes with eggNOG-mapper, then integrate KO outputs into BioRemPP workflows"
+        reference:
+          title: "eggNOG-mapper v2: Functional Annotation, Orthology Assignments, and Domain Prediction at the Metagenomic Scale"
+          authors: "Cantalapiedra C.P. et al."
+          journal: "Molecular Biology and Evolution"
+          year: 2021
+          doi: "https://doi.org/10.1093/molbev/msab293"
+      
+      - id: "mgrast"
+        name: "MG-RAST metagenomics server"
+        omics_layers: ["metagenomics"]
+        description: "Web-based platform with KEGG-based functional profiles"
+        interoperable_ids:
+          ko: "KO functional profiles directly joinable with BioRemPP.ko"
+          cpd: "Indirect via KEGG functional hierarchy"
+        integration_example: "Quick screening of bioremediation potential using MG-RAST KO abundance tables"
+        reference:
+          title: "The MG-RAST metagenomics database and portal in 2016"
+          authors: "Meyer F. et al."
+          journal: "Nucleic Acids Research"
+          year: 2016
+          doi: "https://doi.org/10.1093/nar/gkv1322"
+
+  # TRANSCRIPTOMICS TOOLS
+  transcriptomics:
+    title: "Transcriptomics"
+    icon: "fa-stream"
+    color: "info"
+    description: "RNA-seq workflows producing KO-annotated expression data"
+    
+    tools:
+      - id: "rnaseq_kegg_workflow"
+        name: "RNA-seq → KEGG KO workflow"
+        description: "Generic workflow: STAR/Salmon + eggNOG-mapper/KAAS + KEGG Mapper"
+        omics_layers: ["transcriptomics", "metatranscriptomics"]
+        interoperable_ids:
+          ko: "Assigned via eggNOG-mapper or KAAS, directly comparable with BioRemPP/HADEG KOs"
+          cpd: "Reachable via KEGG pathway definitions"
+          genesymbol: "Native, connects to BioRemPP.genesymbol and KEGG.genesymbol"
+        integration_example: "Overlay KO-level expression with BioRemPP KO-based potential to detect active vs. latent functions"
+        reference:
+          title: "KEGG Mapper and KEGG Orthology annotation tools (KAAS, BlastKOALA)"
+          url: "https://www.genome.jp/kegg/mapper/"
+
+  # METABOLOMICS TOOLS
+  metabolomics:
+    title: "Metabolomics"
+    icon: "fa-flask-vial"
+    color: "danger"
+    description: "Metabolite profiling and pathway enrichment platforms"
+    
+    tools:
+      - id: "metaboanalyst"
+        name: "MetaboAnalyst 5.0"
+        omics_layers: ["metabolomics", "multiomics_integration"]
+        description: "Web platform for metabolomics with KEGG pathway enrichment and multi-omics modules"
+        interoperable_ids:
+          ko: "Indirect via pathway-level KEGG mappings (metabolites ↔ reactions ↔ KOs)"
+          cpd: "Native KEGG Compound ID support, joinable with BioRemPP.cpd and ToxCSM.cpd"
+          chebi: "Supported for compound ID conversion, interoperable with ToxCSM.ChEBI"
+          smiles: "Via external mapping (InChIKey/SMILES to KEGG CPD)"
+        integration_example: "Import BioRemPP/ToxCSM compounds to run pathway enrichment for case studies"
+        reference:
+          title: "MetaboAnalyst 5.0: narrowing the gap between raw spectra and functional insights"
+          authors: "Pang Z. et al."
+          journal: "Nucleic Acids Research"
+          year: 2021
+          doi: "https://doi.org/10.1093/nar/gkab382"
+      
+      - id: "mbrole"
+        name: "MBROLE 2.0"
+        omics_layers: ["metabolomics"]
+        description: "Metabolite set enrichment using KEGG and ChEBI"
+        interoperable_ids:
+          ko: "Indirect via KEGG pathway context"
+          cpd: "Native KEGG Compound IDs link to BioRemPP.cpd"
+          chebi: "Native ChEBI IDs link to ToxCSM.ChEBI"
+          smiles: "External mapping from SMILES to KEGG/ChEBI"
+        integration_example: "Enrich BioRemPP/ToxCSM compound subsets (e.g., high-toxicity) to identify overrepresented pathways"
+        reference:
+          title: "MBROLE 2.0—enrichment analysis of metabolomic data"
+          authors: "López-Ibáñez J. et al."
+          journal: "Nucleic Acids Research"
+          year: 2016
+          doi: "https://doi.org/10.1093/nar/gkw253"
+
+  # PROTEOMICS TOOLS
+  proteomics:
+    title: "Proteomics"
+    icon: "fa-cubes"
+    color: "warning"
+    description: "Mass spectrometry-based protein quantification"
+    
+    tools:
+      - id: "openms"
+        name: "OpenMS"
+        omics_layers: ["proteomics", "metabolomics"]
+        description: "Open-source MS platform for proteomics and metabolomics"
+        interoperable_ids:
+          ko: "Via external mapping from UniProt/gene IDs to KEGG KO"
+          cpd: "Via external mapping of metabolite features to KEGG CPD"
+          genesymbol: "Via protein ID to gene symbol mapping, joinable with BioRemPP.genesymbol"
+          smiles: "Via downstream annotation tools for metabolite features"
+        integration_example: "Quantify proteins with OpenMS, map to KOs, integrate with BioRemPP KO layers"
+        reference:
+          title: "OpenMS: a flexible open-source software platform for mass spectrometry data analysis"
+          authors: "Röst H.L. et al."
+          journal: "Nature Methods"
+          year: 2016
+          doi: "https://doi.org/10.1038/nmeth.3959"
+
+  # INTEGRATIVE MULTI-OMICS FRAMEWORKS
+  integrative_frameworks:
+    title: "Integrative Multi-omics Frameworks"
+    icon: "fa-layer-group"
+    color: "success"
+    description: "Statistical frameworks for multi-omics data integration"
+    
+    tools:
+      - id: "mixomics"
+        name: "mixOmics (R package)"
+        omics_layers: ["transcriptomics", "proteomics", "metabolomics", "metagenomics"]
+        description: "Multivariate framework for integrative analysis and feature selection (PLS, sPLS, DIABLO)"
+        interoperable_ids:
+          ko: "Can be used directly as feature IDs in KO-level integration across layers"
+          cpd: "Metabolite features labeled by KEGG CPD or ChEBI used as variables"
+          genesymbol: "Common for transcriptomics/proteomics, linkable to BioRemPP.genesymbol"
+          chebi: "Fully usable as metabolite feature IDs, aligned with ToxCSM.ChEBI"
+        integration_example: "Integrate KO-level metagenomics (HUMAnN/DRAM) with transcriptomics and metabolomics using BioRemPP as KO/CPD backbone"
+        reference:
+          title: "mixOmics: an R package for 'omics feature selection and multiple data integration"
+          authors: "Rohart F. et al."
+          journal: "PLoS Computational Biology"
+          year: 2017
+          doi: "https://doi.org/10.1371/journal.pcbi.1005752"
+      
+      - id: "miodin"
+        name: "miodin (R package)"
+        omics_layers: ["transcriptomics", "proteomics", "metabolomics", "copy_number", "methylation"]
+        description: "Workflow framework for building multi-omics analysis pipelines"
+        interoperable_ids:
+          ko: "Supported when KO is used as feature ID in any omics block"
+          cpd: "Metabolite blocks labeled with KEGG CPD treated as standard features"
+          genesymbol: "Standard for gene-level blocks, compatible with BioRemPP.genesymbol"
+          chebi: "Supported in metabolomics blocks as feature IDs"
+        integration_example: "Define BioRemPP-centric workflows where each block shares KO/CPD/ChEBI IDs"
+        reference:
+          title: "miodin: an R package for multi-omics data integration and analysis"
+          authors: "Ulfenborg B."
+          journal: "BMC Bioinformatics"
+          year: 2019
+          doi: "https://link.springer.com/article/10.1186/s12859-019-3224-4"
+
+# ============================================================================
+# MULTI-OMICS CASE STUDIES
+# ============================================================================
+
+case_studies:
+  title: "Multi-omics Case Studies in Bioremediation"
+  description: "Published studies demonstrating successful multi-omics integration"
+  
+  studies:
+    - id: "CASE1"
+      title: "Metagenomics + Metabolomics in Petroleum-Contaminated Soil"
+      authors: "Various"
+      year: 2023
+      journal: "Brazilian Journal of Microbiology"
+      doi: "https://doi.org/10.1007/s42770-023-01000-7"
+      omics_layers: ["metagenomics", "metabolomics"]
+      integration_approach: "Correlation of functional gene abundance with metabolite profiles"
+      key_findings:
+        - "Identified degradation pathways by correlating gene presence with intermediate metabolites"
+        - "Linked community composition to metabolic outputs"
+        - "Demonstrated value of multi-omics for mechanistic understanding"
+      relevance_to_biorempp: "Template for integrating genetic potential (KO richness) with chemical outcomes (compound degradation)"
+    
+    - id: "CASE2"
+      title: "Proteomics of Heavy Metal Stress in Yarrowia lipolytica"
+      authors: "Various"
+      year: 2022
+      journal: "Microorganisms"
+      doi: "https://doi.org/10.3390/microorganisms10102002"
+      omics_layers: ["proteomics"]
+      integration_approach: "Proteomic profiling under multi-metal stress"
+      key_findings:
+        - "Revealed resistance and detoxification mechanisms at protein level"
+        - "Identified metal-specific and general stress responses"
+        - "Demonstrated value of proteomics for extremophile characterization"
+      relevance_to_biorempp: "Supports future integration of protein-level data to validate genetic potential predictions"
+    
+    - id: "CASE3"
+      title: "Transcriptomics + Physiology of Fungal Metal Bioremediation"
+      authors: "Various"
+      year: 2025
+      journal: "Environmental Pollution"
+      doi: "https://doi.org/10.1016/j.envpol.2025.125678"
+      omics_layers: ["transcriptomics", "physiology"]
+      integration_approach: "Gene expression correlated with physiological phenotypes"
+      key_findings:
+        - "Extremophilic fungi showed distinct transcriptomic responses to Cd and Sr"
+        - "Linked gene expression to growth, accumulation, and tolerance phenotypes"
+        - "Identified candidate genes for metal bioremediation enhancement"
+      relevance_to_biorempp: "Demonstrates value of integrating molecular data (transcripts) with organism-level outcomes (growth, tolerance)"

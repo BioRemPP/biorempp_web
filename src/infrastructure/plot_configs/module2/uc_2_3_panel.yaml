@@ -1,0 +1,54 @@
+# UC-2.3: Ranking of Compound Richness by Sample per Chemical Class
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-2-3"
+
+scientific_question: >
+  Within a specific chemical class, which compounds are targeted by the widest
+  range of biological samples, suggesting broad bioavailability or common
+  biotransformation pathways?
+
+description: >
+  This interactive visualization ranks compounds based on the number of unique
+  samples that interact with them, filterable by the compound's chemical class.
+  The resulting bar chart highlights which compounds are the most common targets
+  across the biological samples for a selected category.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Compound Class to analyze. The plot will update
+      automatically.
+  
+  - label: "X-axis"
+    description: "Represents the individual Compounds within the selected class."
+  
+  - label: "Y-axis"
+    description: "Represents the count of unique samples that interact with each compound."
+  
+  - label: "Bar Height and Label"
+    description: >
+      The height of each bar and its corresponding numerical label explicitly
+      state the total number of unique samples associated with that compound.
+
+interpretation_guidelines:
+  - >
+    High-Interaction Compounds: Taller bars represent compounds that are acted
+    upon by a more diverse set of samples. These may represent common, easily
+    processable substrates or key pollutants that may have driven the evolution
+    of similar biotransformation pathways across different biological sources.
+  
+  - >
+    Specialized Targets: Shorter bars, especially those with a count of '1',
+    represent compounds targeted by only a few, or a single, sample. This may
+    indicate a specialized or rare metabolic capability present in only a subset
+    of the biological sources.
+  
+  - >
+    Comparing Chemical Classes: The dropdown allows for direct comparison of
+    interaction patterns between different chemical classes. For example, one
+    can investigate whether compounds in the "Aromatics" class are generally
+    targeted by a more diverse set of biological sources than those in the
+    "Chlorinated" class.
+
+color_scheme: "success"

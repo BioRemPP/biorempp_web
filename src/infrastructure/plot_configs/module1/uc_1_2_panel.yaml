@@ -1,0 +1,82 @@
+# UC-1.2: Overlap of Compounds Across Regulatory References
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-1-2"
+
+scientific_question: >
+  To what extent do the lists of monitored chemical compounds overlap between
+  different environmental regulatory agencies, and which compounds are of
+  consensual concern?
+
+description: >
+  This interactive UpSet visualization quantifies the overlap and uniqueness
+  of compound names across different regulatory agencies (referenceAG) cited
+  in the BioRemPP dataset. The plot provides a clear view of which compounds
+  are unique to a single agency's focus versus those that are shared concerns
+  across multiple regulatory bodies, revealing patterns of harmonization and
+  agency-specific priorities in environmental monitoring.
+
+visual_elements:
+  - label: "Set Size (Left Bar Chart)"
+    description: >
+      Shows the total number of unique compounds associated with each individual
+      regulatory agency (e.g., WFD, CONAMA, EPC). Taller bars indicate broader
+      monitoring scope from that regulatory body. Compare these values to
+      understand the overall coverage of each agency's compound list.
+  
+  - label: "Intersection Matrix (Bottom)"
+    description: >
+      The connected dots define specific intersections between regulatory agencies.
+      For example, dots connected for "EPC" and "WFD" represent the set of
+      compounds monitored by both agencies. Single dots represent agency-exclusive
+      compounds, while multiple connected dots represent consensus across several
+      regulatory frameworks.
+  
+  - label: "Intersection Size (Top Bar Chart)"
+    description: >
+      The height of each bar corresponds to the number of compounds in the
+      intersection defined by the matrix directly below it. Taller bars indicate
+      a larger number of shared compounds. The tallest bar can help identify the
+      most common pattern of regulatory agreement or divergence.
+  
+  - label: "Hover Information"
+    description: >
+      Hovering over any bar reveals the exact count of compounds in that
+      intersection, along with the specific regulatory agencies involved. This
+      allows precise quantification of overlaps and unique regulatory focuses.
+
+interpretation_guidelines:
+  - >
+    Consensus Compounds: A large bar above an intersection of multiple agencies
+    represents a set of "consensus compounds" that are of broad regulatory
+    concern. These are likely well-studied and widely recognized pollutants
+    with established environmental or health risks across different jurisdictions.
+  
+  - >
+    Agency-Specific Focus: Bars above single, unconnected dots represent
+    compounds unique to one agency's list. This highlights the specialized
+    scope of that agency, such as focusing on specific pesticides, industrial
+    chemicals, or regional pollutants not covered by other regulatory frameworks.
+  
+  - >
+    Harmonization and Gaps: The size and nature of the overlaps can provide
+    insights into the degree of harmonization between different regulatory
+    frameworks. Large overlaps suggest coordinated monitoring strategies, while
+    small overlaps may indicate different regional priorities, scientific focuses,
+    or stages of regulatory development.
+  
+  - >
+    Assessing Coverage: By comparing the heights of agency-specific bars with
+    consensus bars, researchers can assess whether regulatory agencies provide
+    complementary monitoring coverage (many unique compounds) or redundant
+    coverage (mostly shared compounds). Complementary coverage may support
+    integrated multi-agency monitoring strategies.
+  
+  - >
+    Prioritization Strategy: Compounds appearing in multiple regulatory lists
+    offer cross-validation of environmental concern and may be prioritized in
+    bioremediation research. Unique compounds may represent emerging contaminants
+    or region-specific concerns requiring further investigation and potential
+    inclusion in broader monitoring programs.
+
+color_scheme: "primary"

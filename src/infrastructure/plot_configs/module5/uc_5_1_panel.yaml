@@ -1,0 +1,72 @@
+# UC-5.1: Sample - Compound Class Interaction Strength
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-1"
+
+scientific_question: >
+  Which biological samples are most strongly associated with which chemical
+  classes, and what does this reveal about their metabolic specializations?
+
+description: >
+  This visualization maps the interaction strength between each biological
+  sample and the different classes of chemical compounds. The chord diagram
+  provides a clear and intuitive overview of the entire interaction landscape,
+  where the connections illustrate the flow and magnitude of functional
+  associations.
+
+visual_elements:
+  - label: "Outer Arcs"
+    description: >
+      Each colored arc on the circumference represents either a Sample or a
+      Compound Class. The length of the arc is proportional to the total
+      number of interactions associated with it.
+
+  - label: "Chords (Ribbons)"
+    description: >
+      The ribbons flowing between the arcs represent the interactions between
+      a specific sample and a specific compound class.
+
+  - label: "Chord Thickness"
+    description: >
+      The thickness of a chord where it connects to an arc is proportional
+      to the number of interactions. A thick chord indicates a strong
+      association.
+
+  - label: "Node Colors"
+    description: >
+      Each category (sample or compound class) is assigned a distinct color
+      for easy identification across the diagram.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over a chord displays the exact number of interactions
+      between the connected sample and compound class.
+
+interpretation_guidelines:
+  - >
+    Strong Associations: A thick chord between a specific sample (e.g.,
+    Pseudomonas aeruginosa) and a compound class (e.g., "Aromatics")
+    indicates that this sample has a high number of interactions with
+    compounds of that class, potentially suggesting a functional specialization.
+
+  - >
+    Identifying Generalists vs. Specialists: A sample with many significant
+    chords connecting to various compound classes can be considered a
+    "generalist" in its biotransformation capabilities. A sample with one dominant,
+    thick chord is likely a "specialist."
+
+  - >
+    Dominant Chemical Classes: A compound class that is the target of many
+    thick chords from different samples is a major focus of metabolic
+    activity across the entire consortium.
+
+  - >
+    Sample Diversity: Samples with connections to multiple compound classes
+    demonstrate broader metabolic versatility and may be valuable for
+    complex bioremediation scenarios.
+
+  - >
+    Consortium Design: This visualization can help identify complementary
+    samples that together cover a broad range of compound classes.
+
+color_scheme: "success"

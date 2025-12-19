@@ -1,0 +1,77 @@
+# UC-3.7: Compound Co-occurrence Patterns Across Samples
+# Panel Configuration (YAML)
+
+use_case_id: "uc-3-7"
+
+scientific_question: >
+  Which chemical compounds tend to be acted upon together across the biological
+  samples, suggesting they might be part of the same biotransformation pathway,
+  co-contaminants, or require similar enzymatic machinery?
+
+description: >
+  This visualization explores the pairwise co-occurrence relationships
+  between all identified compound names. The correlogram is constructed
+  based on how frequently any two compounds are found within the same sample
+  across the entire dataset, providing a map of potential chemical or
+  metabolic linkages.
+
+visual_elements:
+  - label: "X-axis and Y-axis"
+    description: >
+      Both axes represent the unique Compound Names found in the dataset.
+      Each cell in the matrix corresponds to a pairwise comparison
+      between two compounds.
+
+  - label: "Cell Color"
+    description: >
+      The color of the cell at the intersection of two compounds indicates
+      the correlation coefficient between their presence profiles
+      across all samples.
+
+  - label: "Color Scale"
+    description: >
+      The plot uses a diverging color scale (RdBu_r). Warm colors (reds)
+      signify a high positive correlation (high co-occurrence), indicating
+      that two compounds are frequently found together. Cool colors (blues)
+      would indicate negative correlation (mutually exclusive patterns).
+      Values range from -1 to +1.
+
+  - label: "Diagonal"
+    description: >
+      The central diagonal is always bright red, as each compound is perfectly
+      correlated with itself (r = 1.0).
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each cell displays the two compound names being compared
+      and their exact correlation coefficient value.
+
+interpretation_guidelines:
+  - >
+    Metabolic or Contamination Clusters: Brightly colored squares or blocks
+    off the main diagonal identify clusters of compounds that frequently
+    co-occur. These may represent degradation pathways (sequential
+    intermediates), co-contaminants (pollutants typically found together),
+    or compounds requiring similar enzymatic machinery.
+
+  - >
+    Biotransformation Pathways: Compounds that are sequential intermediates in a
+    single metabolic biotransformation pathway will show strong positive
+    correlations, as they are processed together by the same biological sources.
+
+  - >
+    Co-contaminants: Pollutants that are typically found together in the
+    environment (e.g., different components of crude oil, PAH mixtures)
+    will cluster together in the correlogram.
+
+  - >
+    Shared Enzymatic Machinery: Structurally similar compounds that are
+    acted upon by the same versatile enzymes (e.g., broad-specificity
+    dioxygenases) will show co-occurrence patterns.
+
+  - >
+    Distinct Chemical Groups: The overall structure may help identify distinct
+    groups of chemicals that are treated similarly by the biological
+    samples, helping identify functional specialization.
+
+color_scheme: "success"

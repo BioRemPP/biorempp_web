@@ -1,0 +1,79 @@
+# UC-1.1: Database Overlap and Unique Contributions Analysis
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-1-1"
+
+scientific_question: >
+  To what extent do the functional annotations from different databases agree,
+  and what unique contributions does each source provide for bioremediation-
+  focused analysis?
+
+description: >
+  This interactive UpSet visualization quantifies the overlap and uniqueness
+  of KEGG Orthology (KO) identifiers across three distinct annotation sources:
+  BioRemPP, HADEG, and KEGG. The plot reveals consensus evidence, database-
+  specific coverage, and partial agreements between annotation sources, enabling
+  assessment of their complementary contributions to functional annotation analysis.
+
+visual_elements:
+  - label: "Set Size (Left Bar Chart)"
+    description: >
+      Shows the total number of unique KOs found in each individual database.
+      Taller bars indicate broader functional coverage from that annotation
+      source. Compare these values to understand the overall scope of each
+      database.
+  
+  - label: "Intersection Matrix (Bottom)"
+    description: >
+      The connected dots define specific intersections between databases. For
+      example, dots connected for BioRemPP and KEGG (but not HADEG) represent
+      the set of KOs found only in those two databases. Single dots represent
+      database-exclusive KOs, while three connected dots represent consensus
+      across all sources.
+  
+  - label: "Intersection Size (Top Bar Chart)"
+    description: >
+      The height of each bar corresponds to the number of KOs in the intersection
+      defined by the matrix directly below it. Taller bars indicate larger
+      numbers of shared KOs. The tallest bar reveals the most common pattern
+      of agreement or disagreement among databases.
+  
+  - label: "Hover Information"
+    description: >
+      Hovering over any bar reveals the exact count of KOs in that intersection,
+      along with the specific databases involved. This allows precise quantification
+      of overlaps and unique contributions.
+
+interpretation_guidelines:
+  - >
+    Consensus Evidence: A large bar above the triple intersection (all three
+    dots connected) may represent strong consensus evidence for KOs that are
+    robustly identified across all sources. This subset may provide higher
+    confidence for downstream functional analysis.
+  
+  - >
+    Database-Specific Coverage: Bars above single, unconnected dots represent
+    KOs unique to one database. These may highlight the specialized coverage of
+    each source, such as HADEG's targeted focus on hydrocarbon biotransformation
+    pathways or BioRemPP's novel compound-centric functional links.
+  
+  - >
+    Partial Agreement: Bars above pairwise intersections suggest partial
+    agreement and may reveal important differences in curation, scope, or
+    mapping strategies between databases. For example, differences in how
+    compound synonyms are handled or how recently pathways were updated.
+  
+  - >
+    Assessing Complementarity: By comparing the heights of database-specific
+    bars with consensus bars, researchers can assess whether databases provide
+    complementary information (many unique KOs) or redundant coverage (mostly
+    shared KOs). Complementary databases may support multi-source integration
+    strategies.
+  
+  - >
+    Validation Strategy: KOs appearing in multiple databases offer cross-
+    validation of functional annotations, while unique KOs may require
+    additional experimental validation or literature review before inclusion
+    in high-confidence functional predictions.
+
+color_scheme: "primary"

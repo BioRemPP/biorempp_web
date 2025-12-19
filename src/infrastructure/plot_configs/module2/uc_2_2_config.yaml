@@ -1,0 +1,293 @@
+# ============================================================================
+# UC-2.2: Ranking of Samples by Compound Richness
+# ============================================================================
+# Description: Horizontal bar chart showing samples ranked by unique compound count
+# Module: module2
+# Plot Type: Bar Chart (Horizontal)
+# Rendering: On-demand (accordion open) + Auto-update (filter/database changes)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-2.2"
+  module: "module2"
+  title: "Ranking of Samples by Compound Richness"
+  description: >
+    Horizontal bar chart visualization showing biological samples ranked by
+    the number of unique chemical compounds, indicating chemical versatility
+    and degradation breadth.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "compound_counts"
+    - "chemical_richness"
+    - "ranking"
+    - "bar_chart"
+    - "horizontal"
+  plot_type: "bar_chart"
+  scientific_context:
+    domain: "Chemical Ecology"
+    application: "Comparative metabolomics and chemical diversity analysis"
+    interpretation: "Higher compound count indicates greater chemical versatility"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-merged-data"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound_Count"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "sort"
+        enabled: true
+        params:
+          by: "Compound_Count"
+          ascending: true  # Ascending for horizontal bar chart
+        description: "Sort for horizontal bar chart display"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BarChartStrategy"
+  
+  plotly:
+    chart_type: "bar"
+    x: "Compound_Count"
+    y: "Sample"
+    orientation: "h"  # Horizontal orientation
+    
+    # Color configuration (single color)
+    color_discrete_sequence: ["mediumseagreen"]
+    
+    # Title configuration
+    title:
+      show: true  # Toggle title visibility
+      text: "Ranking of Samples by Compound Richness"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Axis labels
+    labels:
+      Sample: "Sample ID"
+      Compound_Count: "Number of Unique Compounds"
+    
+    # Layout configuration
+    layout:
+      height: 600
+      autosize: true  # Enable responsive sizing
+      template: "simple_white"
+      
+      # X-axis configuration
+      xaxis:
+        title:
+          text: "Number of Unique Compounds"
+          font:
+            size: 14
+            color: "#2c3e50"
+        tickfont:
+          size: 11
+        tickangle: 0  # X-axis label angle (horizontal)
+      
+      # Y-axis configuration
+      yaxis:
+        title:
+          text: "Sample ID"
+          font:
+            size: 14
+            color: "#2c3e50"
+        tickfont:
+          size: 10
+        tickangle: 0  # Y-axis label angle (horizontal)
+      
+      # Margins
+      margin:
+        l: 120
+        r: 80
+        t: 80
+        b: 60
+      
+      # Hover configuration
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font_size: 12
+        font_family: "Arial"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-2-2-accordion"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Initial render when accordion opens"
+    
+    - component_id: "uc-2-2-range-slider"
+      property: "value"
+      trigger_type: "slider_change"
+      description: "Auto-update when range filter changes"
+    
+    - component_id: "uc-2-2-db-biorempp"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Auto-update when database selection changes"
+  
+  outputs:
+    - component_id: "uc-2-2-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Compound richness bar chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+    
+    - component_id: "uc-2-2-db-biorempp"
+      property: "outline"
+      description: "BioRemPP button selection state"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound_Count"]
+      message: "Data must contain 'Sample' and 'Compound_Count' columns for ranking analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for compound richness ranking"
+    
+    - rule: "no_nulls"
+      columns: ["Sample", "Compound_Count"]
+      message: "Null values not allowed in required columns"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_2_2_df_{data_hash}"
+        description: "Cache compound count aggregation"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_2_2_bar_{data_hash}_{filters_hash}"
+        description: "Cache generated bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Compound richness ranking requires 'Sample' and compound columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No compound data available."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 sample required for ranking. Found: {count}"
+    
+    kegg_database_selected:
+      action: "display_message"
+      message: "KEGG database does not contain compound information. Please select BioRemPP database."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate compound counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bar chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - orientation: "h" (horizontal) or "v" (vertical)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - xaxis.tickangle: X-axis label rotation angle (0 = horizontal)
+# - yaxis.tickangle: Y-axis label rotation angle (0 = horizontal)
+# - xaxis.title.text: X-axis title
+# - yaxis.title.text: Y-axis title
+# - color_discrete_sequence: Bar colors
+# - color_continuous_scale: Gradient color scale
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_2_2_callbacks.py):
+# 1. Extract data from selected database (biorempp_df only)
+# 2. Find compound column (flexible: cpd, Compound_ID, Compound, compound)
+# 3. Validate 'Sample' column exists
+# 4. GroupBy 'Sample' and count unique compounds → creates 'Compound_Count'
+# 5. Apply range filter from slider
+# 6. Sort ascending and pass to PlotService
+#
+# STRATEGY (BarChartStrategy):
+# 1. Receives pre-aggregated data with ['Sample', 'Compound_Count']
+# 2. Validates columns exist
+# 3. Sorts by 'Compound_Count' ascending (for horizontal display)
+# 4. Creates horizontal bar chart with flexible properties
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample' and compound columns
+# - KEGG: ❌ Does NOT contain compound data (disabled for this UC)
+#
+# Rendering Logic:
+# - Initial render: Accordion open
+# - Auto-update: Range slider change or database selection (only if chart rendered)
+#
+# Orientation Details:
+# - Horizontal (orientation: "h")
+# - X-axis: Compound_Count (numeric values)
+# - Y-axis: Sample (categorical labels)
+# - Sorted ascending for better visual flow

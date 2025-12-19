@@ -1,0 +1,100 @@
+# UC-8.1: Minimal Sample-Group Visualization
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-8-1"
+
+scientific_question: >
+  How can biological samples be grouped by their compound biotransformation profiles
+  to identify functionally redundant isolates and select a minimal set of
+  representative samples that maximize compound coverage?
+
+description: >
+  This visualization addresses the challenge of sample selection from large
+  biological collections. By grouping samples based on their compound profiles
+  (the set of compounds each sample can potentially biotransform), this analysis
+  identifies functionally equivalent isolates and applies a set cover algorithm
+  to select the minimal number of groups needed to cover all compounds. Each
+  scatter subplot represents a sample group, with markers colored by KO
+  diversity per compound, highlighting functional complexity.
+
+visual_elements:
+  - label: "Sample Group Subplots"
+    description: >
+      The visualization is organized as a series of side-by-side subplots, each
+      representing a minimized sample group. Samples within the same group share
+      identical compound profiles (frozenset), meaning they can biotransform exactly
+      the same set of compounds. The set cover algorithm selects the fewest
+      groups needed to cover all compounds in the dataset.
+
+  - label: "Scatter Markers"
+    description: >
+      Each marker represents a sample-compound pair. The X-axis shows sample
+      identifiers within each group, while the Y-axis shows compound names.
+      Markers are positioned at the intersection of sample and compound,
+      indicating that the sample contains genes for biotransforming that compound.
+
+  - label: "Color Scale (KO Diversity)"
+    description: >
+      Marker colors follow a green scale based on the unique KO count per
+      compound within the selected compound class. Darker green markers
+      may indicate compounds with higher KO diversity (more distinct enzymes
+      involved in biotransformation), potentially suggesting more complex or versatile
+      biotransformation pathways.
+
+  - label: "Compound Class Filter"
+    description: >
+      An interactive dropdown filter allows selection of specific compound
+      classes for analysis. The visualization updates dynamically to show
+      only samples and compounds within the selected class, enabling focused
+      exploration of specific chemical categories.
+
+  - label: "Shared Y-Axis"
+    description: >
+      All subplots share the same Y-axis (compound names), allowing direct
+      visual comparison across groups. This can help identify which compounds are
+      unique to certain groups versus shared across multiple groups,
+      highlighting functional redundancy and specialization patterns.
+
+interpretation_guidelines:
+  - >
+    Understanding Sample Grouping: Samples in the same subplot (group) have
+    identical compound profiles - they can biotransform exactly the same set of
+    compounds. This grouping can help identify functional redundancy: any sample within
+    a group can substitute for another in terms of compound coverage. This is
+    valuable for selecting representative strains from large culture collections.
+
+  - >
+    Set Cover Minimization: The displayed groups represent the minimal set
+    needed to cover all compounds. If the original data contained 50 samples
+    but only 4 groups are shown, this may indicate that 4 strategically selected
+    representatives can collectively cover all biotransformation capabilities,
+    dramatically simplifying consortium design or experimental validation.
+
+  - >
+    Interpreting KO Diversity Colors: Darker markers may indicate compounds with
+    higher KO diversity. A compound with many unique KOs may have multiple
+    enzymatic routes for biotransformation (metabolic flexibility) or require a
+    complex multi-step pathway. Lighter markers may suggest simpler biotransformation
+    mechanisms with fewer enzymatic requirements.
+
+  - >
+    Identifying Group Characteristics: Compare groups horizontally. Some groups
+    may specialize in specific compounds (markers clustered on certain Y values),
+    while others may show broader coverage. Groups with more vertical scatter
+    may indicate generalist capabilities, valuable for mixed contamination scenarios.
+
+  - >
+    Strategic Consortium Design: For comprehensive bioremediation, select one
+    representative sample from each displayed group. This minimal consortium
+    will collectively possess the genetic potential to biotransform all compounds
+    in the selected class while minimizing redundancy and potentially reducing
+    inter-organism competition.
+
+  - >
+    Exploring Class-Specific Patterns: Use the compound class filter to explore
+    different chemical categories. Some classes may have fewer minimized groups
+    (many samples share similar profiles), while others may require more groups
+    (higher functional diversity). This can help identify class-specific patterns in
+    biological biotransformation capabilities.
+
+color_scheme: "success"

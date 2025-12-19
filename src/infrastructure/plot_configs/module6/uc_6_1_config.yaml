@@ -1,0 +1,371 @@
+# ============================================================================
+# UC-6.1: Regulatory to Molecular Interaction Flow
+# ============================================================================
+# Description: Sankey diagram showing flow from regulatory agencies to compounds
+# Module: module6
+# Plot Type: Sankey (Alluvial Flow)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-6.1"
+  module: "module6"
+  title: "Regulatory to Molecular Interaction Flow"
+  description: >
+    Alluvial diagram visualizing the end-to-end flow of interactions from
+    regulatory agencies through samples and genes to target compounds. Shows
+    how regulatory agency classifications propagate through biological systems
+    to specific molecular targets. Enables identification of key regulatory
+    pathways, sample-gene-compound relationships, and flow bottlenecks.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "sankey"
+    - "flow"
+    - "alluvial"
+    - "regulatory"
+    - "biorempp"
+  plot_type: "sankey"
+  scientific_context:
+    domain: "Regulatory Biology and Flow Analysis"
+    application: "Multi-level interaction flow visualization"
+    interpretation: "Flow width indicates interaction frequency; bottlenecks reveal key intermediaries"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "referenceAG"
+    - "sample"
+    - "genesymbol"
+    - "compoundname"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "extract_flow_columns"
+        enabled: true
+        description: "Extract referenceAG, sample, genesymbol, compoundname columns"
+      
+      - name: "aggregate_flows"
+        enabled: true
+        description: "Count occurrences for each unique path"
+      
+      - name: "build_sankey_structure"
+        enabled: true
+        description: "Build node labels and link source/target/value arrays"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "SankeyStrategy"
+  
+  plotly:
+    # Flow configuration
+    flow_columns:
+      - "referenceAG"
+      - "sample"
+      - "genesymbol"
+      - "compoundname"
+    
+    value_column: null
+    aggregation: "count"
+    
+    # Node configuration
+    node_pad: 15
+    node_thickness: 20
+    color_by_stage: true
+    color_by_first_level: false
+    
+    # Link configuration
+    link_opacity: 0.5
+    link_color: "rgba(180, 180, 180, 0.5)"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Interaction Flow: Agency → Sample → Gene → Compound"
+        font:
+          size: 16
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 900
+      autosize: true
+      font_size: 10
+      
+      paper_bgcolor: "white"
+      
+      margin:
+        l: 10
+        r: 10
+        t: 60
+        b: 20
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-6-1-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render Sankey when accordion opens"
+  
+  outputs:
+    - component_id: "uc-6-1-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Sankey flow diagram"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["referenceAG", "sample", "genesymbol", "compoundname"]
+      message: "Data must contain 'referenceAG', 'sample', 'genesymbol', and 'compoundname' columns"
+    
+    - rule: "min_flow_stages"
+      min_count: 2
+      message: "At least 2 flow stages required for Sankey diagram"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_6_1_df_{data_hash}"
+        description: "Cache processed flow data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_6_1_sankey_{data_hash}"
+        description: "Cache generated Sankey diagram"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Sankey requires 'referenceAG', 'sample', 'genesymbol', and 'compoundname' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No flow data available. Please check BioRemPP dataset."
+    
+    insufficient_stages:
+      action: "display_message"
+      message: "At least 2 flow stages required for Sankey diagram. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    flow_aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate flow data: {error_details}"
+    
+    sankey_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build Sankey structure: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render Sankey diagram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - font_size: Global font size for labels
+# - flow_columns: List of columns defining flow stages
+# - value_column: Column for value aggregation (null = count)
+# - aggregation: "count", "sum", "nunique"
+# - node_pad: Padding between nodes
+# - node_thickness: Thickness of node rectangles
+# - node_colors: Custom color palette
+# - link_opacity: Link transparency
+# - link_color: Default link color
+# - color_by_stage: Color nodes by stage level
+# - color_by_first_level: Color links by first level source
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - paper_bgcolor: Paper background color
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_6_1_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: referenceAG, sample, genesymbol, compoundname
+# 3. Clean data (remove nulls, placeholders)
+# 4. Pass to PlotService
+#
+# STRATEGY (SankeyStrategy):
+# 1. Receives data with ['referenceAG', 'sample', 'genesymbol', 'compoundname']
+# 2. Process data:
+#    - Clean data (remove nulls, placeholders)
+#    - Aggregate flows (count occurrences)
+#    - Create unique paths
+# 3. Create figure:
+#    - Build nodes (unique values from each stage)
+#    - Build links (connections between adjacent stages)
+#    - Assign colors (by stage)
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'referenceAG', 'sample', 'genesymbol', 'compoundname' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain regulatory data
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Sankey diagram (4-level flow)
+# - Stages: referenceAG → sample → genesymbol → compoundname
+# - Node width: Proportional to total flow through node
+# - Link width: Proportional to flow value (count)
+# - Colors: By stage (blue, orange, green, red)
+# - Hover: Shows flow details
+# - Interpretation:
+#   * Wide nodes: High-traffic intermediaries
+#   * Narrow nodes: Specialized/rare entities
+#   * Thick links: Frequent connections
+#   * Thin links: Rare connections
+#   * Bottlenecks: Nodes with many incoming/outgoing flows
+#
+# Flow Algorithm:
+# 1. Extract flow columns:
+#    referenceAG, sample, genesymbol, compoundname
+#
+# 2. Clean data:
+#    Remove nulls, placeholders (#N/D, N/A, etc.)
+#
+# 3. Aggregate:
+#    For each unique path (A → B → C → D):
+#      value = COUNT(occurrences)
+#
+# 4. Build nodes:
+#    For each stage column:
+#      Extract unique values
+#      Assign stage index
+#      Assign color based on stage
+#
+# 5. Build links:
+#    For each adjacent stage pair (i, i+1):
+#      Aggregate flows: source → target
+#      Assign link color
+#      Set opacity
+#
+# Example:
+# Input:
+#   referenceAG  sample  genesymbol  compoundname
+#   EPA          S1      ABC1        Benzene
+#   EPA          S1      ABC1        Toluene
+#   FDA          S2      DEF2        Benzene
+#
+# Flow:
+#   EPA → S1 → ABC1 → Benzene (count: 1)
+#   EPA → S1 → ABC1 → Toluene (count: 1)
+#   FDA → S2 → DEF2 → Benzene (count: 1)
+#
+# Nodes:
+#   Stage 0 (referenceAG): EPA, FDA (blue)
+#   Stage 1 (sample): S1, S2 (orange)
+#   Stage 2 (genesymbol): ABC1, DEF2 (green)
+#   Stage 3 (compoundname): Benzene, Toluene (red)
+#
+# Links:
+#   EPA → S1 (count: 2)
+#   FDA → S2 (count: 1)
+#   S1 → ABC1 (count: 2)
+#   S2 → DEF2 (count: 1)
+#   ABC1 → Benzene (count: 1)
+#   ABC1 → Toluene (count: 1)
+#   DEF2 → Benzene (count: 1)
+#
+# Scientific Interpretation:
+# - Regulatory pathways: How agencies relate to compounds
+# - Sample intermediaries: Which samples mediate agency-compound connections
+# - Gene intermediaries: Which genes mediate sample-compound connections
+# - Key agencies: Agencies with many downstream connections
+# - Key samples: Samples with many agency and gene connections
+# - Key genes: Genes with many sample and compound connections
+# - Key compounds: Compounds targeted by many genes
+# - Use for: Regulatory pathway analysis, sample selection, gene targeting
+# - Optimization: Identify key intermediaries for targeted interventions
+#
+# Color Scheme (by stage):
+# - Stage 0 (referenceAG): Blue - Regulatory agencies
+# - Stage 1 (sample): Orange - Microbial samples
+# - Stage 2 (genesymbol): Green - Genes
+# - Stage 3 (compoundname): Red - Compounds
+#
+# Unique Features:
+# - 4-level flow (regulatory → sample → gene → compound)
+# - Count-based aggregation
+# - Stage-based coloring
+# - Interactive hover (flow details)
+# - Bottleneck identification
+# - Key intermediary discovery

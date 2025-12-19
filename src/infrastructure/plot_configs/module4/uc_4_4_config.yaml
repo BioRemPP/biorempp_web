@@ -1,0 +1,350 @@
+# ============================================================================
+# UC-4.4: Interactive Comparison of Pathway Performance by Sample (KEGG)
+# ============================================================================
+# Description: Radar chart comparing pathways within a selected sample
+# Module: module4
+# Plot Type: Radar Chart (Polar)
+# Rendering: On-demand (sample selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.4"
+  module: "module4"
+  title: "Pathway Comparison by Sample"
+  description: >
+    Radar chart showing comparative functional richness of pathways for a
+    selected sample, based on unique KO counts. Visualizes which pathways
+    have more diverse functional capabilities within a specific sample.
+    Enables identification of pathways with high vs. low coverage and
+    comparison of functional profiles across pathways for a given sample.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "radar"
+    - "polar"
+    - "pathway_comparison"
+    - "sample"
+    - "kegg"
+  plot_type: "radar"
+  scientific_context:
+    domain: "Comparative Functional Genomics"
+    application: "Pathway comparison within sample"
+    interpretation: "Larger area indicates higher pathway diversity; uneven shape shows pathway specialization"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "kegg-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Pathway"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "extract_kegg"
+        enabled: true
+        description: "Extract KEGG results from store"
+      
+      - name: "filter_by_sample"
+        enabled: true
+        description: "Filter data by selected sample (done in callback)"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "RadarChartStrategy"
+  
+  plotly:
+    # Aggregation configuration
+    theta_column: "Pathway"
+    r_column: "KO"
+    group_column: "Sample"
+    aggregation: "nunique"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Pathway Functional Richness"
+        x: 0.5
+        font:
+          size: 16
+      
+      # Trace styling
+      fill: "toself"
+      marker_color: "mediumseagreen"
+      line_color: "mediumseagreen"
+      line_width: 2
+      fillcolor: "rgba(70,130,180,0.35)"
+      name: "Unique KO Count"
+    
+    # Layout configuration
+    layout:
+      template: "plotly_white"
+      height: 600
+      autosize: true
+      
+      showlegend: false
+      
+      polar:
+        radialaxis:
+          visible: true
+          range: [0, null]
+        
+        angularaxis:
+          direction: "clockwise"
+          rotation: 0
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-4-sample-dropdown"
+      property: "value"
+      trigger_type: "dropdown_change"
+      description: "Sample selection triggers chart update"
+  
+  outputs:
+    - component_id: "uc-4-4-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Radar chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Pathway", "KO"]
+      message: "Data must contain 'Sample', 'Pathway', and 'KO' columns"
+    
+    - rule: "min_categories"
+      min_count: 2
+      message: "At least 2 pathways required for comparison"
+    
+    - rule: "kegg_data_required"
+      message: "This use case requires KEGG database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: false
+    layers:
+      - layer: "dataframe"
+        ttl: 300
+        key_template: "uc_4_4_df_{data_hash}_{filters_hash}"
+        description: "Cache filtered sample data"
+      
+      - layer: "graph"
+        ttl: 300
+        key_template: "uc_4_4_radar_{data_hash}_{filters_hash}"
+        description: "Cache generated radar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: false
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Radar chart requires 'Sample', 'Pathway', and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No data available for selected sample. Please select a different sample."
+    
+    insufficient_pathways:
+      action: "display_message"
+      message: "At least 2 pathways required for comparison. Found: {count}"
+    
+    kegg_data_missing:
+      action: "display_message"
+      message: "KEGG database data not found. This use case requires KEGG data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate KO counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render radar chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.x: Title position
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - theta_column: Category axis column (Pathway)
+# - r_column: Value column (KO)
+# - group_column: Filter column (Sample)
+# - aggregation: "nunique", "count", "sum", "mean"
+# - fill: "toself", "tonext", "none"
+# - marker_color: Marker color
+# - line_color: Line color
+# - line_width: Line width
+# - fillcolor: Fill color (RGBA)
+# - name: Trace name
+# - template: "plotly_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - showlegend: Show/hide legend
+# - polar.radialaxis.visible: Show/hide radial axis
+# - polar.radialaxis.range: Radial axis range
+# - polar.angularaxis.direction: "clockwise" or "counterclockwise"
+# - polar.angularaxis.rotation: Rotation angle (degrees)
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_4_callbacks.py):
+# 1. Extract KEGG DataFrame from merged-result-store
+# 2. Filter by selected sample
+# 3. Map columns: Sample, Pathway, KO
+# 4. Pass to PlotService
+#
+# STRATEGY (RadarChartStrategy):
+# 1. Receives data with ['Sample', 'Pathway', 'KO']
+# 2. Process data:
+#    - Group by Pathway
+#    - Count unique KOs per pathway
+#    - Create processed DataFrame (theta=Pathway, r=unique_ko_count)
+# 3. Create figure:
+#    - Create Scatterpolar trace
+#    - Calculate radial axis range (10% padding)
+#    - Apply fill and colors
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - KEGG: ✅ Contains 'Sample', 'Pathway', 'KO' columns
+# - BioRemPP: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain pathway data
+#
+# Rendering Logic:
+# - Chart rendering: On sample selection (dropdown change)
+# - Single trigger: sample dropdown value change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Radar chart (polar)
+# - Theta axis (spokes): Pathways
+# - Radial axis (distance): Unique KO count
+# - Fill: Semi-transparent blue area
+# - Auto-scaling: Radial axis with 10% padding
+# - Hover: Shows pathway name and KO count
+# - Interpretation:
+#   * Large area: High pathway diversity in sample
+#   * Small area: Low pathway diversity in sample
+#   * Uneven shape: Variability in pathway coverage
+#   * Even shape: Consistency in pathway coverage
+#
+# Radar Chart Algorithm:
+# 1. Filter data by selected sample
+#
+# 2. Group by Pathway:
+#    For each pathway:
+#      unique_ko_count = COUNT(DISTINCT KO)
+#
+# 3. Create processed DataFrame:
+#    theta: Pathway names
+#    r: Unique KO counts
+#
+# 4. Visualize:
+#    Polar chart with:
+#      - Theta axis: Pathways (spokes)
+#      - Radial axis: Unique KO counts (distance from center)
+#      - Fill: Area fill
+#      - Auto-scaling: 10% padding
+#
+# Example:
+# Input (filtered by sample "S1"):
+#   Sample  Pathway      KO
+#   S1      Glycolysis   K00001
+#   S1      Glycolysis   K00002
+#   S1      TCA Cycle    K00001
+#   S1      TCA Cycle    K00003
+#   S1      Pentose      K00001
+#
+# Processing:
+#   Group by Pathway, count unique KO:
+#     Glycolysis: 2 unique KOs
+#     TCA Cycle: 2 unique KOs
+#     Pentose: 1 unique KO
+#
+# Output:
+#   theta        r
+#   Glycolysis   2
+#   TCA Cycle    2
+#   Pentose      1
+#
+# Radar Chart:
+#   Glycolysis (2)
+#        /\
+#       /  \
+#      /    \
+# Pentose (1)---TCA Cycle (2)
+#
+# Scientific Interpretation:
+# - Pathway diversity: Number of unique KOs per pathway in sample
+# - Pathway comparison: Which pathways have more diverse functions in sample
+# - Sample specialization: Which pathways are well-represented in sample
+# - Pathway coverage: How well sample covers each pathway
+# - Use for: Pathway analysis, sample profiling, functional specialization
+# - Optimization: Identify pathways with broad vs. narrow coverage in sample
+#
+# Comparison with UC-4.3:
+# - UC-4.3: Compare samples within pathway (theta=Sample)
+# - UC-4.4: Compare pathways within sample (theta=Pathway)
+# - Both use same RadarChartStrategy with different theta_column
+# - UC-4.3 uses green color, UC-4.4 uses blue color
+#
+# Unique Features:
+# - Interactive sample selection
+# - Real-time chart update
+# - Pathway comparison within sample
+# - Pathway diversity visualization
+# - Auto-scaling radial axis
+# - Semi-transparent fill (blue)

@@ -1,0 +1,90 @@
+# UC-3.1: PCA - Sample Relationships by KO Profile
+# Panel Configuration (YAML)
+
+use_case_id: "uc-3-1"
+
+scientific_question: >
+  How do biological samples cluster in functional space based on their
+  KEGG Orthology (KO) profiles? Which samples exhibit similar metabolic
+  potentials, and which represent distinct functional strategies?
+
+description: >
+  This visualization employs Principal Component Analysis (PCA) to reduce the
+  high-dimensional space of KO presence/absence profiles into two principal
+  components for visualization. Each point represents a sample, positioned
+  according to its scores on PC1 and PC2. The analysis can help identify natural
+  groupings, outliers, and the overall structure of functional diversity
+  within the dataset. Samples with similar KO repertoires cluster together,
+  while functionally distinct samples appear farther apart.
+
+visual_elements:
+  - label: "X-axis (PC1)"
+    description: >
+      Principal Component 1 captures the largest variance in the KO profiles.
+      The axis label shows the percentage of total variance explained by PC1.
+      Samples spread along this axis differ most strongly in the features
+      that contribute to PC1.
+
+  - label: "Y-axis (PC2)"
+    description: >
+      Principal Component 2 captures the second-largest variance orthogonal
+      to PC1. The axis label shows the percentage of variance explained by PC2.
+      Together, PC1 and PC2 provide a 2D projection that preserves major
+      patterns of sample relationships.
+
+  - label: "Points (Samples)"
+    description: >
+      Each point represents one biological sample. Points are colored by
+      sample identity, making it easy to track individual samples and
+      identify clusters.
+
+  - label: "Point Color"
+    description: >
+      Colors distinguish individual samples. Samples of the same color are
+      the same biological source. The color legend on the right shows all
+      samples included in the analysis.
+
+  - label: "Clustering"
+    description: >
+      Samples that appear close together in the plot have similar KO profiles,
+      indicating functional similarity. Distinct clusters may suggest different
+      functional groups or metabolic strategies within the community.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each point displays the sample name and its PC1/PC2 scores,
+      facilitating identification and comparison.
+
+interpretation_guidelines:
+  - >
+    Functional Clusters: Tight groups of samples indicate shared metabolic
+    profiles. These clusters may represent biological sources with similar
+    ecological niches, phylogenetic relationships, or bioremediation strategies.
+
+  - >
+    Outliers: Samples positioned far from others possess unique or rare
+    functional repertoires. These may be specialists with distinctive
+    metabolic capabilities worth investigating further.
+
+  - >
+    Variance Explained: The percentages on the axes indicate how much of the
+    total functional diversity is captured. Higher values (>50% combined)
+    suggest the 2D plot faithfully represents the major patterns. Lower values
+    indicate more complexity in the dataset that isn't fully visualized in 2D.
+
+  - >
+    Gradient Patterns: If samples form a gradient rather than discrete clusters,
+    this may suggest a continuum of functional variation rather than distinct
+    functional types.
+
+  - >
+    Sample Diversity: The overall spread of points reflects the functional
+    diversity of the community. Tightly packed samples may indicate functional
+    redundancy, while widely dispersed samples may indicate high functional diversity.
+
+  - >
+    Bioremediation Applications: Functionally similar samples (clustering together)
+    may have redundant bioremediation capabilities. Dissimilar samples may offer
+    complementary functions for consortium design.
+
+color_scheme: "primary"

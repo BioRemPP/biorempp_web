@@ -1,0 +1,75 @@
+# UC-5.6: Compound-Compound Functional Similarity Network
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-6"
+
+scientific_question: >
+  Which chemical compounds are likely processed by similar enzymatic machinery,
+  as inferred by their shared interactions with the same genes, and what is the
+  structure of these chemically related groups?
+
+description: >
+  This visualization constructs a network to map the functional relationships
+  between chemical compounds. In this graph, nodes represent individual compound
+  names. An edge (a connecting line) is drawn between two compounds if they are
+  both targeted by at least one common gene. This approach helps to identify
+  clusters of compounds that may be structurally similar or part of the same
+  degradation pathways.
+
+visual_elements:
+  - label: "Nodes (Points)"
+    description: >
+      Each point represents a single Compound Name. The position is determined
+      by a force-directed layout algorithm that groups connected compounds together.
+
+  - label: "Edges (Lines)"
+    description: >
+      A line connecting two compounds indicates that they are targeted by at
+      least one common gene. The presence of an edge may suggest functional
+      similarity in their processing mechanisms.
+
+  - label: "Edge Thickness"
+    description: >
+      A thicker line signifies a stronger functional relationship, as the two
+      connected compounds are targeted by a larger number of common genes.
+
+  - label: "Node Color"
+    description: >
+      The color of a node represents its degree - the number of other compounds
+      it is connected to within this network. The color bar provides a
+      quantitative scale, with brighter/warmer colors indicating "hub" compounds
+      that are functionally linked to many others.
+
+  - label: "Network Layout"
+    description: >
+      The spring layout algorithm positions nodes so that connected compounds
+      are closer together, naturally revealing cluster structures in the network.
+
+interpretation_guidelines:
+  - >
+    Chemical Clusters: Dense clusters of interconnected nodes represent groups
+    of compounds that are functionally related. These may be structurally
+    similar chemicals, co-contaminants, or compounds that are processed by a
+    common and versatile set of enzymes.
+
+  - >
+    Hub Compounds: Brightly colored nodes are highly connected "hubs" in the
+    network. These may represent central intermediates in degradation cascades
+    or versatile molecules that are targeted by a wide array of genetic machinery.
+
+  - >
+    Bridge Compounds: A node that connects two otherwise distinct clusters can
+    be interpreted as a functional "bridge" compound, potentially linking two
+    different classes of chemicals via a shared set of enzymes.
+
+  - >
+    Edge Weight: Thicker edges between compounds may indicate they share more genes,
+    potentially suggesting stronger functional relationships and potentially similar chemical
+    structures or biotransformation requirements.
+
+  - >
+    Isolated Compounds: Compounds with few or no connections may be unique
+    substrates processed by specialized enzymes not shared with other compounds
+    in the dataset.
+
+color_scheme: "success"

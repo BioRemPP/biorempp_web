@@ -1,0 +1,308 @@
+# ============================================================================
+# UC-3.6: Gene Co-occurrence Patterns Across Samples
+# ============================================================================
+# Description: Correlogram showing gene-gene co-occurrence patterns based on sample presence
+# Module: module3
+# Plot Type: Correlogram (Correlation Heatmap - Feature Mode)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-3.6"
+  module: "module3"
+  title: "Gene Co-occurrence Patterns Across Samples"
+  description: >
+    Visualizes the pairwise co-occurrence relationships between gene symbols
+    across all microbial samples. A correlogram heatmap displays Pearson
+    correlation coefficients indicating how frequently any two genes are found
+    together in the same samples. This analysis reveals potential functional
+    relationships, co-regulation patterns, or presence in the same metabolic
+    pathways.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-02"
+  tags:
+    - "correlogram"
+    - "gene_cooccurrence"
+    - "feature_correlation"
+    - "functional_relationships"
+    - "biorempp"
+  plot_type: "correlogram"
+  scientific_context:
+    domain: "Functional Genomics and Gene Network Analysis"
+    application: "Identifying genes that co-occur across samples, suggesting functional relationships"
+    interpretation: "High correlation (red) indicates genes frequently found together; low correlation (blue) indicates mutual exclusion or independent occurrence"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Gene_Symbol"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "CorrelogramStrategy"
+  
+  plotly:
+    # Processing mode
+    correlation_mode: "feature"
+    row_column: "Sample"
+    col_column: "Gene_Symbol"
+    correlation_method: "pearson"
+    
+    # Chart configuration
+    chart:
+      # Title configuration
+      title:
+        show: true
+        text: "Gene Co-occurrence Network"
+        font_size: 18
+      
+      # Axis configuration
+      xaxis_title: "Gene Symbol"
+      yaxis_title: "Gene Symbol"
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Color configuration
+      color_continuous_scale: "RdBu_r"
+      color_label: "Pearson r"
+      
+      # Cell value display
+      text_auto: false
+      
+      # Colorbar configuration
+      colorbar:
+        title: "Co-occurrence"
+        title_font_size: 12
+    
+    # Layout configuration
+    layout:
+      height: 750
+      autosize: true
+      template: "simple_white"
+      margin:
+        l: 120
+        r: 50
+        t: 90
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-3-6-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_activation"
+      description: "Render correlogram when accordion opens"
+  
+  outputs:
+    - component_id: "uc-3-6-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Gene co-occurrence correlogram"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Gene_Symbol"]
+      message: "Data must contain 'Sample' and 'Gene_Symbol' columns"
+    
+    - rule: "minimum_genes"
+      min_count: 2
+      message: "At least 2 genes required for co-occurrence analysis"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_3_6_df_{data_hash}"
+        description: "Cache correlation matrix"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_3_6_corr_{data_hash}"
+        description: "Cache generated correlogram"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Gene co-occurrence analysis requires 'Sample' and 'Gene_Symbol' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No sample-gene data available. Please check BioRemPP dataset."
+    
+    insufficient_genes:
+      action: "display_message"
+      message: "At least 2 genes required for co-occurrence. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    correlation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to compute gene correlation: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render correlogram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - correlation_mode: "feature" (gene-gene correlation)
+# - correlation_method: "pearson", "spearman", "kendall"
+# - row_column: "Sample" (context for co-occurrence)
+# - col_column: "Gene_Symbol" (entity to correlate)
+# - chart.title.show: true/false (toggle title)
+# - chart.title.text: Title text
+# - chart.title.font_size: Title font size (12-24)
+# - chart.xaxis_title: X-axis label
+# - chart.yaxis_title: Y-axis label
+# - chart.xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - chart.yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - chart.color_continuous_scale: "RdBu_r", "Viridis", "Blues", etc.
+# - chart.color_label: Colorbar label
+# - chart.text_auto: true/false (show correlation values in cells)
+# - chart.colorbar.title: Colorbar title
+# - chart.colorbar.title_font_size: Colorbar font size
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.margin: {l, r, t, b} margins
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_3_6_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - Sample: "Sample", "sample", "sample_id", "Sample_ID", "sampleID", "genome", "Genome", "organism"
+#    - Gene_Symbol: "Gene_Symbol", "gene_symbol", "genesymbol", "GeneSymbol", "gene", "Gene", "symbol", "Symbol", "gene_name"
+# 3. Clean data:
+#    a. Remove nulls
+#    b. Strip whitespace
+#    c. Remove empty strings
+# 4. Rename columns to standard names ('Sample', 'Gene_Symbol')
+# 5. Validate minimum 2 genes
+# 6. Pass to PlotService
+#
+# STRATEGY (CorrelogramStrategy - Feature Mode):
+# 1. Receives data with ['Sample', 'Gene_Symbol']
+# 2. Build presence/absence matrix:
+#    - Rows: Samples
+#    - Columns: Gene symbols
+#    - Values: 1 (present) or 0 (absent)
+# 3. Compute gene-gene correlation:
+#    - Direct correlation of columns
+#    - Result: Gene × Gene correlation matrix
+# 4. Create heatmap:
+#    - X-axis: Gene symbol names
+#    - Y-axis: Gene symbol names
+#    - Cell colors: Correlation values (-1 to +1)
+#    - Diagonal: Always 1.0 (self-correlation)
+# 5. Return Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample' and 'Gene_Symbol' columns
+# - HADEG: ❌ Does NOT contain gene symbol data
+# - KEGG: ❌ Does NOT contain sample associations
+# - ToxCSM: ❌ Does NOT contain gene data
+#
+# Rendering Logic:
+# - Lazy loading: Chart renders only when accordion opens
+# - Single trigger: accordion activation
+# - No auto-update on data change (manual refresh required)
+#
+# Visualization Details:
+# - Heatmap type: Symmetric correlation matrix
+# - Color scale: RdBu_r (diverging)
+#   * Red: Positive correlation (genes co-occur frequently)
+#   * White: No correlation (independent occurrence)
+#   * Blue: Negative correlation (mutual exclusion)
+# - Value range: -1 to +1 (Pearson r)
+# - Diagonal: Always 1.0 (perfect self-correlation)
+# - Hover: Gene pair and correlation value
+# - Interpretation:
+#   * r > 0.7: Strong co-occurrence (likely functional relationship)
+#   * 0.3 < r < 0.7: Moderate co-occurrence
+#   * r < 0.3: Weak or no co-occurrence
+#   * r < 0: Mutual exclusion (genes rarely found together)
+#
+# Column Mapping (Flexible):
+# - Sample: "Sample", "sample", "sample_id", "Sample_ID", "sampleID", "genome", "Genome", "organism"
+# - Gene_Symbol: "Gene_Symbol", "gene_symbol", "genesymbol", "GeneSymbol", "gene", "Gene", "symbol", "Symbol", "gene_name"
+#
+# Correlation Computation:
+# 1. Build binary matrix M (samples × genes)
+# 2. Compute correlation: corr(M) = Gene × Gene matrix
+# 3. Each cell (i,j) = Pearson correlation between gene i and gene j
+# 4. Based on co-occurrence patterns across samples
+#
+# Scientific Interpretation:
+# - High correlation: Genes frequently found together → potential functional relationship, co-regulation, or same pathway
+# - Low correlation: Genes occur independently → different functional roles
+# - Negative correlation: Genes rarely co-occur → mutual exclusion, competitive pathways
+# - Use for: Gene network analysis, pathway discovery, functional module identification
+# - Comparison with UC-3.4/3.5: This correlates genes (features) instead of samples

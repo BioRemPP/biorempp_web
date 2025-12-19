@@ -1,0 +1,81 @@
+# UC-4.10: Genetic Diversity of Enzymatic Activities Across Samples
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-10"
+
+scientific_question: >
+  Which enzymatic functions in which biological samples are supported by
+  the greatest diversity of unique genes, potentially indicating significant genetic
+  investment or functional redundancy?
+
+description: >
+  This visualization maps the genetic diversity associated with each observed
+  enzyme activity across all samples. The bubble chart uses both size and color
+  to represent the number of unique gene symbols linked to a specific enzymatic
+  function within a particular sample. This approach highlights "hotspots" of
+  high genetic diversity, pointing to key functional capabilities. Genetic
+  diversity is quantified as the count of unique gene symbols, serving as a proxy
+  for the complexity and robustness of a given enzymatic function within a
+  biological source.
+
+visual_elements:
+  - label: "Y-axis (Samples)"
+    description: >
+      Represents the individual biological samples in your dataset. Each sample
+      is displayed on the vertical axis.
+
+  - label: "X-axis (Enzyme Activities)"
+    description: >
+      Represents the different enzymatic functions identified in the analysis.
+      Each unique enzyme activity is displayed on the horizontal axis.
+
+  - label: "Bubble Size and Color"
+    description: >
+      Both the size and color intensity of each bubble correspond to the count
+      of unique gene symbols for that sample-enzyme activity interaction. Larger,
+      brighter bubbles indicate a higher count of unique genes. The color bar
+      on the right provides the quantitative scale.
+
+  - label: "Color Bar"
+    description: >
+      Located on the right side of the plot, the color bar shows the quantitative
+      scale for unique gene count, allowing you to quickly assess the magnitude
+      of genetic diversity for each interaction.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over a bubble reveals additional details, such as the
+      sample name, enzyme activity, and the exact count of unique gene symbols
+      associated with that interaction.
+
+interpretation_guidelines:
+  - >
+    Functional Hotspots: Large, brightly colored bubbles may represent "hotspots"
+    of high genetic diversity. These may indicate that a specific sample possesses
+    a large and varied set of genes for a particular enzymatic function,
+    potentially suggesting that this function is important and robust in that biological source.
+
+  - >
+    Sample's Enzymatic Profile: Reading across a horizontal row can help identify a
+    sample's enzymatic profile. A sample with numerous large bubbles may be a
+    "functional powerhouse" with a genetically diverse toolkit for many
+    different activities.
+
+  - >
+    Conserved vs. Variable Functions: Reading down a vertical column reveals
+    how genetically diverse an enzyme activity is across the consortium. An
+    activity with large bubbles in many samples (e.g., 'oxidoreductase') may
+    represent a core function with many varied gene families. An activity with
+    only a few small bubbles may be a more conserved or specialized function.
+
+  - >
+    Genetic Redundancy: Multiple genes encoding the same enzymatic function
+    within a single sample indicate functional redundancy, which can provide
+    robustness and adaptability to environmental changes or stress conditions.
+
+  - >
+    Bioaugmentation Candidates: Samples showing high genetic diversity across
+    multiple enzyme activities may be excellent candidates for bioaugmentation
+    strategies, as they possess versatile and robust biotransformation capabilities.
+
+color_scheme: "success"

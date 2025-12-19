@@ -1,0 +1,239 @@
+"""
+Results Page Layout - BioRemPP v1.0.
+
+Display analysis results with interactive tables.
+
+Functions
+---------
+create_results_layout
+    Create complete results page layout
+
+Notes
+-----
+- Sticky navbar for navigation
+- Result header with metadata
+- 4 interactive tables (BioRemPP, HADEG, ToxCSM, KEGG)
+- Export functionality per table
+- Footer with links
+"""
+
+from typing import Optional, Dict, Any
+import pandas as pd
+import dash_bootstrap_components as dbc
+from dash import html, dcc
+
+from ..components.base import create_navbar, create_footer
+from ..components.composite import (
+    create_result_header,
+    create_ondemand_table
+)
+
+
+def create_results_layout(
+    merged_data: Optional[Dict[str, Any]] = None
+) -> html.Div:
+    """
+    Create results page layout.
+    
+    Parameters
+    ----------
+    merged_data : Optional[Dict[str, Any]], optional
+        Merged data from processing (MergedDataDTO dict), by default None
+        Expected keys: biorempp_df, hadeg_df, toxcsm_df, kegg_df,
+        metadata (filename, sample_count, etc.)
+    
+    Returns
+    -------
+    html.Div
+        Complete results page layout
+    
+    Examples
+    --------
+    >>> layout = create_results_layout()
+    >>> 
+    >>> # With merged data
+    >>> data = {
+    ...     'biorempp_df': pd.DataFrame(...),
+    ...     'hadeg_df': pd.DataFrame(...),
+    ...     'metadata': {...}
+    ... }
+    >>> layout = create_results_layout(data)
+    
+    Notes
+    -----
+    Layout Structure:
+    - Sticky Navbar (Home, Help, Docs, Contact, Download All, Reset)
+    - Result Header (metadata, match statistics)
+    - Section 1: Primary Results Tables
+      - BioRemPP Results
+      - HADEG Results
+      - ToxCSM Results
+      - KEGG Pathways Results
+    - Footer
+    
+    Data Flow:
+    - merged_data loaded from dcc.Store (merged-result-store)
+    - DataFrames converted to dict('records') for DataTable
+    - Export buttons trigger CSV/Excel downloads
+    """
+    # Extract data
+    if merged_data is None:
+        merged_data = {
+            'biorempp_df': pd.DataFrame(),
+            'hadeg_df': pd.DataFrame(),
+            'toxcsm_df': pd.DataFrame(),
+            'kegg_df': pd.DataFrame(),
+            'metadata': {}
+        }
+    
+    biorempp_df = merged_data.get('biorempp_df', pd.DataFrame())
+    hadeg_df = merged_data.get('hadeg_df', pd.DataFrame())
+    toxcsm_df = merged_data.get('toxcsm_df', pd.DataFrame())
+    kegg_df = merged_data.get('kegg_df', pd.DataFrame())
+    metadata = merged_data.get('metadata', {})
+    
+    # Convert dict to DataFrame if needed
+    if isinstance(biorempp_df, dict):
+        biorempp_df = pd.DataFrame(biorempp_df)
+    if isinstance(hadeg_df, dict):
+        hadeg_df = pd.DataFrame(hadeg_df)
+    if isinstance(toxcsm_df, dict):
+        toxcsm_df = pd.DataFrame(toxcsm_df)
+    if isinstance(kegg_df, dict):
+        kegg_df = pd.DataFrame(kegg_df)
+    
+    # Navbar
+    navbar = create_navbar(show_actions=True)
+    
+    # Result Header
+    result_header = create_result_header(result_data=metadata)
+    
+    # Section Title
+    section_title = html.Div([
+        html.H3([
+            html.I(className="fas fa-table me-2"),
+            "Primary Results"
+        ], className="text-success mb-3"),
+        html.P(
+            "Interactive tables showing merged data from all databases. "
+            "Click column headers to sort, use filter boxes to search, "
+            "and export data as CSV or Excel.",
+            className="text-muted mb-4"
+        )
+    ])
+    
+    # Table 1: BioRemPP Results
+    biorempp_table = create_results_table(
+        table_id="biorempp-table",
+        data=biorempp_df,
+        title="BioRemPP Results",
+        download_filename="biorempp_results.csv"
+    )
+    
+    # Table 2: HADEG Results
+    hadeg_alert = None
+    if not hadeg_df.empty:
+        hadeg_alert = dbc.Alert(
+            [
+                html.I(className="fas fa-info-circle me-2"),
+                "HADEG database data available"
+            ],
+            color="info",
+            className="mb-0"
+        )
+    
+    hadeg_table = create_results_table(
+        table_id="hadeg-table",
+        data=hadeg_df,
+        title="HADEG Results",
+        download_filename="hadeg_results.csv",
+        alert_component=hadeg_alert
+    )
+    
+    # Table 3: ToxCSM Results
+    toxcsm_alert = None
+    if not toxcsm_df.empty:
+        toxcsm_alert = dbc.Alert(
+            [
+                html.I(className="fas fa-exclamation-triangle me-2"),
+                "ToxCSM computational predictions (in silico)"
+            ],
+            color="warning",
+            className="mb-0"
+        )
+    
+    # Conditional styling for toxicity levels
+    toxicity_styles = [
+        {
+            'if': {
+                'filter_query': '{value} contains "High" || '
+                '{value} contains "Yes"',
+                'column_id': col
+            },
+            'backgroundColor': '#ffcccc',
+            'color': '#721c24'
+        }
+        for col in toxcsm_df.columns if any(
+            x in col for x in [
+                'Hepato', 'Muta', 'Skin', 'Immuno', 'Cyto'
+            ]
+        )
+    ] if not toxcsm_df.empty else []
+    
+    toxcsm_table = create_results_table(
+        table_id="toxcsm-table",
+        data=toxcsm_df,
+        title="ToxCSM Results",
+        download_filename="toxcsm_results.csv",
+        alert_component=toxcsm_alert,
+        conditional_styles=toxicity_styles
+    )
+    
+    # Table 4: KEGG Pathways Results
+    kegg_table = create_results_table(
+        table_id="kegg-table",
+        data=kegg_df,
+        title="KEGG Pathways Results",
+        download_filename="kegg_results.csv"
+    )
+    
+    # Footer
+    footer = create_footer(version="2.0.0", year=2025)
+    
+    # Assemble layout
+    layout = html.Div([
+        dcc.Location(id="url-results", refresh=False),
+        navbar,
+        dbc.Container([
+            result_header,
+            section_title,
+            biorempp_table,
+            hadeg_table,
+            toxcsm_table,
+            kegg_table
+        ], fluid=False, className="px-4"),
+        footer
+    ])
+    
+    return layout
+
+
+def get_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.Div:
+    """
+    Get results page layout (alias for create_results_layout).
+    
+    Parameters
+    ----------
+    merged_data : Optional[Dict[str, Any]], optional
+        Merged data from processing, by default None
+    
+    Returns
+    -------
+    html.Div
+        Results page layout
+    
+    Notes
+    -----
+    This function is called by Dash when rendering /results route.
+    """
+    return create_results_layout(merged_data=merged_data)

@@ -1,0 +1,109 @@
+# Demo Use Case Configuration for User Guide
+# Mock data demonstrating BioRemPP module structure
+
+use_case_id: "uc-demo-guide"
+
+# Module description metadata
+module:
+  id: "2"
+  title: "Exploratory Analysis: Functional Potential"
+  overview: >
+    This module quantifies how samples contribute to the overall functional richness,
+    ranking them by the diversity of genes (KO counts) and degradable compounds
+    present in their genomic profiles.
+
+# Guiding questions for demonstration
+guiding_questions:
+  - id: "2.1"
+    subtitle: "Sample performance"
+    question: "Which samples exhibit the highest diversity of functional genes?"
+    chart_hint: "Charts below: KO and compound-based ranking"
+
+  - id: "2.2"
+    subtitle: "Compound coverage"
+    question: "Which pollutant compounds are most represented across samples?"
+    chart_hint: "Comparative compound richness analysis"
+
+  - id: "2.3"
+    subtitle: "Distribution patterns"
+    question: "How are functional genes distributed across the dataset?"
+    chart_hint: "Box plots and scatter analysis"
+
+# Panel information (use case description)
+panel:
+  scientific_question: >
+    How does the ranking of functional richness for each sample
+    change when viewed through the lens of different annotation
+    databases (BioRemPP, HADEG, KEGG)?
+
+  description: >
+    This interactive visualization allows for a direct comparison of the
+    functional richness of each microbial sample across different annotation
+    sources. By selecting a database from the dropdown menu, the bar chart
+    dynamically updates to rank each sample based on its total count
+    of unique KEGG Orthology (KO) identifiers.
+
+  visual_elements:
+    - label: "Database Selector"
+      description: "Switch between BioRemPP, HADEG, and KEGG datasets"
+
+    - label: "Y-axis"
+      description: "Individual sample identifiers"
+
+    - label: "X-axis"
+      description: "Count of unique KO annotations"
+
+    - label: "Bar Chart"
+      description: "Visual ranking showing functional richness per sample"
+
+  interpretation_guidelines:
+    - >
+      Comparative Ranking: Switching databases reveals how sample rankings
+      change based on annotation source specialization.
+
+    - >
+      Identifying Specialists: Samples ranking high in HADEG but lower in
+      KEGG likely specialize in hydrocarbon degradation.
+
+    - >
+      Database Scope: Differences highlight each database's focus, helping
+      select the most appropriate source for specific analyses.
+
+# Mock chart data for demonstration
+mock_data:
+  samples:
+    - name: "Sample_A"
+      ko_count: 245
+      color: "#78C2AD"
+
+    - name: "Sample_B"
+      ko_count: 189
+      color: "#85C1E2"
+
+    - name: "Sample_C"
+      ko_count: 312
+      color: "#F3969A"
+
+    - name: "Sample_D"
+      ko_count: 156
+      color: "#FFB347"
+
+    - name: "Sample_E"
+      ko_count: 278
+      color: "#B19CD9"
+
+  databases:
+    - name: "BioRemPP"
+      description: "Comprehensive bioremediation annotation database"
+
+    - name: "HADEG"
+      description: "Hydrocarbon degradation specialized database"
+
+    - name: "KEGG"
+      description: "KEGG pathways and orthology database"
+
+# Download formats available
+download_formats:
+  - csv
+  - excel
+  - json

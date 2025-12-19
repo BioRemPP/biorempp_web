@@ -1,0 +1,93 @@
+# UC-1.4: Proportional Functional Diversity of Biological Samples
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-1-4"
+
+scientific_question: >
+  What is the relative functional diversity of each biological sample 
+  in comparison to the entire observed functional landscape?
+
+description: >
+  This visualization provides a high-level overview of the functional potential
+  of each biological sample by breaking down the complete set of unique KEGG
+  Orthology (KO) identifiers by sample. The 100% stacked bar chart illustrates
+  the proportional contribution of each sample to the total pool of unique KOs
+  identified. The primary entities compared are the biological samples that
+  provide insight into the functional richness and metabolic versatility of
+  different biological sources.
+
+visual_elements:
+  - label: "Single Stacked Bar"
+    description: >
+      The chart consists of a single vertical bar that represents the entirety
+      (100%) of the unique KOs found in the dataset. This single-bar format
+      emphasizes the proportional breakdown rather than absolute counts,
+      allowing for immediate visual comparison of relative functional contributions.
+  
+  - label: "Colored Segments"
+    description: >
+      Each colored segment within the bar corresponds to a specific biological
+      sample. Different colors help distinguish between samples and make it easy
+      to identify which biological sources are associated with the most
+      functionally diverse metabolic capabilities.
+  
+  - label: "Segment Length and Percentage Labels"
+    description: >
+      The length of each segment, along with its percentage label (e.g., "23.4%"),
+      indicates that sample's proportional contribution to the total unique KO
+      pool. Larger segments represent samples with greater metabolic functional
+      diversity. The percentages sum to exactly 100%.
+  
+  - label: "Hover Information"
+    description: >
+      Hovering over any segment reveals detailed information including the
+      sample name, the exact count of unique KOs associated with that sample,
+      and the percentage share. This provides precise quantification while
+      maintaining the visual clarity of the proportional view.
+  
+  - label: "Legend"
+    description: >
+      The legend on the right side lists all samples with their corresponding
+      colors. This allows quick identification of which segment represents which
+      biological source without needing to hover over each segment.
+
+interpretation_guidelines:
+  - >
+    Functional Richness: Larger segments highlight the biological samples with
+    the greatest diversity of metabolic functions (KOs) within this dataset.
+    These are the most functionally rich or versatile biological sources, with
+    segments >20% indicating broad metabolic capabilities spanning diverse
+    pathways. Such biological sources are candidates for remediation strategies
+    or functional annotation studies.
+  
+  - >
+    Comparative Diversity: The chart allows for a rapid, at-a-glance comparison
+    of the functional breadth of each sample. A sample with a significantly
+    larger segment possesses a more diverse array of unique metabolic functions
+    compared to others. This visual comparison can help researchers identify
+    functionally rich biological sources versus specialists.
+  
+  - >
+    Niche Specialization: Smaller segments (typically <5%) may represent samples
+    with a more specialized focus, possessing a narrower set of metabolic
+    capabilities. These biological sources might excel in specific environmental
+    niches or biotransformation pathways rather than broad functional versatility.
+    They can be valuable for targeted applications in specific remediation contexts.
+  
+  - >
+    Functional Coverage Balance: By examining the distribution of percentages,
+    researchers can assess whether the functional diversity is evenly distributed
+    across samples (multiple samples with 10-20% each suggesting complementary
+    functional roles) or concentrated in a few dominant biological sources (one
+    sample >50% indicating a single functional powerhouse with others providing
+    niche coverage).
+  
+  - >
+    Research Prioritization: Samples with larger proportional contributions
+    may be prioritized for in-depth functional annotation, pathway reconstruction,
+    and experimental validation. Their broad functional repertoire makes them
+    potentially valuable for understanding comprehensive biotransformation or
+    remediation mechanisms. Specialized samples (smaller segments) may offer
+    unique insights into specific functional niches.
+
+color_scheme: "primary"

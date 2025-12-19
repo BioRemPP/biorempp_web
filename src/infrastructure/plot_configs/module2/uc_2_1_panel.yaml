@@ -1,0 +1,56 @@
+# UC-2.1: Ranking of Samples by KO Richness
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-2-1"
+
+scientific_question: >
+  How does the ranking of functional richness for each sample
+  change when viewed through the lens of different annotation
+  databases (BioRemPP, HADEG, KEGG)?
+
+description: >
+  This interactive visualization allows for a direct comparison of the
+  functional richness of each biological sample across different annotation
+  sources. By selecting a database from the dropdown menu, the horizontal
+  bar chart dynamically updates to rank each sample based on its total count
+  of unique KEGG Orthology (KO) identifiers within that specific dataset.
+  
+  Databases: The user can select from BioRemPP, HADEG, or KEGG to explore
+  and compare the resulting functional profiles.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: "Use this to switch between the BioRemPP, HADEG, and KEGG datasets."
+  
+  - label: "Y-axis"
+    description: "Represents the individual Samples."
+  
+  - label: "X-axis"
+    description: "Represents the absolute count of unique KOs."
+  
+  - label: "Bar Length and Label"
+    description: >
+      The length of each bar and its corresponding numerical label
+      explicitly state the total unique KO count for that sample within
+      the context of the selected database.
+
+interpretation_guidelines:
+  - >
+    Comparative Ranking: By switching between databases, one can observe
+    how the functional ranking of a sample changes. A sample that ranks highly
+    in HADEG but lower in KEGG, for example, may be a specialist in
+    hydrocarbon biotransformation, reflecting HADEG's specific scope.
+  
+  - >
+    Identifying Generalists vs. Specialists: Samples that consistently rank
+    high across all three databases may be considered robust functional
+    "generalists." Those whose ranks vary significantly may have more specialized
+    metabolic capabilities that are only captured by certain databases.
+  
+  - >
+    Assessing Database Bias: The differences in rankings may help identify the
+    inherent scope and focus of each annotation source. This analysis can help
+    assess which database may be most suitable for identifying specific types of
+    functional potential.
+
+color_scheme: "success"

@@ -1,0 +1,70 @@
+# UC-7.4: Toxicity Score Distribution by Endpoint Category
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-4"
+
+scientific_question: >
+  Within a broad toxicological domain (e.g., Genomic Toxicity), what is the
+  statistical distribution of predicted toxicity scores across its specific
+  endpoints, and which endpoints exhibit the highest median risk or greatest
+  variability?
+
+description: >
+  This interactive visualization allows for the detailed exploration of the
+  predicted toxicity scores from the ToxCSM dataset. By selecting a high-level
+  toxicity category from the dropdown menu, the plot dynamically updates to
+  display a series of box plots. Each box plot summarizes the distribution of
+  toxicity scores for a specific toxicological endpoint within that category,
+  allowing for direct comparison.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Toxicity Super-Category (e.g., Genomic,
+      Environmental) to analyze. The plot will update automatically.
+  
+  - label: "X-axis"
+    description: >
+      Represents the individual Toxicological Endpoints within the selected
+      super-category.
+  
+  - label: "Y-axis"
+    description: >
+      Represents the predicted Toxicity Score, typically ranging from 0
+      (low risk) to 1 (high risk).
+  
+  - label: "Box Plot"
+    description: >
+      Each box summarizes the distribution of scores for all compounds for
+      that endpoint, showing the median, quartiles, and range.
+  
+  - label: "Points"
+    description: >
+      The individual points represent the toxicity scores for specific
+      compounds.
+
+interpretation_guidelines:
+  - >
+    Identifying High-Risk Endpoints: Endpoints with box plots positioned
+    higher on the y-axis (i.e., with a high median score) represent areas
+    of greater overall toxicological concern.
+  
+  - >
+    Assessing Variability: The height of a box (the interquartile range)
+    indicates the variability in toxicity scores for that endpoint. A tall
+    box signifies a wide range of predicted effects, while a short box
+    indicates that most compounds have a similar predicted score.
+  
+  - >
+    Spotting Potent Compounds: Individual points that are outliers (far
+    above the main box) represent specific compounds with exceptionally high
+    predicted toxicity for that endpoint, making them key targets for further
+    investigation.
+  
+  - >
+    Comparative Toxicology: The plot allows for a direct comparison of risk
+    profiles. For instance, one can quickly assess whether Carcinogenesis
+    scores are generally higher or more variable than AMES_Mutagenesis scores
+    within the "Genomic" category.
+
+color_scheme: "success"

@@ -1,0 +1,77 @@
+# UC-5.4: Gene-Compound Interaction Network
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-4"
+
+scientific_question: >
+  What is the overall structure of the interaction network between genes and
+  chemical compounds, and which entities act as central "hubs" connecting
+  disparate functions?
+
+description: >
+  This visualization constructs a bipartite network graph to map the
+  relationships between all identified gene symbols and compound names.
+  The resulting plot reveals the complex web of interactions, allowing for
+  the identification of key nodes (genes or compounds) that are highly
+  connected within the system.
+
+visual_elements:
+  - label: "Nodes"
+    description: >
+      The points in the graph represent either Genes (blue) or Compounds
+      (green). Each node is a distinct entity in the network, positioned
+      using a force-directed layout algorithm that groups connected entities
+      together.
+
+  - label: "Edges"
+    description: >
+      The lines connecting the nodes represent observed interactions between
+      a gene and a compound. Each edge indicates that the gene has been
+      associated with the compound in the bioremediation database.
+
+  - label: "Node Colors"
+    description: >
+      Genes are displayed in blue (darkblue) and Compounds in green
+      (darkgreen), making it easy to distinguish between the two entity types
+      in the bipartite network.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over any node reveals its name (e.g., "Gene: gstA")
+      and its total number of connections (e.g., "Interactions: 15").
+
+  - label: "Network Structure"
+    description: >
+      The spatial arrangement of the nodes reflects the network's structure.
+      Dense clusters represent groups of highly interconnected genes and
+      compounds that form functional modules.
+
+interpretation_guidelines:
+  - >
+    Identifying Hubs: Nodes located in the dense central part of the graph
+    with a high number of interactions are considered "hubs." A gene hub is
+    a versatile gene that interacts with many different compounds. A compound
+    hub is a chemical that is targeted by many different genes, potentially suggesting
+    a complex biotransformation process.
+
+  - >
+    Functional Modules: Tightly clustered groups of genes and compounds can
+    represent functional modules, where a specific set of genes works together
+    to process a related group of chemicals.
+
+  - >
+    Peripheral Nodes: Nodes on the outskirts of the graph with few connections
+    represent more specialized or less frequently observed interactions within
+    the dataset. These may indicate rare but specific gene-compound associations.
+
+  - >
+    Bioremediation Potential: The degree of connectivity of compound nodes
+    may indicate how many genetic resources are available for its biotransformation.
+    Highly connected compounds may be more accessible targets for bioremediation.
+
+  - >
+    Consortium Design: This visualization can help identify key genes that could
+    be targeted for enhancing bioremediation capabilities or understanding
+    the metabolic versatility of different biological sources in the consortium.
+
+color_scheme: "success"

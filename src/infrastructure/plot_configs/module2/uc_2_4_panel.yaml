@@ -1,0 +1,55 @@
+# UC-2.4: Ranking of Compounds by Genetic Interaction within Chemical Classes
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-2-4"
+
+scientific_question: >
+  Within a specific chemical class, which compounds are associated with the
+  greatest diversity of unique genes, suggesting they may involve more complex
+  or varied enzymatic machinery for biotransformation?
+
+description: >
+  This interactive visualization ranks compounds based on the number of unique
+  genes that interact with them, filterable by the compound's chemical class.
+  The resulting bar chart highlights which compounds elicit the most diverse
+  genetic response for a selected category, potentially indicating complex
+  biotransformation pathways.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Compound Class to analyze. The plot will update
+      automatically.
+  
+  - label: "X-axis"
+    description: "Represents the individual Compounds within the selected class."
+  
+  - label: "Y-axis"
+    description: >
+      Represents the count of unique genes that interact with each compound.
+  
+  - label: "Bar Height and Label"
+    description: >
+      The height of each bar and its corresponding numerical label explicitly
+      state the total number of unique genes associated with that compound.
+
+interpretation_guidelines:
+  - >
+    Complex Biotransformation Targets: Taller bars represent compounds that are
+    associated with a larger and more diverse set of genes. This may suggest
+    a complex, multi-step biotransformation pathway involving numerous different
+    enzymes, transporters, or regulatory genes.
+  
+  - >
+    Simple Biotransformation Targets: Shorter bars, especially those with a count of
+    '1', may suggest compounds that are targeted by a smaller, more specific, or
+    perhaps a single enzymatic pathway.
+  
+  - >
+    Comparing Chemical Classes: The dropdown allows for direct comparison of
+    genetic interaction patterns between chemical classes. This can help assess,
+    for example, whether compounds in the "Aromatics" class generally involve
+    a greater diversity of genetic machinery for biotransformation than those in
+    the "Aliphatics" class.
+
+color_scheme: "success"

@@ -1,0 +1,211 @@
+# ============================================================================
+# UC-8.7: Intersection of Genes Across Samples
+# ============================================================================
+# Description: UpSet plot analyzing orthologous gene sharing across samples
+# Module: module8
+# Plot Type: UpSet
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-8.7"
+  module: "module8"
+  title: "Intersection of Genes Across Samples"
+  description: >
+    Analyzes orthologous gene sharing patterns across microbial samples,
+    revealing core genomes, unique genetic features, and functional overlap
+    for comparative genomics and consortium design.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-30"
+  tags:
+    - "comparative_genomics"
+    - "upset"
+    - "gene_intersection"
+    - "core_genome"
+  plot_type: "upset"
+  scientific_context:
+    domain: "Comparative Genomics"
+    application: "Core genome identification and functional guild analysis"
+    interpretation: "Reveals conserved vs. variable functional elements across microbial species"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "BioRemPP"
+  source_type: "database"
+  
+  required_columns:
+    - "Sample"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP data from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter_samples"
+        enabled: true
+        description: "Filter data for selected samples"
+      
+      - name: "build_sets"
+        enabled: true
+        params:
+          group_by: "Sample"
+          collect_column: "KO"
+        description: "Build KO sets per sample"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "UpSetStrategy"
+  
+  plotly:
+    # Column mapping
+    entity_column: "identifier"
+    category_column: "category"
+    
+    # UpSet plot parameters
+    sort_by: "cardinality"
+    show_counts: true
+    show_percentages: false
+    min_subset_size: 0
+    max_subset_rank: null
+    
+    # Figure dimensions
+    fig_width: 10
+    fig_height: 6
+    
+    # Color scheme
+    bar_color: "#28A745"
+    
+    # Title configuration (at plotly level)
+    title:
+      text: "KO Set Intersections Across Selected Samples"
+      font:
+        size: 16
+        family: "Arial, sans-serif"
+        color: "#333"
+      x: 0.5
+      xanchor: "center"
+    
+    # Layout customization
+    layout:
+      height: 600
+      autosize: true
+      template: "simple_white"
+      margin:
+        l: 150
+        r: 50
+        t: 100
+        b: 150
+      showlegend: false
+      hovermode: "closest"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-8-7-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render UpSet plot when accordion opens"
+  
+  outputs:
+    - component_id: "uc-8-7-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "UpSet plot visualization"
+  
+  states:
+    - component_id: "uc-8-7-sample-dropdown"
+      property: "value"
+      description: "Selected samples (multi-select)"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "KO"]
+      message: "Data must contain 'Sample' and 'KO' columns for gene intersection analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 2
+      message: "At least 2 samples required for UpSet analysis"
+    
+    - rule: "samples_selected"
+      min_count: 2
+      message: "Please select at least 2 samples from the dropdown"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_8_7_df_{data_hash}"
+        description: "Cache filtered sample data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_8_7_upset_{data_hash}_{filters_hash}"
+        description: "Cache generated UpSet figure"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. UpSet plot requires 'Sample' and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No data found for selected samples."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 2 samples required for UpSet analysis. Found: {count}"
+  
+  processing_errors:
+    set_construction_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"

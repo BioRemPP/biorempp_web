@@ -1,0 +1,403 @@
+# ============================================================================
+# UC-3.2: PCA - Sample Relationships by Compound Profile
+# ============================================================================
+# Description: PCA scatter plot visualizing sample clustering based on compound profiles
+# Module: module3
+# Plot Type: PCA Scatter Plot
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-3.2"
+  module: "module3"
+  title: "PCA - Sample Relationships by Compound Profile"
+  description: >
+    Principal Component Analysis (PCA) visualizing relationships and clustering
+    patterns among microbial samples based on their compound degradation
+    presence/absence profiles. The 2D scatter plot reveals sample similarities,
+    degradation capability groupings, and potential outliers in the chemical
+    landscape. Enables identification of samples with similar degradation
+    capabilities and discovery of natural sample clusters based on compound
+    profiles.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "pca"
+    - "dimensionality_reduction"
+    - "compound_profile"
+    - "sample_clustering"
+    - "biorempp"
+  plot_type: "scatter"
+  scientific_context:
+    domain: "Chemical Biology and Multivariate Analysis"
+    application: "Sample clustering based on compound degradation profiles"
+    interpretation: "Proximity indicates similar degradation capabilities; clusters reveal sample groups with similar chemical profiles"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound_ID"
+  
+  # Column mapping for strategy
+  sample_column: "Sample"
+  feature_column: "Compound_ID"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "clean_data"
+        enabled: true
+        params:
+          drop_nulls: true
+          columns: ["Sample", "Compound_ID"]
+        description: "Remove null values in critical columns"
+      
+      - name: "build_matrix"
+        enabled: true
+        params:
+          method: "crosstab"
+          binary: true
+        description: "Build presence/absence matrix (samples × compounds)"
+      
+      - name: "standardize"
+        enabled: true
+        params:
+          method: "StandardScaler"
+        description: "Standardize features (zero mean, unit variance)"
+      
+      - name: "apply_pca"
+        enabled: true
+        params:
+          n_components: 2
+        description: "Apply PCA transformation"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "PCAStrategy"
+  
+  plotly:
+    # PCA parameters
+    n_components: 2
+    
+    # Color configuration
+    color_palette: "D3"
+    
+    # Chart configuration
+    chart:
+      # Marker configuration
+      marker:
+        size: 12
+        line:
+          width: 1
+          color: "white"
+      
+      # Axis configuration
+      show_explained_variance: true
+    
+    # Layout configuration
+    layout:
+      title:
+        show: true
+        text: "PCA - Sample Relationships by Compound Profile"
+        x: 0.5
+      
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      # Legend configuration
+      legend:
+        title: "Sample"
+        orientation: "v"
+        yanchor: "top"
+        y: 1.0
+        xanchor: "left"
+        x: 1.02
+      
+      # Margin configuration
+      margin:
+        l: 80
+        r: 120
+        t: 80
+        b: 80
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-3-2-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render PCA when accordion opens"
+  
+  outputs:
+    - component_id: "uc-3-2-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "PCA scatter plot"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound_ID"]
+      message: "Data must contain 'Sample' and 'Compound_ID' columns"
+    
+    - rule: "min_samples"
+      min_count: 2
+      message: "PCA requires at least 2 samples for comparison"
+    
+    - rule: "min_features"
+      min_count: 2
+      message: "PCA requires at least 2 compound features for dimensionality reduction"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_3_2_df_{data_hash}"
+        description: "Cache processed PCA data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_3_2_pca_{data_hash}"
+        description: "Cache generated PCA plot"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. PCA requires 'Sample' and 'Compound_ID' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No Sample-Compound data available. Please check BioRemPP dataset."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 2 samples required for PCA. Found: {count}"
+    
+    insufficient_features:
+      action: "display_message"
+      message: "At least 2 compound features required for PCA. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    matrix_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build presence/absence matrix: {error_details}"
+    
+    pca_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate PCA: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render PCA plot: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - autosize: true/false (responsive sizing)
+# - n_components: Number of PCA components (default: 2)
+# - color_palette: Sample color palette ("Plotly", "D3", "G10", "T10", etc.)
+# - marker.size: Marker size
+# - marker.line.width: Marker border width
+# - marker.line.color: Marker border color
+# - show_explained_variance: Show/hide variance in axis labels
+# - xaxis.title: Custom X-axis title (optional)
+# - yaxis.title: Custom Y-axis title (optional)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - legend.title: Legend title
+# - legend.orientation: Legend orientation (v/h)
+# - legend.position: Legend position
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_3_2_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: Sample, compoundname
+# 3. Clean data (remove nulls)
+# 4. Pass to PlotService
+#
+# STRATEGY (PCAStrategy):
+# 1. Receives data with ['Sample', 'compoundname']
+# 2. Process data:
+#    - Create presence/absence matrix (samples × compounds)
+#    - Standardize features (StandardScaler)
+#    - Apply PCA (2 components)
+#    - Extract PC1, PC2 scores
+# 3. Create figure:
+#    - Create scatter plot (PC1 vs PC2)
+#    - Color by sample
+#    - Add explained variance to axes
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample', 'compoundname' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain sample-compound associations
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: PCA scatter plot
+# - X-axis: PC1 (Principal Component 1) + explained variance %
+# - Y-axis: PC2 (Principal Component 2) + explained variance %
+# - Points: Samples (colored by sample name)
+# - Marker size: Configurable (default: 12)
+# - Hover: Shows sample name
+# - Legend: Shows sample names
+# - Interpretation:
+#   * Proximity: Samples close together have similar compound degradation profiles
+#   * Distance: Samples far apart have different compound degradation profiles
+#   * Clusters: Groups of samples with similar degradation capabilities
+#   * Outliers: Samples with unique compound degradation profiles
+#
+# PCA Algorithm:
+# 1. Create presence/absence matrix:
+#    Rows: Samples
+#    Columns: Compounds
+#    Values: 1 (can degrade) or 0 (cannot degrade)
+#
+# 2. Standardize features:
+#    For each compound:
+#      mean = 0
+#      std = 1
+#
+# 3. Apply PCA:
+#    Compute principal components
+#    Extract PC1, PC2 scores
+#    Calculate explained variance
+#
+# 4. Visualize:
+#    X-axis: PC1 (% variance explained)
+#    Y-axis: PC2 (% variance explained)
+#    Color: Sample
+#
+# Example:
+# Input:
+#   Sample  compoundname
+#   S1      Benzene
+#   S1      Toluene
+#   S2      Benzene
+#   S2      Xylene
+#
+# Matrix:
+#         Benzene  Toluene  Xylene
+#   S1    1        1        0
+#   S2    1        0        1
+#
+# PCA Output:
+#   Sample  PC1     PC2
+#   S1      -0.5    0.2
+#   S2      0.5     -0.2
+#
+# Explained Variance:
+#   PC1: 68.2%
+#   PC2: 31.8%
+#
+# Scientific Interpretation:
+# - PC1: First principal component (captures most variance in degradation profiles)
+# - PC2: Second principal component (captures second-most variance)
+# - Explained Variance: Percentage of total variance captured by each component
+# - Proximity: Samples with similar degradation capabilities cluster together
+# - Distance: Samples with different degradation capabilities are separated
+# - Use for: Sample comparison, degradation profiling, quality control, pattern discovery
+# - Optimization: Identify samples with similar vs. unique degradation capabilities
+#
+# Color Palettes:
+# - Plotly: Default Plotly colors (10 colors)
+# - D3: D3.js categorical colors (10 colors) - Used for UC-3.2
+# - G10: Google 10 colors
+# - T10: Tableau 10 colors
+# - Alphabet: 26 distinct colors
+# - Dark24: 24 dark colors
+# - Light24: 24 light colors
+# - Set1, Set2, Set3: ColorBrewer sets
+# - Pastel: Pastel colors
+# - Safe: Color-blind safe palette
+# - Vivid: Vivid colors
+#
+# Unique Features:
+# - Dimensionality reduction (high-dimensional → 2D)
+# - Explained variance display (transparency in interpretation)
+# - Sample clustering visualization based on chemical profiles
+# - Interactive hover (sample identification)
+# - Configurable color palettes (D3 for UC-3.2)
+# - Responsive sizing (autosize)
+# - Customizable markers
+#
+# Comparison with UC-3.1:
+# - UC-3.1: KO-based (functional genomics)
+# - UC-3.2: Compound-based (chemical degradation)
+# - Both use same PCAStrategy with different feature columns
+# - UC-3.1 uses "Plotly" palette, UC-3.2 uses "D3" palette

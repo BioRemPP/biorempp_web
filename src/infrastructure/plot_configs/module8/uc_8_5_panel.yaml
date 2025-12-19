@@ -1,0 +1,110 @@
+# UC-8.5: KEGG Pathway Completeness Scorecard
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-8-5"
+
+scientific_question: >
+  Which biological samples possess the most "complete" genetic toolkit for
+  a given KEGG metabolic pathway, and how can this be used to identify
+  elite functional specialists?
+
+description: >
+  This visualization provides a quantitative "scorecard" that ranks each
+  sample's functional potential for every metabolic pathway in the KEGG
+  dataset. Instead of a simple presence/absence metric, this analysis
+  calculates a Pathway Completeness Score. This score represents the
+  percentage of all known KOs for a given pathway (within this dataset)
+  that a specific sample possesses. The scorecard is presented as a heatmap
+  matrix comparing Samples (rows) against KEGG Pathways (columns), with
+  cell colors (without numerical labels) representing the completeness score
+  gradient (0-100%).
+
+visual_elements:
+  - label: "Heatmap Scorecard Matrix"
+    description: >
+      The visualization is structured as a matrix where rows represent individual
+      biological samples (isolates/genomes) and columns represent KEGG metabolic
+      pathways. Each cell's color intensity creates an intuitive visual scorecard
+      of functional capabilities. Unlike other scorecards, this visualization uses
+      only color gradients without displaying numerical values in the cells,
+      emphasizing visual pattern recognition for comparative analysis.
+  
+  - label: "Color Gradient (Intensity Scale)"
+    description: >
+      Cell colors range from light tones (low completeness, 0-20%) through
+      medium intensity (moderate completeness, 40-60%) to dark/saturated colors
+      (high completeness, 80-100%). The color intensity provides an immediate
+      visual indicator of a sample's genetic toolkit completeness for each KEGG
+      pathway. Brighter/darker cells represent "hotspots" of functional excellence,
+      enabling rapid identification of elite specialists through visual pattern
+      recognition alone.
+  
+  - label: "Sample Rows (Y-axis)"
+    description: >
+      Each row represents a biological sample and shows its completeness profile
+      across all KEGG pathways through color patterns. Reading across a row allows
+      visual assessment of a sample's metabolic versatility - multiple dark cells
+      may indicate a generalist with broad pathway coverage, while scattered dark cells
+      may suggest selective specialization. The color-only approach facilitates rapid
+      comparative scanning across multiple samples.
+  
+  - label: "KEGG Pathway Columns (X-axis)"
+    description: >
+      Each column represents a KEGG metabolic pathway (e.g., glycolysis, TCA cycle,
+      amino acid biosynthesis) and shows completeness patterns across all samples
+      through color distribution. Reading down a column      can help identify which samples are
+      best equipped for that pathway and may indicate the complexity of the pathway
+      based on overall color intensity distribution. Pathways with predominantly
+      light colors may require consortium approaches.
+  
+  - label: "Interactive Hover Information"
+    description: >
+      While cell values are not displayed directly in the heatmap, hovering over
+      any cell reveals detailed information including the exact completeness
+      percentage, sample name, pathway name, and functional interpretation. This
+      design balances clean visual presentation with access to precise quantitative
+      data when needed, preventing visual clutter while maintaining analytical depth.
+
+interpretation_guidelines:
+  - >
+    Identifying Elite Specialists: Darkly colored cells (high intensity, representing
+    >80% completeness) may identify samples that are potent "specialists" for specific
+    KEGG pathways. A cell with maximum color intensity may indicate the sample possesses
+    every single KO for that pathway in the dataset, suggesting it as a candidate for
+    applications requiring that specific metabolic capability. These elite specialists
+    may be prioritized for experimental validation and metabolic engineering efforts.
+  
+  - >
+    Comparing Functional Potential: Reading horizontally across a sample's row allows
+    comprehensive assessment of its overall metabolic capabilities through color
+    patterns. A sample with multiple darkly colored cells may be a versatile "generalist,"
+    potent across several different types of pathways. Such generalists are valuable
+    for complex biotechnological applications requiring broad metabolic coverage.
+    Conversely, samples with few dark cells may be highly specialized organisms.
+  
+  - >
+    Assessing Pathway Complexity: Reading vertically down a pathway column can help assess
+    metabolic pathway difficulty and distribution across samples. A pathway with
+    generally light colors across all samples (<50% average completeness) may indicate
+    a complex metabolic function that is not fully encoded by any single biological source
+    in the dataset. Such pathways may require consortium approaches, metabolic
+    engineering, or horizontal gene transfer to achieve complete functionality.
+  
+  - >
+    Visual Pattern Recognition: The color-only design enables rapid identification
+    of functional patterns without numerical distraction. Look for "hot rows"
+    (samples with many dark cells = versatile generalists), "hot columns" (pathways
+    with many dark cells = common/essential pathways), and "cold spots" (light cells
+    = functional gaps or rare capabilities). These patterns guide strategic decisions
+    for biotechnology applications and metabolic engineering targets.
+  
+  - >
+    Strategic Sample and Pathway Selection: For metabolic engineering or synthetic
+    biology applications, select samples based on the target pathway profile. For
+    single-pathway applications, choose the sample with the darkest cell in that
+    pathway's column (highest completeness). For multi-pathway applications, select
+    samples with consistently dark cells across relevant pathways or design consortia
+    combining complementary specialists. The visual clarity facilitates rapid
+    decision-making in experimental design.
+
+color_scheme: "success" 

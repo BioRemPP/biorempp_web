@@ -1,0 +1,73 @@
+# UC-7.2: Concordance Between Predicted Risk and Regulatory Focus
+# Panel Configuration (YAML)
+
+use_case_id: "uc-7-2"
+
+scientific_question: >
+  What is the structure and magnitude of the overlap between compounds
+  monitored by regulatory agencies and those predicted to be of high
+  toxicological risk?
+
+description: >
+  This visualization maps the concordance between compounds of high predicted
+  toxicological risk and those listed by various regulatory agencies. The
+  chord diagram provides an intuitive overview of these relationships, where
+  the connections illustrate the number of shared compounds between each
+  pair of entities.
+
+visual_elements:
+  - label: "Outer Arcs"
+    description: >
+      Each colored arc on the circumference represents either a Regulatory
+      Agency or the High Predicted Risk category. The length of the arc is
+      proportional to the total number of unique compounds in that set.
+
+  - label: "Chords (Ribbons)"
+    description: >
+      The ribbons flowing between two arcs represent the intersection
+      between that pair of entities.
+
+  - label: "Chord Thickness"
+    description: >
+      The thickness of a chord is directly proportional to the number of
+      shared compounds. A thick chord indicates a large overlap.
+
+  - label: "High Predicted Risk Node"
+    description: >
+      A special node representing compounds predicted to have high
+      toxicological risk based on ToxCSM analysis.
+
+  - label: "Toxicity Threshold Selector"
+    description: >
+      A dropdown control to select the toxicity threshold for defining
+      high-risk compounds (e.g., 0.7 for high risk).
+
+interpretation_guidelines:
+  - >
+    Strong Concordance: A thick chord between an agency (e.g., "EPC") and
+    the "High Predicted Risk" arc indicates a strong alignment. It means
+    a significant number of compounds monitored by that agency are also
+    predicted to be highly toxic.
+
+  - >
+    Agency Focus: An agency with a large outer arc has a broad list of
+    monitored compounds. By observing the chords, one can see how much
+    of that list is dedicated to high-risk vs. lower-risk chemicals.
+
+  - >
+    Gaps in Coverage: A large "High Predicted Risk" arc with relatively
+    thin chords connecting to the regulatory agencies may suggest that
+    those agencies have limited focus on high-risk chemicals, or that the
+    dataset is biased towards lower-risk compounds for those regulations.
+
+  - >
+    Cross-Agency Overlap: Thick chords between different regulatory
+    agencies indicate shared monitoring priorities for specific compound
+    sets.
+
+  - >
+    Risk Prioritization: This analysis can help identify which regulatory
+    frameworks are most aligned with high-risk compounds, informing
+    prioritization of remediation efforts.
+
+color_scheme: "success"

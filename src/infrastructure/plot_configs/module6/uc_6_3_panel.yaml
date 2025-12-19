@@ -1,0 +1,76 @@
+# UC-6.3: Chemical Hierarchy of Bioremediation
+# Panel Configuration (YAML)
+
+use_case_id: "uc-6-3"
+
+scientific_question: >
+  Which chemical classes and specific compounds require the most diverse
+  genetic toolkit for their degradation, and which microbial samples are
+  the primary contributors to this diversity?
+
+description: >
+  This visualization provides a hierarchical, top-down view of the genetic
+  investment in bioremediation. The treemap illustrates how broad chemical
+  classes are composed of specific compounds, which are in turn targeted
+  by different microbial samples. The size of each rectangle is proportional
+  to the number of unique genes involved, highlighting the most genetically
+  complex interactions. The nested rectangles represent the hierarchical
+  path: Compound Class -> Compound Name -> Sample.
+
+visual_elements:
+  - label: "Nested Rectangles"
+    description: >
+      The chart uses nested rectangles to represent the hierarchy. The largest
+      rectangles represent the top-level categories (Compound Class), with
+      smaller nested rectangles for Compound Name and Sample levels.
+
+  - label: "Area (Values)"
+    description: >
+      The area of each rectangle is proportional to the total unique gene
+      count for that category and all categories nested within it. Larger
+      areas indicate greater genetic diversity.
+
+  - label: "Color"
+    description: >
+      The color of each rectangle corresponds to its unique gene count,
+      with brighter/warmer green tones indicating a higher value. This
+      provides an additional visual cue for identifying genetically
+      demanding categories.
+
+  - label: "Interactivity"
+    description: >
+      You can click on any rectangle to zoom in and explore that specific
+      branch of the hierarchy in more detail. Click outside or use the
+      breadcrumb to navigate back.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each rectangle displays the category name and its
+      exact unique gene count value.
+
+interpretation_guidelines:
+  - >
+    Genetically Demanding Chemical Classes: The largest rectangles at the
+    top level represent the compound class categories that are associated
+    with the most diverse set of degradation genes across the entire dataset.
+
+  - >
+    Complex Compounds: Within a given class, the largest compound name
+    rectangles represent the specific pollutants that appear to require
+    the most complex or varied genetic toolkit for their degradation.
+
+  - >
+    Key Microbial Players: At the lowest level, the largest sample
+    rectangles pinpoint the specific organisms that contribute the most
+    genetic diversity to the degradation of a particular compound.
+
+  - >
+    Hierarchical Patterns: The overall structure can help identify how genetic
+    diversity is distributed across the functional landscape, helping assess
+    which branches are most genetically diverse and valuable.
+
+  - >
+    Consortium Design: Samples that appear prominently across multiple
+    compounds may be good candidates for bioremediation consortia.
+
+color_scheme: "success"

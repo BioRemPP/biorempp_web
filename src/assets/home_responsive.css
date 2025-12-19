@@ -1,0 +1,403 @@
+/* Homepage Responsive Styles - BioRemPP v1.0 */
+
+/* ============================================================
+   Base Styles
+   ============================================================ */
+
+/* Ensure container has proper padding on all devices */
+.container,
+.container-fluid {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+/* ============================================================
+   Mobile Phones (max-width: 576px)
+   ============================================================ */
+@media (max-width: 576px) {
+
+    /* Header adjustments */
+    h1 {
+        font-size: 1.75rem !important;
+        margin-bottom: 1rem !important;
+    }
+
+    h2 {
+        font-size: 1.5rem !important;
+    }
+
+    h3 {
+        font-size: 1.25rem !important;
+    }
+
+    h4 {
+        font-size: 1.1rem !important;
+    }
+
+    h5 {
+        font-size: 1rem !important;
+    }
+
+    /* Reduce padding on containers */
+    .container {
+        padding-left: 10px !important;
+        padding-right: 10px !important;
+    }
+
+    /* Card adjustments */
+    .card {
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding: 1rem !important;
+    }
+
+    /* Button adjustments */
+    .btn {
+        font-size: 0.9rem;
+        padding: 0.5rem 1rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+
+    .btn-lg {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    /* Upload panel */
+    .upload-panel {
+        padding: 1rem !important;
+    }
+
+    /* Progress indicators */
+    .progress {
+        height: 25px;
+        font-size: 0.85rem;
+    }
+
+    /* Badges */
+    .badge {
+        font-size: 0.75rem;
+        padding: 0.35em 0.5em;
+        margin: 0.2rem;
+    }
+
+    /* Alert boxes */
+    .alert {
+        font-size: 0.9rem;
+        padding: 0.75rem;
+    }
+
+    /* Help links section */
+    .help-links .card {
+        margin-bottom: 0.75rem;
+    }
+
+    /* Footer */
+    footer {
+        font-size: 0.85rem;
+        padding: 1rem 0.5rem;
+        text-align: center;
+    }
+
+    footer .row {
+        margin: 0;
+    }
+
+    footer .col {
+        margin-bottom: 0.5rem;
+    }
+
+    /* Modal adjustments */
+    .modal-dialog {
+        margin: 0.5rem;
+    }
+
+    .modal-content {
+        border-radius: 0.5rem;
+    }
+
+    .modal-body {
+        padding: 1rem;
+    }
+
+    /* Table responsiveness */
+    .table-responsive {
+        font-size: 0.85rem;
+    }
+
+    /* Form controls */
+    .form-control,
+    .form-select {
+        font-size: 0.9rem;
+    }
+
+    /* Spacing utilities */
+    .mb-4 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 1.5rem !important;
+    }
+
+    .mt-4 {
+        margin-top: 1rem !important;
+    }
+
+    .mt-5 {
+        margin-top: 1.5rem !important;
+    }
+}
+
+/* ============================================================
+   Tablets Portrait (577px - 768px)
+   ============================================================ */
+@media (min-width: 577px) and (max-width: 768px) {
+
+    /* Header adjustments */
+    h1 {
+        font-size: 2rem !important;
+    }
+
+    h2 {
+        font-size: 1.75rem !important;
+    }
+
+    /* Container padding */
+    .container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    /* Card adjustments */
+    .card-body {
+        padding: 1.25rem !important;
+    }
+
+    /* Button adjustments */
+    .btn {
+        font-size: 0.95rem;
+    }
+
+    /* Upload panel */
+    .upload-panel {
+        padding: 1.5rem !important;
+    }
+
+    /* Progress indicators */
+    .progress {
+        height: 28px;
+    }
+
+    /* Badges */
+    .badge {
+        font-size: 0.8rem;
+    }
+
+    /* Footer */
+    footer {
+        font-size: 0.9rem;
+        padding: 1.5rem 1rem;
+    }
+}
+
+/* ============================================================
+   Tablets Landscape (769px - 992px)
+   ============================================================ */
+@media (min-width: 769px) and (max-width: 992px) {
+
+    /* Container adjustments */
+    .container {
+        max-width: 720px;
+    }
+
+    /* Card adjustments */
+    .card-body {
+        padding: 1.5rem;
+    }
+
+    /* Upload panel */
+    .upload-panel {
+        padding: 2rem;
+    }
+}
+
+/* ============================================================
+   Small Desktops (993px - 1200px)
+   ============================================================ */
+@media (min-width: 993px) and (max-width: 1200px) {
+    .container {
+        max-width: 960px;
+    }
+}
+
+/* ============================================================
+   Specific Component Adjustments
+   ============================================================ */
+
+/* Intro Card - Mobile */
+@media (max-width: 576px) {
+    .intro-card {
+        margin-bottom: 1rem;
+    }
+
+    .intro-card .card-header {
+        padding: 0.75rem;
+        font-size: 1rem;
+    }
+
+    .intro-card .card-body {
+        padding: 0.75rem;
+        font-size: 0.9rem;
+    }
+}
+
+/* Upload Workflow - Mobile */
+@media (max-width: 576px) {
+    .upload-workflow h1 {
+        font-size: 1.5rem !important;
+        margin-top: 1rem !important;
+    }
+
+    .upload-area {
+        min-height: 150px;
+        padding: 1rem;
+    }
+
+    .upload-area p {
+        font-size: 0.9rem;
+    }
+}
+
+/* Validation Panel - Mobile */
+@media (max-width: 576px) {
+    .validation-panel .list-group-item {
+        padding: 0.5rem 0.75rem;
+        font-size: 0.85rem;
+    }
+}
+
+/* Progress Panel - Mobile */
+@media (max-width: 576px) {
+    .progress-panel {
+        padding: 1rem;
+    }
+
+    .progress-panel .spinner-border {
+        width: 2rem;
+        height: 2rem;
+    }
+}
+
+/* Completion Panel - Mobile */
+@media (max-width: 576px) {
+    .completion-panel {
+        padding: 1rem;
+    }
+
+    .completion-panel .btn {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+}
+
+/* Help Links - Mobile */
+@media (max-width: 576px) {
+    .help-links .card-title {
+        font-size: 1rem;
+    }
+
+    .help-links .card-text {
+        font-size: 0.85rem;
+    }
+
+    .help-links .btn {
+        font-size: 0.85rem;
+        padding: 0.5rem 1rem;
+    }
+}
+
+/* New User Guide Button - Mobile */
+@media (max-width: 576px) {
+    .new-user-guide-button {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+}
+
+/* ============================================================
+   Touch-Friendly Adjustments
+   ============================================================ */
+@media (max-width: 768px) {
+
+    /* Increase touch target sizes */
+    .btn,
+    .nav-link,
+    .list-group-item {
+        min-height: 44px;
+        display: flex;
+        align-items: center;
+    }
+
+    /* Increase spacing between interactive elements */
+    .btn+.btn {
+        margin-top: 0.5rem;
+    }
+
+    /* Make dropdowns easier to use */
+    .dropdown-menu {
+        font-size: 1rem;
+    }
+
+    .dropdown-item {
+        padding: 0.75rem 1rem;
+    }
+}
+
+/* ============================================================
+   Landscape Orientation Adjustments
+   ============================================================ */
+@media (max-height: 500px) and (orientation: landscape) {
+
+    /* Reduce vertical spacing in landscape */
+    .mb-4 {
+        margin-bottom: 0.5rem !important;
+    }
+
+    .mb-5 {
+        margin-bottom: 1rem !important;
+    }
+
+    .mt-4 {
+        margin-top: 0.5rem !important;
+    }
+
+    .mt-5 {
+        margin-top: 1rem !important;
+    }
+
+    h1 {
+        margin-top: 0.5rem !important;
+        margin-bottom: 0.5rem !important;
+    }
+}
+
+/* ============================================================
+   Print Styles
+   ============================================================ */
+@media print {
+
+    .btn,
+    .upload-panel,
+    .progress-panel {
+        display: none !important;
+    }
+
+    .card {
+        border: 1px solid #dee2e6 !important;
+        page-break-inside: avoid;
+    }
+}

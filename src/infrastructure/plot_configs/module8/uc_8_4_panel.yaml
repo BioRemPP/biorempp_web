@@ -1,0 +1,107 @@
+# UC-8.4: Pathway Completeness Scorecard for HADEG Pathways
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-8-4"
+
+scientific_question: >
+  Which biological samples possess the most "complete" genetic toolkit for
+  a given biotransformation pathway, and how can this be used to identify elite
+  functional specialists?
+
+description: >
+  This visualization provides a quantitative "scorecard" that ranks each
+  sample's functional potential for every compound pathway in the HADEG
+  database. Instead of a simple presence/absence metric, this analysis
+  calculates a Pathway Completeness Score. This score represents the
+  percentage of all known KOs for a given pathway (within this dataset) that
+  a specific sample possesses. The scorecard is presented as a heatmap matrix
+  comparing Samples (rows) against Compound Pathways (columns), with cell
+  values representing the completeness score (0-100%).
+
+visual_elements:
+  - label: "Heatmap Matrix"
+    description: >
+      The visualization is structured as a matrix where rows represent individual
+      biological samples (isolates/genomes) and columns represent compound
+      pathways from the HADEG database. Each cell in the matrix displays a
+      completeness score as both color intensity and numerical value, creating
+      an intuitive visual scorecard of pathway-specific functional capabilities.
+  
+  - label: "Color Gradient (Green Scale)"
+    description: >
+      Cell colors range from light green (low completeness, 0-20%) through
+      medium green (moderate completeness, 40-60%) to dark green (high
+      completeness, 80-100%). The color intensity provides an immediate visual
+      indicator of a sample's genetic toolkit completeness for each biotransformation
+      pathway. Brighter/darker cells ("hotspots") may identify samples that are
+      potent specialists for specific pathways.
+  
+  - label: "Completeness Score Labels"
+    description: >
+      Each cell displays the completeness percentage (e.g., "85.5%") directly
+      within the cell. A score of 100% indicates the sample possesses every
+      single KO for that pathway found in the entire dataset, making it a
+      complete functional specialist. Scores below 50% may suggest incomplete
+      genetic toolkits requiring consortium approaches or pathway engineering.
+  
+  - label: "Sample Rows (Y-axis)"
+    description: >
+      Each row represents a biological sample and shows its completeness scores
+      across all HADEG pathways. Reading across a row allows assessment of a
+      sample's versatility - multiple high scores (>70%) may indicate a generalist
+      with broad pathway coverage, while scattered high scores may suggest
+      selective specialization for particular biotransformation pathways.
+  
+  - label: "Pathway Columns (X-axis)"
+    description: >
+      Each column represents a compound biotransformation pathway from the HADEG
+      database and shows completeness scores across all samples. Reading down
+      a column can help identify which samples are best equipped for that pathway and
+      may indicate the complexity of the biotransformation pathway based on overall
+      score distribution across samples.
+
+interpretation_guidelines:
+  - >
+    Identifying Elite Specialists: Brightly colored cells (dark green, >80%
+    completeness) may identify samples that are potent "specialists" for specific
+    compound pathways. A score of 100% may indicate the sample possesses every
+    single KO for that pathway in the dataset, suggesting it as a candidate for
+    targeted bioremediation requiring that specific biotransformation pathway. These
+    elite specialists may be prioritized for experimental validation and
+    application development.
+  
+  - >
+    Comparing Functional Potential: Reading horizontally across a sample's row
+    allows comprehensive assessment of its overall biotransformation capabilities
+    across different HADEG pathways. A sample with multiple high-scoring cells
+    (>70%) may be a versatile candidate, potent across several different pathways.
+    Such generalists are valuable for complex contamination scenarios requiring
+    diverse functional coverage.
+  
+  - >
+    Assessing Pathway Difficulty: Reading vertically down a pathway column
+    can help assess biotransformation complexity. A pathway with generally low scores across
+    all samples (<50% average) may indicate a complex biotransformation pathway that is
+    not fully encoded by any single biological source. Such pathways may require
+    consortium approaches combining multiple biological sources or pathway engineering
+    to achieve complete biotransformation functionality.
+  
+  - >
+    Strategic Sample Selection: For bioremediation applications targeting
+    specific biotransformation pathways, select samples based on the pathway
+    requirements. For single-pathway applications, choose the sample with the
+    highest completeness score for that pathway (darkest cell in column). For
+    multi-pathway scenarios, select samples with high scores across relevant
+    pathways or combine complementary specialists to achieve comprehensive
+    functional coverage.
+  
+  - >
+    Functional Gap Analysis: Cells with low scores (<30%, light green) represent
+    functional gaps where samples lack critical biotransformation genes for specific
+    pathways. These gaps can guide genetic engineering efforts, horizontal gene
+    transfer studies, or consortium design to achieve complete functional
+    pathways. Identifying which specific KOs are missing can inform targeted
+    gene acquisition strategies or synthetic biology approaches to complete
+    incomplete biotransformation pathways.
+
+color_scheme: "success"

@@ -1,0 +1,396 @@
+# ============================================================================
+# UC-3.1: PCA - Sample Relationships by KO Profile
+# ============================================================================
+# Description: PCA scatter plot visualizing sample clustering based on KO profiles
+# Module: module3
+# Plot Type: PCA Scatter Plot
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-3.1"
+  module: "module3"
+  title: "PCA - Sample Relationships by KO Profile"
+  description: >
+    Principal Component Analysis (PCA) visualizing relationships and clustering
+    patterns among microbial samples based on their KEGG Orthology (KO)
+    presence/absence profiles. The 2D scatter plot reveals sample similarities,
+    functional groupings, and potential outliers in the metabolic landscape.
+    Enables identification of samples with similar functional capabilities and
+    discovery of natural sample clusters.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "pca"
+    - "dimensionality_reduction"
+    - "ko_profile"
+    - "sample_clustering"
+    - "biorempp"
+  plot_type: "scatter"
+  scientific_context:
+    domain: "Functional Genomics and Multivariate Analysis"
+    application: "Sample clustering based on KO presence/absence profiles"
+    interpretation: "Proximity indicates functional similarity; clusters reveal sample groups with similar metabolic capabilities"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "KO"
+  
+  # Column mapping for strategy
+  sample_column: "Sample"
+  feature_column: "KO"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "clean_data"
+        enabled: true
+        params:
+          drop_nulls: true
+          columns: ["Sample", "KO"]
+        description: "Remove null values in critical columns"
+      
+      - name: "build_matrix"
+        enabled: true
+        params:
+          method: "crosstab"
+          binary: true
+        description: "Build presence/absence matrix (samples × KOs)"
+      
+      - name: "standardize"
+        enabled: true
+        params:
+          method: "StandardScaler"
+        description: "Standardize features (zero mean, unit variance)"
+      
+      - name: "apply_pca"
+        enabled: true
+        params:
+          n_components: 2
+        description: "Apply PCA transformation"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "PCAStrategy"
+  
+  plotly:
+    # PCA parameters
+    n_components: 2
+    
+    # Color configuration
+    color_palette: "Plotly"
+    
+    # Chart configuration
+    chart:
+      # Marker configuration
+      marker:
+        size: 12
+        line:
+          width: 1
+          color: "white"
+      
+      # Axis configuration
+      show_explained_variance: true
+    
+    # Layout configuration
+    layout:
+      title:
+        show: true
+        text: "PCA - Sample Relationships by KO Profile"
+        x: 0.5
+      
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      # Legend configuration
+      legend:
+        title: "Sample"
+        orientation: "v"
+        yanchor: "top"
+        y: 1.0
+        xanchor: "left"
+        x: 1.02
+      
+      # Margin configuration
+      margin:
+        l: 80
+        r: 120
+        t: 80
+        b: 80
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-3-1-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render PCA when accordion opens"
+  
+  outputs:
+    - component_id: "uc-3-1-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "PCA scatter plot"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "KO"]
+      message: "Data must contain 'Sample' and 'KO' columns"
+    
+    - rule: "min_samples"
+      min_count: 2
+      message: "PCA requires at least 2 samples for comparison"
+    
+    - rule: "min_features"
+      min_count: 2
+      message: "PCA requires at least 2 KO features for dimensionality reduction"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_3_1_df_{data_hash}"
+        description: "Cache processed PCA data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_3_1_pca_{data_hash}"
+        description: "Cache generated PCA plot"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. PCA requires 'Sample' and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No Sample-KO data available. Please check BioRemPP dataset."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 2 samples required for PCA. Found: {count}"
+    
+    insufficient_features:
+      action: "display_message"
+      message: "At least 2 KO features required for PCA. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    matrix_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build presence/absence matrix: {error_details}"
+    
+    pca_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate PCA: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render PCA plot: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - autosize: true/false (responsive sizing)
+# - n_components: Number of PCA components (default: 2)
+# - color_palette: Sample color palette ("Plotly", "D3", "G10", "T10", etc.)
+# - marker.size: Marker size
+# - marker.line.width: Marker border width
+# - marker.line.color: Marker border color
+# - show_explained_variance: Show/hide variance in axis labels
+# - xaxis.title: Custom X-axis title (optional)
+# - yaxis.title: Custom Y-axis title (optional)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - legend.title: Legend title
+# - legend.orientation: Legend orientation (v/h)
+# - legend.position: Legend position
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_3_1_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: Sample, KO
+# 3. Clean data (remove nulls)
+# 4. Pass to PlotService
+#
+# STRATEGY (PCAStrategy):
+# 1. Receives data with ['Sample', 'KO']
+# 2. Process data:
+#    - Create presence/absence matrix (samples × KOs)
+#    - Standardize features (StandardScaler)
+#    - Apply PCA (2 components)
+#    - Extract PC1, PC2 scores
+# 3. Create figure:
+#    - Create scatter plot (PC1 vs PC2)
+#    - Color by sample
+#    - Add explained variance to axes
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample', 'KO' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain KO data
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: PCA scatter plot
+# - X-axis: PC1 (Principal Component 1) + explained variance %
+# - Y-axis: PC2 (Principal Component 2) + explained variance %
+# - Points: Samples (colored by sample name)
+# - Marker size: Configurable (default: 12)
+# - Hover: Shows sample name
+# - Legend: Shows sample names
+# - Interpretation:
+#   * Proximity: Samples close together have similar KO profiles
+#   * Distance: Samples far apart have different KO profiles
+#   * Clusters: Groups of samples with similar functional capabilities
+#   * Outliers: Samples with unique KO profiles
+#
+# PCA Algorithm:
+# 1. Create presence/absence matrix:
+#    Rows: Samples
+#    Columns: KOs
+#    Values: 1 (present) or 0 (absent)
+#
+# 2. Standardize features:
+#    For each KO:
+#      mean = 0
+#      std = 1
+#
+# 3. Apply PCA:
+#    Compute principal components
+#    Extract PC1, PC2 scores
+#    Calculate explained variance
+#
+# 4. Visualize:
+#    X-axis: PC1 (% variance explained)
+#    Y-axis: PC2 (% variance explained)
+#    Color: Sample
+#
+# Example:
+# Input:
+#   Sample  KO
+#   S1      K00001
+#   S1      K00002
+#   S2      K00001
+#   S2      K00003
+#
+# Matrix:
+#         K00001  K00002  K00003
+#   S1    1       1       0
+#   S2    1       0       1
+#
+# PCA Output:
+#   Sample  PC1     PC2
+#   S1      -0.5    0.2
+#   S2      0.5     -0.2
+#
+# Explained Variance:
+#   PC1: 65.4%
+#   PC2: 34.6%
+#
+# Scientific Interpretation:
+# - PC1: First principal component (captures most variance)
+# - PC2: Second principal component (captures second-most variance)
+# - Explained Variance: Percentage of total variance captured by each component
+# - Proximity: Samples with similar functional profiles cluster together
+# - Distance: Samples with different functional profiles are separated
+# - Use for: Sample comparison, clustering, quality control, pattern discovery
+# - Optimization: Identify samples with similar vs. unique metabolic capabilities
+#
+# Color Palettes:
+# - Plotly: Default Plotly colors (10 colors)
+# - D3: D3.js categorical colors (10 colors)
+# - G10: Google 10 colors
+# - T10: Tableau 10 colors
+# - Alphabet: 26 distinct colors
+# - Dark24: 24 dark colors
+# - Light24: 24 light colors
+# - Set1, Set2, Set3: ColorBrewer sets
+# - Pastel: Pastel colors
+# - Safe: Color-blind safe palette
+# - Vivid: Vivid colors
+#
+# Unique Features:
+# - Dimensionality reduction (high-dimensional → 2D)
+# - Explained variance display (transparency in interpretation)
+# - Sample clustering visualization
+# - Interactive hover (sample identification)
+# - Configurable color palettes
+# - Responsive sizing (autosize)
+# - Customizable markers

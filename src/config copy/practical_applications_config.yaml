@@ -1,0 +1,412 @@
+# Practical Applications & Current Trends Configuration
+# BioRemPP v1.0 - Analysis Suggestions Feature
+# Source: unoff_docs/ANALYSIS_SUG_PRATICAL.yaml
+
+version: "1.0"
+generated_for: "BioRemPP – Practical Applications & Analytical Trends"
+language: "en"
+
+# ============================================================================
+# PRACTICAL APPLICATIONS
+# Real-world use cases demonstrating how BioRemPP supports bioremediation
+# ============================================================================
+
+practical_applications:
+  - id: select_samples_for_experiments
+    title: "Select Samples for Experiments"
+    icon: "fas fa-vial"
+    color: "primary"
+    description: |
+      Use gene count profiles and clustering results to identify samples
+      (isolates, consortia, metagenomes) with higher metabolic potential or
+      distinct functional signatures for target pollutants.
+    guiding_questions:
+      - "Which samples show the highest richness of genes/KO terms linked to the degradation of metals, hydrocarbons, pesticides or other contaminants?"
+      - "Which samples form distinct clusters that are promising candidates for bench-scale experiments?"
+      - "How do samples regroup when we filter only genes and pathways related to a specific compound class?"
+    relevant_use_cases:
+      - "uc-2-1"  # Ranking of Sample Functional Richness
+      - "uc-2-5"  # Descriptive Statistics of Samples
+      - "uc-3-3"  # Hierarchical Clustering
+      - "uc-3-4"  # Sample Similarity (KO Profiles)
+      - "uc-4-4"  # Functional Fingerprint of Samples
+
+  - id: prioritize_candidate_genes
+    title: "Prioritize Candidate Genes and Enzymes"
+    icon: "fas fa-dna"
+    color: "success"
+    description: |
+      Highlight key genes, KO terms and enzymes that recur across multiple
+      samples or that occupy central positions in biodegradation pathways,
+      prioritizing them for experimental validation (cloning, heterologous
+      expression, enzyme assays).
+    guiding_questions:
+      - "Which genes appear most frequently among samples that degrade the same compound or chemical class?"
+      - "Are there enzymatic steps that act as bottlenecks in degradation pathways and therefore deserve overexpression or engineering?"
+      - "Which genes repeatedly occur in the most efficient degrading samples?"
+    relevant_use_cases:
+      - "uc-3-6"   # Gene Co-occurrence
+      - "uc-4-5"   # Gene Presence Map by Pathway
+      - "uc-4-8"   # Gene Inventory Explorer
+      - "uc-4-13"  # Genetic Profile by Compound Class
+      - "uc-5-5"   # Gene-Gene Interaction Network
+
+  - id: explore_dominant_biodegradation_pathways
+    title: "Explore Dominant Biodegradation Pathways"
+    icon: "fas fa-project-diagram"
+    color: "info"
+    description: |
+      Map and compare metabolic pathways associated with biodegradation of
+      different pollutant classes, identifying complete routes, alternative
+      routes and potential points where toxic intermediates may accumulate.
+    guiding_questions:
+      - "Which pathways are most complete in each sample or consortium for a given contaminant?"
+      - "Are there alternative routes that avoid the formation of highly toxic intermediates?"
+      - "How does pathway coverage differ across environments (soil, water, sediment) or treatment conditions?"
+    relevant_use_cases:
+      - "uc-4-1"  # Functional Profiling by Pathway
+      - "uc-4-2"  # Ranking by Pathway Richness
+      - "uc-8-4"  # HADEG Pathways Completeness
+      - "uc-8-5"  # KEGG Pathways Completeness
+      - "uc-8-6"  # Pathway-Centric Consortium Design
+
+  - id: design_microbial_consortia
+    title: "Design Microbial Consortia for Bioremediation"
+    icon: "fas fa-users"
+    color: "warning"
+    description: |
+      Combine gene, pathway and compound information to design complementary
+      microbial consortia (bacteria, fungi, plant-associated microbes) capable
+      of covering different steps of a given degradation route.
+    guiding_questions:
+      - "Which isolates complement each other in terms of degradation pathways for the same pollutant?"
+      - "What is the minimal combination of samples that covers the full degradation route of a specific contaminant?"
+      - "Which species act as keystone taxa in compound–pathway–gene interaction networks?"
+    relevant_use_cases:
+      - "uc-8-1"  # Minimal Sample Grouping
+      - "uc-8-2"  # Chemical Class Completeness
+      - "uc-8-6"  # Pathway-Centric Consortium Design
+      - "uc-8-7"  # Sample-Sample KO Intersection
+      - "uc-5-4"  # Gene-Compound Interaction Network
+
+  - id: plan_bioaugmentation_biostimulation
+    title: "Plan Bioaugmentation and Biostimulation Strategies"
+    icon: "fas fa-seedling"
+    color: "success"
+    description: |
+      Support the design of bioaugmentation (introduction of selected strains)
+      and biostimulation (optimization of environmental conditions) based on
+      genomic evidence of degradation potential and key pathway presence.
+    guiding_questions:
+      - "Which strains stand out as the strongest candidates for bioaugmentation in a specific soil or effluent?"
+      - "Which pathway profiles suggest the need for supplementation of cofactors such as nitrogen, phosphorus or electron donors?"
+      - "How can different strategies (bioaugmentation versus biostimulation) be compared using predicted functional potential?"
+    relevant_use_cases:
+      - "uc-1-5"  # Regulatory Compliance Scorecard
+      - "uc-4-2"  # Ranking by Pathway Richness
+      - "uc-4-9"  # Enzymatic Activity Profiling
+      - "uc-8-2"  # Chemical Class Completeness
+      - "uc-8-3"  # Compound-Specific KO Completeness
+
+  - id: screen_emerging_contaminants
+    title: "Screen for Emerging Contaminants and Co-Contamination"
+    icon: "fas fa-biohazard"
+    color: "danger"
+    description: |
+      Use chemical class and compound annotations to assess whether the current
+      set of microbes, plants or fungi has the potential to address emerging
+      contaminants (pharmaceuticals, PFAS, EDCs, microplastics) or complex
+      contamination mixtures.
+    guiding_questions:
+      - "Which samples harbor genes and pathways associated with the degradation of PFAS, pharmaceuticals, endocrine disruptors or microplastics?"
+      - "Is there pathway overlap that could support remediation of co-contamination scenarios (for example hydrocarbons plus heavy metals)?"
+      - "Which samples show the greatest diversity of pathways for treating mixtures of emerging pollutants?"
+    relevant_use_cases:
+      - "uc-2-2"  # Chemical Diversity Ranking
+      - "uc-4-6"  # Functional Potential by Compound
+      - "uc-4-7"  # Gene-Compound Association
+      - "uc-5-1"  # Sample-Compound Class Interaction
+      - "uc-7-1"  # Toxicity Profiles
+
+  - id: evaluate_toxicological_risk
+    title: "Evaluate Toxicological Risk and By-Products"
+    icon: "fas fa-exclamation-triangle"
+    color: "danger"
+    description: |
+      Integrate toxicity predictions (for example ToxCSM, QSAR models or
+      external databases) with degradation routes to estimate residual risk and
+      the formation of potentially harmful intermediates during remediation.
+    guiding_questions:
+      - "Which compounds or metabolites remain highly toxic after the predicted degradation route?"
+      - "Which samples minimize the formation of intermediates that are more toxic than the parent contaminant?"
+      - "Can we prioritize pathways or targets that reduce both pollutant load and overall toxicological risk?"
+    relevant_use_cases:
+      - "uc-7-1"  # Toxicity Profiles
+      - "uc-7-2"  # Risk-Regulatory Concordance
+      - "uc-7-3"  # Genetic Response to Threats
+      - "uc-7-4"  # Toxicity Score Distribution
+      - "uc-7-6"  # Risk Mitigation Breadth
+
+  - id: support_regulatory_decisions
+    title: "Support Regulatory and Compliance Decisions"
+    icon: "fas fa-balance-scale"
+    color: "warning"
+    description: |
+      Use pathway coverage, pollutant classes and toxicity information to build
+      lines of evidence for environmental reports, regulatory dossiers and risk
+      assessments submitted to environmental agencies.
+    guiding_questions:
+      - "What genomic evidence of bioremediation capability can be included in technical or licensing reports?"
+      - "How can different consortia or isolates be compared against priority lists of regulated contaminants?"
+      - "Which pathways or genes can serve as functional indicators of compliance with environmental norms?"
+    relevant_use_cases:
+      - "uc-1-2"  # Regulatory Compound Overlap
+      - "uc-1-5"  # Regulatory Compliance Scorecard
+      - "uc-1-6"  # Functional Potential vs Regulatory
+      - "uc-5-3"  # Regulatory Relevance of Samples
+      - "uc-7-2"  # Risk-Regulatory Concordance
+
+  - id: monitor_compare_remediation
+    title: "Monitor and Compare Remediation Scenarios"
+    icon: "fas fa-chart-line"
+    color: "info"
+    description: |
+      Compare gene and pathway profiles among samples collected at different
+      times, locations or treatment conditions to infer remediation progress,
+      functional stability and possible gains or losses in degradation capacity.
+    guiding_questions:
+      - "Have degradation pathways increased or decreased after a given remediation period?"
+      - "Which genes appear or disappear in response to different management strategies (nutrient addition, pH adjustment, moisture changes)?"
+      - "How does the functional profile evolve during field or bioreactor remediation campaigns?"
+    relevant_use_cases:
+      - "uc-2-1"  # Sample Functional Richness
+      - "uc-3-1"  # PCA by Functional Profile
+      - "uc-3-4"  # Sample Similarity (KO)
+      - "uc-4-1"  # Functional Profiling by Pathway
+      - "uc-4-4"  # Functional Fingerprint of Samples
+
+  - id: guide_metabolic_engineering
+    title: "Guide Metabolic Engineering and Strain Optimization"
+    icon: "fas fa-cogs"
+    color: "primary"
+    description: |
+      Use the cross-organism view of genes and pathways to select targets for
+      metabolic engineering (knock-in/knock-out, overexpression) aimed at
+      improving degradation efficiency or expanding substrate range.
+    guiding_questions:
+      - "Which genes from highly efficient degraders are good candidates for transfer into industrial chassis?"
+      - "Which rate-limiting steps in a pathway could be improved through enzyme engineering or metabolic flux optimization?"
+      - "Can we identify combinations of genes that characterize top-performing strains for a specific pollutant?"
+    relevant_use_cases:
+      - "uc-4-5"   # Gene Presence Map
+      - "uc-4-8"   # Gene Inventory Explorer
+      - "uc-4-10"  # Enzymatic Activity Diversity
+      - "uc-4-11"  # Hierarchical Genetic Diversity
+      - "uc-8-3"   # Compound-Specific KO Completeness
+
+# ============================================================================
+# CURRENT TRENDS IN BIOREMEDIATION
+# Emerging research areas with scientific context and references
+# ============================================================================
+
+current_trends:
+  - id: emerging_contaminants
+    title: "Emerging Contaminants in Bioremediation"
+    icon: "fas fa-flask-vial"
+    color: "danger"
+    summary: |
+      Emerging contaminants include pharmaceuticals, personal care products,
+      per- and polyfluoroalkyl substances (PFAS), endocrine-disrupting
+      compounds (EDCs) and micro- or nanoplastics. These chemicals are often
+      persistent, bioaccumulative and poorly removed by conventional treatment
+      systems, making them a major focus of current bioremediation research.
+    why_relevant: |
+      Modeling the degradation potential of emerging contaminants requires
+      integration of genomic data with detailed chemical and toxicological
+      information. BioRemPP can help prioritize samples and pathways with
+      predicted activity against PPCPs, PFAS and EDCs in real-world systems.
+    suggested_questions:
+      - "Which isolates or consortia carry genes and pathways associated with the degradation of PFAS, PPCPs or EDCs?"
+      - "Is there enrichment of oxidoreductases, hydrolases or dioxygenases related to specific groups of emerging contaminants?"
+      - "Which samples have the highest predicted capacity to treat mixtures of emerging pollutants in effluents or soils?"
+    relevant_use_cases:
+      - "uc-2-2"  # Chemical Diversity
+      - "uc-4-6"  # Functional Potential by Compound
+      - "uc-7-1"  # Toxicity Profiles
+      - "uc-7-3"  # Genetic Response to Threats
+    references:
+      - title: "A comprehensive review of emerging environmental contaminants of global concern"
+        citation: "Boahen et al., 2025"
+        url: "https://link.springer.com/article/10.1007/s44274-025-00259-x"
+      - title: "Pharmaceuticals, personal care products and endocrine disrupting compounds in aquatic environments"
+        citation: "Yuan et al., 2023"
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC9923101/"
+      - title: "Pharmaceutical pollution in aquatic environments: impacts and bioremediation"
+        citation: "Ortúzar et al., 2022"
+        url: "https://www.frontiersin.org/articles/10.3389/fmicb.2022.869332/full"
+
+  - id: pfas_and_fluorinated_compounds
+    title: "Biodegradation of PFAS and Fluorinated Compounds"
+    icon: "fas fa-atom"
+    color: "danger"
+    summary: |
+      PFAS and other fluorinated compounds are extremely persistent due to the
+      strength of the C-F bond. Recent reviews emphasize efforts to identify
+      microbes, enzymes and pathways capable of partial or complete defluorination,
+      often in combination with physical and chemical treatment strategies.
+    why_relevant: |
+      Assessing the presence of genes and pathways related to defluorination can
+      guide the selection of strains and consortia for PFAS-focused remediation,
+      one of the most challenging and dynamic areas in environmental biotechnology.
+    suggested_questions:
+      - "Do any samples contain KO terms or genes associated with defluorination or metabolism of fluorinated compounds?"
+      - "Are there incomplete pathways that could be complemented by assembling consortia, with one species performing defluorination and another mineralizing intermediates?"
+      - "Which isolates are prime candidates for PFAS experiments based on specific combinations of oxidoreductases, hydrolases and transferases?"
+    relevant_use_cases:
+      - "uc-4-7"  # Gene-Compound Association
+      - "uc-4-9"  # Enzymatic Activity Profiling
+      - "uc-8-2"  # Chemical Class Completeness
+      - "uc-8-6"  # Pathway-Centric Consortium Design
+    references:
+      - title: "A Review: Per- and Polyfluoroalkyl Substances—Biological Degradation"
+        citation: "Grgas et al., 2023"
+        url: "https://www.mdpi.com/2305-6304/11/5/446"
+      - title: "Biodegradation of per- and polyfluoroalkyl substances (PFAS): A review
+        citation: "Zhang et al., 2022"
+        url: "https://pubmed.ncbi.nlm.nih.gov/34756980/"
+      - title: "Trends and Insights from Microbiological Studies on PFAS"
+        citation: "Zhang et al., 2025"
+        url: "https://pubs.acs.org/doi/10.1021/acs.est.4c04557"
+
+  - id: microbial_consortia
+    title: "Microbial Consortia and Bioaugmentation"
+    icon: "fas fa-users"
+    color: "success"
+    summary: |
+      There is growing interest in natural and synthetic microbial consortia for
+      remediation of heavy metals, hydrocarbons, pesticides and other persistent
+      pollutants. Recent work highlights metabolic complementarity, ecological
+      robustness and the potential to engineer targeted consortia.
+    why_relevant: |
+      BioRemPP can help design and compare consortia by evaluating pathway
+      coverage, functional redundancy and specialization across different
+      combinations of samples.
+    suggested_questions:
+      - "Which sample combinations maximize the coverage of degradation pathways for a given pollutant?"
+      - "How can potential consortia be compared in terms of functional redundancy (robustness) versus specialization?"
+      - "Can we identify core species with high connectivity in compound–pathway–gene interaction networks?"
+    relevant_use_cases:
+      - "uc-8-1"  # Minimal Sample Grouping
+      - "uc-8-6"  # Pathway-Centric Consortium Design
+      - "uc-8-7"  # Sample-Sample KO Intersection
+      - "uc-5-4"  # Gene-Compound Network
+      - "uc-5-5"  # Gene-Gene Network
+    references:
+      - title: "Harnessing bacterial consortia for effective bioremediation"
+        citation: "Qattan et al., 2025"
+        url: "https://link.springer.com/article/10.1186/s12302-025-01103-y"
+      - title: "Synthetic microbial consortia in bioremediation and biodegradation"
+        citation: "Renganathan et al., 2023"
+        url: "https://www.researchgate.net/publication/373344371_Review_Synthetic_Microbial_Consortia_in_Bioremediation_and_Biodegradation"
+      - title: "Microbial consortia for the degradation of organic pollutants"
+        citation: "Lü et al., 2024"
+        url: "https://www.sciencedirect.com/science/article/abs/pii/S0959652624013611"
+
+  - id: multiomics_bioremediation
+    title: "Multi-Omics Approaches in Bioremediation"
+    icon: "fas fa-microscope"
+    color: "info"
+    summary: |
+      Integrated genomic, transcriptomic, proteomic and metabolomic approaches
+      are increasingly used to unravel degradation mechanisms, identify functional
+      biomarkers and guide the design of more efficient remediation strategies.
+    why_relevant: |
+      BioRemPP can act as a genomic annotation layer that users can integrate with
+      their own expression and metabolomic data, allowing them to assess how well
+      predicted potential translates into real activity in the field or in reactors.
+    suggested_questions:
+      - "How does predicted genomic potential (genes and pathways) align with experimental expression or metabolomic profiles?"
+      - "Which genes and pathways are good candidates for functional biomarkers to monitor remediation success?"
+      - "Are there gene modules that co-occur across successful remediation samples, suggesting multi-omic signatures of efficiency?"
+    relevant_use_cases:
+      - "uc-3-6"  # Gene Co-occurrence
+      - "uc-4-1"  # Functional Profiling by Pathway
+      - "uc-4-8"  # Gene Inventory Explorer
+      - "uc-5-5"  # Gene-Gene Network
+    references:
+      - title: "Omics approaches in bioremediation of environmental pollutants"
+        citation: "Sharma et al., 2022"
+        url: "https://www.sciencedirect.com/science/article/abs/pii/S0013935122004297"
+      - title: "Multi-omics integration for advancing microbial bioremediation: a PRISMA-based systematic review"
+        citation: "Erna et al., 2025"
+        url: "https://www.researchgate.net/publication/397093042_Multi-Omics_Integration_for_Advancing_Microbial_Bioremediation_PRISMA-Based_Systematic_Review"
+      - title: "Integration of omics-based approaches in environmental toxicology and bioremediation"
+        citation: "Smith et al., 2025"
+        url: "https://www.mdpi.com/2305-6304/13/9/714"
+
+  - id: enzymes_nanozymes_biocatalysis
+    title: "Enzymes, Nanozymes and Applied Biocatalysis"
+    icon: "fas fa-atom"
+    color: "warning"
+    summary: |
+      The use of purified enzymes, nanozymes and immobilized biocatalysts is
+      expanding for the treatment of emerging contaminants, often in combination
+      with nanostructured materials. Enzyme-inspired nanozymes have been explored
+      for degradation of pesticides, dyes and other persistent pollutants.
+    why_relevant: |
+      Mapping genes encoding key enzymes (laccases, peroxidases, monooxygenases,
+      hydrolases) helps identify organisms as sources of biocatalysts or as
+      targets for enzyme engineering, and supports the design of hybrid bio/nano
+      remediation systems.
+    suggested_questions:
+      - "Which enzymes present in our organisms are promising candidates for use as free or immobilized biocatalysts in treatment processes?"
+      - "Are there homologs of enzymes already described in the literature for degradation of pharmaceuticals, dyes or plastics?"
+      - "How can organisms be ranked by richness of key enzymes to support biocatalyst selection?"
+    relevant_use_cases:
+      - "uc-4-9"   # Enzymatic Activity Profiling
+      - "uc-4-10"  # Enzymatic Activity Diversity
+      - "uc-6-4"   # Enzymatic Hierarchy
+      - "uc-6-5"   # Chemical-Enzymatic Hierarchy
+    references:
+      - title: "Nanozymes inspired by natural enzymes"
+        citation: "Zhang et al., 2021"
+        url: "https://pubs.acs.org/doi/10.1021/accountsmr.1c00074"
+      - title: "Multifunctional nanozymes for environmental applications: a comprehensive review"
+        citation: "Liang et al., 2024"
+        url: "https://www.mdpi.com/2305-6304/12/12/926"
+      - title: "Nanozymes for the removal of persistent organic pollutants"
+        citation: "Pormazar et al., 2024"
+        url: "https://jehsd.ssu.ac.ir/browse.php?a_id=805&html=1&sid=1&slc_lang=en"
+
+  - id: aquatic_systems_aquaculture
+    title: "Bioremediation in Aquatic Systems and Aquaculture"
+    icon: "fas fa-water"
+    color: "primary"
+    summary: |
+      Bioremediation is widely applied in aquatic environments and aquaculture
+      systems to remove metals, ammonia, nitrite, hydrocarbons and pharmaceuticals.
+      Strategies include the use of bacteria, fungi, microalgae and integrated
+      biofilters.
+    why_relevant: |
+      BioRemPP can support the selection of microbes and consortia for recirculating
+      aquaculture systems (RAS), ponds and coastal areas, focusing on nitrogen and
+      phosphorus cycling as well as degradation of toxic organic compounds.
+    suggested_questions:
+      - "Which samples possess pathways related to nitrogen cycling and removal of toxic nitrogen species (ammonia, nitrite) relevant to aquaculture?"
+      - "Are there genes and pathways for degradation of hydrocarbons and petroleum derivatives in microbes adapted to saline or marine environments?"
+      - "Which consortia appear best suited for use in recirculating bioreactors or impacted aquatic environments?"
+    relevant_use_cases:
+      - "uc-4-1"  # Functional Profiling by Pathway
+      - "uc-4-2"  # Ranking by Pathway Richness
+      - "uc-8-1"  # Minimal Sample Grouping
+      - "uc-8-4"  # HADEG Pathways Completeness
+    references:
+      - title: "Bio-ecological remediation of freshwater aquaculture environments"
+        citation: "Zhou et al., 2024"
+        url: "https://www.sciencedirect.com/science/article/pii/S2772735123001245"
+      - title: "Bioremediation in aquatic systems: fish as natural agents for water quality management in aquaculture"
+        citation: "Sujadi et al., 2025"
+        url: "https://journal.unram.ac.id/index.php/jfh/id/article/download/7942/4055/27374"
+      - title: "Microalgae as bioremediators of aquaculture effluents"
+        citation: "de Mello et al., 2024"
+        url: "https://ojs.observatoriolatinoamericano.com/ojs/index.php/olel/article/view/8294"

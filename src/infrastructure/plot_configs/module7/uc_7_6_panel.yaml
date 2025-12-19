@@ -1,0 +1,65 @@
+# UC-7.6: Sample Risk Mitigation Breadth by Compound Variety
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-6"
+
+scientific_question: >
+  Which biological samples possess the broadest capability to mitigate risk,
+  as measured by the diversity of high-risk compounds they can target
+  within each toxicological category?
+
+description: >
+  This visualization creates a "Risk Mitigation Breadth Profile" for each sample.
+  In contrast to measuring the depth of genetic investment, this treemap quantifies
+  the variety of compounds a sample can handle. The size of each rectangle is
+  proportional to the number of unique high-risk compounds a sample interacts with
+  for a given toxicological category. The hierarchy follows: Sample -> Toxicity Category.
+
+visual_elements:
+  - label: "Nested Rectangles (Hierarchy)"
+    description: >
+      The chart uses nested rectangles to represent the hierarchy. The largest
+      rectangles represent the top-level categories (Sample). Within each sample,
+      smaller rectangles represent the Toxicity Categories.
+
+  - label: "Rectangle Area (Values)"
+    description: >
+      The area of each rectangle is proportional to the count of unique high-risk
+      compounds targeted by that sample within that category. Larger areas indicate
+      a broader mitigation capability.
+
+  - label: "Color (Toxicity Category)"
+    description: >
+      The color of the second-level rectangles identifies the Toxicity Category
+      (e.g., Genomic, Environmental, Nuclear Response, Stress Response, Organic).
+
+  - label: "Interactivity"
+    description: >
+      You can click on any rectangle to "zoom in" and explore that specific branch
+      of the hierarchy. Click outside to zoom back out.
+
+interpretation_guidelines:
+  - >
+    Versatile Generalists: Samples with the largest overall area are the most
+    versatile "generalists," capable of targeting the widest variety of high-risk
+    compounds across all categories.
+
+  - >
+    Category Specialists: By examining the second level of the hierarchy, one can
+    can help identify a sample's specialization. A sample with a large rectangle for the
+    "High Predicted Risk" category may be a specialist in mitigating the most
+    hazardous compounds.
+
+  - >
+    Complementary Consortium Design: This view is ideal for designing a consortium
+    with maximum chemical coverage. One would select Sample A for its broad coverage
+    of "Genomic" toxins and combine it with Sample B for its broad coverage of
+    "Organic" toxins to create a team that can handle the widest possible range
+    of threats.
+
+  - >
+    Risk Prioritization: The relative sizes of toxicity categories within a sample
+    can help reveal which types of risks that sample is best suited to mitigate, enabling
+    strategic selection for specific remediation scenarios.
+
+color_scheme: "success"

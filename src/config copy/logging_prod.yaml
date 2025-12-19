@@ -1,0 +1,108 @@
+version: 1
+disable_existing_loggers: False
+
+formatters:
+  json:
+    (): shared.logging.formatters.JSONFormatter
+  
+  standard:
+    format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    datefmt: '%Y-%m-%d %H:%M:%S'
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+  
+  file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/app.log
+    maxBytes: 52428800  # 50MB
+    backupCount: 10
+    encoding: utf-8
+  
+  error_file:
+    class: logging.handlers.RotatingFileHandler
+    level: ERROR
+    formatter: json
+    filename: logs/error.log
+    maxBytes: 52428800  # 50MB
+    backupCount: 10
+    encoding: utf-8
+  
+  security_file:
+    class: logging.handlers.RotatingFileHandler
+    level: INFO
+    formatter: json
+    filename: logs/security.log
+    maxBytes: 52428800  # 50MB
+    backupCount: 10
+    encoding: utf-8
+  
+  performance_file:
+    class: logging.handlers.RotatingFileHandler
+    level: WARNING
+    formatter: json
+    filename: logs/performance.log
+    maxBytes: 52428800  # 50MB
+    backupCount: 10
+    encoding: utf-8
+
+loggers:
+  biorempp_web:
+    level: INFO
+    handlers: [console, file, error_file]
+    propagate: False
+  
+  biorempp_web.domain:
+    level: INFO
+    propagate: True
+  
+  biorempp_web.domain.entities:
+    level: INFO
+    propagate: True
+  
+  biorempp_web.domain.services:
+    level: INFO
+    propagate: True
+  
+  biorempp_web.application:
+    level: INFO
+    propagate: True
+  
+  biorempp_web.infrastructure:
+    level: WARNING
+    propagate: True
+  
+  biorempp_web.security:
+    level: INFO
+    handlers: [security_file]
+    propagate: False
+  
+  biorempp_web.performance:
+    level: WARNING
+    handlers: [performance_file]
+    propagate: False
+
+  wsgi:
+    level: INFO
+    handlers: [console, file]
+    propagate: True
+
+  application.plot_services:
+    level: INFO
+    handlers: [console, file]
+    propagate: True
+
+  application.plot_services.singleton:
+    level: INFO
+    handlers: [console, file]
+    propagate: True
+
+root:
+  level: INFO
+  handlers: [console, file]

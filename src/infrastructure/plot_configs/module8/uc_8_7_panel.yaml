@@ -1,0 +1,83 @@
+# UC-8.7: Intersection of Genes Across Samples
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-8-7"
+
+scientific_question: >
+  How many orthologous genes are shared across the selected biological samples,
+  and which samples exhibit unique or highly specific genetic inventories?
+
+description: >
+  This visualization employs an UpSet plot to quantitatively analyze the
+  intersections of gene sets (KOs) across multiple biological samples. Unlike
+  a Venn diagram, which can become cluttered with many sets, the UpSet plot
+  provides a scalable and readable way to visualize the size of every possible
+  intersection, highlighting both the "core" genome shared by many samples and
+  the unique genetic features of individual organisms.
+
+visual_elements:
+  - label: "Sample Multi-Select Dropdown"
+    description: >
+      Use this to select **2 or more biological samples** for intersection
+      analysis. The plot will update automatically to show all possible
+      intersections of KOs across the selected samples. Minimum 2 samples
+      required for meaningful visualization.
+  
+  - label: "Set Size (Left Bar Chart)"
+    description: >
+      The horizontal bars on the left show the total number of unique KOs
+      found in each individual sample. This indicates the overall functional
+      richness of each biological source. Taller bars may suggest greater genetic diversity
+      and broader metabolic capabilities.
+  
+  - label: "Intersection Matrix (Bottom)"
+    description: >
+      The grid of dots defines the specific intersection being visualized.
+      A vertical line connecting dots indicates that the bar above represents
+      KOs shared *only* by those specific samples. Single dots (no connections)
+      represent sample-exclusive KOs, while multiple connected dots show
+      functional overlap patterns.
+  
+  - label: "Intersection Size (Top Bar Chart)"
+    description: >
+      The height of each vertical bar represents the number of KOs in that
+      specific intersection. Taller bars indicate larger shared functional
+      sets. The tallest bar often reveals the most common pattern of gene
+      sharing across the selected samples.
+
+interpretation_guidelines:
+  - >
+    Core Genome: A large bar corresponding to the intersection of *all*
+    selected samples represents the 'core' functional repertoire shared by
+    the entire group. These are likely essential genes for basic metabolism
+    or common biotransformation pathways conserved across the biological community.
+  
+  - >
+    Unique Functional Potential: Bars corresponding to a single sample (dots
+    with no connections) represent unique KOs found only in that organism.
+    These unique genes may be candidates for explaining specialized
+    biotransformation capabilities or niche adaptations, potentially making them valuable for
+    targeted bioaugmentation strategies.
+  
+  - >
+    Functional Overlap: The plot can help identify the degree of functional redundancy.
+    If many samples share large intersections, it may suggest they have similar
+    metabolic potential and may compete for the same ecological niche. If
+    intersections are small, the samples are functionally distinct and may
+    play complementary roles in a consortium.
+  
+  - >
+    Pairwise Comparisons: Bars with two connected dots show KOs shared by
+    exactly those two samples, revealing potential functional partnerships,
+    horizontal gene transfer events, or redundancy between specific organisms.
+    These patterns help identify which samples have the most similar metabolic
+    profiles.
+  
+  - >
+    Multi-Sample Intersections: Complex intersection patterns (multiple
+    connected dots) indicate functional modules shared across specific subsets
+    of samples, useful for identifying functional guilds within the community.
+    These guilds may represent groups of organisms that cooperate in specific
+    metabolic processes or share common evolutionary histories.
+
+color_scheme: "success"

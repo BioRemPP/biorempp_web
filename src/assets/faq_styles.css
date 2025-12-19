@@ -1,0 +1,164 @@
+/* FAQ Page Styles - BioRemPP v1.0 */
+
+/* FAQ Section Styling */
+.faq-section {
+    margin-bottom: 2rem;
+}
+
+/* FAQ Item Styling */
+.faq-item {
+    border-left: 3px solid #28a745;
+    transition: all 0.3s ease;
+}
+
+.faq-item:hover {
+    border-left-color: #1e7e34;
+    box-shadow: 0 2px 8px rgba(40, 167, 69, 0.15);
+}
+
+/* Accordion Button Styling */
+.accordion-button:not(.collapsed) {
+    background-color: #e7f5ea;
+    color: #155724;
+}
+
+.accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Search Bar Styling */
+#faq-search-input {
+    border: 2px solid #ced4da;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#faq-search-input:focus {
+    border-color: #28a745;
+    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
+}
+
+/* Quick Navigation Styling */
+.faq-section a:hover {
+    color: #28a745 !important;
+    text-decoration: underline;
+}
+
+/* Code Block Styling */
+.faq-section pre {
+    background-color: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 0.25rem;
+    font-family: 'Courier New', monospace;
+    font-size: 0.875rem;
+}
+
+.faq-section code {
+    color: #d63384;
+}
+
+/* Alert/Note Styling */
+.faq-section .alert {
+    border-left: 4px solid;
+    font-size: 0.9rem;
+}
+
+.faq-section .alert-info {
+    border-left-color: #17a2b8;
+}
+
+.faq-section .alert-warning {
+    border-left-color: #ffc107;
+}
+
+.faq-section .alert-success {
+    border-left-color: #28a745;
+}
+
+.faq-section .alert-danger {
+    border-left-color: #dc3545;
+}
+
+/* Sticky Sidebar for Quick Navigation */
+@media (min-width: 768px) {
+    .sticky-top {
+        position: sticky;
+        top: 20px;
+        z-index: 100;
+    }
+}
+
+/* Smooth Scrolling for Anchor Links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Section ID Offset for Sticky Header */
+[id] {
+    scroll-margin-top: 80px;
+}
+
+/* Contact Section Cards */
+.faq-section .card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.faq-section .card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive Typography */
+@media (max-width: 576px) {
+    .faq-section h1 {
+        font-size: 1.75rem;
+    }
+
+    .faq-section h4 {
+        font-size: 1.25rem;
+    }
+
+    .faq-section pre {
+        font-size: 0.75rem;
+        overflow-x: auto;
+    }
+}
+
+/* Icon Animations */
+.faq-section i.fa-arrow-right {
+    transition: transform 0.2s ease;
+}
+
+.faq-section a:hover i.fa-arrow-right {
+    transform: translateX(3px);
+}
+
+/* List Styling */
+.faq-section ul,
+.faq-section ol {
+    line-height: 1.8;
+}
+
+.faq-section li {
+    margin-bottom: 0.5rem;
+}
+
+/* Strong/Bold Text in FAQ */
+.faq-section strong {
+    color: #155724;
+    font-weight: 600;
+}
+
+/* Separator Line */
+.faq-section hr {
+    border-top: 2px solid #dee2e6;
+    margin: 2rem 0;
+}
+
+/* Accordion Flush Mode */
+.accordion-flush .accordion-item {
+    border-left: 3px solid transparent;
+}
+
+.accordion-flush .accordion-item:hover {
+    border-left-color: #28a745;
+}

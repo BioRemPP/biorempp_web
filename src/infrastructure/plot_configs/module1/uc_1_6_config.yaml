@@ -1,0 +1,346 @@
+# ============================================================================
+# UC-1.6: Sample-Agency Functional Potential Heatmap
+# ============================================================================
+# Description: Count-based heatmap showing unique KO diversity across samples and regulatory agencies
+# Module: module1
+# Plot Type: Heatmap (Count-based)
+# Rendering: On-demand (accordion open)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-1.6"
+  module: "module1"
+  title: "Sample-Agency Functional Potential Heatmap"
+  description: >
+    Count-based heatmap visualizing the functional potential alignment between
+    microbial samples and regulatory agency priorities. Each cell shows the count
+    of unique KEGG Orthology (KO) identifiers associated with a specific
+    sample-agency pair, revealing which samples have the highest functional
+    diversity for addressing agency-specific environmental concerns.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "heatmap"
+    - "count_based"
+    - "functional_potential"
+    - "ko_diversity"
+    - "biorempp"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Functional Genomics and Regulatory Alignment"
+    application: "Assessing sample functional potential for regulatory agency priorities"
+    interpretation: "Darker cells indicate higher KO diversity; samples at right have highest total functional potential"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "ko"
+    - "referenceAG"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "clean_data"
+        enabled: true
+        params:
+          remove_nulls: true
+          strip_whitespace: true
+          normalize_case: true
+        description: "Clean and normalize sample, KO, and agency identifiers"
+      
+      - name: "aggregate_unique_kos"
+        enabled: true
+        params:
+          group_by: ["referenceAG", "sample"]
+          aggregation: "nunique"
+          value_column: "ko"
+        description: "Count unique KOs per (agency, sample) pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapStrategy"
+  
+  plotly:
+    # Column mapping
+    row_column: "referenceAG"
+    col_column: "sample"
+    value_column: "ko"
+    aggregation: "nunique"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Sample-Agency Functional Potential Heatmap"
+      
+      # Axis labels
+      xaxis:
+        title: "Sample"
+      yaxis:
+        title: "Regulatory Agency"
+      
+      # Axis angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Color configuration
+      color_label: "Unique KO Count"
+      color_continuous_scale: "Greens"
+      
+      # Text annotations
+      text_auto: true
+      text_font_size: 10
+      
+      # Colorbar
+      colorbar:
+        title: "Unique KO Count"
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true
+      
+      margin:
+        l: 180
+        r: 30
+        t: 70
+        b: 60
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-1-6-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render heatmap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-1-6-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Functional potential heatmap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "ko", "referenceAG"]
+      message: "Data must contain 'sample', 'ko', and 'referenceAG' columns"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for heatmap"
+    
+    - rule: "minimum_agencies"
+      min_count: 1
+      message: "At least 1 regulatory agency required for heatmap"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_1_6_df_{data_hash}"
+        description: "Cache processed KO count matrix"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_1_6_heatmap_{data_hash}"
+        description: "Cache generated heatmap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Heatmap requires 'sample', 'ko', and 'referenceAG' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No functional potential data available. Please check BioRemPP dataset."
+    
+    no_valid_data:
+      action: "display_message"
+      message: "No valid Sample-KO-Agency combinations found after cleaning."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate KO counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render functional potential heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - autosize: true/false (responsive sizing)
+# - xaxis.title: X-axis label
+# - yaxis.title: Y-axis label
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - color_label: Colorbar label
+# - color_continuous_scale: "Greens", "Blues", "Reds", "Viridis", etc.
+# - text_auto: true/false (show values in cells)
+# - text_font_size: Text font size (default: 10)
+# - colorbar.title: Colorbar label
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels (dynamic based on rows)
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - aggregation: "nunique", "count", "sum"
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_1_6_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - sample: "Sample", "sample", "sample_id", "Sample_ID", "sampleID", "genome", "Genome", "organism"
+#    - ko: "KO", "ko", "ko_id", "KO_ID", "kegg_orthology", "KEGG_Orthology", "orthology"
+#    - referenceAG: "Agency", "agency", "referenceAG", "Regulatory_Agency", "regulatory_agency", "reg_agency", "AGENCY", "ReferenceAG"
+# 3. Clean data:
+#    - Remove nulls
+#    - Strip whitespace
+#    - Normalize case (uppercase for KO and agency)
+#    - Remove empty strings
+# 4. Log statistics (samples, KOs, agencies)
+# 5. Pass to PlotService
+#
+# STRATEGY (HeatmapStrategy):
+# 1. Receives data with ['sample', 'ko', 'referenceAG']
+# 2. Process data:
+#    - Clean data (remove nulls, normalize strings)
+#    - Group by (referenceAG, sample)
+#    - Aggregate: nunique(ko)
+#    - Pivot to matrix
+#    - Sort by totals (descending)
+# 3. Create figure:
+#    - Create heatmap matrix (agencies × samples)
+#    - Apply color scale (Greens)
+#    - Add text annotations (if matrix ≤ 400 cells)
+#    - Calculate dynamic height (40px per row + 160px)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample', 'KO', 'Agency' columns
+# - KEGG: ❌ Does NOT contain agency data
+# - HADEG: ❌ Does NOT contain agency data
+# - ToxCSM: ❌ Does NOT contain functional data
+#
+# Rendering Logic:
+# - No dropdown required (renders all data automatically)
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+#
+# Visualization Details:
+# - Plot type: Count-based heatmap
+# - Rows: Regulatory agencies (sorted by total KO count descending)
+# - Columns: Samples (sorted by total KO count descending)
+# - Cell values: Count of unique KOs for (agency, sample) pair
+# - Color: Greens colorscale (darker = more KOs)
+# - Text: Integer counts displayed in cells (if matrix ≤ 400 cells)
+# - Hover: Shows agency, sample, and unique KO count
+# - Interpretation:
+#   * Darker green: Higher functional diversity
+#   * Lighter green: Lower functional diversity
+#   * Rows at top: Agencies with highest total KO coverage
+#   * Columns at right: Samples with highest total functional potential
+#
+# Aggregation Algorithm:
+# For each (agency, sample) pair:
+#   count = COUNT(DISTINCT ko WHERE referenceAG=X AND sample=Y)
+#
+# Example:
+# Agency "EPA", Sample "S1": 150 unique KOs
+# → Cell at (EPA, S1) shows value 150 with corresponding green shade
+#
+# Scientific Interpretation:
+# - Functional potential: Breadth of enzymatic capabilities
+# - KO diversity: Number of unique KEGG Orthology groups
+# - Agency alignment: Samples with high KO counts for specific agencies
+# - Use for: Sample selection, functional screening, regulatory deployment
+# - Optimization: Identify samples with broad vs. specialized capabilities
+#
+# Regulatory Agencies:
+# - EPA: Environmental Protection Agency
+# - WHO: World Health Organization
+# - EU: European Union
+# - Others: Various national and international regulatory bodies
+#
+# Dynamic Height Calculation:
+# - Formula: max(500, min(1200, 40 * n_rows + 160))
+# - Ensures readable row height for varying agency counts
+# - Minimum: 500px, Maximum: 1200px
+#
+# Text Annotation Logic:
+# - Enabled if total cells ≤ 400 (e.g., 20 agencies × 20 samples)
+# - Disabled for larger matrices to avoid clutter
+# - Configurable via text_auto property
+#
+# Unique Features:
+# - Count-based (not percentage-based like HeatmapScoredStrategy)
+# - Dynamic height based on number of agencies
+# - Automatic sorting by total KO counts
+# - Flexible column name mapping
+# - Robust data cleaning and normalization

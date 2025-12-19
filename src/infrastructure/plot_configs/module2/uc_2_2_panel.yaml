@@ -1,0 +1,44 @@
+# UC-2.2: Ranking of Samples by Compound Richness
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-2-2"
+
+scientific_question: >
+  Which biological samples interact with the widest variety of unique chemical compounds?
+
+description: >
+  This visualization ranks each sample based on the total number of unique
+  compounds with which it is associated. The resulting bar chart provides a
+  clear and direct assessment of the "chemical versatility" of each biological
+  source, highlighting those with the broadest interaction capacity.
+
+visual_elements:
+  - label: "Y-axis"
+    description: "Represents the individual Samples."
+  
+  - label: "X-axis"
+    description: "Represents the absolute count of unique compounds."
+  
+  - label: "Bar Height and Label"
+    description: >
+      The height of each bar and its corresponding numerical label
+      explicitly state the total unique compound count for that sample.
+
+interpretation_guidelines:
+  - >
+    Chemical Versatility: Taller bars correspond to samples with greater
+    chemical versatility, indicating an ability to interact with a broader
+    and more diverse repertoire of compounds. These biological sources may be
+    considered "generalists."
+  
+  - >
+    Direct Comparison: The chart allows for the direct comparison and
+    ranking of samples, which can be useful for identifying potential candidates
+    for applications requiring broad interaction capacity.
+  
+  - >
+    Specialized Potential: Samples with shorter bars may have more
+    specialized chemical targets or a more limited metabolic scope within
+    the context of the analyzed compounds.
+
+color_scheme: "primary"

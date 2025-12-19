@@ -1,0 +1,287 @@
+# ============================================================================
+# UC-3.3: Interactive Hierarchical Clustering of Samples
+# ============================================================================
+# Description: Dendrogram showing hierarchical relationships between samples
+#              based on KO presence/absence patterns
+# Module: module3 (Functional Similarity Analysis)
+# Plot Type: Dendrogram (Hierarchical Clustering)
+# Rendering: On-Demand (accordion open) + Auto-Update (metric/method change)
+# ============================================================================
+
+metadata:
+  use_case_id: "UC-3.3"
+  module: "module3"
+  title: "Interactive Hierarchical Clustering of Samples"
+  description: "Dendrogram visualization showing hierarchical relationships between samples based on functional (KO) profiles using different distance metrics and clustering methods."
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "hierarchical_clustering"
+    - "dendrogram"
+    - "functional_similarity"
+    - "sample_relationships"
+  plot_type: "dendrogram"
+  scientific_context:
+    domain: "Comparative Functional Genomics"
+    application: "Hierarchical analysis of functional similarity between microbial samples"
+    interpretation: "Samples clustered together share similar functional profiles (KO repertoires)"
+
+# ============================================================================
+# Data Configuration
+# ============================================================================
+data:
+  source: "biorempp-merged-data"
+  source_type: "store"
+
+  required_columns:
+    - "Sample"
+    - "KO"
+
+  processing:
+    steps:
+      - name: "convert_to_dataframe"
+        enabled: true
+        params:
+          orient: "records"
+
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+
+      - name: "create_binary_matrix"
+        enabled: true
+        description: "Create Sample × KO binary presence/absence matrix using pd.crosstab"
+        params:
+          index: "Sample"
+          columns: "KO"
+          normalize: false
+          binary: true
+
+      - name: "validate_sample_count"
+        enabled: true
+        description: "Ensure at least 2 samples for clustering"
+        params:
+          min_samples: 2
+
+# ============================================================================
+# Visualization Configuration
+# ============================================================================
+visualization:
+  strategy: "HierarchicalClusteringStrategy"
+
+  plotly:
+    chart_type: "dendrogram"
+    orientation: "left"
+
+    # Distance metrics supported
+    distance_metrics:
+      - "jaccard"      # Recommended for binary data
+      - "euclidean"    # Required for Ward method
+      - "cosine"       # Directional similarity
+      - "hamming"      # Fraction of differing positions
+      - "dice"         # Similar to Jaccard
+
+    # Clustering methods supported
+    clustering_methods:
+      - "average"      # UPGMA - balanced approach
+      - "complete"     # Compact clusters (max distance)
+      - "single"       # Sensitive to outliers (min distance)
+      - "ward"         # Minimizes variance (requires Euclidean)
+
+    # Default parameters
+    defaults:
+      metric: "jaccard"
+      method: "average"
+
+    title:
+      text: "Hierarchical Clustering of Samples by Functional Profile"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+
+    layout:
+      height: 600
+      width: 1000
+      template: "simple_white"
+
+      xaxis:
+        title:
+          text: "Distance / Dissimilarity"
+          font:
+            size: 14
+        tickfont:
+          size: 11
+
+      yaxis:
+        title:
+          text: "Sample"
+          font:
+            size: 14
+        tickfont:
+          size: 10
+
+      hovermode: "closest"
+
+      hoverlabel:
+        bgcolor: "white"
+        font:
+          size: 12
+          family: "Arial, sans-serif"
+
+      margin:
+        l: 120
+        r: 40
+        t: 80
+        b: 80
+
+# ============================================================================
+# UI Configuration
+# ============================================================================
+ui:
+  container_id: "uc-3-3-chart-container"
+  accordion_id: "uc-3-3-accordion"
+  graph_id: "uc-3-3-dendrogram"
+
+  layout_type: "card"
+
+  card:
+    header:
+      enabled: true
+      icon: "fas fa-project-diagram"
+      title: "Interactive Hierarchical Clustering of Samples"
+      class_name: "mb-0"
+
+    body:
+      class_name: "p-4"
+
+    class_name: "shadow-sm mb-4"
+
+  accordion:
+    enabled: true
+    start_collapsed: true
+    item_id: "uc-3-3-item"
+    title: "View Results"
+
+  rendering:
+    mode: "on_demand"
+    triggers:
+      initial: "accordion_open"
+      update: "dropdown_change"
+
+# ============================================================================
+# Controls Configuration
+# ============================================================================
+controls:
+  - control_id: "uc-3-3-metric-dropdown"
+    type: "dropdown"
+    label: "Select Distance Metric:"
+    label_class: "fw-bold mb-2"
+
+    options:
+      - label: "Jaccard (recommended for binary data)"
+        value: "jaccard"
+      - label: "Euclidean"
+        value: "euclidean"
+      - label: "Cosine"
+        value: "cosine"
+      - label: "Hamming"
+        value: "hamming"
+      - label: "Dice"
+        value: "dice"
+
+    properties:
+      value: "jaccard"
+      clearable: false
+      class_name: "mb-3"
+
+    data_binding:
+      parameter: "metric"
+
+  - control_id: "uc-3-3-method-dropdown"
+    type: "dropdown"
+    label: "Select Clustering Method:"
+    label_class: "fw-bold mb-2"
+
+    options:
+      - label: "Average (UPGMA)"
+        value: "average"
+      - label: "Complete"
+        value: "complete"
+      - label: "Single"
+        value: "single"
+      - label: "Ward (requires Euclidean)"
+        value: "ward"
+
+    properties:
+      value: "average"
+      clearable: false
+      class_name: "mb-3"
+
+    data_binding:
+      parameter: "method"
+
+# ============================================================================
+# Validation Configuration
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+
+    - rule: "required_columns"
+      columns: ["Sample", "KO"]
+      message: "Data must contain 'Sample' and 'KO' columns"
+
+    - rule: "no_nulls"
+      columns: ["Sample", "KO"]
+      message: "Null values not allowed in 'Sample' or 'KO' columns"
+
+    - rule: "minimum_samples"
+      min_count: 2
+      message: "At least 2 samples required for clustering"
+
+    - rule: "ward_euclidean_compatibility"
+      type: "conditional"
+      condition: "method == 'ward'"
+      requirement: "metric == 'euclidean'"
+      message: "Ward linkage method only works with Euclidean metric"
+      severity: "error"
+
+    - rule: "valid_metric"
+      allowed_values: ["jaccard", "euclidean", "cosine", "hamming", "dice"]
+      message: "Invalid distance metric selected"
+
+    - rule: "valid_method"
+      allowed_values: ["average", "complete", "single", "ward"]
+      message: "Invalid clustering method selected"
+
+# ============================================================================
+# Performance Configuration
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_3_3_df_{data_hash}"
+
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_3_3_fig_{data_hash}_{filters_hash}"
+
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_parameter_change: true
+
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+    log_parameter_changes: true

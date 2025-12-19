@@ -1,0 +1,331 @@
+# ============================================================================
+# UC-7.1: Faceted Heatmap of Predicted Compound Toxicity Profiles
+# ============================================================================
+# Description: Faceted heatmap showing comprehensive toxicological profiles across 5 super-categories
+# Module: module7
+# Plot Type: Faceted Heatmap (Multi-subplot)
+# Rendering: On-demand (accordion open)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-7.1"
+  module: "module7"
+  title: "Faceted Heatmap of Predicted Compound Toxicity Profiles"
+  description: >
+    Faceted heatmap visualizing comprehensive toxicological profiles of chemical
+    compounds across five major super-categories. Each facet displays toxicity
+    scores for compounds against category-specific endpoints, revealing multi-
+    faceted hazard patterns and enabling identification of compounds with
+    significant toxicological concerns.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "faceted_heatmap"
+    - "toxicity"
+    - "toxcsm"
+    - "multi_subplot"
+    - "risk_assessment"
+  plot_type: "faceted_heatmap"
+  scientific_context:
+    domain: "Toxicological Risk Assessment and Compound Profiling"
+    application: "Identifying compounds with multi-faceted toxicological hazards"
+    interpretation: "Red cells indicate high toxicity risk; compounds at top have highest total toxicity"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "toxcsm-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "compoundname"
+    - "endpoint"
+    - "toxicity_score"
+    - "super_category"
+  
+  processing:
+    steps:
+      - name: "aggregate"
+        enabled: true
+        params:
+          group_by: ["compoundname", "endpoint", "super_category"]
+          aggregation: "mean"
+          value_column: "toxicity_score"
+        description: "Aggregate toxicity scores by compound-endpoint-category"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "FacetedHeatmapStrategy"
+  
+  plotly:
+    # Column mapping
+    compound_column: "compoundname"
+    endpoint_column: "endpoint"
+    score_column: "toxicity_score"
+    category_column: "super_category"
+    
+    # Facet ordering (left to right)
+    category_order:
+      - "Nuclear Response"
+      - "Stress Response"
+      - "Genomic"
+      - "Environmental"
+      - "Organic"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Faceted Heatmap of Predicted Compound Toxicity Profiles"
+        font_size: 16
+      
+      # Color configuration
+      colorscale: "Reds"
+      colorbar_title: "Toxicity Score"
+      
+      # Axis labels
+      yaxis_title: "Compound"
+      yaxis_tickangle: 0
+      xaxis_tickangle: -45
+      
+      # Facet spacing
+      horizontal_spacing: 0.02
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      margin:
+        l: 150
+        r: 50
+        t: 80
+        b: 100
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-7-1-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render faceted heatmap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-7-1-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Faceted toxicity heatmap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["compoundname", "endpoint", "toxicity_score", "super_category"]
+      message: "Data must contain required columns"
+    
+    - rule: "numeric_scores"
+      column: "toxicity_score"
+      message: "Toxicity scores must be numeric"
+    
+    - rule: "minimum_compounds"
+      min_count: 1
+      message: "At least 1 compound required for visualization"
+    
+    - rule: "toxcsm_data_required"
+      message: "This use case requires ToxCSM database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_7_1_df_{data_hash}"
+        description: "Cache processed ToxCSM data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_7_1_heatmap_{data_hash}"
+        description: "Cache generated faceted heatmap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Faceted heatmap requires 'compoundname', 'endpoint', 'toxicity_score', and 'super_category' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No toxicity data available. Please check ToxCSM dataset."
+    
+    no_valid_data:
+      action: "display_message"
+      message: "No valid toxicity data found after cleaning."
+    
+    toxcsm_data_missing:
+      action: "display_message"
+      message: "ToxCSM database data not found. This use case requires ToxCSM data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate toxicity data: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render faceted heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font_size: Title font size (default: 16)
+# - autosize: true/false (responsive sizing)
+# - colorscale: "Reds", "Blues", "Greens", "Viridis", "Plasma", etc.
+# - colorbar_title: Colorbar label
+# - yaxis_title: Y-axis label
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - horizontal_spacing: Space between facets (0-1, default: 0.02)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - category_order: List of super-categories (facet order)
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_7_1_callbacks.py):
+# 1. Extract ToxCSM DataFrame from merged-result-store
+# 2. Validate required columns: compoundname, endpoint, toxicity_score, super_category
+# 3. Clean data:
+#    - Remove nulls in required columns
+#    - Ensure toxicity_score is numeric
+#    - Remove empty strings
+# 4. Log statistics (compounds, endpoints, categories)
+# 5. Pass to PlotService
+#
+# STRATEGY (FacetedHeatmapStrategy):
+# 1. Receives data with ['compoundname', 'endpoint', 'toxicity_score', 'super_category']
+# 2. Process data:
+#    - Clean data (remove nulls)
+#    - Aggregate by (compound, endpoint, category) using mean
+# 3. Create faceted figure:
+#    - Create subplots (1 row, 5 columns)
+#    - Shared Y-axis across facets
+#    - Sort compounds by total toxicity score (descending)
+#    - Pivot data for each category
+#    - Add heatmap trace per facet
+# 4. Apply layout:
+#    - Configure title, dimensions, margins
+#    - Rotate X-axis labels
+#    - Show colorbar on last facet only
+# 5. Returns Plotly figure
+#
+# Database Support:
+# - ToxCSM: ✅ Contains 'compoundname', 'endpoint', 'toxicity_score', 'super_category' columns
+# - BioRemPP: ❌ Does NOT contain toxicity data
+# - KEGG: ❌ Does NOT contain toxicity data
+# - HADEG: ❌ Does NOT contain toxicity data
+#
+# Rendering Logic:
+# - No dropdown required (renders all data automatically)
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+#
+# Visualization Details:
+# - Plot type: Faceted heatmap (multi-subplot)
+# - Facets: 5 super-categories (Nuclear Response, Stress Response, Genomic, Environmental, Organic)
+# - Rows: Compound names (shared Y-axis across facets)
+# - Columns: Toxicological endpoints (unique per facet)
+# - Cell color: Toxicity score (0-1, Reds colorscale)
+# - Colorbar: Shown only on last facet
+# - Hover: Shows compound, endpoint, and toxicity score
+# - Interpretation:
+#   * Red cells: High toxicity risk
+#   * Light cells: Low toxicity risk
+#   * Compounds at top: Highest total toxicity
+#   * Horizontal patterns: Toxicity fingerprint of compound
+#   * Vertical patterns: Endpoints with similar toxicity across compounds
+#
+# Super-Categories (Facets):
+# 1. Nuclear Response: Nuclear receptor endpoints (e.g., NR_AR, NR_ER)
+# 2. Stress Response: Cellular stress endpoints (e.g., SR_MMP, SR_p53)
+# 3. Genomic: Genomic/mutagenic endpoints (e.g., Genotoxic_Carcinogenicity)
+# 4. Environmental: Environmental toxicity endpoints
+# 5. Organic: Organic system toxicity endpoints
+#
+# Compound Sorting:
+# - Compounds sorted by total toxicity score (sum across all endpoints)
+# - Highest risk compounds appear at top
+# - Enables quick identification of most hazardous compounds
+#
+# Scientific Interpretation:
+# - Toxicity fingerprint: Each compound has unique pattern across endpoints
+# - Multi-faceted hazards: Compounds with red cells in multiple facets
+# - Category-specific risks: Some compounds toxic in specific categories only
+# - Use for: Risk prioritization, hazard identification, compound screening
+# - Regulatory context: Identifies compounds requiring further testing
+#
+# Colorscale Options:
+# - Reds (default): Intuitive for toxicity (red = danger)
+# - Blues: Alternative for different visual preference
+# - Viridis: Perceptually uniform, colorblind-friendly
+# - Plasma: High contrast
+# - Custom: Can specify any Plotly colorscale
+#
+# Facet Spacing:
+# - horizontal_spacing: Controls gap between facets
+# - Default: 0.02 (2% of total width)
+# - Increase for more separation, decrease for compact view
+#
+# Unique Features:
+# - Faceted layout with shared Y-axis
+# - Automatic compound sorting by total toxicity
+# - Colorbar only on last facet (cleaner visualization)
+# - Supports custom facet ordering
+# - Handles missing data gracefully (NaN cells)

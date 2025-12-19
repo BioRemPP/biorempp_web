@@ -1,0 +1,272 @@
+# ============================================================================
+# UC-8.3: Compound-Specific KO Completeness Scorecard
+# ============================================================================
+# Description: Heatmap showing KO completeness scores per sample-compound pair
+# Module: module8
+# Plot Type: Heatmap (Scored)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-8.3"
+  module: "module8"
+  title: "Compound-Specific KO Completeness Scorecard"
+  description: >
+    Heatmap scorecard showing KO completeness scores (0-100%) for each
+    microbial sample across individual chemical compounds. Provides the
+    most fine-grained view of functional potential, enabling precise
+    identification of elite specialists for specific pollutants.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "completeness_scorecard"
+    - "heatmap"
+    - "ko_completeness"
+    - "compound_specific"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Compound-specific elite specialist identification"
+    interpretation: "Quantifies genetic toolkit completeness at individual pollutant level"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "KO"
+    - "Compound_Name"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "normalize_identifiers"
+        enabled: true
+        params:
+          strip_whitespace: true
+          convert_ko_uppercase: true
+          remove_duplicates: true
+          remove_empty: true
+        description: "Normalize sample, KO, and compound names"
+      
+      - name: "build_ko_sets"
+        enabled: true
+        description: "Build KO sets per sample and per compound"
+      
+      - name: "calculate_completeness_scores"
+        enabled: true
+        params:
+          scoring_mode: "ko_completeness"
+        description: "Calculate KO completeness percentage for each sample-compound pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapScoredStrategy"
+  
+  plotly:
+    # Strategy-specific parameters
+    scoring_mode: "ko_completeness"
+    category_column: "Compound_Name"
+    sample_column: "Sample"
+    value_column: "KO"
+    
+    # Chart configuration
+    chart:
+      # Title configuration
+      title:
+        show: true
+        text: "Compound-Specific KO Completeness Scorecard"
+        font:
+          size: 16
+          family: "Arial"
+          color: "#2c3e50"
+        x: 0.5
+        xanchor: "center"
+      
+      # Axis configuration
+      xaxis:
+        title: "Compound Name"
+        title_font:
+          size: 14
+      
+      yaxis:
+        title: "Sample"
+        title_font:
+          size: 14
+      
+      # Color configuration
+      color_label: "KO Completeness (%)"
+      color_continuous_scale: "Greens"
+      
+      # Text display in cells (disabled for cleaner visualization with many compounds)
+      show_values: false
+      text_auto: false
+      
+      # Axis label angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Colorbar configuration
+      colorbar:
+        title: "KO Completeness (%)"
+        title_font:
+          size: 12
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      margin:
+        l: 80
+        r: 100
+        t: 100
+        b: 120
+      showlegend: false
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-8-3-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render heatmap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-8-3-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Completeness scorecard heatmap"
+  
+  states: []
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "KO", "Compound_Name"]
+      message: "Data must contain 'Sample', 'KO', and 'Compound_Name' columns for completeness analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for completeness scorecard"
+    
+    - rule: "minimum_categories"
+      min_count: 1
+      message: "At least 1 compound required for completeness scorecard"
+    
+    - rule: "no_nulls"
+      columns: ["Sample", "KO", "Compound_Name"]
+      message: "Null values not allowed in required columns"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_8_3_df_{data_hash}"
+        description: "Cache completeness score matrix"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_8_3_heatmap_{data_hash}_{filters_hash}"
+        description: "Cache generated heatmap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Completeness scorecard requires 'Sample', 'KO', and 'Compound_Name' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No completeness data available."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 sample required for completeness analysis. Found: {count}"
+    
+    insufficient_categories:
+      action: "display_message"
+      message: "At least 1 compound required for completeness analysis. Found: {count}"
+  
+  processing_errors:
+    set_construction_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build KO sets: {error_details}"
+    
+    score_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate completeness scores: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render completeness heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Scoring Algorithm & Differences
+# ============================================================================
+# KO Completeness Scoring (Compound-Specific):
+# 1. For each (Sample, Compound_Name): count unique KOs
+# 2. For each Compound_Name: calculate total unique KOs (universe)
+# 3. Completeness = (sample KOs / compound KOs) × 100%
+# 4. Matrix: samples (rows) × compound names (columns)
+#
+# Interpretation:
+# - Dark green cells (>80%): Elite specialists for specific compounds
+# - Light green cells (<30%): Functional gaps for specific pollutants
+# - Row patterns: Distinguish multi-target vs. niche specialists
+# - Column patterns: Assess compound degradation complexity
+#
+# Difference from UC-8.2:
+# - UC-8.2: Chemical CLASS level (e.g., "BTEX", "PAHs")
+# - UC-8.3: Individual COMPOUND level (e.g., "Benzene", "Naphthalene")
+# - UC-8.3 provides more granular, compound-specific insights

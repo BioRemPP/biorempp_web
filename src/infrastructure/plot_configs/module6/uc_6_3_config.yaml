@@ -1,0 +1,368 @@
+# ============================================================================
+# UC-6.3: Chemical Hierarchy of Bioremediation
+# ============================================================================
+# Description: Treemap showing hierarchical compound distribution
+# Module: module6
+# Plot Type: Treemap (Hierarchical)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-6.3"
+  module: "module6"
+  title: "Chemical Hierarchy of Bioremediation"
+  description: >
+    Hierarchical treemap visualizing the distribution of compounds across
+    samples and chemical classes. Shows the nested relationship between
+    samples, compound classes, and individual compounds. Enables identification
+    of dominant compound classes, sample-specific compound profiles, and
+    overall chemical diversity in bioremediation systems.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "treemap"
+    - "hierarchical"
+    - "compound"
+    - "sample"
+    - "biorempp"
+  plot_type: "treemap"
+  scientific_context:
+    domain: "Chemical Ecology and Bioremediation"
+    application: "Hierarchical compound distribution analysis"
+    interpretation: "Rectangle size indicates compound abundance; nesting shows hierarchy"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound_Class"
+    - "Compound_Name"
+    - "Gene_Symbol"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "build_hierarchy"
+        enabled: true
+        description: "Build hierarchical path: Sample → Compound_Class → Compound_Name"
+      
+      - name: "aggregate_values"
+        enabled: true
+        description: "Count unique compounds per path"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "TreemapStrategy"
+  
+  plotly:
+    # Hierarchy configuration
+    path_columns:
+      - "Sample"
+      - "Compound_Class"
+      - "Compound_Name"
+    
+    root_label: "All Samples"
+    
+    # Aggregation configuration
+    value_column: "Gene_Symbol"
+    aggregation: "nunique"
+    
+    # Color configuration
+    color_mode: "continuous"
+    color_continuous_scale: "Greens"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Chemical Hierarchy: Sample → Class → Compound"
+        x: 0.5
+        font:
+          size: 16
+      
+      # Text configuration
+      text_info: "label+value"
+      text_font_size: 12
+      
+      # Colorbar configuration
+      colorbar:
+        title: "Unique Genes"
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      margin:
+        t: 50
+        l: 25
+        r: 25
+        b: 25
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-6-3-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render treemap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-6-3-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Hierarchical treemap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound_Class", "Compound_Name", "Gene_Symbol"]
+      message: "Data must contain 'Sample', 'Compound_Class', 'Compound_Name', and 'Gene_Symbol' columns"
+    
+    - rule: "min_hierarchy_levels"
+      min_count: 2
+      message: "At least 2 hierarchy levels required for treemap"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_6_3_df_{data_hash}"
+        description: "Cache processed hierarchy data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_6_3_treemap_{data_hash}"
+        description: "Cache generated treemap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Treemap requires 'Sample', 'Compound_Class', 'Compound_Name', and 'Gene_Symbol' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No hierarchy data available. Please check BioRemPP dataset."
+    
+    insufficient_levels:
+      action: "display_message"
+      message: "At least 2 hierarchy levels required for treemap. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    hierarchy_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build hierarchy: {error_details}"
+    
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate values: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render treemap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.x: Title position
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - path_columns: List of columns defining hierarchy
+# - root_label: Label for root node
+# - value_column: Column for aggregation
+# - aggregation: "nunique", "count", "sum"
+# - color_mode: "continuous" or "discrete"
+# - color_column: Column for coloring
+# - color_discrete_sequence: Color palette (discrete mode)
+# - color_continuous_scale: Color scale (continuous mode)
+# - text_info: "label", "value", "label+value", etc.
+# - text_font_size: Font size for labels
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {t, l, r, b} margins
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_6_3_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: sample, compoundclass, compoundname
+# 3. Clean data (remove nulls, placeholders)
+# 4. Pass to PlotService
+#
+# STRATEGY (TreemapStrategy):
+# 1. Receives data with ['sample', 'compoundclass', 'compoundname']
+# 2. Process data:
+#    - Build hierarchy path
+#    - Group by path
+#    - Aggregate values (count unique compounds)
+#    - Add root node
+# 3. Create figure:
+#    - Create treemap with nested rectangles
+#    - Size = aggregated value
+#    - Color = category (sample)
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'sample', 'compoundclass', 'compoundname' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Different structure
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Treemap (hierarchical rectangles)
+# - Hierarchy: sample → compoundclass → compoundname (3 levels)
+# - Rectangle size: Proportional to compound count
+# - Color: By sample (discrete)
+# - Hover: Shows path and value
+# - Interpretation:
+#   * Large rectangle: High compound count
+#   * Small rectangle: Low compound count
+#   * Nesting depth: Hierarchy levels
+#   * Color: Sample identification
+#
+# Treemap Algorithm:
+# 1. Build hierarchy path:
+#    sample/compoundclass/compoundname
+#
+# 2. Aggregate:
+#    For each unique path:
+#      value = COUNT(DISTINCT compoundname)
+#
+# 3. Add root node:
+#    All Samples (root)
+#
+# 4. Visualize:
+#    Nested rectangles:
+#      - Level 1: Samples
+#      - Level 2: Compound classes within samples
+#      - Level 3: Compounds within classes
+#    Size = compound count
+#    Color = sample
+#
+# Example:
+# Input:
+#   sample  compoundclass  compoundname
+#   S1      Aromatic       Benzene
+#   S1      Aromatic       Toluene
+#   S1      Aliphatic      Hexane
+#   S2      Aromatic       Benzene
+#
+# Hierarchy:
+#   All Samples (root)
+#     S1 (3 compounds)
+#       Aromatic (2 compounds)
+#         Benzene (1)
+#         Toluene (1)
+#       Aliphatic (1 compound)
+#         Hexane (1)
+#     S2 (1 compound)
+#       Aromatic (1 compound)
+#         Benzene (1)
+#
+# Treemap:
+# ┌─────────────────────────────┐
+# │ S1 (3)                      │
+# │ ┌───────────┬─────────────┐ │
+# │ │ Aromatic  │ Aliphatic   │ │
+# │ │ (2)       │ (1)         │ │
+# │ │ ┌───┬───┐ │ ┌─────────┐ │ │
+# │ │ │Ben│Tol│ │ │ Hexane  │ │ │
+# │ │ └───┴───┘ │ └─────────┘ │ │
+# │ └───────────┴─────────────┘ │
+# └─────────────────────────────┘
+# ┌───────────┐
+# │ S2 (1)    │
+# │ ┌───────┐ │
+# │ │Aromatic│ │
+# │ │ ┌───┐ │ │
+# │ │ │Ben│ │ │
+# │ │ └───┘ │ │
+# │ └───────┘ │
+# └───────────┘
+#
+# Scientific Interpretation:
+# - Chemical hierarchy: Nested compound distribution
+# - Sample diversity: Number of compounds per sample
+# - Class diversity: Number of compound classes per sample
+# - Compound distribution: How compounds distribute across classes and samples
+# - Dominant classes: Largest rectangles indicate dominant compound classes
+# - Use for: Chemical profiling, sample comparison, compound diversity analysis
+# - Optimization: Identify samples with high chemical diversity
+#
+# Unique Features:
+# - 3-level hierarchy (sample → class → compound)
+# - Discrete coloring by sample
+# - Interactive drill-down
+# - Proportional sizing
+# - Nested rectangles

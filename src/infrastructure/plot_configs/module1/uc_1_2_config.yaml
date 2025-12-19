@@ -1,0 +1,216 @@
+# ============================================================================
+# UC-1.2: Overlap of Compounds Across Regulatory References
+# ============================================================================
+# Description: UpSet plot quantifying compound overlap across regulatory agencies
+# Module: module1
+# Plot Type: UpSet
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-1.2"
+  module: "module1"
+  title: "Overlap of Compounds Across Regulatory References"
+  description: >
+    UpSet plot quantifying the overlap and uniqueness of chemical compound
+    names across different environmental regulatory agencies (referenceAG)
+    cited in the BioRemPP dataset. Reveals consensus compounds and agency-
+    specific monitoring focuses.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-30"
+  tags:
+    - "regulatory_overlap"
+    - "upset"
+    - "compound_names"
+    - "consensus_analysis"
+  plot_type: "upset"
+  scientific_context:
+    domain: "Environmental Regulatory Analysis"
+    application: "Comparative assessment of regulatory frameworks for environmental monitoring"
+    interpretation: "Identifies consensus compounds and agency-specific monitoring priorities"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Compound Name"
+    - "referenceAG"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter_complete"
+        enabled: true
+        description: "Filter to retain only complete entries with non-empty referenceAG and compoundname"
+      
+      - name: "normalize_identifiers"
+        enabled: true
+        params:
+          strip_whitespace: true
+          harmonize_case: true
+          remove_empty: true
+        description: "Normalize compound names and agency identifiers"
+      
+      - name: "build_sets"
+        enabled: true
+        description: "Build unique compound sets per regulatory agency"
+      
+      - name: "remove_duplicates"
+        enabled: true
+        description: "Remove duplicate compound entries within each agency"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "UpSetStrategy"
+  
+  plotly:
+    # Column mapping
+    entity_column: "identifier"
+    category_column: "category"
+    
+    # UpSet plot parameters
+    sort_by: "cardinality"
+    show_counts: true
+    show_percentages: false
+    min_subset_size: 0
+    max_subset_rank: null
+    
+    # Figure dimensions
+    fig_width: 10
+    fig_height: 6
+    
+    # Color scheme
+    bar_color: "#0d6efd"
+    
+    # Title configuration (at plotly level, NOT inside layout)
+    title:
+      text: "Compound Overlap Across Regulatory Agencies"
+      font:
+        size: 16
+        family: "Arial, sans-serif"
+        color: "#333"
+      x: 0.5
+      xanchor: "center"
+    
+    # Layout customization
+    layout:
+      height: 600
+      autosize: true
+      template: "simple_white"
+      margin:
+        l: 20
+        r: 20
+        t: 60
+        b: 80
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-1-2-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render UpSet plot when accordion opens"
+  
+  outputs:
+    - component_id: "uc-1-2-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "UpSet plot visualization"
+  
+  states: []
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Compound Name", "referenceAG"]
+      message: "Data must contain 'Compound Name' and 'referenceAG' columns for UpSet analysis"
+    
+    - rule: "minimum_agencies"
+      min_count: 2
+      message: "At least 2 regulatory agencies required for overlap analysis"
+    
+    - rule: "no_nulls"
+      columns: ["Compound Name", "referenceAG"]
+      message: "Null values not allowed in 'Compound Name' or 'referenceAG' columns"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_1_2_df_{data_hash}"
+        description: "Cache processed compound sets per agency"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_1_2_upset_{data_hash}_{filters_hash}"
+        description: "Cache generated UpSet figure"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. UpSet plot requires 'Compound Name' and 'referenceAG' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No compound data found in BioRemPP results."
+    
+    insufficient_agencies:
+      action: "display_message"
+      message: "At least 2 regulatory agencies required for overlap analysis. Found: {count}"
+  
+  processing_errors:
+    set_construction_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"

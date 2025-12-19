@@ -1,0 +1,61 @@
+# UC-7.5: Interactive Distribution of Toxicity Scores by Endpoint
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-5"
+
+scientific_question: >
+  Within a broad toxicological domain (e.g., Genomic Toxicity), what are the
+  probability distributions of predicted toxicity scores across its specific
+  endpoints, and which endpoints exhibit the highest median risk or greatest
+  variability?
+
+description: >
+  This interactive visualization allows for the detailed exploration of the
+  predicted toxicity scores from the ToxCSM dataset. By selecting a high-level
+  toxicity category from the dropdown menu, the plot dynamically updates to
+  display a series of overlaid kernel density estimate (KDE) curves. Each curve
+  represents the distribution of toxicity scores for a specific toxicological
+  endpoint within that category, allowing for direct comparison of their shapes,
+  peaks, and spreads.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Toxicity Super-Category (e.g., Genomic, Environmental)
+      to analyze. The plot will update automatically.
+
+  - label: "X-axis"
+    description: >
+      Represents the predicted Toxicity Score, typically ranging from 0 (low risk)
+      to 1 (high risk).
+
+  - label: "Y-axis"
+    description: >
+      Represents the Probability Density. The area under each curve sums to 1.
+
+  - label: "Overlaid Curves"
+    description: >
+      Each colored, semi-transparent curve represents the distribution of scores
+      for a single Toxicological Endpoint. The legend identifies which color
+      corresponds to which endpoint.
+
+interpretation_guidelines:
+  - >
+    Identifying High-Risk Endpoints: The position of the peaks (modes) of the
+    curves reveals where the scores are most concentrated. A curve with a peak
+    shifted to the right (towards 1.0) indicates an endpoint where high toxicity
+    scores are more common.
+
+  - >
+    Assessing Consensus vs. Variability: A tall, narrow peak indicates a strong
+    consensus in the predicted scores for an endpoint (low variability). A short,
+    wide curve indicates high variability, where compounds have a wide range of
+    predicted toxic effects.
+
+  - >
+    Comparative Toxicology: The plot allows for direct comparison of risk profiles.
+    By observing the shapes and positions of the overlaid curves, one can quickly
+    assess which endpoints are generally of higher concern or have more unpredictable
+    outcomes within a given toxicological category.
+
+color_scheme: "success"

@@ -1,0 +1,71 @@
+# UC-4.13: Interactive Genetic Profile by Compound Pathway (HADEG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-13"
+
+scientific_question: >
+  For a given class of chemical pathways (e.g., Alkanes), which specific genes
+  are present in which biological samples, and what does this reveal about the
+  genetic strategies employed for biotransforming these compounds?
+
+description: >
+  This interactive visualization provides a detailed genetic profile of the
+  sample consortium for a user-selected compound pathway. By choosing a pathway
+  from the dropdown menu, the heatmap dynamically updates to display the
+  functional richness—measured by the count of unique KEGG Orthology (KO)
+  identifiers—for each gene across all samples.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Compound Pathway to analyze. The plot will update
+      automatically.
+
+  - label: "Y-axis (Rows)"
+    description: >
+      Represents the individual Genes associated with the selected compound
+      pathway.
+
+  - label: "X-axis (Columns)"
+    description: >
+      Represents the individual Samples in your dataset.
+
+  - label: "Cell Color Intensity"
+    description: >
+      The color intensity of each cell indicates the count of unique KOs,
+      showing the functional diversity of a specific gene within a specific
+      sample for the chosen pathway.
+
+  - label: "Hover Information"
+    description: >
+      Hover over cells to see exact KO counts and identify specific
+      gene-sample combinations.
+
+interpretation_guidelines:
+  - >
+    Functional Hotspots: Brightly colored cells (hotspots) may identify a strong
+    functional link, potentially indicating that a particular sample possesses a high
+    diversity of KOs for a specific gene, potentially suggesting that gene's importance
+    or complexity in that biological source.
+
+  - >
+    Key Genetic Players: Rows with consistently high values across multiple
+    samples may represent core genes that are widely distributed and functionally
+    important for biotransforming that class of compounds.
+
+  - >
+    Sample Specialization: Columns with numerous bright cells may highlight the
+    samples that are the most genetically well-equipped to handle the selected
+    compound pathway, potentially identifying them as functional "specialists."
+
+  - >
+    Genetic Profile Matrix: The matrix can help identify the gene presence and
+    functional diversity across different samples, enabling comparative
+    analysis of genetic strategies.
+
+  - >
+    Pathway-Specific Analysis: By switching between compound pathways in the
+    dropdown, you can compare how different chemical compound classes are
+    associated with distinct genetic profiles across your sample consortium.
+
+color_scheme: "success"

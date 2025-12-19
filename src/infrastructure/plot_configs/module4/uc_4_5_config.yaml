@@ -1,0 +1,329 @@
+# ============================================================================
+# UC-4.5: Interactive Gene Presence Map by Metabolic Pathway (KEGG)
+# ============================================================================
+# Description: Scatter plot showing gene presence across samples for selected pathway
+# Module: module4
+# Plot Type: Dot Plot (Simple Scatter)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.5"
+  module: "module4"
+  title: "Gene Presence Map by Pathway"
+  description: >
+    Scatter plot showing gene presence across samples for a selected
+    metabolic pathway. Each point represents a gene present in a sample,
+    enabling identification of core genes (present across many samples)
+    versus accessory genes (present in few samples).
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-02"
+  tags:
+    - "dot_plot"
+    - "scatter"
+    - "gene_presence"
+    - "pathway_analysis"
+    - "kegg"
+  plot_type: "dot_plot"
+  scientific_context:
+    domain: "Metabolic Pathway Analysis and Gene Distribution"
+    application: "Identifying gene presence patterns across samples for specific pathways"
+    interpretation: "Horizontal lines indicate core genes (present across many samples); isolated points indicate accessory genes (sample-specific)"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "kegg-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Pathway"
+    - "KO"
+    - "GeneSymbol"
+  
+  processing:
+    steps:
+      - name: "group_and_count"
+        enabled: true
+        params:
+          group_by: ["Sample", "GeneSymbol"]
+          agg_column: "KO"
+          agg_function: "nunique"
+          result_column: "unique_ko_count"
+        description: "Count unique KO identifiers per sample-gene combination"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "DotPlotStrategy"
+  
+  plotly:
+    scatter:
+      x: "Sample"
+      y: "GeneSymbol"
+      mode: "simple"  # Simple scatter plot (uniform markers)
+      
+      # Marker configuration
+      marker:
+        color: "mediumseagreen"
+        size: 10
+        line:
+          color: "white"
+          width: 1
+      
+      # Hover configuration
+      hover_name: "GeneSymbol"
+      hover_data:
+        Sample: true
+        GeneSymbol: true
+        unique_ko_count: true
+    
+    # Layout configuration
+    layout:
+      # Title configuration
+      title:
+        show: true
+        text: ""  # Set dynamically in callback
+        x: 0.5
+      
+      # Dimensions
+      height: 750
+      autosize: true
+      
+      # Template and colors
+      template: "simple_white"
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      # X-axis configuration
+      xaxis:
+        title: "Sample"
+        tickangle: -45
+        showgrid: true
+        gridcolor: "#e0e0e0"
+      
+      # Y-axis configuration
+      yaxis:
+        title: "Gene Symbol"
+        tickangle: 0
+        showgrid: true
+        gridcolor: "#e0e0e0"
+      
+      # Hover mode
+      hovermode: "closest"
+      
+      # Margins
+      margin:
+        l: 150
+        r: 50
+        t: 50
+        b: 100
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-5-pathway-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render scatter plot when pathway selected"
+  
+  outputs:
+    - component_id: "uc-4-5-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Gene presence scatter plot"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-4-5-pathway-dropdown"
+      type: "dropdown"
+      label: "Select Metabolic Pathway"
+      options_source: "dynamic"
+      description: "Filter genes by pathway"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Pathway", "KO", "GeneSymbol"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_points"
+      min_count: 1
+      message: "At least 1 gene required for visualization"
+    
+    - rule: "kegg_data_required"
+      message: "This use case requires KEGG database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_5_df_{data_hash}_{filters_hash}"
+        description: "Cache processed data by pathway"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_5_scatter_{data_hash}_{filters_hash}"
+        description: "Cache generated scatter plot"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Gene presence map requires 'Sample', 'Pathway', 'KO', and 'GeneSymbol' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No gene data available. Please check KEGG dataset."
+    
+    no_genes_found:
+      action: "display_message"
+      message: "No genes found for selected pathway: {pathway}"
+    
+    kegg_data_missing:
+      action: "display_message"
+      message: "KEGG database data not found. This use case requires KEGG data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate gene data: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render scatter plot: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - scatter.mode: "simple" (fixed markers) or "bubble" (variable size/color)
+# - scatter.marker.color: Marker color (e.g., "mediumseagreen", "#2ecc71")
+# - scatter.marker.size: Marker size in pixels (default: 10)
+# - scatter.marker.line.color: Marker border color
+# - scatter.marker.line.width: Marker border width
+# - scatter.hover_name: Column for hover label
+# - scatter.hover_data: Additional columns to show on hover
+# - layout.title.show: true/false (toggle title)
+# - layout.title.text: Title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.xaxis.title: X-axis label
+# - layout.yaxis.title: Y-axis label
+# - layout.xaxis.tickangle: X-axis label rotation (-90 to 90)
+# - layout.yaxis.tickangle: Y-axis label rotation (-90 to 90)
+# - layout.xaxis.showgrid: Show/hide grid lines
+# - layout.xaxis.gridcolor: Grid line color
+# - layout.margin: {l, r, t, b} margins
+# - layout.hovermode: "closest", "x", "y", "x unified", "y unified"
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_5_callbacks.py):
+# 1. Extract KEGG DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - Sample: "Sample", "sample", "sample_id"
+#    - Pathway: "Pathway", "pathname", "pathway_name"
+#    - KO: "KO", "ko", "ko_id"
+#    - GeneSymbol: "GeneSymbol", "genesymbol", "gene_symbol", "Gene_Symbol"
+# 3. Filter by selected pathway from dropdown
+# 4. Remove rows with missing GeneSymbol
+# 5. Pass to PlotService
+#
+# STRATEGY (DotPlotStrategy - Simple Mode):
+# 1. Receives data with ['Sample', 'Pathway', 'KO', 'GeneSymbol']
+# 2. Applies group_and_count processing:
+#    - GROUP BY Sample, GeneSymbol
+#    - COUNT(DISTINCT KO) AS unique_ko_count
+# 3. Creates scatter plot:
+#    - X-axis: Sample names
+#    - Y-axis: Gene symbols
+#    - Markers: Fixed size/color (mediumseagreen)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - KEGG: ✅ Contains 'Sample', 'Pathway', 'KO', 'GeneSymbol' columns
+# - BioRemPP: ❌ Does NOT contain KEGG pathway or gene symbol data
+# - HADEG: ❌ Does NOT contain pathway data
+# - ToxCSM: ❌ Does NOT contain pathway data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open (active_item trigger)
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Visualization Details:
+# - Plot type: Simple scatter (presence/absence map)
+# - X-axis: Sample identifiers
+# - Y-axis: Gene symbols
+# - Markers: Uniform size and color
+# - Hover: Shows sample, gene symbol, and unique KO count
+# - Interpretation:
+#   * Horizontal lines: Core genes (present across many samples)
+#   * Isolated points: Accessory genes (sample-specific)
+#   * Dense columns: Samples with many genes
+#   * Sparse columns: Samples with few genes
+#
+# Column Mapping (Flexible):
+# - Sample: "Sample", "sample", "sample_id"
+# - Pathway: "Pathway", "pathname", "pathway_name"
+# - KO: "KO", "ko", "ko_id"
+# - GeneSymbol: "GeneSymbol", "genesymbol", "gene_symbol", "Gene_Symbol"
+#
+# Aggregation Logic:
+# 1. Filter data by selected pathway
+# 2. Group by (Sample, GeneSymbol)
+# 3. Count unique KO identifiers per group
+# 4. Result: One row per (Sample, GeneSymbol) combination
+# 5. unique_ko_count: Number of distinct KOs for that gene in that sample
+#
+# Scientific Interpretation:
+# - Core genes: Present in most/all samples → essential for pathway function
+# - Accessory genes: Present in few samples → strain-specific or conditional
+# - Use for: Identifying conserved pathway components, sample heterogeneity
+# - Pathway context: Each pathway has characteristic gene distribution pattern

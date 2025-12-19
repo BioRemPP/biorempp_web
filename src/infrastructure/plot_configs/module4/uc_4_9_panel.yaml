@@ -1,0 +1,55 @@
+# UC-4.9: Interactive Profiling of Sample Enzymatic Activity
+# Informative Panel Configuration
+
+use_case_id: "uc-4-9"
+
+scientific_question: >
+  For any given biological sample, which enzymatic functions are the most
+  prominent, as measured by the diversity of unique genes associated with them?
+
+description: >
+  This interactive visualization provides a detailed functional profile of a
+  selected sample by ranking its annotated enzyme activities. By choosing a
+  sample from the dropdown menu, the bar chart dynamically updates to display
+  the number of unique gene symbols associated with each enzymatic function.
+  This may highlight the enzymatic capabilities that are most genetically diverse
+  within that biological source.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Sample to analyze. The plot will update automatically.
+
+  - label: "X-axis"
+    description: >
+      Represents the individual Enzyme Activities found in the selected sample.
+
+  - label: "Y-axis"
+    description: >
+      Represents the count of unique genes associated with each enzyme activity.
+
+  - label: "Bar Height and Label"
+    description: >
+      The height of each bar and its corresponding numerical label explicitly
+      state the total number of unique genes for that function.
+
+interpretation_guidelines:
+  - >
+    **Genetic Investment**: Taller bars may represent enzyme activities that are
+    supported by a larger and more diverse set of genes. This may suggest a
+    significant genetic investment by the biological source in that particular function,
+    potentially indicating its importance.
+
+  - >
+    **Functional Specialization**: The ranking of enzyme activities can help identify
+    the functional specialization of the selected sample. For example, a
+    biological source showing high gene counts for 'oxidoreductase' and 'monooxygenase'
+    may be specialized in oxidative biotransformation pathways.
+
+  - >
+    **Comparative Functional Profiling**: By switching between samples, one
+    can directly compare their enzymatic profiles. This may highlight key
+    functional differences, such as one biological source relying heavily on 'hydrolase'
+    activities while another prioritizes 'transferase' functions.
+
+color_scheme: "success"

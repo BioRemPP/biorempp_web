@@ -1,0 +1,344 @@
+# ============================================================================
+# UC-5.4: Gene-Compound Interaction Network
+# ============================================================================
+# Description: Bipartite network showing gene-compound interactions
+# Module: module5
+# Plot Type: Network (Bipartite)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-5.4"
+  module: "module5"
+  title: "Gene-Compound Interaction Network"
+  description: >
+    Bipartite network graph mapping relationships between gene symbols and
+    compound names. Reveals interaction hubs, functional modules, and the
+    connectivity patterns between genes and compounds in bioremediation
+    pathways. Enables identification of key genes with broad compound
+    specificity and compounds targeted by multiple genes.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "network"
+    - "bipartite"
+    - "gene_compound"
+    - "interaction"
+    - "biorempp"
+  plot_type: "network"
+  scientific_context:
+    domain: "Systems Biology and Interaction Networks"
+    application: "Gene-compound interaction mapping for bioremediation"
+    interpretation: "Node size indicates degree (number of connections); hubs are highly connected entities"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "genesymbol"
+    - "compoundname"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "extract_gene_compound_pairs"
+        enabled: true
+        description: "Extract unique gene-compound interaction pairs"
+      
+      - name: "build_bipartite_network"
+        enabled: true
+        description: "Build bipartite network with NetworkX"
+      
+      - name: "apply_force_layout"
+        enabled: true
+        description: "Calculate node positions using spring layout"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "NetworkStrategy"
+  
+  plotly:
+    # Processing mode
+    mode: "bipartite"
+    source_column: "genesymbol"
+    target_column: "compoundname"
+    
+    # Layout algorithm configuration
+    layout_algorithm:
+      algorithm: "spring"
+      k: 0.15
+      iterations: 100
+      seed: 42
+    
+    # Node configuration
+    node_size: 10
+    node_colors:
+      source: "darkblue"
+      target: "darkgreen"
+    
+    # Edge configuration
+    edge_width: 0.5
+    edge_color: "#888"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Gene-Compound Interaction Network"
+        font:
+          size: 16
+      
+      show_legend: true
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 900
+      autosize: true
+      
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      margin:
+        l: 20
+        r: 20
+        t: 60
+        b: 20
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-5-4-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render network when accordion opens"
+  
+  outputs:
+    - component_id: "uc-5-4-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Gene-compound interaction network"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["genesymbol", "compoundname"]
+      message: "Data must contain 'genesymbol' and 'compoundname' columns"
+    
+    - rule: "minimum_interactions"
+      min_count: 1
+      message: "At least 1 gene-compound interaction required for network"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_5_4_df_{data_hash}"
+        description: "Cache processed network data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_5_4_network_{data_hash}"
+        description: "Cache generated network diagram"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Network requires 'genesymbol' and 'compoundname' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No gene-compound interaction data available. Please check BioRemPP dataset."
+    
+    no_interactions:
+      action: "display_message"
+      message: "No valid gene-compound interactions found after data cleaning."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    network_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build network graph: {error_details}"
+    
+    layout_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate network layout: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render network diagram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - mode: "bipartite" or "similarity"
+# - source_column: Column for source nodes (genes)
+# - target_column: Column for target nodes (compounds)
+# - layout_algorithm.algorithm: "spring", "circular", "kamada_kawai", "shell"
+# - layout_algorithm.k: Spring layout parameter (optimal distance)
+# - layout_algorithm.iterations: Spring layout iterations
+# - layout_algorithm.seed: Random seed for reproducibility
+# - node_size: Base node size
+# - node_colors.source: Source node color (genes)
+# - node_colors.target: Target node color (compounds)
+# - edge_width: Edge width
+# - edge_color: Edge color
+# - show_legend: true/false (toggle legend)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - plot_bgcolor: Plot background color
+# - paper_bgcolor: Paper background color
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_5_4_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: genesymbol, compoundname
+# 3. Clean data (remove nulls, duplicates)
+# 4. Pass to PlotService
+#
+# STRATEGY (NetworkStrategy):
+# 1. Receives data with ['genesymbol', 'compoundname']
+# 2. Process data (bipartite mode):
+#    - Create edge list (gene ↔ compound)
+#    - Build NetworkX graph
+#    - Calculate layout (spring algorithm)
+# 3. Create figure:
+#    - Create edge traces
+#    - Create node traces (two colors: genes=blue, compounds=green)
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'genesymbol', 'compoundname' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain gene data
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Bipartite network
+# - Nodes: Genes (blue) and Compounds (green)
+# - Edges: Gene-compound interactions
+# - Layout: Spring force-directed layout
+# - Node size: Proportional to degree (number of connections)
+# - Hover: Shows node name and number of interactions
+# - Legend: Shows node types (Gene, Compound)
+# - Interpretation:
+#   * Large nodes: Hubs (highly connected)
+#   * Small nodes: Peripheral entities
+#   * Dense clusters: Functional modules
+#   * Isolated nodes: Specialized interactions
+#
+# Network Metrics:
+# - Degree: Number of connections per node
+# - Hubs: Nodes with high degree
+# - Modules: Densely connected subgraphs
+# - Connectivity: Overall network structure
+#
+# Example:
+# Gene "ABC1" connected to 10 compounds
+# → Large blue node with 10 edges
+# Compound "Benzene" connected to 5 genes
+# → Medium green node with 5 edges
+#
+# Scientific Interpretation:
+# - Gene hubs: Genes with broad compound specificity
+# - Compound hubs: Compounds targeted by multiple genes
+# - Functional modules: Groups of genes targeting similar compounds
+# - Use for: Pathway analysis, gene function prediction, compound targeting
+# - Optimization: Identify key genes for bioremediation consortia
+#
+# Layout Algorithms:
+# - spring: Force-directed (Fruchterman-Reingold) - balanced, general-purpose
+# - circular: Nodes arranged in circle - symmetry, small networks
+# - kamada_kawai: Energy minimization - aesthetic, clear structure
+# - shell: Concentric shells - hierarchical networks
+#
+# Spring Layout Parameters:
+# - k: Optimal distance between nodes (0.15 = moderate spacing)
+# - iterations: Number of optimization iterations (100 = good balance)
+# - seed: Random seed for reproducibility (42 = consistent layouts)
+#
+# Node Colors:
+# - source (genes): darkblue - represents genetic elements
+# - target (compounds): darkgreen - represents chemical compounds
+# - Distinct colors enable easy visual separation
+#
+# Unique Features:
+# - Bipartite structure (two node types)
+# - Force-directed layout (natural clustering)
+# - Interactive hover (node details)
+# - Legend (node type identification)
+# - Degree-based node sizing (hub identification)
+# - Configurable layout algorithm
+# - Reproducible layouts (seed parameter)

@@ -1,0 +1,72 @@
+# UC-5.2: Sample Similarity Based on Shared Chemical Profiles
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-2"
+
+scientific_question: >
+  How functionally similar are the biological samples to one another, based on
+  the shared repertoire of chemical compounds they interact with, and what is
+  the structure of these functional guilds?
+
+description: >
+  This visualization assesses the pairwise similarity between all biological
+  samples based on their shared chemical interaction profiles. The chord
+  diagram is constructed from a derived set of connections where the strength
+  of the link between any two samples is quantified by the number of compounds
+  they have in common. This can help identify biological sources with analogous
+  chemical interaction capabilities.
+
+visual_elements:
+  - label: "Outer Arcs"
+    description: >
+      Each colored arc on the circumference represents an individual Sample.
+      The length of the arc is proportional to its total shared interactions
+      with all other samples.
+
+  - label: "Chords (Ribbons)"
+    description: >
+      The ribbons flowing between two arcs represent the similarity between
+      that pair of samples.
+
+  - label: "Chord Thickness"
+    description: >
+      The thickness of a chord is directly proportional to the number of
+      shared compounds, indicating the strength of the functional similarity.
+
+  - label: "Node Colors"
+    description: >
+      Each sample is assigned a distinct color for easy identification
+      across the diagram.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over a chord displays the exact number of shared compounds
+      between the connected sample pair.
+
+interpretation_guidelines:
+  - >
+    Functional Guilds: Thick chords connecting a group of samples may identify
+    functional guilds - clusters of biological sources that likely target a similar
+    range of chemical substrates and may share similar ecological niches
+    or metabolic strategies.
+
+  - >
+    High Similarity: A thick chord between two specific samples indicates
+    that they have very similar chemical interaction profiles.
+
+  - >
+    Unique Profiles: A sample with only thin chords connecting to others
+    may possess a more unique or specialized chemical interaction profile
+    compared to the rest of the consortium.
+
+  - >
+    Consortium Redundancy: Highly interconnected samples may provide
+    functional redundancy, which can be beneficial for robust bioremediation
+    but may also indicate potential overlap in capabilities.
+
+  - >
+    Core vs Peripheral Samples: Samples with many thick connections form
+    the core of functional similarity, while those with few connections
+    are peripheral specialists.
+
+color_scheme: "primary"

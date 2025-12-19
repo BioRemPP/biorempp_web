@@ -1,0 +1,358 @@
+# ============================================================================
+# UC-8.1: Minimal Sample-Group Visualization
+# ============================================================================
+# Description: Grouped scatter plot showing minimal sample groups with frozenset algorithm
+# Module: module8
+# Plot Type: Frozenset Visualization (Multi-subplot Grouped Scatter)
+# Rendering: On-demand (compound class dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-8.1"
+  module: "module8"
+  title: "Minimal Sample-Group Visualization"
+  description: >
+    Grouped scatter plot showing samples organized by compound profiles (frozenset).
+    Uses greedy set cover minimization to display minimal groups that maximize
+    compound coverage. Marker colors represent unique KO counts per compound,
+    highlighting functional diversity. Enables identification of minimal functional
+    guilds required for complete compound coverage.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "frozenset"
+    - "grouped_scatter"
+    - "set_cover"
+    - "sample_grouping"
+    - "biorempp"
+  plot_type: "frozenset_visualization"
+  scientific_context:
+    domain: "Functional Guild Analysis and Minimal Sample Coverage"
+    application: "Identifying minimal sample groups for complete compound coverage"
+    interpretation: "Each subplot represents a minimal functional guild; darker markers indicate higher KO diversity"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "compoundname"
+    - "compoundclass"
+    - "ko"  # Optional (for color scaling)
+  
+  processing:
+    steps:
+      - name: "filter_by_compoundclass"
+        enabled: true
+        description: "Filter data to selected compound class"
+      
+      - name: "group_by_compound_profile"
+        enabled: true
+        description: "Group samples by frozenset of compounds"
+      
+      - name: "minimize_groups"
+        enabled: true
+        description: "Apply greedy set cover algorithm for minimal group selection"
+      
+      - name: "calculate_ko_counts"
+        enabled: true
+        description: "Count unique KOs per compound for color scaling"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "FrozensetStrategy"
+  
+  plotly:
+    # Column mapping
+    sample_column: "sample"
+    compound_column: "compoundname"
+    compoundclass_column: "compoundclass"
+    ko_column: "ko"
+    
+    # Visual configuration
+    color_scale: "Greens"
+    marker_size: 10
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Minimal Sample-Group Visualization"
+        font_size: 16
+      
+      # Axis labels
+      xaxis_title: "Sample"
+      yaxis_title: "Compound"
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Colorbar configuration
+      colorbar_title: "Unique<br>KO Count"
+      
+      # Subplot spacing
+      horizontal_spacing: 0.03
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true
+      
+      margin:
+        l: 150
+        r: 50
+        t: 80
+        b: 50
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-8-1-compoundclass-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render frozenset plot when compound class is selected"
+  
+  outputs:
+    - component_id: "uc-8-1-chart"
+      property: "children"
+      output_type: "html.Div"
+      description: "Frozenset visualization with statistics"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-8-1-compoundclass-dropdown"
+      type: "dropdown"
+      label: "Filter by Compound Class"
+      options_source: "dynamic"
+      description: "Select compound class to analyze"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "compoundname", "compoundclass"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for visualization"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+    
+    - rule: "compound_class_selected"
+      message: "Please select a compound class from the dropdown"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_8_1_df_{data_hash}_{compoundclass_hash}"
+        description: "Cache processed data by compound class"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_8_1_frozenset_{data_hash}_{compoundclass_hash}"
+        description: "Cache generated frozenset figure"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Frozenset visualization requires 'sample', 'compoundname', and 'compoundclass' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No data available. Please check BioRemPP dataset."
+    
+    no_compound_class_selected:
+      action: "display_info"
+      message: "Please select a Compound Class from the dropdown above."
+    
+    no_data_for_class:
+      action: "display_message"
+      message: "No data found for compound class: {compoundclass}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    grouping_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to group samples by compound profile: {error_details}"
+    
+    set_cover_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to minimize groups using set cover: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render frozenset visualization: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font_size: Title font size (default: 16)
+# - autosize: true/false (responsive sizing)
+# - xaxis_title: X-axis label
+# - yaxis_title: Y-axis label
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - color_scale: "Greens", "Blues", "Reds", "Viridis", etc.
+# - marker_size: Marker size in pixels (default: 10)
+# - colorbar_title: Colorbar label
+# - horizontal_spacing: Space between subplots (0-1, default: 0.03)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_8_1_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - sample: "Sample", "sample", "sample_name", "SampleName"
+#    - compoundname: "Compound_Name", "compound_name", "CompoundName", "Compound"
+#    - compoundclass: "Compound_Class", "compound_class", "CompoundClass", "class"
+#    - ko: "KO", "ko", "ko_id", "KO_ID" (optional)
+# 3. Filter by selected compound class
+# 4. Group samples by frozenset of compounds:
+#    - Samples with identical compound profiles grouped together
+# 5. Apply greedy set cover algorithm:
+#    - Select minimal groups that cover all compounds
+# 6. Calculate unique KO counts per compound (for color)
+# 7. Pass to PlotService
+#
+# STRATEGY (FrozensetStrategy):
+# 1. Receives data with ['sample', 'compoundname', '_group', '_unique_ko_count']
+# 2. Create subplots (1 row, N columns) where N = number of minimized groups
+# 3. Shared Y-axis across subplots
+# 4. Add scatter trace per group:
+#    - X-axis: Sample names
+#    - Y-axis: Compound names
+#    - Color: Unique KO count (Greens colorscale)
+# 5. Show colorbar only on first subplot
+# 6. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample', 'Compound_Name', 'Compound_Class', 'KO' columns
+# - KEGG: ❌ Does NOT contain compound class data
+# - HADEG: ❌ Does NOT contain compound data
+# - ToxCSM: ❌ Does NOT contain compound data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On compound class dropdown selection
+# - Loading spinner shown during processing
+# - Statistics summary displayed above chart
+#
+# Visualization Details:
+# - Plot type: Grouped scatter (multi-subplot)
+# - Subplots: One per minimized group
+# - X-axis: Sample identifiers
+# - Y-axis: Compound names (shared across subplots)
+# - Color: Unique KO count per compound
+# - Colorbar: Shown only on first subplot
+# - Hover: Shows sample, compound, and unique KO count
+# - Interpretation:
+#   * Each subplot: Minimal functional guild
+#   * Darker green: Higher KO diversity (more unique KOs)
+#   * Lighter green: Lower KO diversity (fewer unique KOs)
+#   * Groups: Samples with identical compound profiles
+#
+# Frozenset Grouping Algorithm:
+# 1. For each sample, create frozenset of compounds
+# 2. Samples with identical frozensets grouped together
+# 3. Example:
+#    - Sample A: {Benzene, Toluene}
+#    - Sample B: {Benzene, Toluene}
+#    - Sample C: {Xylene, Ethylbenzene}
+#    - → Group 1: [Sample A, Sample B]
+#    - → Group 2: [Sample C]
+#
+# Set Cover Minimization Algorithm:
+# 1. Greedy algorithm selects minimal groups covering all compounds
+# 2. Example:
+#    - Group 1: {Benzene, Toluene, Xylene}
+#    - Group 2: {Benzene, Toluene}
+#    - Group 3: {Xylene, Ethylbenzene}
+#    - → Selected: Group 1, Group 3 (covers all 4 compounds)
+#    - → Group 2 redundant (compounds already covered)
+#
+# KO Count Color Encoding:
+# - Unique KO count per compound within selected class
+# - Darker green: High functional diversity
+# - Lighter green: Low functional diversity
+# - Reveals which compounds have diverse enzymatic pathways
+#
+# Scientific Interpretation:
+# - Minimal functional guilds: Smallest set of sample groups needed
+# - Complete coverage: All compounds represented
+# - Functional redundancy: Multiple samples with same profile
+# - Use for: Sample selection, functional guild identification, coverage analysis
+# - Optimization: Reduces sampling effort while maintaining coverage
+#
+# Compound Class Filtering:
+# - Dropdown populated with unique compound classes
+# - Filtering enables class-specific analysis
+# - Examples: "Aromatic hydrocarbons", "Aliphatic compounds", etc.
+#
+# Unique Features:
+# - Frozenset-based grouping (identical compound profiles)
+# - Set cover minimization (greedy algorithm)
+# - Multi-subplot layout (one per group)
+# - KO diversity color encoding
+# - Compound class filtering
+# - Statistics summary (groups, samples, compounds)

@@ -1,0 +1,100 @@
+# UC-3.2: PCA - Sample Relationships by Compound Profile
+# Panel Configuration (YAML)
+
+use_case_id: "uc-3-2"
+
+scientific_question: >
+  How do biological samples cluster in chemical space based on their compound
+  interaction profiles? Which samples exhibit similar biotransformation potentials
+  for different compound classes, and which represent distinct biotransformation
+  strategies?
+
+description: >
+  This visualization employs Principal Component Analysis (PCA) to reduce the
+  high-dimensional space of compound presence/absence profiles into two principal
+  components for visualization. Each point represents a sample, positioned
+  according to its scores on PC1 and PC2. The analysis can help identify natural
+  groupings based on biotransformation capabilities, outliers, and the overall
+  structure of chemical diversity within the dataset. Samples with similar
+  compound interaction repertoires cluster together, while samples with
+  distinct interaction profiles appear farther apart.
+
+visual_elements:
+  - label: "X-axis (PC1)"
+    description: >
+      Principal Component 1 captures the largest variance in the compound
+      interaction profiles. The axis label shows the percentage of total
+      variance explained by PC1. Samples spread along this axis differ most
+      strongly in the compound classes they can interact with.
+
+  - label: "Y-axis (PC2)"
+    description: >
+      Principal Component 2 captures the second-largest variance orthogonal
+      to PC1. The axis label shows the percentage of variance explained by PC2.
+      Together, PC1 and PC2 provide a 2D projection that preserves major
+      patterns of compound interaction capabilities.
+
+  - label: "Points (Samples)"
+    description: >
+      Each point represents one biological sample. Points are colored by
+      sample identity, making it easy to track individual samples and
+      identify clusters based on interaction profiles.
+
+  - label: "Point Color"
+    description: >
+      Colors distinguish individual samples. Samples of the same color are
+      the same biological source. The color legend on the right shows all
+      samples included in the analysis.
+
+  - label: "Clustering"
+    description: >
+      Samples that appear close together in the plot have similar compound
+      interaction profiles, indicating they can interact with similar sets of
+      pollutants. Distinct clusters may suggest specialized biotransformation strategies
+      for different compound classes (e.g., aromatics, aliphatics, heterocycles).
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each point displays the sample name and its PC1/PC2 scores,
+      facilitating identification and comparison of interaction capabilities.
+
+interpretation_guidelines:
+  - >
+    Biotransformation Clusters: Tight groups of samples indicate shared compound
+    interaction profiles. These clusters may represent specialists for
+    particular pollutant classes (e.g., PAH degraders, BTEX degraders,
+    aliphatic hydrocarbon degraders).
+
+  - >
+    Generalists vs. Specialists: Samples in the center of the plot may be
+    generalists capable of interacting with diverse compound classes. Samples at
+    the periphery may be specialists with narrow but potent biotransformation
+    capabilities for specific pollutants.
+
+  - >
+    Complementary Interactions: Samples positioned far apart in the plot have
+    complementary interaction profiles. These are ideal candidates for
+    biological consortia designed to handle complex pollutant mixtures.
+
+  - >
+    Variance Explained: The percentages on the axes indicate how much of the
+    total interaction diversity is captured. Higher combined percentages
+    (>50%) may suggest the 2D plot faithfully represents interaction patterns.
+    Lower values may indicate more complexity in interaction capabilities.
+
+  - >
+    Biotransformation Potential: The overall spread may reflect the diversity of
+    biotransformation strategies in the community. Wide dispersion may indicate high
+    functional diversity and potential for interacting with diverse pollutant mixtures.
+
+  - >
+    Outliers: Samples far from others possess unique biotransformation capabilities
+    for rare or recalcitrant compounds. These are valuable candidates for
+    bioaugmentation of contaminated sites with specific pollutants.
+
+  - >
+    Consortium Design: Samples from different clusters with low overlap can
+    be combined to create consortia with broad-spectrum biotransformation capabilities,
+    ideal for complex contamination scenarios with multiple pollutant classes.
+
+color_scheme: "primary"

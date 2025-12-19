@@ -1,0 +1,78 @@
+# UC-4.5: Interactive Gene Presence Map by Metabolic Pathway (KEGG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-5"
+
+scientific_question: >
+  For a given metabolic pathway, which specific genes are present in which
+  biological samples, identifying the core and accessory genetic components of
+  the pathway across the consortium?
+
+description: >
+  This interactive visualization provides a detailed genetic inventory for any
+  selected metabolic pathway. By choosing a pathway from the dropdown menu,
+  the scatter plot dynamically updates to map the presence of each associated
+  gene across all biological samples. This allows for a direct comparison of
+  how completely or variably a pathway is encoded in each biological source.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Metabolic Pathway to analyze. The plot will
+      update automatically upon selection.
+
+  - label: "Y-axis (Gene Symbols)"
+    description: >
+      Represents the individual Gene Symbols belonging to the selected pathway.
+      Each unique gene associated with the pathway is displayed on the vertical axis.
+
+  - label: "X-axis (Samples)"
+    description: >
+      Represents the individual biological samples in your dataset. Each sample
+      is displayed on the horizontal axis.
+
+  - label: "Points (Scatter Markers)"
+    description: >
+      A point at the intersection of a sample and a gene symbol indicates that
+      the sample possesses that gene within the context of the selected pathway.
+      The presence of a point signifies genetic content.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over a point reveals additional details, such as the
+      sample name, gene symbol, and the number of unique KOs (KEGG Orthology
+      identifiers) associated with that gene in that sample.
+
+interpretation_guidelines:
+  - >
+    Core vs. Accessory Genes: Genes that form a complete horizontal line of
+    points across most or all samples may be considered core genes of the
+    pathway for this consortium. These are universally present and likely
+    essential for the pathway function. Genes with only one or a few points
+    are accessory genes, present only in specific samples, potentially indicating
+    specialized or complementary capabilities.
+
+  - >
+    Pathway Completeness: The vertical density of points for a given sample
+    column may indicate its pathway completeness. A sample with many points (genes)
+    may have a more complete version of the pathway compared to a sample with fewer
+    points, potentially suggesting varying levels of functional capacity.
+
+  - >
+    Comparative Genomics at the Pathway Level: This tool enables rapid visual
+    comparison of genetic content for a specific metabolic function across all
+    samples. It can help identify which biological sources might have redundant, complementary,
+    or unique capabilities within the pathway.
+
+  - >
+    Functional Redundancy: Multiple samples showing the same set of genes
+    (similar vertical patterns) may suggest functional redundancy in the consortium,
+    where several biological sources can perform similar metabolic tasks.
+
+  - >
+    Genetic Specialization: Samples with unique gene presence patterns
+    (isolated points or unique combinations) may indicate genetic specialization,
+    where specific biological sources possess distinctive enzymatic capabilities within
+    the pathway.
+
+color_scheme: "success"

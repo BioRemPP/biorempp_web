@@ -1,0 +1,287 @@
+# ============================================================================
+# UC-4.11: Global Genetic Diversity of HADEG Pathways
+# ============================================================================
+# Description: Sunburst showing hierarchical genetic diversity structure
+# Module: module4
+# Plot Type: Sunburst (Radial Hierarchical)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.11"
+  module: "module4"
+  title: "Global Genetic Diversity of HADEG Pathways"
+  description: >
+    Hierarchical sunburst visualization showing the global genetic diversity
+    structure across HADEG compound pathways and metabolic pathways. Displays
+    the complete hierarchical relationship from root (All Pathways) through
+    compound classes to specific pathways, with segment sizes representing
+    unique gene counts. Enables identification of genetic diversity patterns,
+    pathway richness, and compound class distribution.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "sunburst"
+    - "hierarchical"
+    - "genetic_diversity"
+    - "hadeg"
+    - "pathway"
+  plot_type: "sunburst"
+  scientific_context:
+    domain: "Genetic Diversity and Pathway Analysis"
+    application: "Hierarchical genetic diversity visualization"
+    interpretation: "Segment size indicates genetic richness; radial structure shows hierarchy"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "merged-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "root"
+    - "Compound"
+    - "Pathway"
+    - "unique_gene_count"
+  
+  processing:
+    steps:
+      - name: "extract_database"
+        enabled: true
+        description: "Extract HADEG or BioRemPP data from store"
+      
+      - name: "aggregate_hierarchy"
+        enabled: true
+        description: "Group by Compound and Pathway, count unique genes"
+      
+      - name: "add_root"
+        enabled: true
+        description: "Add root level: 'All Pathways'"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "SunburstStrategy"
+  
+  plotly:
+    # Hierarchy configuration
+    path_columns:
+      - "root"
+      - "Compound"
+      - "Pathway"
+    
+    # Aggregation configuration
+    values_column: "unique_gene_count"
+    
+    # Color configuration
+    # Mode: "continuous" (gradient) or "discrete" (categorical)
+    color_mode: "continuous"
+    color_column: "unique_gene_count"
+    
+    # Continuous color scale (3-color gradient)
+    color_continuous_scale:
+      - "#e9f7f1"          # Light green (low diversity)
+      - "mediumseagreen"   # Medium green
+      - "#0b3d2e"          # Dark green (high diversity)
+    
+    # Alternative: Discrete color palette (if color_mode: "discrete")
+    # color_discrete_sequence: "Set1"
+    # Options: Set1, Set2, Set3, Pastel1, Pastel2, Plotly, D3, G10, T10
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Global Genetic Diversity of HADEG Pathways"
+        x: 0.5
+        font:
+          size: 16
+      
+      # Branchvalues: "total" (include parent value) or "remainder" (exclude parent)
+      branchvalues: "total"
+      
+      # Text configuration
+      text_font_size: 12
+      
+      # Colorbar configuration (for continuous mode)
+      colorbar:
+        title: "Unique Genes"
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true  # ✅ Responsivo
+      
+      margin:
+        t: 40
+        l: 20
+        r: 20
+        b: 20
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-11-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render sunburst when accordion opens"
+    
+    - component_id: "uc-4-11-db-biorempp"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Switch to BioRemPP database"
+    
+    - component_id: "uc-4-11-db-hadeg"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Switch to HADEG database"
+  
+  outputs:
+    - component_id: "uc-4-11-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Hierarchical sunburst"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["root", "Compound", "Pathway", "unique_gene_count"]
+      message: "Data must contain 'root', 'Compound', 'Pathway', and 'unique_gene_count' columns"
+    
+    - rule: "min_hierarchy_levels"
+      min_count: 2
+      message: "At least 2 hierarchy levels required for sunburst"
+    
+    - rule: "hadeg_or_biorempp_data_required"
+      message: "This use case requires HADEG or BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_11_df_{data_hash}"
+        description: "Cache processed hierarchy data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_11_sunburst_{data_hash}"
+        description: "Cache generated sunburst"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Sunburst requires 'root', 'Compound', 'Pathway', and 'unique_gene_count' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No hierarchy data available. Please check HADEG or BioRemPP dataset."
+    
+    insufficient_levels:
+      action: "display_message"
+      message: "At least 2 hierarchy levels required for sunburst. Found: {count}"
+    
+    database_data_missing:
+      action: "display_message"
+      message: "Database data not found. This use case requires HADEG or BioRemPP data."
+  
+  processing_errors:
+    hierarchy_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build hierarchy: {error_details}"
+    
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate values: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render sunburst: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Data Processing (in callback):
+# 1. Extract HADEG or BioRemPP DataFrame from merged-result-store
+# 2. For HADEG: Use columns 'Compound', 'Pathway', 'Gene'
+# 3. For BioRemPP: Use columns 'Compound_Class', 'Compound_Name', 'Gene_Symbol'
+# 4. Group by [level1_col, level2_col]
+# 5. Aggregate: COUNT(DISTINCT value_col) AS 'unique_gene_count'
+# 6. Add 'root' column = 'All Pathways'
+# 7. Rename columns to 'Compound', 'Pathway' for consistency
+# 8. Pass to SunburstStrategy
+#
+# Columns After Processing:
+# - root: "All Pathways" (constant)
+# - Compound: Compound class or compound name
+# - Pathway: Metabolic pathway
+# - unique_gene_count: Number of unique genes
+#
+# Hierarchy (3 levels):
+# All Pathways (root - center)
+#   ├─ Alkanes (Compound - inner ring)
+#   │   ├─ P450 (Pathway - outer ring) → 5 unique genes
+#   │   └─ Cytochrome (Pathway) → 3 unique genes
+#   └─ Alkenes (Compound - inner ring)
+#       └─ Oxidase (Pathway - outer ring) → 7 unique genes
+#
+# Scientific Interpretation:
+# - Genetic diversity: Number of unique genes per pathway
+# - Pathway richness: Which pathways have highest genetic diversity
+# - Compound class distribution: How genetic diversity distributes across compounds
+# - Hierarchical structure: Nested relationship between compounds and pathways
+# - Use for: Genetic diversity analysis, pathway profiling, compound characterization
+# - Optimization: Identify pathways with high genetic richness
+#
+# Sunburst Visualization:
+# - Center: Root node ("All Pathways")
+# - Inner ring: Compound classes
+# - Outer ring: Specific pathways
+# - Segment size: Proportional to unique gene count
+# - Color intensity: Gradient based on gene count (dark = high diversity)
+# - Interactivity: Click to zoom into hierarchy branches

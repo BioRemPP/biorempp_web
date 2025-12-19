@@ -1,0 +1,193 @@
+metadata:
+  title: "Scientific Foundations"
+  description: "Core metrics and concepts in functional genomics for bioremediation"
+  version: "1.0"
+  icon: "fa-flask"
+
+terms:
+  ko_richness:
+    label: "KO Richness"
+    full_name: "KEGG Orthology Richness"
+    icon: "fa-dna"
+    definition: >
+      Number of distinct KEGG Orthology (KO) types present in a sample or community,
+      used as a metric of functional richness (alpha-diversity of gene families)
+      derived from metagenomic profiles or predictions via PICRUSt2.
+    
+    biorempp_application: >
+      In BioRemPP, KO richness is defined as the number of distinct KEGG Orthology
+      groups associated with genes of interest (e.g., degradation genes, toxin
+      resistance, transport) present in each sample, species, or consortium. This
+      metric functions as a measure of functional richness (alpha-diversity)
+      comparable to that used in human microbiomes and soils.
+    
+    use_cases:
+      - "Quantify KO richness (number of distinct KEGG Orthology identifiers) per sample or consortium to assess the bioremediation functional potential encoded in metagenomic, metatranscriptomic or genomic datasets annotated within BioRemPP."
+      
+      - "Compare KO richness across compound classes (e.g., Aromatic, Aliphatic, Metal, Nitrogen-containing) to identify taxa, pathways or environmental samples enriched in degradation-related KOs curated in HADEG and BioRemPP."
+      
+      - "Map KO richness to specific KEGG pathways associated with pollutant degradation (e.g., Benzoate, Xylene, Caprolactam) to detect hotspots of functional diversity in microbial or plant-associated communities."
+      
+      - "Integrate KO richness with compound-centric data  to model functional coverage and pathway completeness for complex contaminants and mixed-pollutant systems."
+      
+      - "Correlate KO richness with compound richness (number of degradable compounds per taxon or pathway) to identify multi-functional taxa or enzymes capable of acting on diverse pollutant classes."
+      
+      - "Leverage KO richness profiles to select candidate microbial genomes or metagenome-assembled genomes (MAGs) with high metabolic versatility for bioaugmentation or synthetic consortium design."
+      
+      - "Evaluate the contribution of individual KOs to pathway-level bioremediation potential, quantifying the fraction of pathway coverage versus total KO richness across environmental samples."
+      
+      - "Integrate KO richness with transcriptomic expression levels (TPM or RPKM-weighted KO abundance) to estimate the active fraction of the encoded functional potential, distinguishing latent versus expressed biodegradation capacity."
+      
+      - "Cross-link KO richness with metabolomic data to explore how the diversity of enzymatic functions translates into diversity of detected metabolites and intermediate products." 
+      
+      - "Visualize KO richness distribution through heatmaps, rarefaction curves, and richness–abundance plots to communicate functional landscape heterogeneity in environmental genomics case studies."
+      
+      - "Normalize KO richness per sample or genome by total gene count to compute functional density indices, enabling cross-comparison between taxa, environments, and data types (MAGs, metagenomes, transcriptomes)."
+      
+
+
+    
+    key_references:
+      - id: "KO1"
+        authors: "Armitage DW, et al."
+        year: 2012
+        title: "Millimeter-scale patterns of phylogenetic and trait diversity in a salt marsh microbial mat"
+        journal: "Frontiers in Microbiology"
+        doi: "10.3389/fmicb.2012.00293"
+        url: "https://www.frontiersin.org/articles/10.3389/fmicb.2012.00293"
+        relevance: "Demonstrates use of KO-based trait richness as functional diversity dimension, directly analogous to quantifying bioremediation functional potential via diversity of KOs associated with degradation pathways"
+      
+      - id: "KO2"
+        authors: "Erickson AR, et al."
+        year: 2012
+        title: "Integrated metagenomics/metaproteomics reveals human host-microbial interactions in Crohn's disease"
+        journal: "PLOS ONE"
+        doi: "10.1371/journal.pone.0049138"
+        url: "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0049138"
+        relevance: "Explicit evidence that microbiome community uses KO richness (number of distinct KOs) as functional diversity metric, directly transferable to bioremediation-associated microbial communities"
+
+      - id: "KO4"
+        authors: "QINDAO v3.0 Team"
+        year: 2023
+        title: "Quantitative Index of Alpha Diversity Overview"
+        journal: "Web tool documentation"
+        url: "https://qindao.hgc.jp/cgi-bin/intro"
+        relevance: "Recent tool incorporating KO Richness in functional metrics panel, showing term is consolidated in modern microbiota analysis pipelines"
+      
+      - id: "KO5"
+        authors: "Cheng Y, et al."
+        year: 2024
+        title: "Shift and Metabolic Potentials of Microbial Eukaryotic Communities"
+        journal: "Preprint"
+        url: "https://www.researchgate.net/publication/348574570"
+        relevance: "Connects KO richness with functional redundancy concepts, central when discussing resilience of bioremediation communities"
+
+  compound_richness:
+    label: "Compound Richness"
+    full_name: "Bioremediation Compound Richness"
+    icon: "fa-vial"
+    definition: >
+      Number of unique chemical compounds (peaks, features, or structures) detected
+      in a tissue, individual, population, or community (via LC-MS, GC-MS, NMR, etc.).
+      In chemical ecology, frequently treated as R (compound richness) or
+      phytochemical richness.
+    
+    biorempp_application: >
+      In analogy to phytochemical/compound richness in chemical ecology, BioRemPP
+      defines 'bioremediation compound richness' as the number of distinct
+      contaminant compounds (KO-compound mapped) for which there is evidence of
+      potential metabolization/degradation by a plant, fungus, or microbial
+      consortium, based on KEGG/toxCSM/HADEG annotations.
+    
+    use_cases:
+      - "Quantify, for each organism/plant/microbial sample, the spectrum of pollutant compounds that can be biotransformation targets (compound richness per sample)."
+      - "Compare species, strains, consortia or plantations regarding breadth of addressable compounds (compound richness) in phyto- and microbioremediation scenarios."
+      - "Rank samples by compound richness within specific chemical classes (e.g. aromatics, chlorinated, metals) to identify broad-spectrum vs. niche specialists."
+      - "Assess compound richness per regulatory reference (e.g. ATSDR, IARC, EPA lists) to determine how much of a given regulatory chemical space is covered by a sample or consortium."
+      - "Integrate compound richness with toxicity profiles (toxCSM outputs) to prioritize samples that simultaneously cover many compounds and address high-risk pollutants."
+      - "Map compound richness onto multi-level hierarchies (compound → compound class → regulatory agency) to explore how chemical breadth is distributed across samples and conditions."
+      - "Compare compound richness across environmental compartments or case studies (e.g. soil vs. water vs. rhizosphere samples) to support site-specific bioremediation planning."
+      - "Track changes in compound richness under different scenarios (e.g. stress, contamination gradients, time series) as an indicator of adaptive bioremediation capacity."
+      - "Combine compound richness with KO richness and gene diversity to identify systems that couple broad chemical coverage with strong enzymatic and functional redundancy."
+      - "Use compound richness matrices (sample x compound, sample x compound class) as input features for clustering, PCA and network analysis to reveal functional guilds and complementary consortia."
+      - "Derive compound richness-based completeness scores (e.g. fraction of regulatory or site-specific compounds covered) to benchmark performance of candidate bioremediation consortia."
+
+    
+    key_references:
+      - id: "CR1"
+        authors: "Wetzel WC, et al."
+        year: 2020
+        title: "The many dimensions of phytochemical diversity: linking theory to practice"
+        journal: "Ecology Letters"
+        doi: "10.1111/ele.13422"
+        url: "https://onlinelibrary.wiley.com/doi/10.1111/ele.13422"
+        relevance: "Establishes theoretical framework for treating 'how many distinct compounds a plant produces/faces' as diversity dimension, translatable to 'how many contaminant compounds a plant or associated microbiome can metabolize'"
+      
+      - id: "CR2"
+        authors: "Petrén H, et al."
+        year: 2023
+        title: "Understanding the phytochemical diversity of plants: Quantification, variation and ecological function"
+        journal: "Ecology Monographs (bioRxiv preprint)"
+        doi: "10.1101/2023.03.23.533415"
+        url: "https://www.biorxiv.org/content/10.1101/2023.03.23.533415v1"
+        relevance: "Provides formal and citable definition of compound/phytochemical richness as count of unique compounds, adaptable to context of contaminant compounds (xenobiotics) metabolized in phytoremediation scenarios"
+      
+      - id: "CR3"
+        authors: "Ziaja D, et al."
+        year: 2025
+        title: "Intraspecific and intra-individual chemodiversity and plant-herbivore interactions"
+        journal: "Plant Biology"
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC12255277/"
+        relevance: "Highlights that compound richness can be compared between tissues (roots vs leaves), directly relevant for interpreting differences in compound spectrum that can be exuded or metabolized in roots involved in phytoremediation"
+
+  metabolic_functional_guilds:
+    label: "Metabolic Functional Guilds"
+    full_name: "Bioremediation Functional Guilds"
+    icon: "fa-project-diagram"
+    definition: >
+      Sets (guilds) of organisms that share the capacity to perform the same
+      biogeochemical or ecological function (e.g., DMSP degradation, nitrogen
+      fixation, chitin degradation). Defined based on functional profiles
+      (via KEGG pathways, modules, key genes) and not necessarily on phylogeny.
+    
+    biorempp_application: >
+      BioRemPP can define bioremediation functional guilds as clusters of
+      organisms/genes/samples that share a characteristic set of KEGG pathways
+      and KOs associated with degradation of specific contaminant classes
+      (e.g., aromatic hydrocarbons, chlorinated solvents, metals/redox reduction),
+      analogous to metabolic functional guilds described by Reynolds et al. and
+      Piccolo et al.
+    
+    use_cases:
+      - "Cluster samples, MAGs or isolates into bioremediation functional guilds based on shared KO/pathway/compound profiles, revealing groups with similar degradation capabilities."
+      - "Define functional guilds as sets of samples with identical or highly similar compound coverage within a chemical class, enabling set-cover-based optimization of minimal consortia (as in BioRemPP UC-8.1)."
+      - "Summarize complex multi-species communities at system level by collapsing individual samples into functional guilds and visualizing them in chord diagrams, Sankey/alluvial plots or treemaps."
+      - "Compare functional guild composition across sites, time points or treatment conditions (e.g. contamination gradients, amendments) to track shifts in community-level bioremediation strategies."
+      - "Quantify redundancy within guilds (number of members per guild) and complementarity between guilds (overlap vs. uniqueness of KO and compound repertoires) to support robust consortium design."
+      - "Integrate functional guilds with KO richness, compound richness and completeness scores to identify guilds that combine broad chemical coverage with high enzymatic diversity."
+      - "Map guilds onto metabolic pathway space (e.g. KEGG or HADEG pathways) to identify which guilds sustain key steps in target degradation routes and where functional gaps remain."
+      - "Generate guild-resolved regulatory reports, listing for each guild the covered regulatory compounds (ATSDR, IARC, EPA lists) and associated toxicological profiles (ToxCSM endpoints)."
+      - "Support scenario analysis by recombining guilds into synthetic consortia and evaluating expected coverage of target compounds and pathways under different deployment strategies."
+      - "Relate functional guild composition to environmental metadata (pH, contaminants, land use, management practices) to infer ecological drivers of bioremediation guild assembly."
+      - "Track the emergence, loss or reshaping of guilds along time-series datasets to monitor community adaptation and stability under long-term contamination or remediation interventions."
+      - "Provide exportable guild descriptors (members, KO core set, compound core set, key pathways) that can be integrated into external decision-support systems."
+
+    
+    key_references:
+      - id: "FG1"
+        authors: "Reynolds R, et al."
+        year: 2023
+        title: "Identification of microbial metabolic functional guilds from large genomic datasets"
+        journal: "Frontiers in Microbiology"
+        doi: "10.3389/fmicb.2023.1197329"
+        url: "https://www.frontiersin.org/articles/10.3389/fmicb.2023.1197329"
+        relevance: "Provides explicit framework for grouping microorganisms into guilds defined by specific metabolic functions, directly adaptable for defining bioremediation functional guilds (e.g., aromatic hydrocarbon degraders, metal reducers, pesticide degraders)"
+      
+      - id: "FG2"
+        authors: "Piccolo BD, et al."
+        year: 2025
+        title: "Xenometabolomics reveals metabolic functional guilds unique to specific inulin subtypes in human gut microbiota cultures"
+        journal: "mSystems"
+        doi: "10.1128/msystems.01031-25"
+        url: "https://doi.org/10.1128/msystems.01031-25"
+        relevance: "Current example of metabolic functional guilds language applied to metabolization of organic compounds (fibers), directly analogous to communities metabolizing contaminants (xenobiotics) in bioremediation contexts"

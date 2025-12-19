@@ -1,0 +1,97 @@
+# UC-8.6: Pathway-Centric Consortium Design by KO Coverage
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-8-6"
+
+scientific_question: >
+  For a specific metabolic pathway, how do different biological samples contribute
+  the necessary functional components (KOs), and what does their overlap reveal
+  about functional complementarity and redundancy?
+
+description: >
+  This interactive visualization serves as a tool for the rational design of a
+  biological consortium for a specific metabolic task. By selecting a target
+  pathway from the dropdown menu, the UpSet plot is dynamically generated to
+  display how the total set of required KEGG Orthology (KO) identifiers for
+  that pathway is distributed across the different samples. The plot reveals
+  patterns of functional redundancy (multiple samples with the same KOs) and
+  functional complementarity (samples contributing unique, non-overlapping KOs),
+  enabling the identification of keystone species and the design of minimal
+  consortia for complete pathway coverage.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the **Target Pathway** to analyze. The plot will update
+      automatically to show how KOs for the selected pathway are distributed
+      across all available samples. Each pathway represents a specific metabolic
+      function (e.g., biotransformation of a particular compound, nitrogen metabolism).
+  
+  - label: "Set Size (Left Bar Chart)"
+    description: >
+      Shows the total number of unique KOs for the selected pathway that are
+      present in each individual **Sample**. Taller bars indicate that a sample
+      possesses a greater diversity of genetic tools (KOs) relevant to the
+      target pathway. Compare these values to identify samples with broader
+      functional potential for the pathway.
+  
+  - label: "Intersection Matrix (Bottom)"
+    description: >
+      The connected dots define a specific intersection, representing a subset
+      of KOs shared by the indicated samples. For example, dots connected for
+      "Sample_A" and "Sample_B" represent the set of KOs present in both samples
+      for the target pathway. Single dots represent sample-exclusive KOs, while
+      multiple connected dots represent functional redundancy across several
+      samples.
+  
+  - label: "Intersection Size (Top Bar Chart)"
+    description: >
+      The height of each bar corresponds to the number of KOs in the intersection
+      defined by the matrix directly below it. Taller bars indicate a larger
+      number of shared KOs. The tallest bar reveals the most common pattern of
+      functional overlap or uniqueness across samples.
+
+interpretation_guidelines:
+  - >
+    Functional Redundancy: Large bars over intersections of multiple samples
+    indicate a high degree of functional redundancy, where several organisms
+    possess the same genetic tools for the pathway. This redundancy can provide
+    robustness to the consortium, ensuring that the pathway function is maintained
+    even if one member declines. However, excessive redundancy may suggest
+    opportunities for simplifying the consortium.
+  
+  - >
+    Functional Complementarity: The plot reveals how a complete pathway can be
+    assembled by combining samples. If the union of all sets (the total number
+    of unique KOs covered) is achieved by combining several distinct intersections,
+    it highlights the need for a consortium where different members contribute
+    unique, non-overlapping functions. This complementarity is essential for
+    achieving full metabolic pathway coverage when no single sample possesses
+    all required KOs.
+  
+  - >
+    Identifying Keystone Species: A sample that is the sole contributor of a
+    critical KO (visible as a non-zero bar over a single, unconnected dot) can
+    be identified as a "keystone" species, essential for the pathway's completeness.
+    The absence of this sample would result in an incomplete pathway, potentially making it
+    a mandatory member of any functional consortium designed for this metabolic
+    task.
+  
+  - >
+    Consortium Design: This visualization directly informs the design of a
+    minimal consortium. The goal is to select the smallest number of samples
+    whose KO sets, when combined, cover the largest possible number of total
+    KOs for the target pathway. By analyzing the intersection patterns, researchers
+    can strategically choose samples that maximize coverage while minimizing
+    redundancy, optimizing the consortium for efficiency and functional completeness.
+  
+  - >
+    Pathway Completeness Assessment: By comparing the total number of KOs
+    covered by the consortium against the complete set of KOs theoretically
+    required for the pathway (from KEGG pathway databases), researchers can
+    assess whether the consortium provides complete functional capacity or if
+    critical gaps remain. Gaps may indicate the need for additional samples or
+    biotechnological interventions (e.g., genetic engineering) to achieve full
+    pathway functionality.
+
+color_scheme: "success"

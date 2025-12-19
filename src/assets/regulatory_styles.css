@@ -1,0 +1,64 @@
+/* Regulatory Page Styles */
+
+/* Hover effect for regulatory cards */
+.hover-shadow {
+    transition: box-shadow 0.3s ease, transform 0.2s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    transform: translateY(-2px);
+}
+
+/* Reference table link styling */
+.reference-table a {
+    word-break: break-word;
+}
+
+.reference-table a:hover {
+    text-decoration: underline !important;
+}
+
+/* Pollutant category cards equal height */
+.pollutant-category-card {
+    height: 100%;
+}
+
+/* Smooth scrolling for internal links */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Regulatory icon styling */
+.regulatory-icon {
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    margin: 0 auto 1rem;
+    background-color: rgba(40, 167, 69, 0.1);
+}
+
+/* IARC classification cards */
+.iarc-card {
+    border-left: 4px solid;
+    transition: transform 0.2s ease;
+}
+
+.iarc-card:hover {
+    transform: translateX(5px);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .regulatory-icon {
+        width: 50px;
+        height: 50px;
+    }
+
+    .reference-table {
+        font-size: 0.875rem;
+    }
+}

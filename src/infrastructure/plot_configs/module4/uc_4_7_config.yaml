@@ -1,0 +1,380 @@
+# ============================================================================
+# UC-4.7: Interactive Gene-Compound Association Explorer
+# ============================================================================
+# Description: Scatter plot showing gene-compound associations with dual-filter dropdowns
+# Module: module4
+# Plot Type: Dot Plot (Simple Scatter)
+# Rendering: On-demand (dual dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.7"
+  module: "module4"
+  title: "Interactive Gene-Compound Association Explorer"
+  description: >
+    Simple scatter plot showing gene-compound associations. Each point
+    represents an observed link between a gene symbol and a compound name.
+    Flexible dual-filter dropdown menus allow compound-centric, gene-centric,
+    or hypothesis-testing views. Supports three filtering modes: compound only,
+    gene only, or both filters combined.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "dot_plot"
+    - "scatter"
+    - "gene_compound_associations"
+    - "dual_filter"
+    - "biorempp"
+  plot_type: "dot_plot"
+  scientific_context:
+    domain: "Gene-Compound Association Analysis and Metabolic Network Exploration"
+    application: "Exploring bidirectional relationships between genes and compounds"
+    interpretation: "Each point represents a gene-compound association; filtering enables compound-centric or gene-centric views"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "compoundname"
+    - "genesymbol"
+    - "ko"
+  
+  processing:
+    steps: []  # No processing steps - raw data visualization
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "DotPlotStrategy"
+  
+  plotly:
+    scatter:
+      x: "genesymbol"
+      y: "compoundname"
+      mode: "simple"  # Simple scatter plot (uniform markers)
+      
+      # Marker configuration
+      marker:
+        color: "darkcyan"
+        size: 10
+        line:
+          width: 0.5
+          color: "rgba(255, 255, 255, 0.6)"
+        opacity: 0.8
+    
+    # Layout configuration
+    layout:
+      # Title configuration
+      title:
+        show: true
+        text: "Gene-Compound Associations"  # Updated dynamically in callback
+        x: 0.5
+      
+      # Dimensions
+      height: 600
+      autosize: true
+      
+      # Template and colors
+      template: "simple_white"
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      # X-axis configuration
+      xaxis:
+        title: "Gene Symbol"
+        tickangle: -45
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Y-axis configuration
+      yaxis:
+        title: "Compound Name"
+        tickangle: 0
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Hover mode
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font:
+          size: 12
+      
+      # Margins
+      margin:
+        l: 150
+        r: 80
+        t: 80
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-7-compound-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Filter by compound (optional)"
+    
+    - component_id: "uc-4-7-gene-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Filter by gene (optional)"
+  
+  outputs:
+    - component_id: "uc-4-7-chart-container"
+      property: "children"
+      output_type: "dcc.Graph or html.Div"
+      description: "Gene-compound association scatter plot or info message"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-4-7-compound-dropdown"
+      type: "dropdown"
+      label: "Select Compound (Optional)"
+      options_source: "dynamic"
+      description: "Filter by specific compound"
+    
+    - component_id: "uc-4-7-gene-dropdown"
+      type: "dropdown"
+      label: "Select Gene (Optional)"
+      options_source: "dynamic"
+      description: "Filter by specific gene"
+  
+  filtering_modes:
+    - mode: "no_selection"
+      description: "No filters selected"
+      behavior: "Show informative message"
+    
+    - mode: "compound_only"
+      description: "Compound selected, gene not selected"
+      behavior: "Show all genes associated with selected compound"
+    
+    - mode: "gene_only"
+      description: "Gene selected, compound not selected"
+      behavior: "Show all compounds associated with selected gene"
+    
+    - mode: "both_selected"
+      description: "Both compound and gene selected"
+      behavior: "Show specific gene-compound interaction"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "compoundname", "genesymbol", "ko"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_points"
+      min_count: 1
+      message: "At least 1 association required for visualization"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+    
+    - rule: "at_least_one_filter"
+      message: "Please select at least one filter (compound or gene)"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_7_df_{data_hash}_{filters_hash}"
+        description: "Cache filtered data by compound/gene selection"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_7_scatter_{data_hash}_{filters_hash}"
+        description: "Cache generated scatter plot"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Gene-compound explorer requires 'sample', 'compoundname', 'genesymbol', and 'ko' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No association data available. Please check BioRemPP dataset."
+    
+    no_associations_found:
+      action: "display_message"
+      message: "No associations found for {filter_description}. Try a different combination."
+    
+    no_filter_selected:
+      action: "display_info"
+      message: "Please select a compound and/or a gene from the dropdown menus above to explore associations."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render scatter plot: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - scatter.mode: "simple" (fixed markers)
+# - scatter.marker.color: Marker color (e.g., "darkcyan", "#008B8B")
+# - scatter.marker.size: Marker size in pixels (default: 10)
+# - scatter.marker.line.color: Marker border color
+# - scatter.marker.line.width: Marker border width
+# - scatter.marker.opacity: Marker transparency (0-1)
+# - layout.title.show: true/false (toggle title)
+# - layout.title.text: Title text (updated dynamically in callback)
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.xaxis.title: X-axis label
+# - layout.yaxis.title: Y-axis label
+# - layout.xaxis.tickangle: X-axis label rotation (-90 to 90)
+# - layout.yaxis.tickangle: Y-axis label rotation (-90 to 90)
+# - layout.xaxis.tickfont.size: X-axis tick font size
+# - layout.yaxis.tickfont.size: Y-axis tick font size
+# - layout.xaxis.automargin: Auto-adjust margins for long labels
+# - layout.yaxis.automargin: Auto-adjust margins for long labels
+# - layout.margin: {l, r, t, b} margins
+# - layout.hovermode: "closest", "x", "y", "x unified", "y unified"
+# - layout.hoverlabel.bgcolor: Hover label background color
+# - layout.hoverlabel.font.size: Hover label font size
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_7_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - sample: "sample", "Sample", "sample_id"
+#    - compoundname: "compoundname", "Compound_Name", "CompoundName", "compound"
+#    - genesymbol: "genesymbol", "GeneSymbol", "gene_symbol", "Gene_Symbol"
+#    - ko: "ko", "KO", "ko_id"
+# 3. Apply conditional filtering based on dropdown selections:
+#    - No selection → Show info message
+#    - Compound only → Filter by compound
+#    - Gene only → Filter by gene
+#    - Both → Filter by both
+# 4. Remove rows with NaN values
+# 5. Build dynamic title based on filters
+# 6. Pass to PlotService
+#
+# STRATEGY (DotPlotStrategy - Simple Mode):
+# 1. Receives data with ['sample', 'compoundname', 'genesymbol', 'ko']
+# 2. NO processing steps (raw data visualization)
+# 3. Creates scatter plot:
+#    - X-axis: Gene symbols
+#    - Y-axis: Compound names
+#    - Markers: Fixed size/color (darkcyan)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'sample', 'compoundname', 'genesymbol', 'ko' columns
+# - KEGG: ❌ Does NOT contain compound-level data
+# - HADEG: ❌ Does NOT contain compound data
+# - ToxCSM: ❌ Does NOT contain compound data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open (active_item trigger)
+# - Chart rendering: On dropdown value change (either or both)
+# - Conditional rendering based on filter selection
+# - Dynamic title updates based on selected filters
+#
+# Visualization Details:
+# - Plot type: Simple scatter (association map)
+# - X-axis: Gene symbols
+# - Y-axis: Compound names
+# - Markers: Uniform size and color (darkcyan)
+# - Hover: Shows gene, compound, sample, and KO information
+# - Interpretation:
+#   * Each point: Gene-compound association
+#   * Horizontal patterns: Genes associated with multiple compounds
+#   * Vertical patterns: Compounds associated with multiple genes
+#   * Isolated points: Specific gene-compound pairs
+#
+# Column Mapping (Flexible):
+# - sample: "sample", "Sample", "sample_id"
+# - compoundname: "compoundname", "Compound_Name", "CompoundName", "compound"
+# - genesymbol: "genesymbol", "GeneSymbol", "gene_symbol", "Gene_Symbol"
+# - ko: "ko", "KO", "ko_id"
+#
+# Filtering Logic:
+# 1. Check if at least one filter is selected
+# 2. If no filters: Show info message
+# 3. If compound selected: Filter data by compound
+# 4. If gene selected: Filter data by gene
+# 5. If both selected: Filter by both (intersection)
+# 6. Build dynamic title reflecting current filters
+# 7. Check if filtered data is empty
+# 8. Pass to PlotService for visualization
+#
+# Scientific Interpretation:
+# - Compound-centric view: Which genes are involved in degrading a specific compound?
+# - Gene-centric view: Which compounds does a specific gene help degrade?
+# - Hypothesis testing: Is there a specific gene-compound association?
+# - Use for: Exploring metabolic network structure, identifying key genes/compounds
+# - Bidirectional exploration: Supports both forward (compound→genes) and reverse (gene→compounds) queries
+#
+# Dynamic Title Examples:
+# - "Gene-Compound Associations for Compound: <b>Benzene</b>"
+# - "Gene-Compound Associations for Gene: <b>benA</b>"
+# - "Gene-Compound Associations for Compound: <b>Benzene</b> & Gene: <b>benA</b>"
+# - "Gene-Compound Associations" (no filters)
+#
+# Unique Features:
+# - Dual-filter dropdowns (compound + gene)
+# - Conditional rendering based on filter selection
+# - Dynamic title updates
+# - No data aggregation (raw associations)
+# - Flexible filtering modes (compound-only, gene-only, both)

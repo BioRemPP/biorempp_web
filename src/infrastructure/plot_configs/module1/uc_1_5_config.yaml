@@ -1,0 +1,253 @@
+# ============================================================================
+# UC-1.5: Regulatory Reference Compliance Scorecard
+# ============================================================================
+# Description: Heatmap showing compliance scores of samples vs regulatory agencies
+# Module: module1
+# Plot Type: Heatmap (Scored)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-1.5"
+  module: "module1"
+  title: "Regulatory Reference Compliance Scorecard"
+  description: >
+    Quantifies how well each microbial sample's degradation capabilities
+    align with the priorities of major regulatory agencies, measured by
+    the percentage of target compounds they can interact with. Provides
+    a practical scorecard for evaluating candidate samples for deployment
+    under specific regulatory frameworks.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "regulatory_compliance"
+    - "heatmap"
+    - "scorecard"
+    - "compound_compliance"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Regulatory Bioremediation"
+    application: "Sample-agency compliance assessment for regulatory deployment"
+    interpretation: "Identifies high-compliance specialists and versatile generalists for regulatory contexts"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound"
+    - "Agency"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "normalize_identifiers"
+        enabled: true
+        params:
+          strip_whitespace: true
+          remove_duplicates: true
+          remove_empty: true
+        description: "Normalize sample, compound, and agency names"
+      
+      - name: "build_compliance_sets"
+        enabled: true
+        description: "Build compound sets per sample and per agency"
+      
+      - name: "calculate_compliance_scores"
+        enabled: true
+        params:
+          scoring_mode: "compound_compliance"
+        description: "Calculate compliance percentage for each sample-agency pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapScoredStrategy"
+  
+  plotly:
+    # Strategy-specific parameters
+    scoring_mode: "compound_compliance"
+    category_column: "Agency"
+    sample_column: "Sample"
+    value_column: "Compound"
+    
+    # Chart configuration
+    chart:
+      # Title configuration
+      title:
+        show: true
+        text: "Regulatory Compliance Scorecard"
+        font:
+          size: 16
+          family: "Arial"
+          color: "#2c3e50"
+        x: 0.5
+        xanchor: "center"
+      
+      # Axis configuration
+      xaxis:
+        title: "Regulatory Agency"
+        title_font:
+          size: 14
+      
+      yaxis:
+        title: "Sample"
+        title_font:
+          size: 14
+      
+      # Color configuration
+      color_label: "Compliance (%)"
+      color_continuous_scale: "Greens"
+      
+      # Text display in cells
+      show_values: true
+      text_auto: ".1f"
+      text_font_size: 10
+      text_font_color: "black"
+      
+      # Axis label angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Colorbar configuration
+      colorbar:
+        title: "Compliance (%)"
+        title_font:
+          size: 12
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true
+      margin:
+        l: 180
+        r: 100
+        t: 100
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-1-5-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render heatmap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-1-5-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Compliance scorecard heatmap"
+  
+  states: []
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound", "Agency"]
+      message: "Data must contain 'Sample', 'Compound', and 'Agency' columns for compliance analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for compliance scorecard"
+    
+    - rule: "minimum_agencies"
+      min_count: 1
+      message: "At least 1 regulatory agency required for compliance scorecard"
+    
+    - rule: "no_nulls"
+      columns: ["sample", "compoundname", "referenceAG"]
+      message: "Null values not allowed in required columns"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_1_5_df_{data_hash}"
+        description: "Cache compliance score matrix"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_1_5_heatmap_{data_hash}_{filters_hash}"
+        description: "Cache generated heatmap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Compliance scorecard requires 'sample', 'compoundname', and 'referenceAG' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No compliance data available."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 sample required for compliance analysis. Found: {count}"
+    
+    insufficient_agencies:
+      action: "display_message"
+      message: "At least 1 regulatory agency required for compliance analysis. Found: {count}"
+  
+  processing_errors:
+    set_construction_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build compound sets: {error_details}"
+    
+    score_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate compliance scores: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render compliance heatmap: {error_details}"

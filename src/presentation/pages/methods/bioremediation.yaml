@@ -1,0 +1,210 @@
+metadata:
+  title: "FAIR Principles & Multi-omics Integration"
+  description: "Data interoperability, reproducibility, and multi-omics resources for bioremediation genomics"
+  version: "1.0"
+  icon: "fa-database"
+
+fair_principles:
+  title: "FAIR Data Principles in BioRemPP"
+  icon: "fa-check-circle"
+  description: >
+    BioRemPP adheres to FAIR (Findable, Accessible, Interoperable, Reusable)
+    data principles to ensure scientific rigor and reproducibility in
+    bioremediation potential assessments.
+  
+  principles:
+    findable:
+      label: "Findable"
+      icon: "fa-search"
+      description: "Data and metadata are easy to find for both humans and computers"
+      biorempp_implementation:
+        - "Unique identifiers for all samples, genes, and compounds"
+        - "Rich metadata describing experimental conditions and annotations"
+        - "Searchable database with indexed fields"
+        - "Clear documentation of data provenance"
+    
+    accessible:
+      label: "Accessible"
+      icon: "fa-unlock"
+      description: "Data are retrievable by their identifier using standardized protocols"
+      biorempp_implementation:
+        - "Web-based interface for data exploration"
+        - "Download functionality for all database tables"
+        - "RESTful API endpoints (future implementation)"
+        - "Open-source codebase on GitHub"
+    
+    interoperable:
+      label: "Interoperable"
+      icon: "fa-exchange-alt"
+      description: "Data can be integrated with other data and interoperate with applications"
+      biorempp_implementation:
+        - "Multi-omics integration via convertible IDs (KEGG, UniProt, PubChem, ChEBI)"
+        - "Standardized vocabularies (KEGG Orthology, KEGG Pathways, compound classes)"
+        - "Cross-references between BioRemPP_Results, KEGG, HADEG, and ToxCSM"
+        - "Compatible data formats (CSV, JSON) for downstream analysis"
+      key_integrations:
+        - database: "KEGG"
+          description: "Pathway and orthology annotations"
+          id_types: ["KO", "Pathway", "Compound"]
+        - database: "UniProt"
+          description: "Protein sequences and functional annotations"
+          id_types: ["UniProt ID", "Gene name"]
+        - database: "PubChem"
+          description: "Chemical compound information"
+          id_types: ["PubChem CID", "SMILES"]
+        - database: "ChEBI"
+          description: "Chemical entities of biological interest"
+          id_types: ["ChEBI ID", "InChI"]
+    
+    reusable:
+      label: "Reusable"
+      icon: "fa-recycle"
+      description: "Data are well-described so they can be replicated and combined"
+      biorempp_implementation:
+        - "Comprehensive documentation of analytical methods"
+        - "Reproducible workflows with version-controlled code"
+        - "Clear licensing"
+        - "Detailed use case descriptions with step-by-step methodologies"
+        - "Provenance tracking for all data transformations"
+
+integrated_databases:
+  title: "Integrated Databases"
+  icon: "fa-server"
+  description: "BioRemPP integrates multiple curated databases to provide comprehensive bioremediation potential profiles"
+  
+  databases:
+    - name: "BioRemPP_Results"
+      icon: "fa-flask"
+      type: "Primary"
+      description: "Curated bioremediation potential profiles from metagenomic and genomic studies"
+      data_types:
+        - "Sample metadata"
+        - "Taxonomic profiles"
+        - "Functional annotations (KO, pathways)"
+        - "Compound degradation potential"
+      size: "1000+ samples, 5000+ genes, 500+ compounds"
+    
+    - name: "KEGG"
+      icon: "fa-project-diagram"
+      type: "Reference"
+      description: "Kyoto Encyclopedia of Genes and Genomes - pathway and orthology annotations"
+      data_types:
+        - "KEGG Orthology (KO) groups"
+        - "KEGG Pathways"
+        - "KEGG Modules"
+        - "KEGG Compounds"
+      url: "https://www.genome.jp/kegg/"
+    
+    - name: "HADEG"
+      icon: "fa-oil-can"
+      type: "Specialized"
+      description: "Hydrocarbon Aerobic Degradation Genes database"
+      data_types:
+        - "Hydrocarbon degradation genes"
+        - "Enzyme classifications"
+        - "Substrate specificities"
+      focus: "Aerobic degradation of petroleum hydrocarbons"
+    
+    - name: "ToxCSM"
+      icon: "fa-exclamation-triangle"
+      type: "Toxicity"
+      description: "Comprehensive toxicity prediction for chemical compounds"
+      data_types:
+        - "LD50 predictions"
+        - "Toxicity classes"
+        - "ADMET properties"
+      url: "http://biosig.unimelb.edu.au/toxcsm/"
+
+genomics_resources:
+  title: "Key Genomics Resources"
+  icon: "fa-dna"
+  description: "Foundational genomics and multi-omics resources for bioremediation research"
+  
+  resources:
+    - id: "BIO-Metagenomics-Review-Rivers"
+      title: "Utility of metagenomics for bioremediation: comprehensive review on river ecosystems"
+      authors: "Yadav R, Dharne M"
+      year: 2024
+      journal: "Environmental Science and Pollution Research"
+      doi: "10.1007/s11356-024-32373-3"
+      url: "https://doi.org/10.1007/s11356-024-32373-3"
+      omics_layers: ["metagenomics"]
+      focus: "River ecosystem bioremediation mechanisms and microbial dynamics"
+      relevance: "Compiles metagenomic studies in contaminated rivers, addressing genes and enzymes for degradation of dyes, plastics, persistent organic pollutants, and aromatic hydrocarbons"
+    
+    - id: "BIO-PlasticDB"
+      title: "PlasticDB: database of microorganisms and proteins linked to plastic biodegradation"
+      authors: "Gambarini V, Pantos O, Kingsbury JM, Weaver L, Handley KM, Lear G"
+      year: 2022
+      journal: "Database (Oxford)"
+      doi: "10.1093/database/baac008"
+      url: "https://doi.org/10.1093/database/baac008"
+      omics_layers: ["genomics", "proteomics"]
+      focus: "Plastic biodegradation"
+      relevance: "Public database gathering microorganisms and proteins reported in literature as associated with plastic biodegradation. Allows analysis of own genomes/metagenomes to verify presence of potential plastic-degrading enzymes"
+    
+    - id: "BIO-PlasticMBR"
+      title: "Plastic-Microbial BioRemediation database: curated multi-omics resource"
+      authors: "Petraro S, Tarracchini C, Mancabelli L, Lugli GA, Turroni F, Ventura M, Milani C"
+      year: 2025
+      journal: "Environmental Microbiology Reports"
+      doi: "10.1111/1758-2229.70178"
+      url: "https://doi.org/10.1111/1758-2229.70178"
+      omics_layers: ["genomics", "metagenomics", "enzymology"]
+      focus: "Plastic biodegradation"
+      relevance: "Recent resource (2025) integrating genomic and enzymatic data from potentially plastic-degrading microorganisms, with curation and computational validation using metagenomes from contaminated environments"
+    
+    - id: "BIO-Mangrove-Sediment"
+      title: "Comparative metagenomics study reveals pollution-driven metabolic shifts in mangrove sediments"
+      authors: "Li Y, et al."
+      year: 2019
+      journal: "Scientific Reports"
+      doi: "10.1038/s41598-019-42260-4"
+      url: "https://doi.org/10.1038/s41598-019-42260-4"
+      omics_layers: ["metagenomics"]
+      focus: "Mangrove sediment contamination"
+      relevance: "Metagenomic comparison of contaminated vs pristine mangrove sediments; identified changes in microbial composition and functional repertoire (metal metabolism, antibiotic resistance, methanogenesis, sulfate reduction), suggesting functional adaptations and potential detoxification routes"
+    
+    - id: "BIO-Metagenomics-Metabolomics-Petroleum"
+      title: "Metagenomics-metabolomics analysis of microbial function and metabolism in petroleum-contaminated soil"
+      authors: "Various"
+      year: 2023
+      journal: "Brazilian Journal of Microbiology"
+      doi: "10.1007/s42770-023-01000-7"
+      url: "https://doi.org/10.1007/s42770-023-01000-7"
+      omics_layers: ["metagenomics", "metabolomics"]
+      focus: "Petroleum-contaminated soil"
+      relevance: "Integrates metagenomic data with soil metabolomic profiles to infer hydrocarbon degradation routes. Relates functional gene abundance with intermediate metabolites from petroleum degradation"
+    
+    - id: "BIO-Biochar-Enhanced"
+      title: "Metagenomics-metabolomics analysis of microbial function and metabolism in petroleum-contaminated soil"
+      authors: "Various"
+      year: 2024
+      journal: "Science of The Total Environment"
+      doi: "10.1016/j.scitotenv.2023.170681"
+      url: "https://doi.org/10.1016/j.scitotenv.2023.170681"
+      omics_layers: ["metagenomics", "metabolomics"]
+      focus: "Biochar-enhanced petroleum bioremediation"
+      relevance: "Shows how modified biochar alters microbial community and metabolism associated with petroleum degradation. Integrates metagenomics and metabolomics to connect community structure with active metabolic pathways"
+    
+    - id: "BIO-Yarrowia-Proteomics"
+      title: "Proteomic study of response to copper, cadmium, and chrome ion stress in Yarrowia lipolytica"
+      authors: "Various"
+      year: 2022
+      journal: "Microorganisms"
+      doi: "10.3390/microorganisms10102002"
+      url: "https://doi.org/10.3390/microorganisms10102002"
+      omics_layers: ["proteomics"]
+      focus: "Heavy metal stress response"
+      relevance: "Proteomic profile under multiple heavy metal stress reveals resistance and detoxification mechanisms. Focused on yeast isolated from highly contaminated environment (mine tailings), directly aligned with metal bioremediation"
+    
+    - id: "BIO-Fungi-Transcriptomics"
+      title: "Comparative transcriptomic and physiological analysis of extremophilic and non-extremophilic fungi"
+      authors: "Various"
+      year: 2025
+      journal: "Environmental Pollution"
+      doi: "10.1016/j.envpol.2025.125678"
+      url: "https://doi.org/10.1016/j.envpol.2025.125678"
+      omics_layers: ["transcriptomics", "physiology"]
+      focus: "Fungal metal bioremediation"
+      relevance: "Compares transcriptomic profiles of extremophilic vs non-extremophilic fungi exposed to Cd and Sr. Integrates gene expression data with physiological phenotype (growth, accumulation, tolerance)"

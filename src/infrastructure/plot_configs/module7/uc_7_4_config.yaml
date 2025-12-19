@@ -1,0 +1,303 @@
+# ============================================================================
+# UC-7.4: Toxicity Score Distribution by Endpoint Category
+# ============================================================================
+# Description: Box plot + scatter showing toxicity score distribution across endpoints
+# Module: module7
+# Plot Type: Box Scatter (Box + Jittered Scatter)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-7.4"
+  module: "module7"
+  title: "Toxicity Score Distribution by Endpoint Category"
+  description: >
+    Box plot visualization showing the statistical distribution of predicted
+    toxicity scores across specific toxicological endpoints within broad
+    toxicity domains. Combines box plot (distribution summary) with jittered
+    scatter plot (individual compound visibility).
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "toxicity"
+    - "box_scatter"
+    - "distribution"
+    - "endpoints"
+    - "risk_assessment"
+    - "toxcsm"
+  plot_type: "box_scatter"
+  scientific_context:
+    domain: "Toxicological Risk Assessment and Profiling"
+    application: "Statistical analysis of toxicity score distributions to identify high-risk endpoints and variability patterns"
+    interpretation: "Endpoints with higher median scores represent greater toxicological concern. Box height (IQR) indicates variability. Outliers represent compounds with exceptional toxicity."
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "toxcsm-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "compoundname"
+    - "endpoint"
+    - "toxicity_score"
+    - "super_category"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BoxScatterStrategy"
+  
+  plotly:
+    # Box plot configuration
+    box:
+      y: "toxicity_score"
+      marker:
+        color: "#dc3545"  # Danger red for toxicity
+      line:
+        color: "#721c24"  # Dark red for box outlines
+        width: 1.5
+      fillcolor: "rgba(220, 53, 69, 0.3)"  # Semi-transparent red fill
+      boxmean: false
+      name: "Distribution"
+      width: 0.7
+    
+    # Scatter plot configuration (jittered points)
+    scatter:
+      y: "toxicity_score"
+      mode: "markers"
+      name: "Compounds"
+      marker:
+        color: "rgba(0, 0, 0, 0.6)"  # Black with alpha
+        size: 4
+        line:
+          color: "white"
+          width: 0.5
+      jitter: 0.3
+      customdata_columns: ["compoundname"]
+      hovertemplate: >
+        <b>Compound:</b> %{customdata[0]}<br>
+        <b>Score:</b> %{y:.3f}<extra></extra>
+    
+    # Title configuration
+    title:
+      show: true
+      text: "Toxicity Score Distribution by Endpoint"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Layout configuration
+    layout:
+      height: 650
+      autosize: true
+      orientation: "v"
+      
+      xaxis:
+        title: "Toxicological Endpoint"
+        tickangle: -45
+        tickfont:
+          size: 10
+        categoryorder: "median descending"
+      
+      yaxis:
+        title: "Predicted Toxicity Score"
+        gridcolor: "lightgray"
+        range: [0, 1.05]
+        dtick: 0.1
+        tickfont:
+          size: 11
+      
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      showlegend: false
+      boxmode: "group"
+      
+      margin:
+        l: 80
+        r: 120  # Increased right margin for threshold annotations
+        t: 100
+        b: 150
+      
+      hovermode: "closest"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-7-4-category-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Super-category selection triggers chart update"
+  
+  outputs:
+    - component_id: "uc-7-4-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Toxicity distribution box scatter chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["compoundname", "endpoint", "toxicity_score", "super_category"]
+      message: "Data must contain 'compoundname', 'endpoint', 'toxicity_score', and 'super_category' columns"
+    
+    - rule: "minimum_samples"
+      min_count: 5
+      message: "At least 5 data points required for meaningful box plot"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_7_4_df_{data_hash}_{filters_hash}"
+        description: "Cache toxicity data per super-category"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_7_4_box_{data_hash}_{filters_hash}"
+        description: "Cache generated box scatter chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Toxicity analysis requires 'compoundname', 'endpoint', 'toxicity_score', and 'super_category' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No toxicity data available for selected super-category."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 5 data points required for box plot. Found: {count}"
+    
+    no_category_selected:
+      action: "display_placeholder"
+      message: "Please select a toxicity super-category from the dropdown."
+    
+    toxcsm_data_missing:
+      action: "display_message"
+      message: "ToxCSM database data not found. Please ensure ToxCSM data is loaded."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to process toxicity distribution: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render box scatter chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - box.marker.color: Box plot color (#dc3545 - danger red)
+# - box.line.color: Box outline color (#721c24 - dark red)
+# - box.fillcolor: Box fill with transparency
+# - box.width: Box width (0.7)
+# - scatter.marker.color: Scatter point color (black with alpha)
+# - scatter.marker.size: Point size (4)
+# - scatter.jitter: Horizontal jitter amount (0.3)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - xaxis.tickangle: X-axis label rotation (-45°)
+# - xaxis.categoryorder: "median descending" (sort by median)
+# - yaxis.range: [0, 1.05] (toxicity score range)
+# - yaxis.dtick: 0.1 (tick interval)
+# - customdata_columns: Columns for hover data
+# - hovertemplate: Custom hover template
+# - shapes: Threshold lines (0.5 moderate, 0.7 high risk)
+# - annotations: Risk level labels
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_7_4_callbacks.py):
+# 1. Extract ToxCSM data (already in long format)
+# 2. Validate columns: compoundname, endpoint, toxicity_score, super_category
+# 3. Filter by selected super-category from dropdown
+# 4. Sort endpoints by median toxicity (descending)
+# 5. Create box plot traces for each endpoint
+# 6. Create scatter traces with Gaussian jitter
+# 7. Add threshold lines (0.5, 0.7)
+# 8. Return combined figure
+#
+# STRATEGY (BoxScatterStrategy):
+# 1. Receives filtered data with required columns
+# 2. Validates columns exist
+# 3. Creates box plot traces (shows median, IQR, outliers)
+# 4. Creates scatter traces with jitter (shows individual points)
+# 5. Applies layout configuration
+# 6. Returns combined figure
+#
+# Database Support:
+# - ToxCSM: ✅ Contains toxicity prediction data with super-categories
+# - BioRemPP: ❌ Does NOT contain toxicity data
+# - KEGG: ❌ Does NOT contain toxicity data
+#
+# Rendering Logic:
+# - Dropdown population: On data store update
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Visualization Details:
+# - Box plot: Shows statistical distribution per endpoint
+# - Scatter plot: Shows individual compound toxicity scores
+# - Jitter: Uniform random noise (±0.3) for point separation
+# - Hover: Compound name and exact toxicity score
+# - Colors: Red (#dc3545) for boxes, black for scatter points
+# - Thresholds: Yellow line at 0.5 (moderate), red line at 0.7 (high risk)
+# - Sorting: Endpoints ordered by median toxicity (highest first)

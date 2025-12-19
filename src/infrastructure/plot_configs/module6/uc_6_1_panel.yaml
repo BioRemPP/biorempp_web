@@ -1,0 +1,75 @@
+# UC-6.1: Regulatory to Molecular Interaction Flow
+# Panel Configuration (YAML)
+
+use_case_id: "uc-6-1"
+
+scientific_question: >
+  How do high-level regulatory contexts cascade through specific biological
+  samples and their genetic machinery to target individual chemical compounds?
+
+description: >
+  This alluvial diagram visualizes the end-to-end flow of interactions across
+  four distinct stages, from the macro-level regulatory agency down to the
+  specific compound being targeted. The width of the flows represents the
+  number of observed interactions, providing a quantitative map of the most
+  dominant pathways from regulation to function.
+
+visual_elements:
+  - label: "Stages (Vertical Columns)"
+    description: >
+      The four vertical columns represent the hierarchical flow of interactions:
+      Regulatory Agency, Sample, Gene Symbol, and Compound Name. Each column
+      represents a distinct level in the bioremediation process chain.
+
+  - label: "Nodes"
+    description: >
+      Each node represents a unique entity at its respective stage. From left
+      to right: regulatory agencies, biological samples, gene symbols, and
+      compound names. Node size reflects the total flow passing through it.
+
+  - label: "Flows (Ribbons)"
+    description: >
+      The ribbons connecting nodes represent the flow of interactions between
+      stages. Each flow traces a pathway from a regulatory context through
+      a sample and its genes to a target compound.
+
+  - label: "Flow Thickness"
+    description: >
+      The thickness of a flow is proportional to the number of interactions
+      it represents. Thicker flows indicate more dominant or frequently
+      observed pathways in the dataset.
+
+  - label: "Interactivity"
+    description: >
+      Hover over nodes and flows to see their names and values. Nodes can
+      be dragged vertically to improve readability and explore specific
+      pathways of interest.
+
+interpretation_guidelines:
+  - >
+    Tracing Dominant Pathways: The thickest flows allow for tracing the most
+    significant interaction pathways from start to finish. Identify which
+    agency's regulations are most strongly linked to specific samples, genes,
+    and compounds.
+
+  - >
+    Identifying Key Players: The size of nodes can help identify key players at each
+    stage. A large sample node may indicate a biological source central to many different
+    interaction flows. A large gene node may highlight a versatile or critical gene.
+
+  - >
+    System-Level View: The diagram provides a holistic, system-level view of
+    how regulatory pressures, microbial agents, genetic tools, and chemical
+    targets are interconnected in the bioremediation process.
+
+  - >
+    Regulatory Impact: Trace how specific regulatory agencies influence the
+    entire downstream process, from which samples are involved to which
+    compounds are ultimately targeted.
+
+  - >
+    Bottleneck Identification: Narrow flows between stages may indicate
+    bottlenecks or specialized pathways that may deserve further investigation
+    for targeted bioremediation strategies.
+
+color_scheme: "success"

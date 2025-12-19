@@ -1,0 +1,302 @@
+# ============================================================================
+# UC-7.7: Compound-Sample Toxicity Profile Landscape
+# ============================================================================
+# Description: Treemap showing compound-sample toxicity profile
+# Module: module7
+# Plot Type: Treemap (Hierarchical)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-7.7"
+  module: "module7"
+  title: "Compound-Sample Toxicity Profile Landscape"
+  description: >
+    Hierarchical treemap visualizing the toxicity profile landscape showing
+    which samples are associated with which compounds and their toxicity
+    categories. Shows the nested relationship between samples, compounds,
+    and toxicity categories. Enables identification of sample-compound
+    associations, toxicity profiles, and risk patterns.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "treemap"
+    - "hierarchical"
+    - "toxicity"
+    - "sample"
+    - "compound"
+    - "toxcsm"
+  plot_type: "treemap"
+  scientific_context:
+    domain: "Toxicology and Sample Profiling"
+    application: "Compound-sample toxicity landscape analysis"
+    interpretation: "Rectangle size indicates toxicity category count; nesting shows hierarchy"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "merged-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Compound_Name"
+    - "Toxicity Category"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results (sample-compound links)"
+      
+      - name: "extract_toxcsm"
+        enabled: true
+        description: "Extract ToxCSM results (toxicity predictions)"
+      
+      - name: "merge_datasets"
+        enabled: true
+        description: "Merge BioRemPP and ToxCSM on compound name"
+      
+      - name: "build_hierarchy"
+        enabled: true
+        description: "Build hierarchical path: Sample → Compound_Name → Toxicity Category"
+      
+      - name: "aggregate_values"
+        enabled: true
+        description: "Count toxicity categories per sample-compound pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "TreemapStrategy"
+  
+  plotly:
+    # Hierarchy configuration
+    path_columns:
+      - "Sample"
+      - "Compound_Name"
+      - "Toxicity Category"
+    
+    root_label: "All Samples"
+    
+    # Aggregation configuration
+    value_column: "Toxicity Category"
+    aggregation: "count"
+    
+    # Color configuration
+    # Mode: "discrete" (categorical) or "continuous" (gradient)
+    color_mode: "discrete"
+    color_column: "Toxicity Category"
+    
+    # Discrete color palettes (choose one):
+    # - Pastel1, Pastel2, Set1, Set2, Set3 (qualitative)
+    # - Plotly, D3, G10, T10, Alphabet (qualitative)
+    # - Safe, Vivid, Bold, Antique, Prism (qualitative)
+    color_discrete_sequence: "Pastel2"
+    
+    # Alternative: Continuous color scale (if color_mode: "continuous")
+    # color_continuous_scale: "Greens"
+    # Options: Greens, Blues, Reds, YlOrRd, YlGnBu, RdYlGn, Viridis, Plasma, Inferno, Magma, Cividis
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Compound-Sample Toxicity Profile Landscape"
+        x: 0.5
+        font:
+          size: 16
+      
+      # Text configuration
+      text_info: "label+value"
+      text_font_size: 12
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      margin:
+        t: 50
+        l: 25
+        r: 25
+        b: 25
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-7-7-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render treemap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-7-7-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Hierarchical treemap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Compound_Name", "Toxicity Category"]
+      message: "Data must contain 'Sample', 'Compound_Name', and 'Toxicity Category' columns"
+    
+    - rule: "min_hierarchy_levels"
+      min_count: 2
+      message: "At least 2 hierarchy levels required for treemap"
+    
+    - rule: "biorempp_toxcsm_data_required"
+      message: "This use case requires both BioRemPP and ToxCSM databases"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_7_7_df_{data_hash}"
+        description: "Cache processed hierarchy data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_7_7_treemap_{data_hash}"
+        description: "Cache generated treemap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Treemap requires 'Sample', 'Compound_Name', and 'Toxicity Category' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No hierarchy data available. Please check BioRemPP and ToxCSM datasets."
+    
+    insufficient_levels:
+      action: "display_message"
+      message: "At least 2 hierarchy levels required for treemap. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+    
+    toxcsm_data_missing:
+      action: "display_message"
+      message: "ToxCSM database data not found. This use case requires ToxCSM data."
+  
+  processing_errors:
+    merge_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to merge BioRemPP and ToxCSM data: {error_details}"
+    
+    hierarchy_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build hierarchy: {error_details}"
+    
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate values: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render treemap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Data Processing (in callback):
+# 1. Extract BioRemPP DataFrame (Sample, Compound_Name)
+# 2. Extract ToxCSM DataFrame (compoundname, super_category)
+# 3. Merge on compound name
+# 4. Build hierarchy: Sample → Compound_Name → Toxicity Category
+# 5. Pass to TreemapStrategy
+#
+# Columns After Processing:
+# - Sample: Sample identifier
+# - Compound_Name: Compound identifier
+# - Toxicity Category: super_category from ToxCSM
+#
+# Hierarchy (3 levels):
+# All Samples (root)
+#   ├─ Sample1
+#   │   ├─ Benzene (Compound_Name)
+#   │   │   ├─ Hepatotoxicity (Toxicity Category)
+#   │   │   └─ Carcinogenicity (Toxicity Category)
+#   │   └─ Toluene (Compound_Name)
+#   │       └─ Hepatotoxicity (Toxicity Category)
+#   └─ Sample2
+#       └─ Benzene (Compound_Name)
+#           └─ Carcinogenicity (Toxicity Category)
+#
+# Scientific Interpretation:
+# - Sample-compound associations: Which compounds are associated with each sample
+# - Toxicity profiles: Which toxicity categories are present for each compound
+# - Risk patterns: How toxicity distributes across samples and compounds
+# - Compound diversity: Number of compounds per sample
+# - Use for: Toxicity profiling, sample characterization, risk assessment
+# - Optimization: Identify samples with specific toxicity profiles
+#
+# Color Options Documentation:
+# Discrete Palettes (color_mode: "discrete"):
+#   Qualitative (for categories):
+#   - Pastel1, Pastel2: Soft, muted colors
+#   - Set1, Set2, Set3: Distinct, vibrant colors
+#   - Plotly, D3, G10, T10: Standard categorical palettes
+#   - Alphabet: 26 distinct colors
+#   - Safe, Vivid, Bold: Accessibility-focused palettes
+#   - Antique, Prism: Themed palettes
+#
+# Continuous Scales (color_mode: "continuous"):
+#   Sequential (single hue):
+#   - Greens, Blues, Reds, Greys, Purples, Oranges
+#   
+#   Diverging (two hues):
+#   - RdYlGn, RdBu, PiYG, BrBG, PuOr
+#   
+#   Multi-hue:
+#   - YlOrRd, YlGnBu, Viridis, Plasma, Inferno, Magma, Cividis

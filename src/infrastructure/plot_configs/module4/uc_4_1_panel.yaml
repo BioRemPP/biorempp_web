@@ -1,0 +1,54 @@
+# UC-4.1: Interactive Functional Profiling of Samples by Metabolic Pathway (KEGG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-1"
+
+scientific_question: >
+  What is the specific functional profile of each biological sample, as defined
+  by the richness of its annotated metabolic pathways?
+
+description: >
+  This interactive visualization allows for the detailed functional profiling
+  of individual samples. By selecting a sample from the dropdown menu, the bar
+  chart dynamically updates to display and rank all the metabolic pathways
+  present in that sample based on the number of unique KEGG Orthology (KO)
+  identifiers associated with each pathway.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Sample to analyze. The plot will update
+      automatically.
+
+  - label: "Y-axis"
+    description: >
+      Represents the individual KEGG Pathways found in the selected sample.
+
+  - label: "X-axis"
+    description: >
+      Represents the count of unique KOs associated with each pathway.
+
+  - label: "Bar Length and Label"
+    description: >
+      The length of each bar and its corresponding numerical label explicitly
+      state the total number of unique KOs, potentially indicating the functional richness
+      of that pathway for the selected sample.
+
+interpretation_guidelines:
+  - >
+    Dominant Pathways: The longest bars represent the most prominent or
+    functionally rich metabolic pathways for that specific biological source. This can
+    help identify its primary metabolic capabilities or specializations.
+
+  - >
+    Comparative Profiling: By switching between samples in the dropdown, one
+    can directly compare their functional profiles. For example, this may
+    highlight if one sample is enriched in hydrocarbon biotransformation pathways
+    while another is specialized in amino acid metabolism.
+
+  - >
+    Pathway Presence/Absence: The chart provides a clear inventory of which
+    metabolic pathways are encoded in each sample's genome, allowing for quick
+    identification of key functional differences.
+
+color_scheme: "success"

@@ -1,0 +1,77 @@
+# UC-4.8: Interactive Gene Inventory Explorer by Sample and Gene Symbol
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-8"
+
+scientific_question: >
+  What is the specific genetic inventory (gene symbols) of each biological
+  sample, and which samples possess a particular gene of interest?
+
+description: >
+  This interactive visualization serves as a query tool to explore the genetic
+  composition of each sample. By using one or both dropdown menus, a user can
+  dynamically filter the entire dataset to visualize specific relationships.
+  The resulting scatter plot maps the presence of genes within samples,
+  providing a powerful tool for comparative genomics and hypothesis testing.
+  Each point in the plot represents the confirmed presence of a gene symbol
+  within a sample.
+
+visual_elements:
+  - label: "Dropdown Menus"
+    description: >
+      Use the "Select Sample" and "Select Gene Symbol" menus to filter the
+      data. The plot updates automatically based on your selection(s). You can
+      select one or both filters to explore different genomic perspectives.
+
+  - label: "Y-axis (Samples)"
+    description: >
+      Represents the individual biological samples in your dataset. Each sample
+      is displayed on the vertical axis.
+
+  - label: "X-axis (Gene Symbols)"
+    description: >
+      Represents the gene symbols identified in the analysis. Each unique gene
+      is displayed on the horizontal axis.
+
+  - label: "Points (Gene Presence)"
+    description: >
+      A point at the intersection of a sample and a gene symbol indicates that
+      the sample possesses that gene. The presence of a point confirms this
+      genetic feature exists in the biological source.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over a point reveals the specific compound name and
+      KO identifier associated with that gene in that sample, providing
+      functional context for the genetic inventory.
+
+interpretation_guidelines:
+  - >
+    Single Filter (Sample-centric view): Selecting a single sample can help identify its
+    "genetic inventory"—the complete set of genes identified for it in this
+    dataset. This is useful for characterizing the functional potential of a
+    specific biological source and understanding its metabolic capabilities.
+
+  - >
+    Single Filter (Gene-centric view): Selecting a single gene can help identify its
+    "sample distribution"—the complete set of samples that possess this gene.
+    This is useful for tracking the prevalence of important functional genes
+    across the consortium and potentially identifying redundancy.
+
+  - >
+    Dual Filter (Hypothesis Testing): Selecting both a sample and a gene
+    allows for direct confirmation of a gene's presence in a specific biological source.
+    The hover data can help identify which compounds this gene is linked to in that
+    context, providing functional validation.
+
+  - >
+    Comparative Genomics: By exploring different samples, you can identify
+    core genes (present across many samples) versus accessory genes (present
+    in few samples), potentially revealing the genetic structure of your consortium.
+
+  - >
+    Bioaugmentation Screening: Samples with extensive genetic inventories
+    (many horizontal points) may be excellent candidates for bioaugmentation,
+    as they possess diverse functional capabilities for pollutant biotransformation.
+
+color_scheme: "success"

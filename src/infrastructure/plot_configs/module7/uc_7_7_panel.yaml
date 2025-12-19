@@ -1,0 +1,65 @@
+# UC-7.7: Sample Risk Mitigation Depth Profile by Genetic Investment
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-7"
+
+scientific_question: >
+  Which biological samples invest the most significant genetic resources
+  (number of gene-compound interactions) in mitigating high-risk compounds?
+
+description: >
+  This visualization creates a "Risk Mitigation Depth Profile" for each sample.
+  In contrast to measuring the variety of compounds, this treemap quantifies
+  the depth or intensity of the functional response. The size of each rectangle
+  is proportional to the total number of gene-compound interactions, highlighting
+  where each sample focuses its genetic machinery against high-risk compounds.
+  The hierarchy follows: Sample -> Toxicity Category -> Compound Name.
+
+visual_elements:
+  - label: "Nested Rectangles (Hierarchy)"
+    description: >
+      The chart uses nested rectangles to represent the hierarchy. The largest
+      rectangles represent the top-level categories (Sample). Within each sample,
+      rectangles represent Toxicity Categories, and within those, individual
+      Compound Names.
+
+  - label: "Rectangle Area (Values)"
+    description: >
+      The area of each rectangle is proportional to the total number of
+      gene-compound interactions, which serves as a proxy for the genetic
+      investment in mitigating risk. Larger areas indicate deeper genetic response.
+
+  - label: "Color (Toxicity Category)"
+    description: >
+      The color of the second-level rectangles identifies the Toxicity Category
+      (e.g., Genomic, Environmental, Nuclear Response), allowing for easy visual
+      grouping across samples.
+
+  - label: "Interactivity"
+    description: >
+      You can click on any rectangle to "zoom in" and explore that specific
+      branch of the hierarchy in more detail. Click outside to zoom back out.
+
+interpretation_guidelines:
+  - >
+    High Genetic Investment: Large rectangles represent a significant genetic
+    investment from a sample towards a specific risk category or compound. This
+    may indicate a deep, multi-gene response.
+
+  - >
+    Sample Specialization: By observing the second level of the hierarchy, one
+    can help identify a sample's specialization. A sample with a large rectangle for
+    the "High Predicted Risk" category may be investing heavily in mitigating
+    the most hazardous compounds.
+
+  - >
+    Complex Targets: A compound that forms a large rectangle may suggest it is a
+    complex target that requires a diverse, multi-gene response for its
+    biotransformation.
+
+  - >
+    Consortium Design: Combine samples with complementary depth profiles -
+    one with deep genetic investment in "Environmental" toxins and another
+    in "Genomic" toxins - to create a robust remediation consortium.
+
+color_scheme: "success"

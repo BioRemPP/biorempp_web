@@ -1,0 +1,74 @@
+# UC-3.4: Sample Similarity Based on KO Profiles
+# Panel Configuration (YAML)
+
+use_case_id: "uc-3-4"
+
+scientific_question: >
+  How functionally similar are the biological samples to one another, based on
+  their shared repertoire of KEGG Orthology (KO) identifiers?
+
+description: >
+  This visualization assesses the pairwise functional similarity between all
+  biological samples. The correlogram (a heatmap of a correlation matrix) is
+  constructed based on shared KEGG Orthology (KO) profiles, providing a
+  quantitative measure of how alike the metabolic potentials of any two
+  samples are. A presence/absence matrix is built for each sample-KO pair,
+  and Pearson correlation coefficients are computed between samples.
+
+visual_elements:
+  - label: "X-axis and Y-axis"
+    description: >
+      Both axes represent the individual Samples. Each cell in the matrix
+      corresponds to a pairwise comparison between two samples.
+
+  - label: "Cell Color"
+    description: >
+      The color of the cell at the intersection of two samples indicates the
+      Pearson correlation coefficient between their KO profiles.
+
+  - label: "Color Scale"
+    description: >
+      The plot uses a diverging color scale (RdBu_r). Warm colors (reds) signify
+      a high positive correlation (high similarity), indicating that two samples
+      share a very similar set of KOs. Cool colors (blues) indicate a negative
+      correlation (dissimilar profiles). Values range from -1 to +1.
+
+  - label: "Diagonal"
+    description: >
+      The central diagonal is always bright red, as each sample is perfectly
+      correlated with itself (r = 1.0).
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each cell displays the two sample names being compared
+      and their exact correlation coefficient value.
+
+interpretation_guidelines:
+  - >
+    Functional Clusters: Brightly colored squares or blocks off the main
+    diagonal identify clusters of samples with highly similar functional
+    profiles. These may represent biological sources that share similar
+    ecological niches, metabolic strategies, or phylogenetic relationships.
+
+  - >
+    Distinct Groups: The overall structure of the heatmap may help identify distinct
+    functional groups within the dataset. Samples that form a tight, warm-colored
+    cluster are functionally more related to each other than to samples in
+    other, cooler-colored regions of the plot.
+
+  - >
+    Unique Samples: A sample that shows low correlation (neutral or cool colors)
+    with most other samples may possess a more unique or specialized functional
+    profile within this dataset.
+
+  - >
+    Metabolic Redundancy: High overall correlation across many samples may suggest
+    functional redundancy in the biological community, where multiple biological
+    sources can perform similar metabolic functions.
+
+  - >
+    Consortium Design: Identifying samples with complementary (low correlation)
+    profiles can guide the design of biological consortia with diverse and
+    non-overlapping functional capabilities.
+
+color_scheme: "primary"

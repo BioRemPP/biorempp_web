@@ -1,0 +1,305 @@
+# ============================================================================
+# UC-4.9: Interactive Profiling of Sample Enzymatic Activity
+# ============================================================================
+# Description: Vertical bar chart ranking enzyme activities by genetic diversity
+# Module: module4
+# Plot Type: Bar Chart (Vertical)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.9"
+  module: "module4"
+  title: "Unique Gene Count by Enzyme Activity for Sample"
+  description: >
+    Vertical bar chart ranking enzyme activities by genetic diversity
+    (unique gene count) within a selected sample from BioRemPP database.
+    Enables functional guild profiling at the enzymatic level.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "enzyme_activity"
+    - "functional_guilds"
+    - "genetic_diversity"
+    - "bar_chart"
+    - "vertical"
+  plot_type: "bar_chart"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Enzymatic activity profiling and functional guild analysis"
+    interpretation: "Higher gene counts indicate greater genetic diversity for specific enzymatic functions"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "enzyme_activity"
+    - "genesymbol"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter"
+        enabled: true
+        params:
+          column: "enzyme_activity"
+          operator: "!="
+          value: "#N/D"
+        description: "Filter out undefined enzyme activities"
+      
+      - name: "group_and_count"
+        enabled: true
+        params:
+          group_by: "enzyme_activity"
+          agg_column: "genesymbol"
+          agg_function: "nunique"
+          result_column: "unique_gene_count"
+        description: "Count unique genes per enzyme activity"
+      
+      - name: "sort"
+        enabled: true
+        params:
+          by: "unique_gene_count"
+          ascending: false  # Descending for vertical bars (highest first)
+        description: "Sort by gene count (descending for vertical display)"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BarChartStrategy"
+  
+  plotly:
+    chart_type: "bar"
+    x: "enzyme_activity"
+    y: "unique_gene_count"
+    orientation: "v"  # Vertical orientation
+    
+    # Color configuration
+    color_discrete_sequence: ["mediumseagreen"]
+    
+    # Title configuration
+    title:
+      show: false  # Title handled by panel header
+      text: ""
+      font:
+        size: 16
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Axis labels
+    labels:
+      enzyme_activity: "Enzyme Activity"
+      unique_gene_count: "Unique Gene Count"
+    
+    # Layout configuration
+    layout:
+      height: 600
+      autosize: true  # Enable responsive sizing
+      template: "simple_white"
+      
+      # X-axis configuration
+      xaxis:
+        title:
+          text: "Enzyme Activity"
+          font:
+            size: 14
+            color: "#2c3e50"
+        showgrid: false
+        tickangle: -45  # X-axis label angle (rotated for readability)
+        tickfont:
+          size: 10
+      
+      # Y-axis configuration
+      yaxis:
+        title:
+          text: "Unique Gene Count"
+          font:
+            size: 14
+            color: "#2c3e50"
+        showgrid: true
+        gridcolor: "lightgray"
+        tickangle: 0  # Y-axis label angle (horizontal)
+      
+      # Margins
+      margin:
+        l: 80
+        r: 50
+        t: 80
+        b: 150  # Extra space for rotated enzyme activity labels
+      
+      # Hover configuration
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font_size: 12
+        font_family: "Arial"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-9-sample-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Sample selection triggers chart update"
+  
+  outputs:
+    - component_id: "uc-4-9-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Enzyme activity bar chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input DataFrame cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["enzyme_activity", "genesymbol"]
+      message: "Missing required columns for UC-4.9. Need 'enzyme_activity' and 'genesymbol'."
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 row required for enzyme activity analysis"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_9_df_{data_hash}_{filters_hash}"
+        description: "Cache enzyme activity gene counts per sample"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_9_bar_{data_hash}_{filters_hash}"
+        description: "Cache generated bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Enzyme activity profiling requires 'sample', 'enzyme_activity', and 'genesymbol' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No enzyme activity data available for selected sample."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 enzyme activity required for analysis. Found: {count}"
+    
+    no_sample_selected:
+      action: "display_placeholder"
+      message: "Please select a sample from the dropdown."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. Please ensure BioRemPP data is loaded."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate enzyme activity gene counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bar chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - orientation: "v" (vertical) or "h" (horizontal)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - xaxis.tickangle: X-axis label rotation angle (-45 for readability)
+# - yaxis.tickangle: Y-axis label rotation angle (0 = horizontal)
+# - xaxis.title.text: X-axis title
+# - yaxis.title.text: Y-axis title
+# - color_discrete_sequence: Bar colors (mediumseagreen)
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - margin.b: Bottom margin (150px for rotated labels)
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_9_callbacks.py):
+# 1. Extract data from BioRemPP store
+# 2. Map column names (Sample/sample, Enzyme_Activity/enzyme_activity, Gene_Symbol/genesymbol)
+# 3. Normalize column names to standard format
+# 4. Filter by selected sample from dropdown
+# 5. Pass filtered data to PlotService
+#
+# STRATEGY (BarChartStrategy):
+# 1. Receives filtered data with ['sample', 'enzyme_activity', 'genesymbol']
+# 2. Filters OUT enzyme_activity = '#N/D' (undefined activities)
+# 3. Groups by 'enzyme_activity' and counts unique genes
+# 4. Creates column 'unique_gene_count'
+# 5. Sorts descending (for vertical left-to-right display)
+# 6. Creates vertical bar chart with flexible properties
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'sample', 'enzyme_activity', 'genesymbol' columns
+# - KEGG: ❌ Does NOT contain enzyme activity data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Orientation Details:
+# - Vertical (orientation: "v")
+# - X-axis: enzyme_activity (categorical labels, rotated -45°)
+# - Y-axis: unique_gene_count (numeric values)
+# - Sorted descending for left-to-right visual hierarchy
+# - Extra bottom margin (150px) accommodates rotated enzyme activity labels
+#
+# Important Notes:
+# - Filter step removes '#N/D' values (undefined enzyme activities)
+# - This is critical for clean visualization and accurate analysis

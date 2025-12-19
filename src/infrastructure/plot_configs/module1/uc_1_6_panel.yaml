@@ -1,0 +1,73 @@
+# UC-1.6: Sample-Agency Functional Potential Heatmap
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-1-6"
+
+scientific_question: >
+  To what extent does the functional potential, measured by unique KO diversity,
+  of different samples align with the priorities of various environmental
+  regulatory agencies?
+
+description: >
+  This heatmap visualizes the distribution of functional potential across
+  biological samples within different regulatory contexts. It quantifies the
+  number of unique KEGG Orthology (KO) identifiers at the intersection of
+  each sample and reference agency, providing a matrix of functional relevance.
+
+visual_elements:
+  - label: "Y-Axis (Reference Agencies)"
+    description: >
+      Represents the different Reference Agencies (e.g., WFD, CONAMA, EPA).
+      Each row corresponds to a distinct regulatory framework with its own
+      set of monitored compounds and environmental priorities.
+
+  - label: "X-Axis (Samples)"
+    description: >
+      Represents the individual biological samples in the dataset. Each column
+      corresponds to a unique sample with its own functional gene repertoire.
+
+  - label: "Cell Color and Values"
+    description: >
+      The color intensity of each cell (and the number within it) indicates
+      the count of unique KOs found for that specific Sample-Agency combination.
+      The color bar on the right provides the quantitative scale. Darker/brighter
+      colors indicate higher KO counts, representing stronger functional potential.
+
+  - label: "Color Bar"
+    description: >
+      Located on the right side of the heatmap, it provides a quantitative
+      reference for interpreting cell colors. Values range from the minimum
+      to the maximum unique KO count across all Sample-Agency combinations.
+
+interpretation_guidelines:
+  - >
+    Functional Hotspots: Brightly colored cells ("hotspots") may identify a strong
+    alignment between a sample's functional capabilities and a specific agency's
+    focus, suggesting potential relevance for interacting with compounds monitored
+    by that agency. These samples may be candidates for targeted bioremediation
+    applications.
+
+  - >
+    Agency-Level Patterns: Rows with consistently high values may indicate that
+    an agency's target compounds are associated with widely distributed metabolic
+    functions. This may suggest that the monitored compounds require common
+    enzymatic pathways present across multiple samples.
+
+  - >
+    Sample-Level Profiles: Columns with consistently high values may suggest a
+    functional "generalist" sample with broad metabolic potential capable of
+    addressing multiple regulatory concerns. Conversely, a sample with hotspots
+    in only one or two rows could be considered a "specialist" with targeted
+    capabilities.
+
+  - >
+    Regulatory Coverage Assessment: By comparing values across rows, researchers
+    can identify which regulatory frameworks have the strongest representation
+    in their sample collection and where functional gaps may exist.
+
+  - >
+    Consortium Design Insights: Samples with complementary patterns (different
+    hotspot locations) can be combined to create biological consortia with
+    comprehensive functional coverage across multiple regulatory frameworks.
+
+color_scheme: "primary"

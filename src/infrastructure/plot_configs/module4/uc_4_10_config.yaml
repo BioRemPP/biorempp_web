@@ -1,0 +1,377 @@
+# ============================================================================
+# UC-4.10: Genetic Diversity of Enzymatic Activities Across Samples
+# ============================================================================
+# Description: Bubble chart showing genetic diversity (unique gene count) by enzyme activity
+# Module: module4
+# Plot Type: Dot Plot (Bubble Chart)
+# Rendering: On-demand (accordion open)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.10"
+  module: "module4"
+  title: "Genetic Diversity of Enzymatic Activities Across Samples"
+  description: >
+    Bubble chart showing genetic diversity (unique gene count) for each
+    sample-enzyme activity interaction. Bubble size and color intensity
+    encode the count of unique gene symbols, highlighting functional
+    hotspots of high genetic investment. Reveals which enzymatic activities
+    are supported by diverse gene repertoires across different samples.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "dot_plot"
+    - "bubble_chart"
+    - "genetic_diversity"
+    - "enzyme_activity"
+    - "gene_count"
+    - "biorempp"
+  plot_type: "dot_plot"
+  scientific_context:
+    domain: "Genetic Diversity Analysis and Enzymatic Functional Redundancy"
+    application: "Identifying enzymatic activities with high genetic investment across samples"
+    interpretation: "Larger bubbles indicate higher genetic diversity (more unique genes); reveals functional redundancy and metabolic robustness"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "enzyme_activity"
+    - "genesymbol"
+  
+  processing:
+    steps:
+      - name: "filter"
+        enabled: true
+        params:
+          column: "enzyme_activity"
+          operator: "!="
+          value: "#N/D"
+        description: "Filter out invalid enzyme activities"
+      
+      - name: "group_and_count"
+        enabled: true
+        params:
+          group_by: ["sample", "enzyme_activity"]
+          agg_column: "genesymbol"
+          agg_function: "nunique"
+          result_column: "unique_gene_count"
+        description: "Count unique gene symbols per sample-enzyme combination"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "DotPlotStrategy"
+  
+  plotly:
+    scatter:
+      x: "enzyme_activity"
+      y: "sample"
+      mode: "bubble"  # Bubble chart (size and color encode values)
+      
+      # Size encoding
+      size: "unique_gene_count"
+      size_max: 35
+      
+      # Color encoding (same as size for redundant encoding)
+      color: "unique_gene_count"
+      color_continuous_scale: "Viridis"
+      colorbar_title: "Unique Gene Count"
+      
+      # Hover configuration
+      hover_name: "enzyme_activity"
+      hover_data:
+        sample: true
+        enzyme_activity: true
+        unique_gene_count: true
+    
+    # Layout configuration
+    layout:
+      # Title configuration
+      title:
+        show: true
+        text: "Genetic Diversity by Enzyme Activity"
+        x: 0.5
+      
+      # Dimensions
+      height: 650
+      autosize: true
+      
+      # Template and colors
+      template: "simple_white"
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      # X-axis configuration
+      xaxis:
+        title: "Enzyme Activity"
+        tickangle: -45
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Y-axis configuration
+      yaxis:
+        title: "Sample"
+        tickangle: 0
+        showgrid: true
+        gridcolor: "#e0e0e0"
+        tickfont:
+          size: 10
+        automargin: true
+      
+      # Hover mode
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font:
+          size: 12
+      
+      # Margins
+      margin:
+        l: 120
+        r: 100
+        t: 80
+        b: 150
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-10-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render bubble chart when accordion opens"
+  
+  outputs:
+    - component_id: "uc-4-10-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Genetic diversity bubble chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "enzyme_activity", "genesymbol"]
+      message: "Data must contain required columns"
+    
+    - rule: "minimum_points"
+      min_count: 1
+      message: "At least 1 enzyme activity required for visualization"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+    
+    - rule: "filter_invalid_activities"
+      message: "Invalid enzyme activities (#N/D) will be filtered out"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_10_df_{data_hash}"
+        description: "Cache processed data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_10_bubble_{data_hash}"
+        description: "Cache generated bubble chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Genetic diversity analysis requires 'sample', 'enzyme_activity', and 'genesymbol' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No genetic diversity data available. Please check BioRemPP dataset."
+    
+    no_valid_activities:
+      action: "display_message"
+      message: "No valid enzyme activities found after filtering. All activities may be marked as '#N/D'."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate gene data: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bubble chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - scatter.mode: "bubble" (variable size/color)
+# - scatter.size: Column for bubble size encoding
+# - scatter.size_max: Maximum bubble size in pixels (default: 35)
+# - scatter.color: Column for color encoding
+# - scatter.color_continuous_scale: "Viridis", "Plasma", "Inferno", "Magma", "Cividis", etc.
+# - scatter.colorbar_title: Title for color scale legend
+# - scatter.hover_name: Column for hover label
+# - scatter.hover_data: Additional columns to show on hover
+# - layout.title.show: true/false (toggle title)
+# - layout.title.text: Title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - layout.width: Chart width (if autosize=false)
+# - layout.template: "simple_white", "plotly", "plotly_dark", etc.
+# - layout.xaxis.title: X-axis label
+# - layout.yaxis.title: Y-axis label
+# - layout.xaxis.tickangle: X-axis label rotation (-90 to 90)
+# - layout.yaxis.tickangle: Y-axis label rotation (-90 to 90)
+# - layout.xaxis.tickfont.size: X-axis tick font size
+# - layout.yaxis.tickfont.size: Y-axis tick font size
+# - layout.xaxis.automargin: Auto-adjust margins for long labels
+# - layout.yaxis.automargin: Auto-adjust margins for long labels
+# - layout.margin: {l, r, t, b} margins
+# - layout.hovermode: "closest", "x", "y", "x unified", "y unified"
+# - layout.hoverlabel.bgcolor: Hover label background color
+# - layout.hoverlabel.font.size: Hover label font size
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_10_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map column names flexibly:
+#    - sample: "sample", "Sample", "sample_id"
+#    - enzyme_activity: "enzyme_activity", "Enzyme_Activity", "EnzymeActivity", "enzyme"
+#    - genesymbol: "genesymbol", "GeneSymbol", "gene_symbol", "Gene_Symbol"
+# 3. Normalize column names
+# 4. Pass to PlotService
+#
+# STRATEGY (DotPlotStrategy - Bubble Mode):
+# 1. Receives data with ['sample', 'enzyme_activity', 'genesymbol']
+# 2. Applies filter processing:
+#    - Filter: enzyme_activity != '#N/D'
+# 3. Applies group_and_count processing:
+#    - GROUP BY sample, enzyme_activity
+#    - COUNT(DISTINCT genesymbol) AS unique_gene_count
+# 4. Creates bubble chart:
+#    - X-axis: Enzyme activity names
+#    - Y-axis: Sample names
+#    - Bubble size: unique_gene_count
+#    - Bubble color: unique_gene_count (Viridis scale)
+# 5. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'sample', 'enzyme_activity', 'genesymbol' columns
+# - KEGG: ❌ Does NOT contain enzyme activity or gene symbol data
+# - HADEG: ❌ Does NOT contain enzyme data
+# - ToxCSM: ❌ Does NOT contain enzyme data
+#
+# Rendering Logic:
+# - No dropdown required (renders all data automatically)
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - No filtering or user selection needed
+#
+# Visualization Details:
+# - Plot type: Bubble chart (quantitative encoding)
+# - X-axis: Enzyme activity names
+# - Y-axis: Sample names
+# - Bubble size: Unique gene count (genetic diversity)
+# - Bubble color: Unique gene count (redundant encoding for clarity)
+# - Color scale: Viridis (perceptually uniform)
+# - Hover: Shows sample, enzyme activity, and unique gene count
+# - Interpretation:
+#   * Large bubbles: High genetic diversity (many unique genes)
+#   * Small bubbles: Low genetic diversity (few unique genes)
+#   * Dark color: High gene count
+#   * Light color: Low gene count
+#   * Horizontal patterns: Enzyme activities with similar diversity across samples
+#   * Vertical patterns: Samples with similar genetic investment patterns
+#
+# Column Mapping (Flexible):
+# - sample: "sample", "Sample", "sample_id"
+# - enzyme_activity: "enzyme_activity", "Enzyme_Activity", "EnzymeActivity", "enzyme"
+# - genesymbol: "genesymbol", "GeneSymbol", "gene_symbol", "Gene_Symbol"
+#
+# Processing Logic:
+# 1. Filter out invalid enzyme activities (#N/D)
+# 2. Group by (sample, enzyme_activity)
+# 3. Count unique gene symbols per group
+# 4. Result: One row per (sample, enzyme_activity) combination
+# 5. unique_gene_count: Number of distinct genes for that activity in that sample
+#
+# Scientific Interpretation:
+# - High gene count: Enzyme activity supported by diverse gene repertoire (functional redundancy)
+# - Low gene count: Enzyme activity supported by few genes (specialized function)
+# - Use for: Identifying metabolically robust activities, functional redundancy analysis
+# - Genetic investment: Reveals which activities have high genetic investment
+# - Sample variation: Shows differences in genetic diversity across samples
+# - Functional hotspots: Large bubbles indicate functional hotspots with high genetic investment
+#
+# Filtering Rationale:
+# - enzyme_activity != '#N/D': Removes invalid/missing enzyme activity annotations
+# - Ensures only valid enzymatic functions are analyzed
+# - Prevents skewing of genetic diversity metrics
+#
+# Unique Features:
+# - No dropdown required (automatic rendering on accordion open)
+# - Filters invalid enzyme activities automatically
+# - Bubble chart encodes genetic diversity quantitatively
+# - Reveals functional redundancy patterns
+# - Identifies metabolically robust enzymatic activities
+#
+# Comparison with UC-4.6:
+# - UC-4.6: Functional potential by compound (X=Sample, Y=Compound, Size=KO count)
+# - UC-4.10: Genetic diversity by enzyme (X=Enzyme, Y=Sample, Size=Gene count)
+# - Both use bubble charts with size/color encoding
+# - Different scientific questions and data dimensions
+# - UC-4.6: Metabolic potential (KO diversity)
+# - UC-4.10: Genetic redundancy (gene diversity)

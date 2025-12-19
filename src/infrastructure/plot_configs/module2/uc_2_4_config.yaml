@@ -1,0 +1,299 @@
+# ============================================================================
+# UC-2.4: Ranking of KOs by Sample Diversity within Chemical Classes
+# ============================================================================
+# Description: Vertical bar chart showing compounds ranked by unique gene count
+# Module: module2
+# Plot Type: Bar Chart (Vertical)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-2.4"
+  module: "module2"
+  title: "Ranking of KOs by Sample Diversity within Chemical Classes"
+  description: >
+    Vertical bar chart visualization showing chemical compounds ranked by
+    the number of unique genes that interact with them, filterable by
+    compound class. Identifies compounds with complex degradation pathways.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "gene_counts"
+    - "compound_ranking"
+    - "chemical_class"
+    - "bar_chart"
+    - "vertical"
+    - "genetic_diversity"
+  plot_type: "bar_chart"
+  scientific_context:
+    domain: "Molecular Ecology and Degradation Pathways"
+    application: "Compound degradation complexity assessment through genetic machinery diversity"
+    interpretation: "Compounds with higher gene counts require more diverse enzymatic machinery"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-merged-data"
+  source_type: "store"
+  
+  required_columns:
+    - "compound"
+    - "gene_count"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "sort"
+        enabled: true
+        params:
+          by: "gene_count"
+          ascending: false  # Descending for vertical bar chart
+        description: "Sort by gene count (descending)"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BarChartStrategy"
+  
+  plotly:
+    chart_type: "bar"
+    x: "compound"
+    y: "gene_count"
+    orientation: "v"  # Vertical orientation
+    
+    # Text on bars
+    text: "gene_count"
+    text_position: "auto"
+    
+    # Color configuration
+    color_discrete_sequence: ["mediumseagreen"]
+    
+    # Title configuration
+    title:
+      show: true  # Toggle title visibility
+      text: "Ranking of Compounds by Genetic Interaction Diversity"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Axis labels
+    labels:
+      compound: "Compound"
+      gene_count: "Number of Unique Genes"
+    
+    # Layout configuration
+    layout:
+      height: 600
+      autosize: true  # Enable responsive sizing
+      template: "simple_white"
+      
+      # X-axis configuration
+      xaxis:
+        title:
+          text: "Compound"
+          font:
+            size: 14
+            color: "#2c3e50"
+        tickfont:
+          size: 10
+        tickangle: -45  # X-axis label angle (rotated for readability)
+        categoryorder: "total descending"
+      
+      # Y-axis configuration
+      yaxis:
+        title:
+          text: "Number of Unique Genes"
+          font:
+            size: 14
+            color: "#2c3e50"
+        tickfont:
+          size: 11
+        tickangle: 0  # Y-axis label angle (horizontal)
+      
+      # Text configuration
+      uniformtext:
+        minsize: 10
+        mode: "hide"
+      
+      # Margins
+      margin:
+        l: 80
+        r: 40
+        t: 100
+        b: 140  # Extra bottom margin for rotated labels
+      
+      # Hover configuration
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font_size: 12
+        font_family: "Arial"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-2-4-class-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render chart when compound class is selected"
+  
+  outputs:
+    - component_id: "uc-2-4-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Compound gene diversity bar chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["compound", "gene_count"]
+      message: "Data must contain 'compound' and 'gene_count' columns for ranking analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 compound required for ranking"
+    
+    - rule: "no_nulls"
+      columns: ["compound", "gene_count"]
+      message: "Null values not allowed in required columns"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_2_4_df_{data_hash}_{filters_hash}"
+        description: "Cache compound gene ranking per class"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_2_4_bar_{data_hash}_{filters_hash}"
+        description: "Cache generated bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  data_limits:
+    max_items: 200  # Limit to top 200 compounds
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Gene diversity ranking requires 'compound' and 'gene_count' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No compound data available for selected class."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 compound required for ranking. Found: {count}"
+    
+    no_class_selected:
+      action: "display_placeholder"
+      message: "Please select a compound class from the dropdown."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate gene diversity rankings: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bar chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - orientation: "v" (vertical) or "h" (horizontal)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - xaxis.tickangle: X-axis label rotation angle (-45 for readability)
+# - yaxis.tickangle: Y-axis label rotation angle (0 = horizontal)
+# - xaxis.title.text: X-axis title
+# - yaxis.title.text: Y-axis title
+# - color_discrete_sequence: Bar colors
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - text: Column to display on bars
+# - text_position: "auto" (automatic text positioning)
+# - categoryorder: "total descending" (sort bars by value)
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_2_4_callbacks.py):
+# 1. Extract data from BioRemPP store
+# 2. Map column names (Compound_Class/compoundclass, Compound_Name/compoundname, Gene_Symbol/genesymbol)
+# 3. Filter by selected compound class from dropdown
+# 4. GroupBy 'compoundname' and count unique genes → creates 'gene_count'
+# 5. Rename 'compoundname' to 'compound'
+# 6. Sort descending by gene_count
+# 7. Limit to top 50 compounds
+# 8. Pass to PlotService
+#
+# STRATEGY (BarChartStrategy):
+# 1. Receives pre-aggregated data with ['compound', 'gene_count']
+# 2. Validates columns exist
+# 3. Sorts by 'gene_count' descending (for vertical display)
+# 4. Creates vertical bar chart with flexible properties
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'compoundclass' and 'genesymbol' columns
+# - KEGG: ❌ Does NOT contain compound class data
+#
+# Rendering Logic:
+# - Dropdown selection: Render chart for selected chemical class
+# - No auto-update (single trigger: dropdown value change)
+# - Top 50 compounds displayed for performance
+#
+# Orientation Details:
+# - Vertical (orientation: "v")
+# - X-axis: compound (categorical labels, rotated -45°)
+# - Y-axis: gene_count (numeric values)
+# - Sorted descending for better visual hierarchy
+# - Category order: "total descending" (ensures proper sorting)

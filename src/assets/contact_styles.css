@@ -1,0 +1,119 @@
+/* Contact Page Styles - BioRemPP v1.0 */
+
+/* Social Media Icons - Force styles */
+#contact-page a[href*="github.com"],
+#contact-page a[href*="linkedin.com"],
+#contact-page a[href*="instagram.com"],
+#contact-page a[href*="mailto:"] {
+    display: inline-block !important;
+    transition: all 0.3s ease !important;
+    text-decoration: none !important;
+}
+
+#contact-page a[href*="github.com"]:hover,
+#contact-page a[href*="linkedin.com"]:hover,
+#contact-page a[href*="instagram.com"]:hover,
+#contact-page a[href*="mailto:"]:hover {
+    opacity: 0.7 !important;
+    transform: translateY(-5px) !important;
+}
+
+/* Team Card Hover Effect */
+.team-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.team-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+/* Card Image Container - Responsive with aspect ratio */
+.team-photo-container {
+    position: relative;
+    width: 100%;
+    padding-bottom: 75%;
+    /* 4:3 aspect ratio */
+    overflow: hidden;
+    background-color: #f8f9fa;
+}
+
+.team-photo-container img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center top;
+    transition: transform 0.3s ease;
+}
+
+.team-card:hover .team-photo-container img {
+    transform: scale(1.05);
+}
+
+/* Contact Email Styling */
+.contact-email {
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: #28a745;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.contact-email:hover {
+    color: #1e7e34;
+    text-decoration: underline;
+}
+
+/* Lab Info Card */
+.lab-info-card {
+    border-left: 4px solid #28a745;
+}
+
+/* Badge Styling */
+.cnpq-badge {
+    background-color: #28a745;
+    color: white;
+    padding: 0.4rem 0.8rem;
+    border-radius: 0.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+
+    /* Mobile: adjust photo aspect ratio for better viewing */
+    .team-photo-container {
+        padding-bottom: 100%;
+        /* Square aspect ratio on mobile */
+    }
+
+    /* Mobile: smaller social media icons */
+    #contact-page a[href*="github.com"],
+    #contact-page a[href*="linkedin.com"],
+    #contact-page a[href*="instagram.com"],
+    #contact-page a[href*="mailto:"] {
+        font-size: 2.5rem !important;
+        margin: 0 0.75rem !important;
+    }
+}
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    /* Tablet: slightly smaller aspect ratio */
+    .team-photo-container {
+        padding-bottom: 85%;
+        /* Between 4:3 and square */
+    }
+}
+
+@media (min-width: 1025px) {
+
+    /* Desktop: maintain 4:3 aspect ratio */
+    .team-photo-container {
+        padding-bottom: 75%;
+    }
+}

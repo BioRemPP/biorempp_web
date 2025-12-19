@@ -1,0 +1,2111 @@
+﻿# ============================================================================
+# Analytical Workflows - BioRemPP Methods
+# ============================================================================
+# This file contains structured workflow descriptions for all 56 use cases.
+# Each workflow describes the step-by-step analytical methodology.
+#
+# Generated: 2025-12-06
+# Total Use Cases: 56
+# ============================================================================
+
+workflows:
+  # ==========================================================================
+  # MODULE 1: Comparative Assessment of Databases, Samples, and Regulatory Frameworks
+  # ==========================================================================
+  
+  uc-1-1:
+    use_case_id: "UC-1.1"
+    title: "Intersections across BioRemPP, HADEG, and KEGG"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading and Parsing"
+        description: |
+          The result tables for BioRemPP, HADEG, and KEGG are loaded into memory.
+      
+      - step_number: 2
+        name: "Identifier Standardization"
+        description: |
+          All KO identifiers are normalized (e.g., case and whitespace) to ensure accurate comparisons, 
+          and duplicate entries within each dataset are removed.
+      
+      - step_number: 3
+        name: "Set Construction and Computation"
+        description: |
+          A unique set of KO identifiers is constructed for each database. From these sets, the following are computed:
+          - The total number of unique KOs per database (set size).
+          - The size of all pairwise intersections (e.g., BioRemPP ∩ HADEG).
+          - The size of the triple intersection (BioRemPP ∩ HADEG ∩ KEGG).
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          An UpSet plot is generated to visualize the size of all possible intersections, typically ranked by cardinality.
+  
+  uc-1-2:
+    use_case_id: "UC-1.2"
+    title: "Overlap of Compounds Across Regulatory References"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Filtering and Cleaning"
+        description: |
+          The dataset is filtered to retain only complete entries containing both a non-empty `referenceAG` and `compoundname`. 
+          Compound names and agency identifiers are standardized (e.g., trimming whitespace, harmonizing case) to ensure consistent matching.
+      
+      - step_number: 3
+        name: "Set Construction"
+        description: |
+          The cleaned data is grouped by each unique `referenceAG`. For every agency, a **set of all unique compound names** 
+          associated with it is constructed. These sets represent the compounds monitored or referenced by each regulatory body.
+      
+      - step_number: 4
+        name: "Intersection Calculation and Rendering"
+        description: |
+          Using the per-agency compound sets, all relevant intersections (single, pairwise, and higher-order) are computed. 
+          An UpSet plot is then generated to visualize:
+          - the size of each individual set, and
+          - the size of all intersections, typically ranked by cardinality.
+  
+  uc-1-3:
+    use_case_id: "UC-1.3"
+    title: "Proportional Contribution of Regulatory References"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table produced by the BioRemPP analysis is loaded into memory.
+      
+      - step_number: 2
+        name: "Filtering"
+        description: |
+          The dataset is filtered to retain only records containing both a non-empty `referenceAG` and a valid `ko` identifier. 
+          This ensures that each retained row can be unambiguously assigned to a regulatory context and a functional annotation.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `referenceAG`. Within each group, the total number of **distinct KO identifiers** 
+          is computed. Each count represents the functional diversity (in terms of KO richness) associated with that agency.
+      
+      - step_number: 4
+        name: "Normalization and Rendering"
+        description: |
+          The per-agency counts of unique KOs are visualized as segments within a single bar using a 100% stacked bar chart. 
+          The `barnorm='percent'` setting normalizes these counts such that:
+          - the full bar corresponds to 100% of all unique KOs in the dataset, and
+          - each segment's length is proportional to the percentage contribution of that agency's KO diversity.
+  
+  uc-1-4:
+    use_case_id: "UC-1.4"
+    title: "Proportional Contribution of Samples Unique KO Pool"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading and Parsing"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded and parsed from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Filtering and Standardization"
+        description: |
+          The dataset is filtered to retain only records containing valid `sample` and `ko` identifiers. 
+          Both fields are standardized (e.g., trimming whitespace, harmonizing case) to ensure consistency and prevent spurious duplication.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `sample`. Within each group, the number of **distinct KO identifiers** is computed. 
+          This count represents the functional richness (KO diversity) of that sample.
+      
+      - step_number: 4
+        name: "Normalization and Rendering"
+        description: |
+          The per-sample counts of unique KOs are visualized as segments within a single bar using a 100% stacked bar chart. 
+          The counts are normalized so that:
+          - the full bar corresponds to 100% of all unique KOs found across all samples, and
+          - each segment's length is proportional to that sample's percentage contribution to the global unique KO pool.
+  
+  uc-1-5:
+    use_case_id: "UC-1.5"
+    title: "Regulatory Reference Compliance Scorecard"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Set Definition"
+        description: |
+          Two types of sets are constructed:
+          - **Agency Compound Sets:** For each unique `referenceAG`, a set is created containing all unique `compoundname` values it monitors.
+          - **Sample Compound Sets:** For each unique `sample`, a set is created containing all unique `compoundname` values with which it is predicted to interact.
+      
+      - step_number: 3
+        name: "Feature Engineering (Compliance Score)"
+        description: |
+          For every sample–agency pair, the **Compliance Score (%)** is computed as:
+          
+          `Compliance Score (%) = (shared_compounds / agency_compounds_total) * 100`
+      
+      - step_number: 4
+        name: "Matrix Construction"
+        description: |
+          The calculated scores are pivoted into a 2D matrix where:
+          - rows correspond to **Samples**,
+          - columns correspond to **Regulatory Agencies** (`referenceAG`), and
+          - each cell contains the Compliance Score (%) for that sample–agency pair.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The resulting matrix is rendered as an interactive heatmap in which color intensity is proportional to the Compliance Score. 
+          Optional value annotations (e.g., numeric labels) can be overlaid in each cell.
+  
+  uc-1-6:
+    use_case_id: "UC-1.6"
+    title: "Functional Potential of Samples Across Regulatory References"
+    module: 1
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table produced by the BioRemPP analysis is loaded into memory.
+      
+      - step_number: 2
+        name: "Filtering"
+        description: |
+          The dataset is filtered to retain only complete entries that contain valid values for `sample`, `referenceAG`, and `ko`. 
+          Rows with missing or invalid entries in any of these fields are discarded.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `(sample, referenceAG)` pair. Within each group, the number of **distinct KO identifiers** 
+          is computed. This count represents the functional potential associated with that specific sample–agency combination.
+      
+      - step_number: 4
+        name: "Matrix Construction"
+        description: |
+          The aggregated data is pivoted to construct a 2D matrix where:
+          - rows represent **Reference Agencies** (`referenceAG`),
+          - columns represent **Samples**, and
+          - each cell value corresponds to the **unique KO count** for that sample–agency pair.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The resulting matrix is rendered as an interactive heatmap, where color intensity is proportional to the KO count. 
+          A color bar indicates the quantitative scale of KO richness.
+
+  # ==========================================================================
+  # MODULE 2: Comparative Functional Profiling
+  # ==========================================================================
+  
+  uc-2-1:
+    use_case_id: "UC-2.1"
+    title: "Ranking of Sample Functional Richness Across Databases"
+    module: 2
+    steps:
+      - step_number: 1
+        name: "Database Selection"
+        description: |
+          The user selects one of the available data sources (e.g., "BioRemPP", "HADEG", or "KEGG") via an interactive dropdown menu.
+      
+      - step_number: 2
+        name: "Dynamic Data Loading"
+        description: |
+          Based on the selected database, the corresponding raw results table is loaded and parsed from its semicolon-delimited format.
+      
+      - step_number: 3
+        name: "Data Processing and Aggregation"
+        description: |
+          The loaded data is filtered to remove invalid or incomplete entries (e.g., missing `sample` or KO identifier). 
+          For the selected database, the script:
+          - identifies the appropriate KO column (`ko` or `Gene`), and
+          - calculates the number of **distinct KO identifiers** associated with each unique `sample`.
+      
+      - step_number: 4
+        name: "Rendering and Sorting"
+        description: |
+          The aggregated counts are visualized as a vertical bar chart:
+          - each bar represents a **Sample**,
+          - bar length shows the **unique KO count**, and
+          - bars are automatically sorted (typically ascending or descending) to create an intuitive ranking from lower to higher functional richness.
+  
+  uc-2-2:
+    use_case_id: "UC-2.2"
+    title: "Ranking of Samples by Chemical Diversity"
+    module: 2
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Filtering"
+        description: |
+          The dataset is filtered to retain only complete entries containing both a valid `sample` and a `compoundname`. 
+          Rows missing either field are discarded.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `sample`. Within each group, the number of **distinct compound names** 
+          is computed (e.g., using `nunique()`), yielding a per-sample measure of chemical diversity.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          The aggregated results are sorted (typically in descending order of unique compound count) and rendered as a bar chart:
+          - one axis represents **Samples**,
+          - the other axis represents the **count of unique compounds**, and
+          - bar length/height is proportional to the unique compound count for each sample.
+  
+  uc-2-3:
+    use_case_id: "UC-2.3"
+    title: "Ranking of Compound Richness by Sample per Chemical Class"
+    module: 2
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          The user selects a specific `compoundclass` from an interactive dropdown menu.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is filtered to retain only rows corresponding to the selected `compoundclass`. 
+          All downstream calculations are performed on this subset.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `compoundname`. Within each group, the number of **distinct samples** 
+          associated with that compound is computed (e.g., using `nunique()` on the `sample` column). 
+          This yields a per-compound measure of how broadly the compound is targeted across the sample set.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          The aggregated results (compound vs. unique sample count) are sorted in descending order and rendered as a bar chart:
+          - one axis lists **Compounds** within the selected class,
+          - the other axis represents the **count of unique samples** that interact with each compound, and
+          - bar height/length is proportional to the unique sample count.
+  
+  uc-2-4:
+    use_case_id: "UC-2.4"
+    title: "Ranking of Compounds Richness by Gene Count per Chemical Classes"
+    module: 2
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          The user selects a `compoundclass` from an interactive dropdown menu.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is filtered to retain only rows corresponding to the selected `compoundclass`. 
+          All further calculations are performed on this subset.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          The filtered data is grouped by each unique `compoundname`. Within each group, the number of **distinct gene symbols** 
+          is computed (e.g., using `nunique()` on the `genesymbol` column). 
+          This yields a per-compound measure of **genetic diversity** associated with its degradation or transformation.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          The aggregated results (compound vs. unique gene count) are sorted in descending order and rendered as a bar chart:
+          - one axis lists **Compounds** within the selected class,
+          - the other axis represents the **count of unique genes** associated with each compound, and
+          - bar height/length is proportional to the unique gene count.
+  
+  uc-2-5:
+    use_case_id: "UC-2.5"
+    title: "Descriptive Statistics of Samples Across Databases"
+    module: 2
+    steps:
+      - step_number: 1
+        name: "Database Selection"
+        description: |
+          The user selects a data source (e.g., "BioRemPP") from an interactive dropdown menu.
+      
+      - step_number: 2
+        name: "Dynamic Data Loading"
+        description: |
+          The corresponding raw results table for the selected database is loaded and parsed from its semicolon-delimited format.
+      
+      - step_number: 3
+        name: "Column Resolution"
+        description: |
+          The script automatically identifies the correct columns for `sample` and the KO identifier, 
+          treating both `ko` and `Gene` as valid KO columns.
+      
+      - step_number: 4
+        name: "Data Processing and Aggregation"
+        description: |
+          The data is filtered to remove invalid entries (e.g., missing `sample` or KO identifier). 
+          For the selected database, the script computes, for each unique `sample`, the number of **distinct KO identifiers**, 
+          yielding a per-sample `unique_ko_count`.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The visualization is constructed using the per-sample `unique_ko_count` values:
+          - A **box plot** is rendered to summarize the distribution (median and quartiles, with potential whiskers and outliers).
+          - A **jittered scatter plot** is overlaid, where each point represents one sample; the vertical position encodes its `unique_ko_count`, 
+            and the horizontal position is slightly jittered to reduce overlap and improve readability.
+
+  # ==========================================================================
+  # MODULE 3: System Structure - Clustering, Similarity, and Co-occurrence
+  # ==========================================================================
+  
+  uc-3-1:
+    use_case_id: "UC-3.1"
+    title: "Principal Component Analysis of Samples by Functional Profile"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique KOs**, and
+          - each cell is set to `1` if the sample possesses that KO and `0` otherwise.
+          This step converts categorical functional data into a numerical matrix suitable for PCA.
+      
+      - step_number: 3
+        name: "Data Scaling"
+        description: |
+          The binary matrix is standardized using a `StandardScaler` (mean-centering and scaling to unit variance). 
+          This ensures that all KO features contribute comparably to the PCA, regardless of their overall frequency.
+      
+      - step_number: 4
+        name: "PCA Computation"
+        description: |
+          PCA is performed on the scaled matrix to reduce dimensionality. The first two principal components (PC1 and PC2), 
+          which explain the largest fractions of variance in the KO space, are retained for visualization.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The samples are plotted as a scatter plot in the PC1–PC2 plane:
+          - each point represents a **Sample**, and
+          - its coordinates correspond to the sample's scores on PC1 (X-axis) and PC2 (Y-axis).
+  
+  uc-3-2:
+    use_case_id: "UC-3.2"
+    title: "Principal Component Analysis of Samples by Chemical Profile"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique compounds (`cpd`)**, and
+          - each cell is set to `1` if the sample is associated with that compound and `0` otherwise.
+          This converts the categorical compound interaction data into a numerical format suitable for PCA.
+      
+      - step_number: 3
+        name: "Data Scaling"
+        description: |
+          The binary matrix is standardized using a `StandardScaler` (mean-centering and scaling to unit variance). 
+          This ensures that all compound features contribute comparably to the PCA, regardless of overall frequency.
+      
+      - step_number: 4
+        name: "PCA Computation"
+        description: |
+          PCA is applied to the scaled matrix to reduce dimensionality. The first two principal components (PC1 and PC2), 
+          which explain the largest fractions of variance in the compound interaction space, are retained for visualization.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The samples are plotted as a scatter plot in the PC1–PC2 plane:
+          - each point represents a **Sample**, and
+          - its coordinates correspond to the sample's scores on PC1 (X-axis) and PC2 (Y-axis).
+  
+  uc-3-3:
+    use_case_id: "UC-3.3"
+    title: "Hierarchical Clustering of Samples by Functional Profile"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique KOs**, and
+          - each cell is set to `1` if the sample possesses the KO and `0` otherwise.
+          This matrix serves as the basis for all distance calculations.
+      
+      - step_number: 3
+        name: "Interactive Parameter Selection"
+        description: |
+          The user selects two key parameters via dropdown menus:
+          - **Distance Metric** – the function used to quantify dissimilarity between sample profiles (e.g., `jaccard`, `euclidean`).
+          - **Clustering Method** – the linkage algorithm used to iteratively merge clusters (e.g., `average`, `ward`).
+      
+      - step_number: 4
+        name: "Hierarchical Clustering"
+        description: |
+          Using the selected distance metric and clustering method:
+          - a pairwise distance matrix between samples is computed, and
+          - a **linkage matrix** is generated, encoding the steps by which samples and clusters are successively merged into a hierarchical tree.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The linkage matrix is rendered as an interactive **dendrogram**:
+          - samples appear as leaves,
+          - branches represent cluster merges, and
+          - branch lengths reflect the chosen distance metric.
+  
+  uc-3-4:
+    use_case_id: "UC-3.4"
+    title: "Sample Similarity (Based on KO Profiles)"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique KOs**, and
+          - each cell is `1` if the sample possesses the KO and `0` otherwise.
+      
+      - step_number: 3
+        name: "Correlation Calculation"
+        description: |
+          A **pairwise similarity matrix** is computed by correlating the presence/absence vectors (rows) for every pair of samples. Typically:
+          - the **Pearson correlation coefficient** is calculated between each pair of sample vectors,
+          - this yields a square matrix where each cell `(i, j)` represents the similarity score between Sample *i* and Sample *j* based on their KO profiles.
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The resulting sample-by-sample correlation matrix is rendered as a **heatmap (correlogram)**:
+          - both axes list the same set of samples,
+          - cell colors encode correlation values, and
+          - a color bar indicates the numerical range of correlation coefficients.
+  
+  uc-3-5:
+    use_case_id: "UC-3.5"
+    title: "Sample Similarity (Based on Chemical Profiles)"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique compound names**, and
+          - each cell is `1` if the sample is associated with that compound and `0` otherwise.
+      
+      - step_number: 3
+        name: "Correlation Calculation"
+        description: |
+          A **pairwise similarity matrix** is computed by correlating the compound presence/absence vectors (rows) for every pair of samples. Typically:
+          - the **Pearson correlation coefficient** is calculated between each pair of sample vectors,
+          - this yields a square matrix where each cell `(i, j)` represents the similarity score between Sample *i* and Sample *j* based on their compound profiles.
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The resulting sample-by-sample correlation matrix is rendered as a **heatmap (correlogram)**:
+          - both axes list the same set of samples,
+          - cell colors encode correlation values, and
+          - a color bar indicates the numerical range of correlation coefficients.
+  
+  uc-3-6:
+    use_case_id: "UC-3.6"
+    title: "Gene Co-occurrence Across Samples"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique gene symbols**, and
+          - each cell is `1` if the gene is present in that sample and `0` otherwise.
+      
+      - step_number: 3
+        name: "Correlation Calculation"
+        description: |
+          A **gene-by-gene similarity matrix** is computed by correlating the presence/absence vectors for each pair of genes (columns). Typically:
+          - the **Pearson correlation coefficient** is calculated between each pair of gene columns,
+          - the resulting value quantifies the tendency of two genes to be present (or absent) together across the set of samples.
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The resulting gene-by-gene correlation matrix is rendered as a **heatmap (correlogram)**:
+          - both axes list the same set of gene symbols,
+          - cell colors encode correlation values, and
+          - a color bar indicates the numerical range of correlation coefficients.
+  
+  uc-3-7:
+    use_case_id: "UC-3.7"
+    title: "Compound Co-occurrence Across Samples"
+    module: 3
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded into memory.
+      
+      - step_number: 2
+        name: "Matrix Construction"
+        description: |
+          A **binary presence/absence matrix** is constructed where:
+          - rows correspond to **Samples**,
+          - columns correspond to **unique compound names**, and
+          - each cell is `1` if the compound is associated with that sample and `0` otherwise.
+      
+      - step_number: 3
+        name: "Correlation Calculation"
+        description: |
+          A **compound-by-compound similarity matrix** is computed by correlating the presence/absence vectors for each pair of compounds (columns). Typically:
+          - the **Pearson correlation coefficient** is calculated between each pair of compound columns,
+          - the resulting value quantifies the tendency of two compounds to be present (or absent) together across the set of samples.
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The resulting compound-by-compound correlation matrix is rendered as a **heatmap (correlogram)**:
+          - both axes list the same set of compounds,
+          - cell colors encode correlation values, and
+          - a color bar indicates the numerical range of correlation coefficients.
+
+  # ==========================================================================
+  # MODULE 4: Functional and Genetic Profiling (Part 1 - UC 4.1 to 4.7)
+  # ==========================================================================
+  
+  uc-4-1:
+    use_case_id: "UC-4.1"
+    title: "Functional Profiling of Samples by Metabolic Pathway"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Sample Selection (User Input)"
+        description: |
+          The user selects a **single sample** from an interactive dropdown menu.
+          - All subsequent steps are restricted to this selected `sample`.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          The KEGG results table `KEGG_Results.txt` is loaded and filtered to retain only rows where:
+          - `sample` equals the selected sample, and
+          - `pathname` and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Aggregation of Pathway-Level KO Richness"
+        description: |
+          - The filtered data is grouped by `pathname`.
+          - For each pathway, the **number of distinct KO identifiers** is computed (e.g., via `nunique()` on `ko`).
+          - This unique KO count is used as a proxy for the **functional richness** or complexity of that pathway in the selected sample.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          - The resulting `(pathname, unique_ko_count)` pairs are sorted (typically from lowest to highest or vice versa) to produce an intuitive ranking.
+          - The aggregated data is rendered as a **horizontal bar chart**, with:
+            - one bar per KEGG pathway,
+            - bar length proportional to the unique KO count.
+  
+  uc-4-2:
+    use_case_id: "UC-4.2"
+    title: "Ranking of Samples by Pathway Richness"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Pathway Selection (User Input)"
+        description: |
+          The user selects a **metabolic pathway** from an interactive dropdown menu.
+          - Internally, this corresponds to choosing one `pathname` value.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The KEGG results table `KEGG_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows where:
+            - `pathname` equals the selected pathway, and
+            - `sample` and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Aggregation of KO Richness per Sample"
+        description: |
+          - The filtered data is grouped by `sample`.
+          - For each sample, the **number of distinct KO identifiers** is computed (e.g., via `nunique()` on `ko`).
+          - This count represents the **pathway-specific KO richness** of that sample.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          - The resulting `(sample, unique_ko_count)` pairs are sorted in **descending** order of KO count.
+          - The aggregated data is rendered as a **vertical bar chart**, where:
+            - the x-axis lists samples, and
+            - the y-axis encodes the unique KO count.
+          
+          Optionally, numeric labels can be added on top of each bar to show the exact KO count.
+  
+  uc-4-3:
+    use_case_id: "UC-4.3"
+    title: "Functional Fingerprint of Pathway by Samples"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Pathway Selection (User Input)"
+        description: |
+          The user selects a **metabolic pathway** from an interactive dropdown menu.
+          - This selection corresponds internally to a specific `pathname` value.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The KEGG results table `KEGG_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows where:
+            - `pathname` matches the selected pathway, and
+            - `sample` and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Aggregation of KO Richness per Sample"
+        description: |
+          - The filtered data is grouped by `sample`.
+          - For each sample, the **number of distinct KO identifiers** is computed (e.g., via `nunique()` on `ko`).
+          - This yields a vector of `(sample, unique_ko_count)` values describing pathway-specific KO richness for each sample.
+      
+      - step_number: 4
+        name: "Rendering as Radar (Polar) Plot"
+        description: |
+          - Each sample is mapped to an angular coordinate (θ) around the circle.
+          - The corresponding **radius (r)** for each sample is the unique KO count.
+          - A closed polygon is drawn by connecting the points in order, optionally with markers at each vertex:
+            - axes: samples,
+            - radius: pathway-specific KO richness.
+  
+  uc-4-4:
+    use_case_id: "UC-4.4"
+    title: "Functional Fingerprint of Samples by Pathway"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Sample Selection (User Input)"
+        description: |
+          The user selects a **single sample** from an interactive dropdown menu.
+          - All subsequent filtering and aggregation are restricted to this selected `sample`.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The KEGG results table `KEGG_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows where:
+            - `sample` equals the selected sample, and
+            - both `pathname` and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Aggregation of Pathway-Level KO Richness"
+        description: |
+          - The filtered data is grouped by `pathname`.
+          - For each pathway, the **number of distinct KO identifiers** is computed (e.g., via `nunique()` on `ko`).
+          - This produces a set of `(pathname, unique_ko_count)` pairs representing the **pathway-level KO richness** for that sample.
+      
+      - step_number: 4
+        name: "Rendering as Radar (Polar) Plot"
+        description: |
+          - Each `pathname` is mapped to an angular coordinate (θ) around the circle.
+          - The corresponding **radius (r)** is the unique KO count for that pathway.
+          - A closed polygon is drawn by connecting these points, optionally with markers at each vertex:
+            - axes: metabolic pathways,
+            - radius: KO richness for the selected sample in each pathway.
+  
+  uc-4-5:
+    use_case_id: "UC-4.5"
+    title: "Gene Presence Map by Metabolic Pathway"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Pathway Selection (User Input)"
+        description: |
+          The user selects a **metabolic pathway** (`pathname`) from an interactive dropdown menu.
+          - All subsequent computations are restricted to this selected pathway.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The KEGG results table `KEGG_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows where:
+            - `pathname` equals the selected pathway, and
+            - `sample`, `genesymbol`, and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Extraction of Sample–Gene Pairs"
+        description: |
+          - From the filtered data, the script derives the set of **unique (`sample`, `genesymbol`) pairs**, representing **presence** of that gene in that sample for the selected pathway.
+          - Optionally, for each pair, a **summary count of distinct KOs** can be calculated to enrich hover information.
+      
+      - step_number: 4
+        name: "Rendering as Gene Presence Map"
+        description: |
+          - A dot (scatter) matrix is constructed where:
+            - the **X-axis** lists samples,
+            - the **Y-axis** lists gene symbols associated with the pathway,
+            - each **point** indicates that the corresponding sample encodes that gene in the context of the selected pathway.
+          - Points may carry additional hover metadata (e.g., number of distinct KOs per sample–gene pair).
+  
+  uc-4-6:
+    use_case_id: "UC-4.6"
+    title: "Functional Potential by Chemical Compound"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Compound Class Selection (User Input)"
+        description: |
+          The user selects a **chemical class** (`compoundclass`) from an interactive dropdown menu.
+          - All subsequent filtering and aggregation are restricted to compounds belonging to this class.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The results table `BioRemPP_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows where:
+            - `compoundclass` equals the selected class, and
+            - `sample`, `compoundname`, and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Aggregation of Functional Potential"
+        description: |
+          - The filtered data is grouped by `(sample, compoundname)`.
+          - For each `(sample, compoundname)` pair, the **number of distinct KO identifiers** is computed (e.g., `nunique()` on `ko`).
+          - This yields a table where each row encodes:
+            - `sample`,
+            - `compoundname`,
+            - `unique_ko_count` (the functional potential metric).
+      
+      - step_number: 4
+        name: "Rendering as Sample–Compound Scatter Map"
+        description: |
+          - The aggregated table is rendered as a **scatter (dot) plot** where:
+            - **X-axis:** `sample`,
+            - **Y-axis:** `compoundname`,
+            - **Marker size and color:** proportional to `unique_ko_count`.
+          - A continuous color bar provides a quantitative legend for the KO-based functional potential.
+  
+  uc-4-7:
+    use_case_id: "UC-4.7"
+    title: "Gene–Compound Association Explorer"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          - The results table `BioRemPP_Results.txt` is loaded from a semicolon-delimited text file.
+          - Only rows with non-missing `compoundname`, `genesymbol`, and `sample` are retained.
+      
+      - step_number: 2
+        name: "Widget Initialization (Query Controls)"
+        description: |
+          - Two interactive dropdown menus are created and populated with:
+            - all unique `compoundname` values, and
+            - all unique `genesymbol` values.
+          - Both menus support:
+            - **no selection** (returns all values along that dimension), and
+            - selection of a **single compound** and/or a **single gene**.
+      
+      - step_number: 3
+        name: "Conditional Data Filtering"
+        description: |
+          Based on the user's choices, the table is filtered as follows:
+          - **Compound-only selection:** If only `compoundname` is selected, the data is filtered to all rows matching that compound, across all genes and samples.
+          - **Gene-only selection:** If only `genesymbol` is selected, the data is filtered to all rows matching that gene, across all compounds and samples.
+          - **Compound + gene selection:** If both are selected, the data is filtered to rows matching that exact `(compoundname, genesymbol)` pair.
+      
+      - step_number: 4
+        name: "Association Extraction and Rendering"
+        description: |
+          - From the filtered table, unique combinations of:
+            - `compoundname`,
+            - `genesymbol`,
+            - associated `sample` (and optionally `ko`),
+            are extracted.
+          - A scatter-like matrix is rendered:
+            - **X-axis:** `genesymbol`,
+            - **Y-axis:** `compoundname`,
+            - each point representing at least one observed association between that gene and compound.
+  
+  uc-4-8:
+    use_case_id: "UC-4.8"
+    title: "Gene Inventory Explorer"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          - The BioRemPP results table `BioRemPP_Results.txt` is loaded from a semicolon-delimited file.
+          - Rows with missing `sample` or `genesymbol` are discarded to ensure valid associations.
+      
+      - step_number: 2
+        name: "Widget Initialization (Query Controls)"
+        description: |
+          - Two interactive dropdown menus are constructed and populated with:
+            - all unique `sample` identifiers, and
+            - all unique `genesymbol` values.
+          - Each dropdown supports:
+            - **no selection** (no filter on that dimension), and
+            - selection of a **single sample** or **single gene**.
+      
+      - step_number: 3
+        name: "Conditional Data Filtering"
+        description: |
+          Depending on the user's choices, the dataset is filtered as follows:
+          - **Sample-only selection:** If only a `sample` is selected, the table is filtered to rows matching that sample, returning all genes present in that sample.
+          - **Gene-only selection:** If only a `genesymbol` is selected, the table is filtered to rows matching that gene, returning all samples that carry it.
+          - **Sample + gene selection:** If both a `sample` and a `genesymbol` are selected, the table is filtered to the rows matching that exact pair. This confirms the presence of the gene in that sample and retrieves associated `compoundname` and `ko` information.
+          - **No selection:** If neither filter is set, the full sample–gene association space is visualized (optionally restricted for performance, depending on implementation).
+      
+      - step_number: 4
+        name: "Association Extraction and Rendering"
+        description: |
+          - From the filtered table, unique `(sample, genesymbol)` pairs are extracted, with their associated `compoundname` and `ko` carried as hover metadata.
+          - A scatter-like matrix is rendered where:
+            - **Y-axis:** `sample`,
+            - **X-axis:** `genesymbol`,
+            - each point marks the presence of that gene in that sample.
+  
+  uc-4-9:
+    use_case_id: "UC-4.9"
+    title: "Profiling of Sample Enzymatic Activity"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          - The user selects a **sample** from the interactive dropdown menu.
+          - This choice defines the focal organism or consortium for profiling.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - The `BioRemPP_Results.txt` table is filtered to retain only rows matching the selected `sample`.
+          - Rows with missing `enzyme_activity` or `genesymbol` are discarded to ensure valid associations.
+      
+      - step_number: 3
+        name: "Aggregation"
+        description: |
+          - The filtered data is grouped by `enzyme_activity`.
+          - For each enzymatic activity, the number of **distinct gene symbols** is computed (e.g., using `nunique()` on `genesymbol`).
+          - The result is a summary table:
+            - one row per `enzyme_activity`,
+            - one value: `unique_gene_count`.
+      
+      - step_number: 4
+        name: "Sorting and Rendering"
+        description: |
+          - Enzymatic activities are sorted in **descending order** of `unique_gene_count`.
+          - A bar chart is rendered:
+            - **X-axis:** `enzyme_activity`,
+            - **Y-axis:** `unique_gene_count`,
+            - bars labelled with their exact counts for clarity.
+  
+  uc-4-10:
+    use_case_id: "UC-4.10"
+    title: "Diversity of Enzymatic Activities Across Samples"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          - Import the `BioRemPP_Results.txt` table (semicolon-delimited) into the analysis environment.
+          - Ensure consistent column types for `sample`, `enzyme_activity`, and `genesymbol`.
+      
+      - step_number: 2
+        name: "Data Cleaning"
+        description: |
+          - Filter out rows where:
+            - `enzyme_activity` is invalid (e.g., `#N/D`) or missing, or
+            - `sample` or `genesymbol` is missing.
+          - Optionally standardize string fields (trim whitespace, harmonize case).
+      
+      - step_number: 3
+        name: "Aggregation of Genetic Diversity"
+        description: |
+          - Group the cleaned data by `(sample, enzyme_activity)`.
+          - For each pair, compute the number of **distinct gene symbols**:
+            - `unique_gene_count = nunique(genesymbol)`
+          - This yields a summary table with:
+            - `sample`, `enzyme_activity`, `unique_gene_count`.
+      
+      - step_number: 4
+        name: "Rendering the Bubble Chart"
+        description: |
+          - Map the summary table to a 2D scatter/bubble plot:
+            - **X-axis:** `enzyme_activity`,
+            - **Y-axis:** `sample`,
+            - **Bubble size & color:** `unique_gene_count`.
+          - Add a color bar to show the quantitative scale of gene diversity.
+  
+  uc-4-11:
+    use_case_id: "UC-4.11"
+    title: "Hierarchical View of Genetic Diversity in HADEG Pathways"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          - Import `HADEG_Results.txt` as a semicolon-delimited table.
+          - Ensure that `compound_pathway`, `Pathway`, and `Gene` are correctly parsed as categorical/string fields.
+      
+      - step_number: 2
+        name: "Aggregation of Genetic Diversity"
+        description: |
+          - Group the data by `(compound_pathway, Pathway)`.
+          - For each pair, compute the number of **distinct genes**:
+            - `unique_gene_count = nunique(Gene)`
+          - This yields a summary table with:
+            - `compound_pathway`, `Pathway`, `unique_gene_count`.
+      
+      - step_number: 3
+        name: "Hierarchy Construction"
+        description: |
+          - Add a synthetic root node (e.g., `"All Pathways"`) to serve as the center of the sunburst.
+          - Define the hierarchical path as:
+            - `["All Pathways" → compound_pathway → Pathway]`
+          - Associate `unique_gene_count` as the **value** used to size slices.
+      
+      - step_number: 4
+        name: "Rendering the Sunburst"
+        description: |
+          - Render a sunburst chart where:
+            - the **center** is `"All Pathways"`,
+            - the **first ring** corresponds to `compound_pathway`,
+            - the **second ring** corresponds to specific `Pathway` entries,
+            - the **slice size** and **color** encode `unique_gene_count`.
+  
+  uc-4-12:
+    use_case_id: "UC-4.12"
+    title: "Pathway Functional Map by Sample"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          - The user selects a target `sample` from an interactive dropdown menu.
+          - All subsequent steps are recomputed dynamically for this selected sample.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - Filter `HADEG_Results.txt` to retain only rows where:
+            - `sample == selected_sample`.
+          - Ensure that `Pathway`, `compound_pathway`, and `ko` are present and valid.
+      
+      - step_number: 3
+        name: "Aggregation of Functional Richness"
+        description: |
+          - Group the filtered data by `(Pathway, compound_pathway)`.
+          - For each pair, compute:
+            - `unique_ko_count = nunique(ko)`
+          - This yields a table summarizing the **KO diversity** for each Pathway within each compound class, for the selected sample.
+      
+      - step_number: 4
+        name: "Matrix Construction"
+        description: |
+          - Pivot the aggregated table into a 2D matrix:
+            - **Rows:** `Pathway`,
+            - **Columns:** `compound_pathway`,
+            - **Values:** `unique_ko_count` (fill missing combinations with 0).
+      
+      - step_number: 5
+        name: "Rendering the Heatmap"
+        description: |
+          - Render the matrix as an interactive heatmap where:
+            - each cell's **color intensity** encodes the KO count,
+            - optional annotations can display the numeric values,
+            - tooltips can expose the exact `(Pathway, compound_pathway, KO count)` triplet.
+  
+  uc-4-13:
+    use_case_id: "UC-4.13"
+    title: "Genetic Profile by Compound Class"
+    module: 4
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          - The user selects a target `compound_pathway` (e.g., *Alkanes*, *Aromatics*) from an interactive dropdown menu.
+          - All downstream computations are scoped to this selected compound class.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          - Filter `HADEG_Results.txt` to retain only rows where:
+            - `compound_pathway == selected_compound_pathway`.
+          - Ensure `sample`, `Gene`, and `ko` are valid (non-missing, non-placeholder).
+      
+      - step_number: 3
+        name: "Aggregation and Functional Richness Calculation"
+        description: |
+          - Group the filtered data by `(Gene, sample)`.
+          - For each pair, compute:
+            - `unique_ko_count = nunique(ko)`
+          - This yields a table summarizing, for the chosen compound_pathway, the **KO diversity** associated with each gene in each sample.
+      
+      - step_number: 4
+        name: "Matrix Construction"
+        description: |
+          - Pivot the aggregated table into a 2D matrix:
+            - **Rows:** `Gene`,
+            - **Columns:** `sample`,
+            - **Values:** `unique_ko_count` (fill missing combinations with 0).
+      
+      - step_number: 5
+        name: "Rendering the Heatmap"
+        description: |
+          - Render the matrix as an interactive heatmap where:
+            - each cell's **color intensity** encodes the KO count for that gene–sample pair,
+            - optional annotations can display the numeric KO counts,
+            - hover tooltips expose `Gene`, `sample`, and `unique_ko_count`.
+
+  # ==========================================================================
+  # MODULE 5: Network Analysis and Interaction Mapping
+  # ==========================================================================
+  
+  uc-5-1:
+    use_case_id: "UC-5.1"
+    title: "Sample-Compound Class Interaction"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Filtering"
+        description: |
+          The dataset is filtered to retain only complete entries containing both a valid `sample` and a `compoundclass`. 
+          Rows with missing values in either field are removed.
+      
+      - step_number: 3
+        name: "Aggregation (Interaction Strength)"
+        description: |
+          The filtered data is grouped by each unique `(sample, compoundclass)` pair.
+          - For each pair, the total number of **co-occurrences** (rows) is counted.
+          - This count serves as the **interaction strength** between that sample and that compound class.
+      
+      - step_number: 4
+        name: "Chord Matrix Construction"
+        description: |
+          The aggregated counts are arranged into a matrix or edge list suitable for chord diagram rendering, where:
+          - each **sample** is treated as a source node,
+          - each **compound class** is treated as a target node, and
+          - the edge weight is the interaction count.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          A **chord diagram** is generated:
+          - arcs on the circumference represent samples and compound classes,
+          - ribbons (chords) connect each sample to the classes with which it interacts,
+          - chord thickness encodes interaction strength.
+  
+  uc-5-2:
+    use_case_id: "UC-5.2"
+    title: "Sample Similarity (Based on Chemical Profiles)"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Feature Engineering and Mapping"
+        description: |
+          For each unique `sample`, a **compound set** is constructed:
+          - all unique `compoundname` entries associated with that sample are collected into a set,
+          - this set represents the sample's **chemical interaction profile**.
+      
+      - step_number: 3
+        name: "Similarity Calculation"
+        description: |
+          All unique pairs of samples are considered. For each pair:
+          - the intersection of their compound sets is computed,
+          - the **similarity score** is defined as the **count of shared unique compound names** in this intersection.
+      
+      - step_number: 4
+        name: "Link Construction"
+        description: |
+          A table of sample–sample links is built where:
+          - **source** = sample A,
+          - **target** = sample B,
+          - **value** = similarity score (number of shared compounds).
+          Only pairs with a non-zero similarity may be retained for visualization to reduce clutter.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The similarity data is rendered as a **chord diagram**:
+          - each sample is represented as an arc on the circle,
+          - chords (ribbons) connect pairs of samples,
+          - chord thickness encodes the similarity score (shared compound count).
+  
+  uc-5-3:
+    use_case_id: "UC-5.3"
+    title: "Regulatory Relevance of Samples"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Filtering"
+        description: |
+          The dataset is filtered to retain only rows containing valid entries for both `sample` and `referenceAG`. 
+          Incomplete records are discarded.
+      
+      - step_number: 3
+        name: "Aggregation (Interaction Strength)"
+        description: |
+          The filtered data is grouped by unique `(sample, referenceAG)` pairs:
+          - for each pair, the total number of **co-occurrence records** (rows) is counted,
+          - this count provides a measure of **interaction strength** between the sample and the agency's monitored chemical space.
+      
+      - step_number: 4
+        name: "Chord Matrix / Edge List Construction"
+        description: |
+          The aggregated counts are arranged into a matrix or edge list suitable for chord diagram rendering, where:
+          - each **sample** is treated as one set of nodes,
+          - each **regulatory agency (`referenceAG`)** is treated as the other set,
+          - the edge weight between them is the interaction count.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          A **chord diagram** is generated:
+          - arcs on the circumference represent both samples and regulatory agencies,
+          - ribbons (chords) connect each sample to the agencies with which it is associated,
+          - chord thickness encodes interaction strength.
+  
+  uc-5-4:
+    use_case_id: "UC-5.4"
+    title: "Gene–Compound Interaction Network"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Graph Construction (Bipartite Network)"
+        description: |
+          A bipartite graph is built using a network library (e.g., `networkx`):
+          - each unique `genesymbol` is added as a **gene node** (type = `"gene"`),
+          - each unique `compoundname` is added as a **compound node** (type = `"compound"`),
+          - for every row in the table, an **undirected edge** is added between the corresponding gene and compound, representing an observed interaction.
+      
+      - step_number: 3
+        name: "Layout Calculation"
+        description: |
+          A **force-directed layout algorithm** (e.g., `spring_layout`) is applied to compute 2D coordinates for each node:
+          - highly connected nodes tend to be placed toward the center,
+          - sparsely connected nodes tend to be pushed toward the periphery,
+          - clusters of nodes naturally emerge from the optimization of edge lengths and repulsive forces.
+      
+      - step_number: 4
+        name: "Computation of Node Properties"
+        description: |
+          For each node, the **degree** (number of incident edges) is calculated:
+          - this serves as a simple hubness metric,
+          - it is later displayed as part of the hover information.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The network is rendered using an interactive plotting library (e.g., `plotly`):
+          - nodes are plotted at their layout coordinates,
+          - edges are drawn as straight segments between node positions,
+          - genes and compounds receive distinct, solid colors and uniform node sizes,
+          - hover tooltips expose node identity and degree (e.g., `"Gene: gstA" — Interactions: 15`).
+  
+  uc-5-5:
+    use_case_id: "UC-5.5"
+    title: "Gene–Gene Interaction Network (Based on Shared Compounds)"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Gene-to-Compound Mapping"
+        description: |
+          For each unique `genesymbol`, a **compound set** is constructed:
+          - all unique `compoundname` entries associated with that gene are collected into a set,
+          - this set represents the **chemical interaction profile** of that gene.
+      
+      - step_number: 3
+        name: "Graph Construction (Gene–Gene Network)"
+        description: |
+          A network graph is built where:
+          - each unique **gene** is added as a **node**,
+          - all unique pairs of genes are evaluated; for each pair:
+            - the intersection of their compound sets is computed,
+            - if the intersection is non-empty, an **edge** is added between the two genes,
+            - the **edge weight** is set to the number of shared unique compounds.
+      
+      - step_number: 4
+        name: "Layout and Styling"
+        description: |
+          A **force-directed layout** is used to compute node positions:
+          - genes with many strong connections tend to be drawn closer to one another, forming clusters,
+          - sparsely connected genes are placed closer to the periphery.
+          Node attributes are then computed:
+          - **degree** (number of connected gene neighbors) is calculated for each node,
+          - this degree is mapped to node color to highlight highly connected genes.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The network is rendered as an interactive plot:
+          - nodes represent individual genes,
+          - edges represent gene–gene links based on shared compounds,
+          - **edge thickness** is proportional to edge weight (number of shared compounds),
+          - **node color** is proportional to degree (number of gene neighbors), with a color bar indicating the scale.
+  
+  uc-5-6:
+    use_case_id: "UC-5.6"
+    title: "Compound–Compound Interaction Network (Based on Shared Genes)"
+    module: 5
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Compound-to-Gene Mapping"
+        description: |
+          For each unique `compoundname`, a **gene set** is constructed:
+          - all unique `genesymbol` entries associated with that compound are collected into a set,
+          - this set represents the **enzymatic interaction profile** of that compound.
+      
+      - step_number: 3
+        name: "Graph Construction (Compound–Compound Network)"
+        description: |
+          A network graph is built where:
+          - each unique **compound** is added as a **node**,
+          - all unique pairs of compounds are evaluated; for each pair:
+            - the intersection of their gene sets is computed,
+            - if the intersection is non-empty, an **edge** is added between the two compounds,
+            - the **edge weight** is set to the number of shared unique genes.
+      
+      - step_number: 4
+        name: "Layout and Styling"
+        description: |
+          A **force-directed layout** is used to compute node positions:
+          - compounds with many strong connections tend to cluster toward the center,
+          - sparsely connected compounds are positioned closer to the periphery.
+          Node attributes are then computed:
+          - **degree** (number of connected compound neighbors) is calculated for each node, this degree is mapped to node color to highlight highly connected compounds.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The network is rendered as an interactive plot:
+          - nodes represent individual compounds,
+          - edges represent compound–compound links based on shared genes,
+          - **edge thickness** is proportional to edge weight (number of shared genes),
+          - **node color** is proportional to degree (number of compound neighbors), with a color bar indicating the scale.
+
+   # ==========================================================================
+  # MODULE 6: Hierarchical and Flow Visualizations
+  # ==========================================================================
+  
+  uc-6-1:
+    use_case_id: "UC-6.1"
+    title: "Regulatory-to-Molecular Interaction Flow"
+    module: 6
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Path Definition"
+        description: |
+          A four-stage path is defined for each row using:
+          - `referenceAG` â†’ `sample` â†’ `genesymbol` â†’ `compoundname`.
+          Each complete combination represents a single **regulatory-to-molecular interaction path**.
+      
+      - step_number: 3
+        name: "Aggregation of Flows"
+        description: |
+          The data is grouped by each **unique four-step path**:
+          - for every unique `(referenceAG, sample, genesymbol, compoundname)` combination,
+          - the number of occurrences is counted.
+          This **count** becomes the **flow value** that determines ribbon thickness.
+      
+      - step_number: 4
+        name: "Link Construction for Sankey / Alluvial Diagram"
+        description: |
+          The aggregated paths are transformed into a set of linked pairs suitable for a Sankey diagram:
+          - **Stage 1 â†’ Stage 2:** `referenceAG` â†’ `sample`
+          - **Stage 2 â†’ Stage 3:** `sample` â†’ `genesymbol`
+          - **Stage 3 â†’ Stage 4:** `genesymbol` â†’ `compoundname`
+          Node indices and link values are encoded in the format required by the plotting library.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The data is rendered as an **interactive alluvial (Sankey) diagram**:
+          - vertical columns represent the four stages,
+          - nodes within each column represent unique entities at that stage,
+          - ribbons between columns represent aggregated flows weighted by their counts.
+  
+  uc-6-2:
+    use_case_id: "UC-6.2"
+    title: "Biological Interaction Flow"
+    module: 6
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Path Definition"
+        description: |
+          A three-stage path is defined for each row using:
+          - `sample` â†’ `compoundclass` â†’ `enzyme_activity`.
+          Each complete combination represents a **biological interaction flow** from a given sample, through a chemical class, to a specific enzymatic function.
+      
+      - step_number: 3
+        name: "Aggregation of Flows"
+        description: |
+          The data is grouped by each unique three-step path:
+          - for every unique `(sample, compoundclass, enzyme_activity)` combination,
+          - the number of occurrences is counted.
+          This **count** becomes the **flow value** that determines ribbon thickness.
+      
+      - step_number: 4
+        name: "Link Construction for Sankey / Alluvial Diagram"
+        description: |
+          The aggregated paths are transformed into a set of linked pairs suitable for a Sankey diagram:
+          - **Stage 1 â†’ Stage 2:** `sample` â†’ `compoundclass`
+          - **Stage 2 â†’ Stage 3:** `compoundclass` â†’ `enzyme_activity`
+          Node indices and link values are encoded in the input format required by the plotting library.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The data is rendered as an **interactive alluvial (Sankey) diagram**:
+          - three vertical columns represent the stages,
+          - nodes within each column represent unique entities (samples, compound classes, enzyme activities),
+          - ribbons connecting them represent flows weighted by their aggregated counts.
+
+  
+  uc-6-3:
+    use_case_id: "UC-6.3"
+    title: "Chemical Hierarchy"
+    module: 6
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Hierarchy Definition"
+        description: |
+          A three-level hierarchy is defined:
+          - **Level 1:** `compoundclass`
+          - **Level 2:** `compoundname` (nested within each class)
+          - **Level 3:** `sample` (nested within each compound)
+      
+      - step_number: 3
+        name: "Aggregation of Genetic Diversity"
+        description: |
+          The data is grouped by each unique `(compoundclass, compoundname, sample)` path:
+          - for each group, the number of **distinct gene symbols** (`genesymbol`) is computed (e.g., via `nunique()`),
+          - this count represents the **genetic diversity** contributed by that sample to that specific compound within that class.
+      
+      - step_number: 4
+        name: "Value Propagation for Treemap"
+        description: |
+          The unique gene counts at the lowest level (per sample) are used as the basic **values**:
+          - higher-level values for `compoundname` and `compoundclass` nodes are obtained by summing the values of all nested nodes,
+          - this yields gene-diversity totals at each level.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The aggregated data is rendered as an **interactive treemap**:
+          - each rectangle represents a node in the hierarchy (class, compound, or sample),
+          - the **area** of the rectangle is proportional to its total unique gene count,
+          - **color** is also mapped to the unique gene count to reinforce the visual encoding.
+  
+  uc-6-4:
+    use_case_id: "UC-6.4"
+    title: "Enzymatic Hierarchy"
+    module: 6
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Hierarchy Definition"
+        description: |
+          A three-level hierarchy is defined:
+          - **Level 1:** `enzyme_activity`
+          - **Level 2:** `compoundclass` (nested within each enzyme activity)
+          - **Level 3:** `genesymbol` (nested within each compound class)
+      
+      - step_number: 3
+        name: "Aggregation of Substrate Scope"
+        description: |
+          The data is grouped by each unique `(enzyme_activity, compoundclass, genesymbol)` path:
+          - for each group, the number of **distinct `compoundname`** entries is computed (e.g., via `nunique()`),
+          - this count represents the **substrate scope** (number of unique compounds) associated with that gene within that functional and chemical context.
+      
+      - step_number: 4
+        name: "Value Propagation for Treemap"
+        description: |
+          The unique compound counts at the lowest level (per gene) are used as the basic **values**:
+          - higher-level values for `compoundclass` and `enzyme_activity` nodes are obtained by **summing** the values of all nested nodes,
+          - this yields total substrate scope at each level of the hierarchy.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The aggregated data is rendered as an **interactive treemap**:
+          - each rectangle represents a node in the hierarchy (enzyme activity, compound class, gene),
+          - the **area** of the rectangle is proportional to its total unique compound count,
+          - **color** is also mapped to the unique compound count to reinforce the visual encoding.
+  
+  uc-6-5:
+    use_case_id: "UC-6.5"
+    title: "Chemicalâ€“Enzymatic Hierarchy"
+    module: 6
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Hierarchy Definition"
+        description: |
+          A three-level hierarchy is defined:
+          - **Level 1:** `compoundclass`
+          - **Level 2:** `enzyme_activity` (nested within each class)
+          - **Level 3:** `genesymbol` (nested within each enzyme activity)
+      
+      - step_number: 3
+        name: "Aggregation of Substrate Scope"
+        description: |
+          The data is grouped by each unique `(compoundclass, enzyme_activity, genesymbol)` path:
+          - for each group, the number of **distinct `compoundname`** entries is computed (e.g., via `nunique()`),
+          - this count represents the **substrate scope** (number of unique compounds) associated with that gene under that classâ€“activity context.
+      
+      - step_number: 4
+        name: "Value Propagation for Treemap"
+        description: |
+          The unique compound counts at the lowest level (per gene) are used as the basic **values**:
+          - higher-level values for `enzyme_activity` and `compoundclass` nodes are obtained by **summing** the values of all nested nodes,
+          - this yields total substrate scope at each level of the hierarchy.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The aggregated data is rendered as an **interactive treemap**:
+          - each rectangle represents a node in the hierarchy (compound class, enzyme activity, gene),
+          - the **area** of the rectangle is proportional to its total unique compound count,
+          - **color** is also mapped to the unique compound count to reinforce the visual encoding.
+
+  # ==========================================================================
+  # MODULE 7: Toxicological Risk Assessment
+  # ==========================================================================
+  
+  uc-7-1:
+    use_case_id: "UC-7.1"
+    title: "Predicted Compound Toxicity Profiles"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The raw ToxCSM results table (`ToxCSM.txt`) is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Data Transformation (Pivoting to Long Format)"
+        description: |
+          The wide-format input, containing multiple `value_` and `label_` columns, is reshaped into a **long, tidy format**. In the processed table:
+          - each row corresponds to a single `(compoundname, endpoint)` pair,
+          - with associated numeric toxicity score and qualitative label.
+      
+      - step_number: 3
+        name: "Endpoint Categorization"
+        description: |
+          Each specific endpoint (e.g., `Gen_Carcinogenesis`, `Env_Toxicity`) is mapped to one of the five broader **toxicological super-categories** (e.g., `Genomic`, `Environmental`). This mapping is stored in a lookup structure and applied to all rows.
+      
+      - step_number: 4
+        name: "Aggregation of Duplicate Entries"
+        description: |
+          When multiple raw entries exist for the same `(compoundname, endpoint)` pair (e.g., due to different runs or conditions), the data is:
+          - grouped by `compoundname` and `endpoint` (and/or `supercategory`)
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The aggregated data is rendered as **faceted heatmaps**:
+          - one facet (subplot) per **super-category**,
+          - within each facet, rows represent **Compounds** and columns represent **Endpoints** belonging to that super-category,
+          - cell color intensity encodes the averaged numeric toxicity score.
+  
+  uc-7-2:
+    use_case_id: "UC-7.2"
+    title: "Concordance Between Predicted Risk and Regulatory Scope"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results tables `BioRemPP_Results.txt` and `ToxCSM.txt` are loaded from their semicolon-delimited formats.
+      
+      - step_number: 2
+        name: "Set Construction"
+        description: |
+          Two types of sets are defined:
+          - **High Predicted Risk Set:** A single set containing all unique `compoundname` values that are labeled **"High Toxicity"** in at least one toxicological endpoint in the ToxCSM data.
+          - **Regulatory Sets:** For each unique `referenceAG` in `BioRemPP_Results.txt`, a set of unique `compoundname` values is constructed, representing the list of compounds monitored or referenced by that agency.
+      
+      - step_number: 3
+        name: "Intersection Calculation"
+        description: |
+          For every pair of sets (each regulatory set vs. the High Predicted Risk set, and optionally between agencies if desired), the script computes:
+          - the **size of the intersection** (number of shared compounds), and
+          - the **size of each individual set** (total unique compounds per entity).
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The resulting set sizes and intersection counts are used to build a **chord diagram**, where:
+          - each entity (agency or "High Predicted Risk") is represented as an arc on the circle, and
+          - chords (ribbons) between arcs encode the number of shared compounds, with thickness proportional to the intersection size.
+  
+  uc-7-3:
+    use_case_id: "UC-7.3"
+    title: "Mapping of Genetic Response to High-Priority Threats"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          The user selects a **toxicological super-category** (e.g., "Genomic", "Environmental", "Organic") from an interactive dropdown menu.
+      
+      - step_number: 2
+        name: "Threat Scenario Definition (High-Risk Compound Set)"
+        description: |
+          The `ToxCSM` dataset is filtered to identify all `compoundname` entries that:
+          - belong to the selected super-category, and
+          - are labeled **"High Toxicity"** in at least one endpoint within that category.
+          The result is a list of **high-priority compounds** for the chosen threat scenario.
+      
+      - step_number: 3
+        name: "Genetic Response Assessment"
+        description: |
+          The `BioRemPP_Results.txt` table is filtered to include only rows in which:
+          - `compoundname` is in the high-priority list obtained in Step 2.
+          This subset captures all known sampleâ€“gene associations relevant to the chosen threat class.
+      
+      - step_number: 4
+        name: "Aggregation and Matrix Construction"
+        description: |
+          The filtered data is aggregated to construct a 2D matrix where:
+          - rows represent **high-risk compounds** (`compoundname`),
+          - columns represent **Samples** (`sample`), and
+          - each cell value is the **count of distinct `genesymbol`** associated with that sampleâ€“compound pair.
+          This count is used as a proxy for the **genetic investment** made by each sample towards each high-risk compound.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The sampleâ€“compound matrix is rendered as an interactive heatmap:
+          - axis labels denote compounds (rows) and samples (columns),
+          - color intensity encodes the unique gene count per cell,
+          - optional hover tooltips expose detailed information (compound, sample, gene count).
+  
+  uc-7-4:
+    use_case_id: "UC-7.4"
+    title: "Distribution of Toxicity Scores by Endpoint"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          The user selects a **broad toxicity category** (e.g., "Genomic") from an interactive dropdown menu. Internally, this corresponds to one of the super-category prefixes (e.g., `Gen`).
+      
+      - step_number: 2
+        name: "Data Transformation (Melting to Long Format)"
+        description: |
+          The wide-format `ToxCSM.txt` table, which contains many `value_` columns, is reshaped into a **long format**:
+          - each row corresponds to a single `(compoundname, endpoint)` pair,
+          - with a single numeric toxicity score in a column such as `tox_score`, and
+          - an `endpoint` label (e.g., `Gen_Carcinogenesis`).
+      
+      - step_number: 3
+        name: "Dynamic Filtering by Super-Category"
+        description: |
+          The long-format data is filtered to retain only rows whose endpoint belongs to the user-selected **Toxicity Super-Category** (e.g., all `Gen_*` endpoints when "Genomic" is selected).
+      
+      - step_number: 4
+        name: "Rendering"
+        description: |
+          The filtered scores are rendered as a set of **side-by-side box plots**, where:
+          - each box plot corresponds to one specific **Toxicological Endpoint** within the selected category, and
+          - all compounds with a score for that endpoint contribute to its distribution.
+          Individual data points (compound-level scores) may be shown as jittered or overlaid points to illustrate dispersion and outliers.
+  
+  uc-7-5:
+    use_case_id: "UC-7.5"
+    title: "Probability Distributions of Toxicity Scores by Endpoint"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "User Selection"
+        description: |
+          The user selects a **Toxicity Super-Category** (e.g., "Genomic") from an interactive dropdown menu. Internally, this corresponds to a subset of `value_*` columns (e.g., all prefixed with `Gen_`).
+      
+      - step_number: 2
+        name: "Data Transformation (Melting to Long Format)"
+        description: |
+          The wide-format `ToxCSM.txt` table, which contains multiple `value_` columns, is reshaped into a **long format**:
+          - each row corresponds to a single `(compoundname, endpoint)` pair,
+          - with a single numeric toxicity score in a column such as `tox_score`, and
+          - an `endpoint` label identifying the specific toxicological test or prediction.
+      
+      - step_number: 3
+        name: "Dynamic Filtering by Super-Category"
+        description: |
+          The long-format data is filtered to retain only those rows whose endpoints belong to the **selected super-category**. For example, when "Genomic" is selected, only endpoints with prefix `Gen_` are kept.
+      
+      - step_number: 4
+        name: "Density Estimation and Rendering"
+        description: |
+          For each endpoint within the selected category:
+          - the distribution of its `tox_score` values across compounds is used to compute a **kernel density estimate (KDE)**,
+          - the resulting smoothed density curve is plotted on a shared axis.
+          All endpoint-specific KDE curves are **overlaid** on a single plot, typically with semi-transparent colors and a legend linking each color to its endpoint.
+  
+  uc-7-6:
+    use_case_id: "UC-7.6"
+    title: "Sample Risk Mitigation Breadth"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "Data Loading and Integration"
+        description: |
+          Both `BioRemPP_Results.txt` and `ToxCSM.txt` are loaded from their semicolon-delimited formats.
+      
+      - step_number: 2
+        name: "Risk Filtering in ToxCSM"
+        description: |
+          The `ToxCSM` data is reshaped into a **long format** (one row per compoundâ€“endpoint pair) and filtered to keep only interactions where the predicted risk is **high**. The remaining set defines compounds with **relevant predicted toxicity**.
+      
+      - step_number: 3
+        name: "Endpoint-to-Category Mapping"
+        description: |
+          Individual toxicological endpoints are mapped to broader **Toxicity Categories** (e.g., Genomic, Environmental, Organic) using a predefined lookup, assigning each endpoint to its parent super-category.
+      
+      - step_number: 4
+        name: "Data Merging"
+        description: |
+          The risk-filtered and categorized ToxCSM data is merged with `BioRemPP_Results.txt` on `compoundname` to connect:
+          - high-risk compounds,
+          - their toxicological categories, and
+          - the samples known to interact with them.
+      
+      - step_number: 5
+        name: "Aggregation for Breadth"
+        description: |
+          The merged dataset is grouped by `sample` and `Toxicity Category`. For each `(sample, category)` combination, the number of **distinct compound names** is computed (e.g., via `nunique()` on `compoundname`). This count is the **breadth metric** used in the visualization.
+      
+      - step_number: 6
+        name: "Rendering as Treemap"
+        description: |
+          The aggregated data is rendered as an **interactive treemap**:
+          - each **Sample** is represented as a top-level rectangle,
+          - within each sample, second-level rectangles represent **Toxicity Categories**,
+          - the **area** of each category rectangle is proportional to the number of unique high-risk compounds covered by that sample in that category.
+  
+  uc-7-7:
+    use_case_id: "UC-7.7"
+    title: "Sample Risk Mitigation Depth"
+    module: 7
+    steps:
+      - step_number: 1
+        name: "Data Loading and Integration"
+        description: |
+          The primary results tables `BioRemPP_Results.txt` and `ToxCSM.txt` are loaded from their semicolon-delimited formats.
+      
+      - step_number: 2
+        name: "Risk Filtering in ToxCSM"
+        description: |
+          The `ToxCSM` dataset is reshaped into a **long format** (one row per compoundâ€“endpoint pair) and filtered to retain only entries corresponding to compounds with a **non-trivial predicted risk**, i.e., compounds that are not labeled as "High Safety". The remaining set defines risk-relevant compounds.
+      
+      - step_number: 3
+        name: "Endpoint-to-Category Mapping"
+        description: |
+          Individual toxicological endpoints are mapped to broader **Toxicity Categories** (e.g., Genomic, Environmental, Organic) using a predefined lookup table. This mapping assigns each endpoint to its parent super-category.
+      
+      - step_number: 4
+        name: "Data Merging"
+        description: |
+          The risk-filtered ToxCSM data is merged with `BioRemPP_Results.txt` on `compoundname`, connecting:
+          - samples,
+          - compounds,
+          - genes, and
+          - their associated toxicological categories.
+      
+      - step_number: 5
+        name: "Aggregation for Depth"
+        description: |
+          The merged dataset is grouped along the full hierarchy:
+          `sample` â†’ `Toxicity Category` â†’ `compoundname`.
+          For each unique path, the **total number of geneâ€“compound interactions** is computed (e.g., using `.size()` on the rows belonging to that path). This count is used as a proxy for **genetic investment** or **response depth**.
+      
+      - step_number: 6
+        name: "Rendering as Treemap"
+        description: |
+          The aggregated data is rendered as an **interactive treemap**:
+          - top-level rectangles represent **Samples**,
+          - nested rectangles at the second level represent **Toxicity Categories**,
+          - third-level rectangles represent individual **Compounds**,
+          - the **area** of each rectangle is proportional to the total interaction count for that path.
+
+  # ==========================================================================
+  # MODULE 8: Consortium Design
+  # ==========================================================================
+  
+  uc-8-1:
+    use_case_id: "UC-8.1"
+    title: "Minimal Sample Grouping for Complete Compound Coverage"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "User Selection (Chemical Class)"
+        description: |
+          The user selects a **`compoundclass`** from an interactive dropdown menu (e.g., Aromatics, Chlorinated, Metals). This choice defines the chemical space to be analyzed.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          The primary results table (`BioRemPP_Results.txt`) is filtered to retain only rows where:
+          - `compoundclass` equals the selected class, and
+          - both `sample` and `compoundname` are valid and non-missing.
+          
+          This subset represents all observed interactions between samples and compounds in the chosen class.
+      
+      - step_number: 3
+        name: "Sample Grouping into Functional Guilds"
+        description: |
+          For each `sample`, the set of associated `compoundname` values (within the selected class) is computed.
+          - Samples whose **compound sets are identical** are grouped into the same **functional guild**.
+          - Each guild is thus characterized by a unique compound profile and a list of member samples.
+      
+      - step_number: 4
+        name: "Minimization via Set Cover (Greedy Heuristic)"
+        description: |
+          A **greedy set cover algorithm** is applied to the guilds:
+          - Initialize the set of **uncovered compounds** as all unique `compoundname` values in the selected class.
+          - Iteratively select the guild that covers the largest number of currently uncovered compounds.
+          - Remove these compounds from the uncovered set and repeat until all compounds are covered.
+          
+          The result is a **minimal (or near-minimal) subset of functional guilds** that collectively cover every compound in the selected class.
+      
+      - step_number: 5
+        name: "Rendering"
+        description: |
+          The minimal guild set is visualized as a **faceted scatter plot**:
+          - each facet (subplot) corresponds to one **selected functional guild**,
+          - within a facet, the x-axis lists member `sample`s and the y-axis lists `compoundname`s,
+          - points mark the presence of a sampleâ€“compound interaction, visually confirming the guild's profile.
+  
+  uc-8-2:
+    use_case_id: "UC-8.2"
+    title: "BioRemPP Chemical Class Completeness Scorecard"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary results table `BioRemPP_Results.txt` is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Feature Engineering â€“ Completeness Score"
+        description: |
+          The Completeness Score is computed in three steps:
+          - For each `compoundclass`, determine the **universe of unique KOs** observed across all samples.
+          - For each `(sample, compoundclass)` pair, count the **number of unique KOs** that the sample possesses for that class.
+          - Compute the **Completeness Score (%)** as:
+            `Completeness Score = (unique KOs in sample for that class / total unique KOs for that class) Ã— 100`.
+      
+      - step_number: 3
+        name: "Matrix Construction"
+        description: |
+          The per-pair Completeness Scores are reshaped into a **2D matrix**:
+          - **rows** represent `sample`,
+          - **columns** represent `compoundclass`,
+          - **cell values** store the corresponding Completeness Score (%).
+      
+      - step_number: 4
+        name: "Rendering as Heatmap"
+        description: |
+          The matrix is rendered as an **interactive heatmap**:
+          - color intensity is proportional to the Completeness Score,
+          - numeric labels (optional) can be overlaid in each cell to show the exact percentage.
+  
+  uc-8-3:
+    use_case_id: "UC-8.3"
+    title: "Compound-Specific KO Completeness Scorecard"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The primary BioRemPP results table `BioRemPP_Results.txt` is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Feature Engineering â€“ KO Completeness Score"
+        description: |
+          For each compound, a three-step procedure is applied:
+          
+          1. **KO Universe per Compound:** For each `compoundname`, determine the **universe of unique KOs** associated with that compound across all samples in the dataset.
+          
+          2. **Sample-Specific KO Count:** For each `(sample, compoundname)` pair, count the **number of unique KOs** that the sample possesses for that compound.
+          
+          3. **Score Calculation:** Compute the **KO Completeness Score (%)** as:
+             `KO Completeness Score = (unique KOs in sample for that compound / total unique KOs for that compound) Ã— 100`.
+      
+      - step_number: 3
+        name: "Matrix Construction"
+        description: |
+          The per-pair scores are reshaped into a **2D matrix**:
+          - **rows** represent `sample`,
+          - **columns** represent `compoundname`,
+          - **cell values** store the KO Completeness Score (%).
+      
+      - step_number: 4
+        name: "Rendering as Heatmap"
+        description: |
+          The matrix is rendered as an **interactive heatmap**:
+          - color intensity is proportional to the KO Completeness Score,
+          - optional numeric labels in cells can display the exact percentage.
+  
+  uc-8-4:
+    use_case_id: "UC-8.4"
+    title: "HADEG Pathways Completeness Scorecard"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The HADEG analysis results table `HADEG_Results.txt` is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Feature Engineering â€“ Pathway Completeness Score"
+        description: |
+          For each HADEG pathway, a three-step calculation is performed:
+          
+          1. **KO Universe per Pathway:** For each `compound_pathway`, determine the **universe of unique KOs** observed for that pathway across all samples.
+          
+          2. **Sample-Specific KO Count:** For each `(sample, compound_pathway)` pair, count the **number of unique KOs** that the sample possesses for that pathway.
+          
+          3. **Score Calculation:** Compute the **Pathway Completeness Score (%)** as:
+             `Pathway Completeness Score = (unique KOs in sample for that pathway / total unique KOs for that pathway) Ã— 100`.
+      
+      - step_number: 3
+        name: "Matrix Construction"
+        description: |
+          The per-pair scores are reshaped into a **2D matrix**:
+          - **rows** represent `sample`,
+          - **columns** represent `compound_pathway`,
+          - **cell values** store the Pathway Completeness Score (%).
+      
+      - step_number: 4
+        name: "Rendering as Heatmap"
+        description: |
+          The matrix is rendered as an **interactive heatmap**:
+          - cell color intensity is proportional to the Pathway Completeness Score,
+          - optional numeric labels can display the exact percentage value inside each cell.
+  
+  uc-8-5:
+    use_case_id: "UC-8.5"
+    title: "KEGG Pathways Completeness Scorecard"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "Data Loading"
+        description: |
+          The KEGG analysis results table `KEGG_Results.txt` is loaded from its semicolon-delimited format.
+      
+      - step_number: 2
+        name: "Feature Engineering â€“ Pathway Completeness Score"
+        description: |
+          For each KEGG pathway, the following three-step calculation is performed:
+          
+          1. **KO Universe per Pathway:** For each `pathname`, determine the **universe of unique KOs** observed for that pathway across all samples.
+          
+          2. **Sample-Specific KO Count:** For each `(sample, pathname)` pair, count the **number of unique KOs** that the sample possesses for that pathway.
+          
+          3. **Score Calculation:** Compute the **Pathway Completeness Score (%)** as:
+             `Pathway Completeness Score = (unique KOs in sample for that pathway / total unique KOs for that pathway) Ã— 100`.
+      
+      - step_number: 3
+        name: "Matrix Construction"
+        description: |
+          The per-pair scores are reshaped into a **2D matrix**:
+          - **rows** represent `sample`,
+          - **columns** represent `pathname`,
+          - **cell values** store the Pathway Completeness Score (%).
+      
+      - step_number: 4
+        name: "Rendering as Heatmap"
+        description: |
+          The matrix is rendered as an **interactive heatmap**:
+          - cell color intensity is proportional to the Pathway Completeness Score,
+          - optional numeric labels inside cells can display the exact percentage.
+  
+  uc-8-6:
+    use_case_id: "UC-8.6"
+    title: "Pathway-Centric Consortium Design by KO Coverage"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "User Selection (Target Pathway)"
+        description: |
+          The user selects a target metabolic pathway from an interactive dropdown menu.
+          - Internally, this corresponds to a specific `compound_pathway` value.
+      
+      - step_number: 2
+        name: "Dynamic Filtering"
+        description: |
+          The HADEG results table `HADEG_Results.txt` is filtered to retain only rows where:
+          - `compound_pathway` equals the selected pathway, and
+          - both `sample` and `ko` are valid and non-missing.
+          
+          This subset represents all observed KO contributions to the chosen pathway across all samples.
+      
+      - step_number: 3
+        name: "Set Construction (Sample-wise KO Repertoires)"
+        description: |
+          The filtered data is grouped by `sample`.
+          - For each `sample`, a **set of unique KOs** (`ko`) associated with the selected pathway is constructed.
+          - Each set defines the **pathway-specific functional repertoire** of that sample.
+      
+      - step_number: 4
+        name: "Intersection Calculation and UpSet Data Preparation"
+        description: |
+          - All sample-specific KO sets are used to compute **set sizes** (per sample) and **intersection sizes** (KO counts shared by specific combinations of samples).
+          - Intersections are ranked by **cardinality** (number of KOs in each intersection) to emphasize the most functionally relevant overlaps.
+      
+      - step_number: 5
+        name: "Rendering as UpSet Plot"
+        description: |
+          The processed set and intersection statistics are rendered as an **UpSet plot** composed of:
+          - a left bar chart (set sizes),
+          - a bottom intersection matrix (connected dots),
+          - and a top bar chart (intersection sizes).
+  
+  uc-8-7:
+    use_case_id: "UC-8.7"
+    title: "Sample-Sample KO Intersection Profile"
+    module: 8
+    steps:
+      - step_number: 1
+        name: "Sample Selection (User Input)"
+        description: |
+          The user selects **two or more samples** from a multi-select dropdown control.
+          - A minimum of two samples is required to generate meaningful intersections.
+          - The downstream analysis is dynamically restricted to this subset.
+      
+      - step_number: 2
+        name: "Data Loading and Filtering"
+        description: |
+          - The results table `BioRemPP_Results.txt` is loaded.
+          - The dataset is filtered to retain only rows whose `sample` appears in the user's selection and for which both `sample` and `ko` are valid and non-missing.
+      
+      - step_number: 3
+        name: "Set Construction (Per-Sample KO Repertoires)"
+        description: |
+          - The filtered data is grouped by `sample`.
+          - For each `sample`, a **set of unique KOs** is constructed.
+          - These sets encode the **functional inventories** (KO repertoires) of the selected samples.
+      
+      - step_number: 4
+        name: "Intersection Computation and Ranking"
+        description: |
+          - From the per-sample KO sets, all relevant **set intersections** are computed.
+          - For each intersection (i.e., a specific combination of samples), the **intersection size** (number of shared KOs) is calculated.
+          - Intersections are ranked by **cardinality**, so the most informative overlaps appear prominently in the UpSet plot.
+      
+      - step_number: 5
+        name: "Rendering as UpSet Plot"
+        description: |
+          The processed set and intersection statistics are rendered as an **UpSet plot**, comprising:
+          - a **set size bar chart** (left),
+          - an **intersection matrix** (bottom), and
+          - an **intersection size bar chart** (top).

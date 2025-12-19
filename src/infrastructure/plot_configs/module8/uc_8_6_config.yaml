@@ -1,0 +1,212 @@
+# ============================================================================
+# UC-8.6: Pathway-Centric Consortium Design by KO Coverage
+# ============================================================================
+# Description: UpSet plot analyzing KO distribution across samples for pathways
+# Module: module8
+# Plot Type: UpSet
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-8.6"
+  module: "module8"
+  title: "Pathway-Centric Consortium Design by KO Coverage"
+  description: >
+    Analyzes functional complementarity and redundancy for consortium design
+    by displaying the KO distribution across samples for a specific metabolic pathway.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-30"
+  tags:
+    - "consortium_design"
+    - "upset"
+    - "pathway_analysis"
+    - "ko_coverage"
+  plot_type: "upset"
+  scientific_context:
+    domain: "Metabolic Engineering"
+    application: "Consortium design for bioremediation and bioprocessing"
+    interpretation: "Identifies functional complementarity and redundancy for pathway optimization"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "HADEG"
+  source_type: "database"
+  
+  required_columns:
+    - "Sample"
+    - "KO"
+    - "Pathway"
+  
+  processing:
+    steps:
+      - name: "extract_hadeg"
+        enabled: true
+        description: "Extract HADEG data from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter_pathway"
+        enabled: true
+        params:
+          filter_column: "Pathway"
+        description: "Filter data for selected metabolic pathway"
+      
+      - name: "build_sets"
+        enabled: true
+        params:
+          group_by: "Sample"
+          collect_column: "KO"
+        description: "Build KO sets per sample for selected pathway"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "UpSetStrategy"
+  
+  plotly:
+    # Column mapping
+    entity_column: "identifier"
+    category_column: "category"
+    
+    # UpSet plot parameters
+    sort_by: "cardinality"
+    show_counts: true
+    show_percentages: false
+    min_subset_size: 0
+    max_subset_rank: null
+    
+    # Figure dimensions
+    fig_width: 10
+    fig_height: 6
+    
+    # Color scheme
+    bar_color: "#28A745"
+    
+    # Title configuration (at plotly level)
+    title:
+      text: "KO Distribution Across Samples for Selected Pathway"
+      font:
+        size: 16
+        family: "Arial, sans-serif"
+        color: "#333"
+      x: 0.5
+      xanchor: "center"
+    
+    # Layout customization
+    layout:
+      height: 600
+      autosize: true
+      template: "simple_white"
+      margin:
+        l: 150
+        r: 50
+        t: 100
+        b: 150
+      showlegend: false
+      hovermode: "closest"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-8-6-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render UpSet plot when accordion opens"
+  
+  outputs:
+    - component_id: "uc-8-6-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "UpSet plot visualization"
+  
+  states:
+    - component_id: "uc-8-6-pathway-dropdown"
+      property: "value"
+      description: "Selected pathway filter"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "KO", "Pathway"]
+      message: "Data must contain 'Sample', 'KO', and 'Pathway' columns for pathway analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 2
+      message: "At least 2 samples required for UpSet analysis"
+    
+    - rule: "pathway_selected"
+      message: "Please select a pathway from the dropdown"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_8_6_df_{data_hash}"
+        description: "Cache filtered pathway data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_8_6_upset_{data_hash}_{filters_hash}"
+        description: "Cache generated UpSet figure"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. UpSet plot requires 'Sample', 'KO', and 'Pathway' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No data found for selected pathway."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 2 samples required for UpSet analysis. Found: {count}"
+  
+  processing_errors:
+    set_construction_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"

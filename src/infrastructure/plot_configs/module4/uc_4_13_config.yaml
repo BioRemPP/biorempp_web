@@ -1,0 +1,353 @@
+# ============================================================================
+# UC-4.13: Interactive Genetic Profile by Compound Pathway (HADEG)
+# ============================================================================
+# Description: Count-based heatmap showing gene-sample associations with unique KO counts
+# Module: module4
+# Plot Type: Heatmap (Count-based)
+# Rendering: On-demand (compound pathway dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.13"
+  module: "module4"
+  title: "Interactive Genetic Profile by Compound Pathway"
+  description: >
+    Count-based heatmap visualizing gene-sample associations with unique KO
+    counts for a selected compound pathway. Reveals genetic strategies employed
+    by different samples for degrading specific compound classes, showing which
+    genes are most active across samples for a particular chemical pathway.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "heatmap"
+    - "count_based"
+    - "genetic_profile"
+    - "hadeg"
+    - "gene_sample_matrix"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Genetic Profiling and Compound Degradation Strategies"
+    application: "Analyzing gene-sample associations for specific compound pathways"
+    interpretation: "Darker cells indicate higher KO diversity at gene-sample intersections"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "hadeg-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Gene"
+    - "Compound"
+    - "Pathway"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "extract_hadeg"
+        enabled: true
+        description: "Extract HADEG results from store"
+      
+      - name: "filter_by_compound_pathway"
+        enabled: true
+        description: "Filter data to selected compound pathway"
+      
+      - name: "aggregate_unique_kos"
+        enabled: true
+        params:
+          group_by: ["Gene", "sample"]
+          aggregation: "nunique"
+          value_column: "ko"
+        description: "Count unique KOs per (gene, sample) pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapStrategy"
+  
+  plotly:
+    # Column mapping
+    row_column: "Gene"
+    col_column: "sample"
+    value_column: "ko"
+    aggregation: "nunique"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Genetic Profile: Gene × Sample Heatmap"
+      
+      # Axis labels
+      xaxis:
+        title: "Sample"
+      yaxis:
+        title: "Gene"
+      
+      # Axis angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Color configuration
+      color_label: "Unique KO Count"
+      color_continuous_scale:
+        - "#f7fcf5"  # Very light green
+        - "#3CB371"  # Medium sea green
+      
+      # Text annotations
+      text_auto: true
+      text_font_size: 10
+      
+      # Colorbar
+      colorbar:
+        title: "Gene Count"
+    
+    # Layout configuration
+    layout:
+      template: "plotly_white"
+      height: 600
+      autosize: true
+      
+      margin:
+        l: 120
+        r: 80
+        t: 80
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-13-compound-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render heatmap when compound pathway is selected"
+  
+  outputs:
+    - component_id: "uc-4-13-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Genetic profile heatmap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-4-13-compound-dropdown"
+      type: "dropdown"
+      label: "Select Compound Pathway"
+      options_source: "dynamic"
+      description: "Choose compound pathway to analyze genetic profile"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Gene", "Compound", "Pathway", "KO"]
+      message: "Data must contain required columns for genetic profile analysis"
+    
+    - rule: "compound_pathway_selected"
+      message: "Please select a compound pathway from the dropdown"
+    
+    - rule: "minimum_genes"
+      min_count: 1
+      message: "At least 1 gene required for heatmap"
+    
+    - rule: "hadeg_data_required"
+      message: "This use case requires HADEG database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_13_df_{data_hash}"
+        description: "Cache processed gene-sample matrix per compound pathway"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_13_heatmap_{data_hash}"
+        description: "Cache generated heatmap per compound pathway"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Heatmap requires 'Sample', 'Gene', 'Compound', 'Pathway', and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No genetic profile data available. Please check HADEG dataset."
+    
+    no_compound_selected:
+      action: "display_info"
+      message: "Please select a compound pathway from the dropdown above."
+    
+    no_data_for_compound:
+      action: "display_message"
+      message: "No genetic data found for compound pathway: {compound}"
+    
+    hadeg_data_missing:
+      action: "display_message"
+      message: "HADEG database data not found. This use case requires HADEG data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate KO counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render genetic profile heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - autosize: true/false (responsive sizing)
+# - xaxis.title: X-axis label
+# - yaxis.title: Y-axis label
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - color_label: Colorbar label
+# - color_continuous_scale: Custom colorscale (list or string)
+# - text_auto: true/false (show values in cells)
+# - text_font_size: Text font size (default: 10)
+# - colorbar.title: Colorbar label
+# - template: "plotly_white", "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels (dynamic based on rows)
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - aggregation: "nunique", "count", "sum"
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_13_callbacks.py):
+# 1. Extract HADEG DataFrame from merged-result-store
+# 2. Validate compound pathway selection
+# 3. Filter data to selected compound pathway
+# 4. Map columns: Sample, Gene, Compound, Pathway, KO
+# 5. Clean data (remove nulls, normalize)
+# 6. Pass to PlotService
+#
+# STRATEGY (HeatmapStrategy):
+# 1. Receives data with ['Gene', 'sample', 'ko']
+# 2. Process data:
+#    - Clean data (remove nulls, normalize strings)
+#    - Group by (Gene, sample)
+#    - Aggregate: nunique(ko)
+#    - Pivot to matrix
+#    - Sort by totals (descending)
+# 3. Create figure:
+#    - Create heatmap matrix (genes × samples)
+#    - Apply custom colorscale (light green to medium sea green)
+#    - Add text annotations (if matrix ≤ 400 cells)
+#    - Calculate dynamic height (40px per row + 160px)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - HADEG: ✅ Contains 'Sample', 'Gene', 'Compound', 'Pathway', 'KO' columns
+# - BioRemPP: ❌ Does NOT contain gene data
+# - KEGG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain gene data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On compound pathway dropdown selection
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Count-based heatmap
+# - Rows: Genes (sorted by total KO count descending)
+# - Columns: Samples (sorted by total KO count descending)
+# - Cell values: Count of unique KOs for (gene, sample) pair
+# - Color: Custom green gradient (light to medium sea green)
+# - Text: Integer counts displayed in cells (if matrix ≤ 400 cells)
+# - Hover: Shows gene, sample, and unique KO count
+# - Interpretation:
+#   * Darker green: Higher functional diversity at intersection
+#   * Lighter green: Lower functional diversity
+#   * Rows at top: Genes with highest total KO coverage
+#   * Columns at right: Samples with highest total functional potential
+#
+# Aggregation Algorithm:
+# For each (gene, sample) pair:
+#   count = COUNT(DISTINCT ko WHERE Gene=X AND sample=Y AND compound_pathway=C)
+#
+# Example:
+# Gene "ABC123", Sample "S1", Compound Pathway "Carbohydrates": 15 unique KOs
+# → Cell at (ABC123, S1) shows value 15 with corresponding green shade
+#
+# Scientific Interpretation:
+# - Genetic strategies: Which genes are employed for specific compound classes
+# - Sample comparison: Genetic diversity across samples for same compound pathway
+# - Gene activity: Genes with high KO counts are highly active
+# - Use for: Genetic profiling, gene screening, comparative genomics
+# - Optimization: Identify samples with specialized vs. generalized genetic strategies
+#
+# Compound Pathways (Chemical Classes):
+# - Carbohydrates: Sugar degradation genes
+# - Amino Acids: Protein degradation genes
+# - Lipids: Fat degradation genes
+# - Nucleotides: DNA/RNA degradation genes
+# - Aromatics: Aromatic compound degradation genes
+# - Others: Various chemical compound classes
+#
+# Dynamic Height Calculation:
+# - Formula: max(500, min(1200, 40 * n_rows + 160))
+# - Ensures readable row height for varying gene counts
+# - Minimum: 500px, Maximum: 1200px
+#
+# Text Annotation Logic:
+# - Enabled if total cells ≤ 400 (e.g., 20 genes × 20 samples)
+# - Disabled for larger matrices to avoid clutter
+# - Configurable via text_auto property
+#
+# Unique Features:
+# - Compound pathway-specific analysis (filtered view)
+# - Gene-sample relationships
+# - Custom green gradient colorscale
+# - Dynamic height based on number of genes
+# - Automatic sorting by total KO counts
+# - Reveals genetic specialization patterns

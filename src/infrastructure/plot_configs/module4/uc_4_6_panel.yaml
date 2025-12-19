@@ -1,0 +1,81 @@
+# UC-4.6: Interactive Analysis of Functional Potential by Chemical Compound
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-6"
+
+scientific_question: >
+  For a given class of chemical compounds, which biological samples exhibit
+  the most significant functional potential (measured by KO diversity)
+  against which specific compounds?
+
+description: >
+  This interactive visualization maps the functional potential of each sample
+  against individual compounds, filterable by chemical class. The scatter plot
+  uses both size and color to represent the diversity of unique KEGG Orthology
+  (KO) identifiers associated with each sample-compound interaction. This
+  allows for the rapid identification of "hotspots" of high functional investment.
+  Functional potential is quantified as the number of unique KOs, serving as a
+  proxy for the complexity of the genetic machinery a sample deploys against
+  a compound.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Compound Class to analyze. The plot will update
+      automatically upon selection.
+
+  - label: "Y-axis (Compound Names)"
+    description: >
+      Represents the individual Compound Names within the selected chemical
+      class. Each unique compound is displayed on the vertical axis.
+
+  - label: "X-axis (Samples)"
+    description: >
+      Represents the individual biological samples in your dataset. Each sample
+      is displayed on the horizontal axis.
+
+  - label: "Point Size and Color"
+    description: >
+      Both the size and color intensity of each point correspond to the count
+      of unique KOs for that sample-compound interaction. Larger, brighter
+      points indicate a higher count of unique KOs, representing stronger
+      functional potential.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over a point reveals additional details, such as the
+      sample name, compound name, and the exact count of unique KOs associated
+      with that interaction.
+
+interpretation_guidelines:
+  - >
+    Functional Hotspots: Large, brightly colored points may represent "hotspots"
+    of high functional potential—a strong and diverse genetic response from
+    a specific sample towards a specific compound. These may indicate areas where
+    the sample has invested significant genetic machinery for biotransformation.
+
+  - >
+    Sample Specialization: A sample (vertical column) with numerous large and
+    bright points may be identified as a potent candidate for that particular
+    chemical class. This can help identify samples with broad functional capabilities
+    within the compound class.
+
+  - >
+    Compound Complexity: A compound (horizontal row) that elicits a strong
+    response (large, bright points) from multiple different samples may be a
+    particularly complex or recalcitrant molecule that may require a diverse
+    enzymatic toolkit for its biotransformation.
+
+  - >
+    Comparative Functional Investment: By comparing vertical patterns (samples),
+    you can identify which biological sources invest the most genetic resources into
+    biotransforming compounds within the selected chemical class, potentially highlighting
+    potential bioaugmentation candidates.
+
+  - >
+    Specialized vs. Generalist Degraders: Samples with isolated large points
+    are specialists (effective against specific compounds), while samples with
+    many medium-sized points are generalists (broad but moderate capability
+    across many compounds).
+
+color_scheme: "success"

@@ -1,0 +1,104 @@
+# =============================================================================
+# UC-3.3 Panel Configuration
+# =============================================================================
+# Description: Informative panel for hierarchical clustering use case
+# Purpose: Provide scientific context and interpretation guidelines
+# Author: BioRemPP Development Team
+# Date: 2025-12-01
+# =============================================================================
+use_case_id: "uc-3-3"
+
+scientific_question: >
+  How do biological samples group together in a hierarchical structure based on
+  the similarity of their functional (KO) profiles, and how do different clustering
+  algorithms and distance metrics affect these relationships?
+
+description: >
+  This visualization uses hierarchical clustering to organize biological samples
+  into a dendrogram based on the similarity of their functional (KO) profiles.
+  Each leaf corresponds to a sample, and branches connect samples and clusters
+  according to their functional dissimilarities. The horizontal distance at which
+  branches merge reflects how different the underlying KO repertoires are.
+  Interactive dropdown menus allow users to change the distance metric and
+  clustering method, helping assess how robust the observed groupings are to different
+  analytical choices and highlighting stable functional clusters, outliers, and
+  higher-order relationships.
+
+visual_elements:
+  - label: "Dropdown Menus"
+    description: >
+      Use the dropdown menus to select the Distance Metric and Clustering Method.
+      The dendrogram updates automatically after each selection, allowing you to
+      compare how different parameter combinations affect the clustering of samples.
+
+  - label: "Leaves (Y-axis)"
+    description: >
+      Each label on the vertical axis represents an individual sample. Samples are
+      ordered and positioned according to their hierarchical relationships in the
+      tree, making it easy to see which samples cluster together.
+
+  - label: "Branches and Distance (X-axis)"
+    description: >
+      The horizontal branches connect samples and clusters. The position where
+      branches join on the X-axis represents the distance or dissimilarity between
+      the items they connect. Samples joined by shorter branches (closer to the
+      leaves) are more similar in their functional (KO) profiles.
+
+  - label: "Distance Metrics"
+    description: >
+      Different distance metrics measure similarity in different ways, which can
+      influence the observed clusters:
+        - Jaccard: Best suited for binary presence/absence data (recommended).
+        - Euclidean: Straight-line distance for numeric data.
+        - Cosine: Compares directional similarity in high-dimensional space.
+        - Hamming: Fraction of positions where samples differ.
+        - Dice: Similar to Jaccard, emphasizing shared features.
+
+  - label: "Clustering Methods"
+    description: >
+      Different linkage methods determine how clusters are formed from pairwise
+      distances:
+        - Average (UPGMA): Balanced approach that averages distances, widely used.
+        - Complete: Uses the maximum distance, producing compact, tight clusters.
+        - Single: Uses the minimum distance, sensitive to chaining and outliers.
+        - Ward: Minimizes within-cluster variance (requires the Euclidean metric).
+
+interpretation_guidelines:
+  - >
+    Functional Clusters: Tightly clustered samples (those joined by short branches)
+    represent groups of biological sources with highly similar functional repertoires.
+    These clusters may correspond to shared ecological niches, metabolic strategies,
+    or similar roles in pollutant biotransformation.
+
+  - >
+    Hierarchical Relationships: The overall tree structure can help identify higher-order
+    functional relationships among samples. Distinct clusters that only merge far
+    to the right (at large distances on the X-axis) are functionally very different
+    from each other, potentially suggesting divergent functional strategies.
+
+  - >
+    Exploring Robustness: By changing the distance metrics and clustering methods,
+    you can assess the robustness of observed clusters. Groupings that persist
+    across multiple metric–method combinations are more likely to represent strong,
+    biologically meaningful associations rather than artifacts of a particular
+    parameter choice.
+
+  - >
+    Metric–Method Compatibility: The Ward linkage method is only appropriate with
+    the Euclidean distance metric, because it relies on variance calculations.
+    For binary presence/absence KO data, the Jaccard metric is often the most
+    appropriate choice, as it focuses on shared functions rather than their absence.
+
+  - >
+    Interpreting Branch Lengths: Longer horizontal branches indicate greater
+    functional dissimilarity between clusters. Always consider the scale of the
+    X-axis when comparing branch lengths, as it provides context for how large
+    the functional differences are between samples or groups.
+
+  - >
+    Identifying Outliers: Samples that join the dendrogram at very long branch
+    lengths or form single-sample branches before merging with others may
+    represent functional outliers. These biological sources can be of special
+    interest for unique metabolic capabilities or specialized ecological roles.
+
+color_scheme: "success"

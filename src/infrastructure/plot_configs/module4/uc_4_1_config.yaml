@@ -1,0 +1,292 @@
+# ============================================================================
+# UC-4.1: Interactive Functional Profiling of Samples by Metabolic Pathway
+# ============================================================================
+# Description: Horizontal bar chart showing pathway richness for selected sample
+# Module: module4
+# Plot Type: Bar Chart (Horizontal)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.1"
+  module: "module4"
+  title: "Unique KO Count by Pathway for Sample"
+  description: >
+    Horizontal bar chart showing the functional richness of metabolic pathways
+    within a selected sample, ranked by the number of unique KEGG Orthology
+    identifiers. Enables pathway-level functional profiling.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "pathway_richness"
+    - "functional_profiling"
+    - "kegg_pathways"
+    - "bar_chart"
+    - "horizontal"
+  plot_type: "bar_chart"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Metabolic pathway richness assessment for individual samples"
+    interpretation: "Higher KO counts indicate greater functional diversity within pathways"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "kegg-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Pathway"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "group_and_count"
+        enabled: true
+        params:
+          group_by: "Pathway"
+          agg_column: "KO"
+          agg_function: "nunique"
+          result_column: "unique_ko_count"
+        description: "Count unique KOs per pathway"
+      
+      - name: "sort"
+        enabled: true
+        params:
+          by: "unique_ko_count"
+          ascending: true  # Ascending for horizontal bars (bottom to top)
+        description: "Sort by KO count (ascending for horizontal display)"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BarChartStrategy"
+  
+  plotly:
+    chart_type: "bar"
+    x: "unique_ko_count"
+    y: "Pathway"
+    orientation: "h"  # Horizontal orientation
+    
+    # Color configuration
+    color_discrete_sequence: ["mediumseagreen"]
+    
+    # Title configuration
+    title:
+      show: false  # Title handled by panel header
+      text: ""
+      font:
+        size: 16
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Axis labels
+    labels:
+      unique_ko_count: "Unique KO Count"
+      Pathway: "Pathway Name"
+    
+    # Layout configuration
+    layout:
+      height: 700
+      autosize: true  # Enable responsive sizing
+      template: "simple_white"
+      
+      # X-axis configuration
+      xaxis:
+        title:
+          text: "Unique KO Count"
+          font:
+            size: 14
+            color: "#2c3e50"
+        showgrid: true
+        gridcolor: "lightgray"
+        tickangle: 0  # X-axis label angle (horizontal)
+      
+      # Y-axis configuration
+      yaxis:
+        title:
+          text: "Pathway Name"
+          font:
+            size: 14
+            color: "#2c3e50"
+        showgrid: false
+        tickfont:
+          size: 10
+        tickangle: 0  # Y-axis label angle (horizontal)
+      
+      # Margins
+      margin:
+        l: 400  # Large left margin for pathway names
+        r: 50
+        t: 80
+        b: 60
+      
+      # Hover configuration
+      hovermode: "closest"
+      hoverlabel:
+        bgcolor: "white"
+        font_size: 12
+        font_family: "Arial"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-1-sample-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Sample selection triggers chart update"
+  
+  outputs:
+    - component_id: "uc-4-1-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Pathway richness bar chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input DataFrame cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Pathway", "KO"]
+      message: "Missing required columns for UC-4.1. Need 'Pathway' and 'KO'."
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 row required for pathway analysis"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_1_df_{data_hash}_{filters_hash}"
+        description: "Cache pathway KO counts per sample"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_1_bar_{data_hash}_{filters_hash}"
+        description: "Cache generated bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Pathway profiling requires 'Sample', 'Pathway', and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No pathway data available for selected sample."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 pathway required for analysis. Found: {count}"
+    
+    no_sample_selected:
+      action: "display_placeholder"
+      message: "Please select a sample from the dropdown."
+    
+    kegg_data_missing:
+      action: "display_message"
+      message: "KEGG database data not found. Please ensure KEGG data is loaded."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate pathway KO counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render bar chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - orientation: "h" (horizontal) or "v" (vertical)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - xaxis.tickangle: X-axis label rotation angle (0 = horizontal)
+# - yaxis.tickangle: Y-axis label rotation angle (0 = horizontal)
+# - xaxis.title.text: X-axis title
+# - yaxis.title.text: Y-axis title
+# - color_discrete_sequence: Bar colors (mediumseagreen)
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - margin.l: Left margin (400px for long pathway names)
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_1_callbacks.py):
+# 1. Extract data from KEGG store
+# 2. Map column names (Sample/sample, Pathway/pathname, KO/ko)
+# 3. Normalize column names to standard format
+# 4. Filter by selected sample from dropdown
+# 5. Pass filtered data to PlotService
+#
+# STRATEGY (BarChartStrategy):
+# 1. Receives filtered data with ['Sample', 'Pathway', 'KO']
+# 2. Groups by 'Pathway' and counts unique KOs
+# 3. Creates column 'unique_ko_count'
+# 4. Sorts ascending (for horizontal bottom-to-top display)
+# 5. Creates horizontal bar chart with flexible properties
+#
+# Database Support:
+# - KEGG: ✅ Contains 'Sample', 'Pathway', and 'KO' columns
+# - BioRemPP: ❌ Does NOT contain KEGG pathway data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On dropdown selection (on-demand)
+# - No auto-update (single trigger: dropdown value change)
+#
+# Orientation Details:
+# - Horizontal (orientation: "h")
+# - X-axis: unique_ko_count (numeric values)
+# - Y-axis: Pathway (categorical labels)
+# - Sorted ascending for bottom-to-top visual flow
+# - Large left margin (400px) accommodates long pathway names

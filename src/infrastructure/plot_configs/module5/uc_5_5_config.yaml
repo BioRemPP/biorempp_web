@@ -1,0 +1,363 @@
+# ============================================================================
+# UC-5.5: Gene-Gene Functional Interaction Network
+# ============================================================================
+# Description: Similarity network where genes are connected based on shared compounds
+# Module: module5
+# Plot Type: Network (Similarity)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-5.5"
+  module: "module5"
+  title: "Gene-Gene Functional Interaction Network"
+  description: >
+    Similarity network where genes are connected based on shared compound
+    interactions. Edge weight represents the number of compounds shared between
+    two genes. Reveals functional modules, hub genes, and genes with similar
+    degradation capabilities. Enables identification of functionally redundant
+    genes and potential gene clusters for consortium design.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "network"
+    - "similarity"
+    - "gene_gene"
+    - "functional_modules"
+    - "biorempp"
+  plot_type: "network"
+  scientific_context:
+    domain: "Functional Genomics and Network Biology"
+    application: "Gene similarity analysis based on compound interactions"
+    interpretation: "Node color/size indicates connectivity; edge width shows similarity strength (shared compounds)"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "genesymbol"
+    - "compoundname"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "map_gene_to_compounds"
+        enabled: true
+        description: "Map each gene to its set of associated compounds"
+      
+      - name: "compute_pairwise_similarity"
+        enabled: true
+        description: "Compute shared compounds between gene pairs"
+      
+      - name: "build_similarity_network"
+        enabled: true
+        description: "Build network with weighted edges (edge weight = shared compounds)"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "NetworkStrategy"
+  
+  plotly:
+    # Processing mode
+    mode: "similarity"
+    group_by_column: "genesymbol"
+    shared_column: "compoundname"
+    min_edge_weight: 1
+    
+    # Layout algorithm configuration
+    layout_algorithm:
+      algorithm: "spring"
+      k: 0.5
+      iterations: 50
+      seed: 42
+    
+    # Node configuration
+    node_size: 15
+    colorscale: "YlGnBu"
+    
+    # Edge configuration
+    edge_color: "rgba(136, 136, 136, 0.5)"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Gene-Gene Functional Interaction Network"
+        font:
+          size: 16
+      
+      show_legend: false
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 900
+      autosize: true
+      
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      margin:
+        l: 20
+        r: 20
+        t: 60
+        b: 20
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-5-5-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render network when accordion opens"
+  
+  outputs:
+    - component_id: "uc-5-5-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Gene-gene similarity network"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["genesymbol", "compoundname"]
+      message: "Data must contain 'genesymbol' and 'compoundname' columns"
+    
+    - rule: "minimum_genes"
+      min_count: 2
+      message: "At least 2 genes required for similarity network"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_5_5_df_{data_hash}"
+        description: "Cache processed similarity network data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_5_5_network_{data_hash}"
+        description: "Cache generated similarity network"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Network requires 'genesymbol' and 'compoundname' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No gene-compound data available. Please check BioRemPP dataset."
+    
+    insufficient_genes:
+      action: "display_message"
+      message: "At least 2 genes required for similarity network. Found: {count}"
+    
+    no_similarities:
+      action: "display_message"
+      message: "No gene pairs with shared compounds found. Try lowering min_edge_weight."
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    similarity_calculation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate gene similarities: {error_details}"
+    
+    network_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build similarity network: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render network diagram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - mode: "similarity"
+# - group_by_column: Column to group by (genes)
+# - shared_column: Column for computing similarity (compounds)
+# - min_edge_weight: Minimum shared elements for edge creation
+# - layout_algorithm.algorithm: "spring", "circular", "kamada_kawai", "shell"
+# - layout_algorithm.k: Spring layout parameter (larger = more spacing)
+# - layout_algorithm.iterations: Spring layout iterations
+# - layout_algorithm.seed: Random seed for reproducibility
+# - node_size: Base node size
+# - colorscale: Node colorscale (color by degree)
+# - edge_color: Edge color (can include opacity)
+# - show_legend: true/false (toggle legend, usually false for similarity)
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - plot_bgcolor: Plot background color
+# - paper_bgcolor: Paper background color
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_5_5_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: genesymbol, compoundname
+# 3. Clean data (remove nulls, duplicates)
+# 4. Pass to PlotService
+#
+# STRATEGY (NetworkStrategy):
+# 1. Receives data with ['genesymbol', 'compoundname']
+# 2. Process data (similarity mode):
+#    - Map each gene to set of compounds
+#    - Compute pairwise similarities (shared compounds)
+#    - Filter edges by min_edge_weight
+#    - Build NetworkX graph
+#    - Calculate layout (spring algorithm)
+# 3. Create figure:
+#    - Create edge traces (width proportional to weight)
+#    - Create node traces (color by degree, size by degree)
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'genesymbol', 'compoundname' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain gene data
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Similarity network
+# - Nodes: Genes (single type)
+# - Edges: Gene-gene similarity (weighted by shared compounds)
+# - Layout: Spring force-directed layout
+# - Node size: Proportional to degree (number of connections)
+# - Node color: Gradient by degree (YlGnBu colorscale)
+# - Edge width: Proportional to weight (shared compounds)
+# - Edge opacity: Gradient by weight
+# - Hover: Shows gene name and number of connections
+# - Colorbar: Shows degree scale
+# - Interpretation:
+#   * Large/dark nodes: Hubs (highly connected genes)
+#   * Small/light nodes: Peripheral genes
+#   * Thick edges: High similarity (many shared compounds)
+#   * Thin edges: Low similarity (few shared compounds)
+#   * Dense clusters: Functional modules
+#
+# Similarity Algorithm:
+# For each pair of genes (G1, G2):
+#   shared = COUNT(compounds in both G1 and G2)
+#   if shared >= min_edge_weight:
+#     Create edge: G1 ↔ G2 (weight=shared)
+#
+# Example:
+# Gene "ABC1" shares 5 compounds with Gene "DEF2"
+# → Edge weight = 5
+# → Edge width proportional to 5
+# Gene "ABC1" connected to 10 other genes
+# → Node degree = 10
+# → Node color/size based on degree
+#
+# Scientific Interpretation:
+# - Functional modules: Clusters of genes with similar compound profiles
+# - Hub genes: Genes with many functional similarities
+# - Redundancy: Genes with high similarity (thick edges)
+# - Specialization: Isolated genes with few similarities
+# - Use for: Functional annotation, gene clustering, consortium design
+# - Optimization: Identify functionally diverse vs. redundant genes
+#
+# Layout Algorithms:
+# - spring: Force-directed (Fruchterman-Reingold) - balanced, general-purpose
+#   * k=0.5: More spacing than bipartite (genes spread out)
+#   * iterations=50: Faster convergence for similarity networks
+# - circular: Nodes arranged in circle - symmetry, small networks
+# - kamada_kawai: Energy minimization - aesthetic, clear structure
+# - shell: Concentric shells - hierarchical networks
+#
+# Spring Layout Parameters:
+# - k: Optimal distance between nodes (0.5 = more spacing)
+# - iterations: Number of optimization iterations (50 = good balance)
+# - seed: Random seed for reproducibility (42 = consistent layouts)
+#
+# Node Colorscale (YlGnBu):
+# - Yellow: Low degree (few connections)
+# - Green: Medium degree
+# - Blue: High degree (many connections, hubs)
+# - Gradient enables easy hub identification
+#
+# Edge Weight Filtering:
+# - min_edge_weight: Minimum shared compounds required
+# - Default: 1 (at least 1 shared compound)
+# - Higher values: Sparser network, stronger similarities only
+# - Lower values: Denser network, weaker similarities included
+#
+# Unique Features:
+# - Similarity-based network (single node type)
+# - Weighted edges (shared compounds)
+# - Degree-based node coloring (hub identification)
+# - Edge width scaling (similarity strength)
+# - Configurable similarity threshold (min_edge_weight)
+# - Colorbar for degree interpretation
+# - No legend (single node type)

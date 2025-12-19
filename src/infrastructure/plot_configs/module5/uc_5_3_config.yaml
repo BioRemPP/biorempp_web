@@ -1,0 +1,309 @@
+# ============================================================================
+# UC-5.3: Regulatory Relevance of Samples
+# ============================================================================
+# Description: Chord diagram showing sample-agency interactions
+# Module: module5
+# Plot Type: Chord Diagram (Aggregation Mode with Dropdown Filter)
+# Rendering: On-demand (dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-5.3"
+  module: "module5"
+  title: "Regulatory Relevance of Samples"
+  description: >
+    Visualizes the interaction strength between microbial samples and
+    regulatory agencies using a chord diagram. The connections represent
+    the number of interactions between each sample and each agency,
+    revealing which samples are most relevant for specific regulatory
+    contexts in bioremediation applications.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-02"
+  tags:
+    - "chord_diagram"
+    - "regulatory_agencies"
+    - "sample_relevance"
+    - "compliance"
+    - "biorempp"
+  plot_type: "chord_diagram"
+  scientific_context:
+    domain: "Environmental Compliance and Regulatory Bioremediation"
+    application: "Identifying samples relevant to specific regulatory agency monitoring programs"
+    interpretation: "Thicker chords indicate more compounds monitored by the agency; helps prioritize samples for regulatory compliance"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "referenceag"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "ChordStrategy"
+  
+  plotly:
+    # Processing mode
+    mode: "aggregation"
+    source_column: "sample"
+    target_column: "referenceag"
+    
+    # Filter configuration
+    min_link_value: 1
+    
+    # Color configuration
+    colorscale: "Set2"
+    
+    # Circle arcs configuration
+    circle_arcs:
+      enabled: true
+      width: 16
+      gap: 0.03
+      radius: 1.0
+      proportional: true
+    
+    # Labels configuration
+    labels:
+      enabled: true
+      radius_offset: 1.2
+      font:
+        size: 11
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+    
+    # Chords configuration
+    chords:
+      anchor: "arc_midpoint"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Sample - Regulatory Agency Interaction Network"
+        font:
+          size: 18
+          family: "Arial, sans-serif"
+          color: "#2c3e50"
+    
+    # Layout configuration
+    layout:
+      height: 900
+      autosize: true
+      template: "simple_white"
+      margin:
+        l: 80
+        r: 80
+        t: 100
+        b: 80
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-5-3-agency-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render chord diagram when agency selected"
+  
+  outputs:
+    - component_id: "uc-5-3-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Sample-agency chord diagram"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - type: "dropdown"
+      id: "uc-5-3-agency-dropdown"
+      label: "Select Regulatory Agency"
+      source_column: "referenceag"
+      placeholder: "Choose a regulatory agency..."
+      clearable: false
+      searchable: true
+      description: "Filter samples by regulatory agency"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "referenceag"]
+      message: "Data must contain 'sample' and 'referenceag' columns"
+    
+    - rule: "minimum_nodes"
+      min_count: 2
+      message: "At least 2 nodes required for chord diagram"
+    
+    - rule: "agency_selected"
+      message: "Please select a regulatory agency from the dropdown"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_5_3_df_{data_hash}_{filters_hash}"
+        description: "Cache sample-agency data per agency"
+
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_5_3_chord_{data_hash}_{filters_hash}"
+        description: "Cache generated chord diagram per agency"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Regulatory analysis requires 'sample' and 'referenceag' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No sample-agency data available. Please check BioRemPP dataset."
+    
+    no_agency_selected:
+      action: "display_prompt"
+      message: "Please select a regulatory agency from the dropdown above to visualize the chord diagram."
+    
+    no_data_for_agency:
+      action: "display_message"
+      message: "No data available for agency: {agency}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate sample-agency interactions: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render chord diagram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - mode: "aggregation" (count sample-agency interactions)
+# - source_column: "sample"
+# - target_column: "referenceag"
+# - min_link_value: Minimum interactions to display (1-10)
+# - circle_arcs.enabled: true/false (toggle circle arcs)
+# - circle_arcs.width: Arc thickness (5-30)
+# - circle_arcs.gap: Space between arcs in radians (0.01-0.1)
+# - circle_arcs.radius: Circle radius (0.8-1.2)
+# - circle_arcs.proportional: true/false (size based on connections)
+# - labels.enabled: true/false (toggle labels)
+# - labels.radius_offset: Label distance from center (1.1-1.3)
+# - labels.font: Font configuration
+# - chords.anchor: "arc_midpoint" or "arc_start"
+# - colorscale: "Set1", "Set2", "Category20", etc.
+# - chart.title.show: true/false (toggle title)
+# - chart.title.text: Title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_5_3_callbacks.py):
+# 1. Initialize dropdown: Extract unique agencies from BioRemPP
+# 2. On dropdown selection:
+#    a. Extract BioRemPP DataFrame from merged-result-store
+#    b. Map column names flexibly (sample, referenceag)
+#    c. Clean data: strip whitespace, remove nulls/placeholders
+#    d. Filter by selected agency
+#    e. Rename columns to standard names ('sample', 'referenceag')
+#    f. Pass to PlotService
+#
+# STRATEGY (ChordStrategy - Aggregation Mode):
+# 1. Receives data with ['sample', 'referenceag'] (filtered)
+# 2. GroupBy source and target, count interactions
+# 3. Filter by min_link_value
+# 4. Calculate arc spans (proportional or uniform)
+# 5. Create circle arc traces (colored segments)
+# 6. Create chord traces (sample-agency connections)
+# 7. Create label traces (positioned outside arcs)
+# 8. Return combined figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'sample' and 'referenceAG' columns
+# - HADEG: ❌ Does NOT contain regulatory agency data
+# - KEGG: ❌ Does NOT contain regulatory agency data
+#
+# Rendering Logic:
+# - Lazy loading: Chart renders only when agency selected
+# - Two-step trigger:
+#   1. Accordion activation → populate dropdown
+#   2. Dropdown selection → render chart
+# - No auto-update on data change (manual refresh required)
+#
+# Visualization Details:
+# - Circle arcs: Colored segments representing samples and agencies
+# - Arc size: Proportional to total connections (if enabled)
+# - Chords: Bezier curves connecting sample to agency
+# - Chord width: Proportional to interaction count
+# - Labels: Sample/agency names positioned outside circle arcs
+# - Colors: Unique color per node (from colorscale)
+# - Hover: Node name and total connections (arcs), sample-agency-count (chords)
+#
+# Column Mapping (Flexible):
+# - sample: "sample", "Sample", "sample_id", "Sample_ID", "sampleID", "genome", "Genome"
+# - referenceag: "referenceAG", "referenceag", "ReferenceAG", "reference_ag", "Agency", "agency"
+#
+# Dropdown Behavior:
+# - Populated with unique agencies from BioRemPP data
+# - Sorted alphabetically
+# - Clearable: false (must select an agency)
+# - Searchable: true (can type to filter)
+# - Default: None (shows prompt message)

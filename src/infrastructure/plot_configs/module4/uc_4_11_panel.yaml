@@ -1,0 +1,57 @@
+use_case_id: "uc-4-11"
+scientific_question: >
+  What is the overall hierarchical structure of genetic diversity within
+  HADEG and BioRemPP databases, and how is this diversity distributed among
+  different classes of compounds and their specific metabolic pathways or
+  compound names?
+
+description: >
+  This visualization provides a global, hierarchical overview of genetic
+  diversity across selected databases. The sunburst chart illustrates
+  hierarchical relationships: HADEG shows Compound → Pathway → Gene, while
+  BioRemPP shows Compound_Class → Compound_Name → Gene_Symbol. The size and
+  color of each segment represent the number of unique genes or gene symbols
+  involved, allowing for comprehensive assessment of the functional landscape.
+
+visual_elements:
+  - label: "Concentric Rings (Hierarchy)"
+    description: >
+      The chart is read from the center outwards. The central circle represents
+      the total genetic diversity ("All Pathways"). The first ring breaks this
+      down by Compound class (HADEG: "Alkenes", "Aromatics"; BioRemPP:
+      Compound_Class), and the outer ring further subdivides each into specific
+      Pathways (HADEG) or Compound Names (BioRemPP).
+
+  - label: "Slice Size"
+    description: >
+      The angular width of each slice is proportional to its unique gene count.
+      Larger slices may represent pathways or compound classes that are supported
+      by a greater diversity of genes.
+
+  - label: "Color Intensity"
+    description: >
+      The color of each slice corresponds to its unique gene count, with
+      brighter/warmer colors indicating higher genetic diversity.
+
+  - label: "Interactivity"
+    description: >
+      Click on any slice to "zoom in" and focus on that specific branch of
+      the hierarchy, enabling drill-down exploration.
+
+interpretation_guidelines:
+  - >
+    Dominant Compound Classes: In the inner ring, the largest slices
+    represent the compound classes (HADEG: "Alkenes", "Aromatics"; BioRemPP:
+    Compound_Class categories) that are associated with the highest overall
+    genetic diversity in the dataset.
+  - >
+    Key Metabolic Pathways: In the outer ring, the largest slices pinpoint
+    the specific Pathways (HADEG) or Compound Names (BioRemPP) that are the
+    primary contributors to the genetic diversity of their parent compound class.
+  - >
+    Hierarchical Exploration: The chart provides a powerful top-down view.
+    It allows for the immediate identification of the most genetically complex
+    areas of metabolism (large slices) and can enable interactive exploration of
+    their constituent parts by clicking through the layers.
+
+color_scheme: "success"

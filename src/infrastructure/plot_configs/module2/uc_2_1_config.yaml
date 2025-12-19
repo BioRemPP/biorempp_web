@@ -1,0 +1,238 @@
+# ============================================================================
+# UC-2.1: Ranking of Samples by KO Richness
+# ============================================================================
+# Description: Bar chart showing samples ranked by unique KO count
+# Module: module2 (Gene Counts and Distributions)
+# Plot Type: Bar Chart
+# Rendering: On-Demand (button click) + Auto-Update (filter changes)
+# ============================================================================
+
+metadata:
+  use_case_id: "UC-2.1"
+  module: "module2"
+  title: "Ranking of Samples by Functional Richness"
+  description: "Bar chart visualization showing biological samples ranked by the number of unique KEGG Orthology (KO) identifiers, indicating functional diversity."
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-14"
+  tags:
+    - "gene_counts"
+    - "functional_richness"
+    - "ranking"
+    - "bar_chart"
+  plot_type: "bar_chart"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Comparative metagenomics and functional diversity analysis"
+    interpretation: "Higher KO count indicates greater functional diversity in the sample"
+
+# ============================================================================
+# Data Configuration
+# ============================================================================
+data:
+  source: "biorempp-merged-data"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "convert_to_dataframe"
+        enabled: true
+        params:
+          orient: "records"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+      
+      - name: "group_and_count"
+        enabled: true
+        description: "Group by sample and count unique KOs"
+        params:
+          group_by: "Sample"
+          agg_column: "KO"
+          agg_function: "nunique"
+          result_column: "ko_count"
+      
+      - name: "sort"
+        enabled: true
+        params:
+          by: "ko_count"
+          ascending: false
+
+# ============================================================================
+# Visualization Configuration
+# ============================================================================
+visualization:
+  strategy: "BarChartStrategy"
+  
+  plotly:
+    chart_type: "bar"
+    x: "Sample"
+    y: "ko_count"
+    color_discrete_sequence: ["mediumseagreen"]
+    
+    title:
+      text: "Ranking of Samples by Functional Richness"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    labels:
+      Sample: "Sample ID"
+      ko_count: "Number of Unique KOs"
+    
+    layout:
+      height: 500
+      template: "simple_white"
+      
+      xaxis:
+        title:
+          text: "Sample ID"
+          font:
+            size: 14
+        tickangle: -45
+        tickfont:
+          size: 11
+      
+      yaxis:
+        title:
+          text: "Number of Unique KOs"
+          font:
+            size: 14
+        tickfont:
+          size: 11
+      
+      hovermode: "closest"
+      
+      hoverlabel:
+        bgcolor: "white"
+        font:
+          size: 12
+          family: "Arial, sans-serif"
+      
+      margin:
+        l: 80
+        r: 40
+        t: 80
+        b: 120
+
+# ============================================================================
+# UI Configuration
+# ============================================================================
+ui:
+  container_id: "uc-2-1-chart-container"
+  button_id: "uc-2-1-view-btn"
+  graph_id: "uc-2-1-bar-chart"
+  
+  layout_type: "card"
+  
+  card:
+    header:
+      enabled: true
+      icon: "fas fa-chart-bar"
+      title: "Ranking of Samples by Functional Richness"
+      class_name: "mb-0"
+    
+    body:
+      class_name: "p-4"
+    
+    class_name: "shadow-sm mb-4"
+  
+  button:
+    enabled: true
+    text: "View Results"
+    icon: "fas fa-chart-line"
+    color: "primary"
+    class_name: "w-100 mb-3"
+    container_id: "uc-2-1-button-container"
+    hide_after_render: true
+  
+  rendering:
+    mode: "on_demand"
+    triggers:
+      initial: "button_click"
+      update: "filter_change"
+
+# ============================================================================
+# Filters Configuration
+# ============================================================================
+filters:
+  - filter_id: "uc-2-1-range-slider"
+    type: "range"
+    label: "Filter by KO Count Range:"
+    label_class: "fw-bold mb-2"
+    
+    properties:
+      min: 0
+      max: 100
+      step: 1
+      value: [0, 100]
+      marks: {}
+      tooltip:
+        placement: "bottom"
+        always_visible: true
+      class_name: "mb-4"
+    
+    data_binding:
+      column: "ko_count"
+      dynamic_range: true
+      marks_generation:
+        enabled: true
+        interval: 10
+
+# ============================================================================
+# Validation Configuration
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "KO"]
+      message: "Data must contain 'Sample' and 'KO' columns"
+    
+    - rule: "no_nulls"
+      columns: ["Sample", "KO"]
+      message: "Null values not allowed in 'Sample' or 'KO' columns"
+    
+    - rule: "positive_counts"
+      column: "ko_count"
+      min_value: 0
+      message: "KO counts must be non-negative"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required"
+
+# ============================================================================
+# Performance Configuration
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_2_1_df_{data_hash}"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_2_1_fig_{data_hash}_{filters_hash}"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true

@@ -1,0 +1,298 @@
+# ============================================================================
+# BioRemPP v1.0 - Docker Compose Configuration
+# ============================================================================
+# Unified orchestration for development and production environments
+# 
+# CONFIGURAÇÃO DE AMBIENTE:
+#   1. Copie .env/env.development para .env/env.local (desenvolvimento)
+#      OU .env/env.production para .env/env.local (produção)
+#   2. Ajuste valores conforme necessário (SECRET_KEY, portas, etc)
+#   3. Use: docker compose --env-file .env/env.local --profile <dev|prod> up
+#
+# QUICK START:
+#   Development:  docker compose --env-file .env/env.development --profile dev up
+#   Production:   docker compose --env-file .env/env.production --profile prod --profile nginx up -d
+#   With cache:   docker compose --env-file .env/env.production --profile prod --profile cache up -d
+# ============================================================================
+
+# ============================================================================
+# SERVICES
+# ============================================================================
+services:
+  # ==========================================================================
+  # BioRemPP Application (Development)
+  # ==========================================================================
+  biorempp-dev:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: development
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.11}
+        APP_USER: ${APP_USER:-biorempp}
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: biorempp:dev
+    container_name: biorempp-dev
+    profiles: ["dev"]
+    
+    environment:
+      # Application
+      BIOREMPP_ENV: development
+      BIOREMPP_HOST: ${BIOREMPP_HOST:-0.0.0.0}
+      BIOREMPP_PORT: ${BIOREMPP_PORT:-8050}
+      BIOREMPP_DEBUG: ${BIOREMPP_DEBUG:-True}
+      BIOREMPP_HOT_RELOAD: ${BIOREMPP_HOT_RELOAD:-False}
+      BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-INFO}
+      
+      # Python
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      DOCKER_ENV: true
+      
+      # Cache (optional)
+      ENABLE_CACHE: ${ENABLE_CACHE:-False}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_DB: ${REDIS_DB:-0}
+    
+    ports:
+      - "${DEV_PORT:-8050}:8050"
+    
+    volumes:
+      # Hot reload - mount source code
+      - ./src:/app/src:rw
+      - ./config:/app/config:rw
+      - ./biorempp_app.py:/app/biorempp_app.py:rw
+      - ./data:/app/data:rw
+
+      # Data persistence
+      - biorempp-dev-logs:/app/logs
+      - biorempp-dev-cache:/app/cache
+    
+    networks:
+      - biorempp-network
+    
+    healthcheck:
+      test: ["CMD", "/app/.docker/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    restart: unless-stopped
+
+  # ==========================================================================
+  # BioRemPP Application (Production)
+  # ==========================================================================
+  biorempp:
+    build:
+      context: .
+      dockerfile: .docker/Dockerfile
+      target: production
+      args:
+        PYTHON_VERSION: ${PYTHON_VERSION:-3.11}
+        APP_USER: ${APP_USER:-biorempp}
+        UID: ${UID:-1000}
+        GID: ${GID:-1000}
+    image: biorempp:prod
+    container_name: biorempp
+    profiles: ["prod"]
+    
+    environment:
+      # Application
+      BIOREMPP_ENV: production
+      BIOREMPP_HOST: ${BIOREMPP_HOST:-0.0.0.0}
+      BIOREMPP_PORT: ${BIOREMPP_PORT:-8080}
+      BIOREMPP_DEBUG: False
+      BIOREMPP_HOT_RELOAD: False
+      BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-WARNING}
+      
+      # Gunicorn
+      BIOREMPP_WORKERS: ${BIOREMPP_WORKERS:-4}
+      BIOREMPP_WORKER_CLASS: ${BIOREMPP_WORKER_CLASS:-gevent}
+      BIOREMPP_WORKER_CONNECTIONS: ${BIOREMPP_WORKER_CONNECTIONS:-1000}
+      BIOREMPP_TIMEOUT: ${BIOREMPP_TIMEOUT:-300}
+      BIOREMPP_KEEPALIVE: ${BIOREMPP_KEEPALIVE:-5}
+      BIOREMPP_MAX_REQUESTS: ${BIOREMPP_MAX_REQUESTS:-1000}
+      BIOREMPP_MAX_REQUESTS_JITTER: ${BIOREMPP_MAX_REQUESTS_JITTER:-100}
+      
+      # Python
+      PYTHONUNBUFFERED: 1
+      PYTHONDONTWRITEBYTECODE: 1
+      
+      # Security
+      SECRET_KEY: ${SECRET_KEY:-REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS}
+      
+      # Cache (optional)
+      ENABLE_CACHE: ${ENABLE_CACHE:-False}
+      REDIS_HOST: ${REDIS_HOST:-redis}
+      REDIS_PORT: ${REDIS_PORT:-6379}
+      REDIS_DB: ${REDIS_DB:-0}
+      
+      # SSL/HTTPS
+      ENABLE_HTTPS: ${ENABLE_HTTPS:-False}
+      DOMAIN: ${DOMAIN:-localhost}
+    
+    # Expose port for direct access (comment out when using nginx)
+    ports:
+      - "${PROD_PORT:-8080}:8080"
+    
+    volumes:
+      # Data persistence only (no source code mounting)
+      - biorempp-logs:/app/logs
+      - biorempp-data:/app/data
+      - biorempp-cache:/app/cache
+    
+    networks:
+      - biorempp-network
+    
+    healthcheck:
+      test: ["CMD", "/app/.docker/healthcheck.sh"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    
+    restart: unless-stopped
+    
+    # Resource limits (adjust based on server capacity)
+    deploy:
+      resources:
+        limits:
+          cpus: '4.0'
+          memory: 8G
+        reservations:
+          cpus: '2.0'
+          memory: 4G
+
+  # ==========================================================================
+  # Nginx Reverse Proxy (Production)
+  # ==========================================================================
+  nginx:
+    image: nginx:1.25-alpine
+    container_name: biorempp-nginx
+    profiles: ["nginx"]
+    
+    ports:
+      - "${HTTP_PORT:-80}:80"
+      - "${HTTPS_PORT:-443}:443"
+    
+    volumes:
+      # Configuration
+      - ./.docker/nginx/${NGINX_CONFIG:-nginx.prod.conf}:/etc/nginx/conf.d/default.conf:ro
+      
+      # SSL certificates (Let's Encrypt)
+      - letsencrypt-certs:/etc/letsencrypt:ro
+      - letsencrypt-www:/var/www/certbot:ro
+      
+      # Static files (optional - serve directly from nginx)
+      - ./src/assets:/app/src/assets:ro
+      
+      # Logs
+      - nginx-logs:/var/log/nginx
+    
+    networks:
+      - biorempp-network
+    
+    depends_on:
+      biorempp:
+        condition: service_healthy
+    
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+    
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Certbot for Let's Encrypt SSL (Production)
+  # ==========================================================================
+  certbot:
+    image: certbot/certbot:latest
+    container_name: biorempp-certbot
+    profiles: ["nginx"]
+    
+    volumes:
+      - letsencrypt-certs:/etc/letsencrypt
+      - letsencrypt-www:/var/www/certbot
+    
+    # Run certbot renew daily at 3am
+    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path=/var/www/certbot --quiet; sleep 12h & wait $${!}; done;'"
+    
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Redis Cache (Optional)
+  # ==========================================================================
+  redis:
+    image: redis:7-alpine
+    container_name: biorempp-redis
+    profiles: ["cache"]
+    
+    command: >
+      redis-server
+      --appendonly yes
+      --maxmemory 512mb
+      --maxmemory-policy allkeys-lru
+    
+    ports:
+      - "${REDIS_PORT:-6379}:6379"
+    
+    volumes:
+      - redis-data:/data
+    
+    networks:
+      - biorempp-network
+    
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+    
+    restart: unless-stopped
+
+# ============================================================================
+# NETWORKS
+# ============================================================================
+networks:
+  biorempp-network:
+    name: biorempp-network
+    driver: bridge
+
+# ============================================================================
+# VOLUMES
+# ============================================================================
+volumes:
+  # Development
+  biorempp-dev-logs:
+    name: biorempp-dev-logs
+  biorempp-dev-cache:
+    name: biorempp-dev-cache
+  
+  # Production
+  biorempp-logs:
+    name: biorempp-logs
+  biorempp-data:
+    name: biorempp-data
+  biorempp-cache:
+    name: biorempp-cache
+  
+  # Nginx
+  nginx-logs:
+    name: nginx-logs
+  
+  # Let's Encrypt
+  letsencrypt-certs:
+    name: letsencrypt-certs
+  letsencrypt-www:
+    name: letsencrypt-www
+  
+  # Redis
+  redis-data:
+    name: redis-data

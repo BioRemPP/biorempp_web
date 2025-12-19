@@ -1,0 +1,73 @@
+# UC-5.3: Regulatory Relevance of Samples
+# Panel Configuration (YAML)
+
+use_case_id: "uc-5-3"
+
+scientific_question: >
+  Which biological samples are most functionally relevant to the compounds
+  monitored by different environmental regulatory agencies?
+
+description: >
+  This visualization maps the interaction strength between each biological
+  sample and the various regulatory agencies represented in the dataset.
+  The chord diagram provides a clear overview of these relationships, where
+  the connections illustrate the magnitude of functional associations within
+  each regulatory context.
+
+visual_elements:
+  - label: "Outer Arcs"
+    description: >
+      Each colored arc on the circumference represents either a Sample or a
+      Regulatory Agency. The length of the arc is proportional to the total
+      number of interactions associated with it.
+
+  - label: "Chords (Ribbons)"
+    description: >
+      The ribbons flowing between the arcs represent the interactions between
+      a specific sample and a specific agency.
+
+  - label: "Chord Thickness"
+    description: >
+      The thickness of a chord where it connects to an arc is proportional to
+      the number of interactions. A thick chord indicates a strong association.
+
+  - label: "Agency Dropdown Selector"
+    description: >
+      A dropdown control allows selecting a specific regulatory agency to focus
+      the visualization. When selected, the diagram shows only interactions
+      involving the chosen agency.
+
+  - label: "Node Colors"
+    description: >
+      Each category (sample or regulatory agency) is assigned a distinct color
+      for easy identification across the diagram.
+
+interpretation_guidelines:
+  - >
+    High Regulatory Relevance: A thick chord between a sample (e.g.,
+    Acinetobacter) and an agency (e.g., "EPC") indicates that this sample
+    possesses a high number of genetic functions related to compounds
+    regulated by that agency.
+
+  - >
+    Identifying Key Biological Sources: Samples with multiple thick chords connecting
+    to various agencies are functionally versatile and relevant across several
+    regulatory contexts. Conversely, a sample with one dominant chord may be
+    a specialist for a particular set of regulated pollutants.
+
+  - >
+    Agency Impact: A regulatory agency that is the target of many thick chords
+    from different samples has a broad footprint in the dataset, meaning its
+    list of target compounds is associated with widespread metabolic
+    capabilities across the consortium.
+
+  - >
+    Comparative Assessment: By comparing the chord thickness across different
+    sample-agency pairs, one can assess which samples may be most valuable
+    for addressing specific regulatory priorities.
+
+  - >
+    Consortium Design: This visualization can help identify samples that
+    complement each other across different regulatory contexts.
+
+color_scheme: "success"

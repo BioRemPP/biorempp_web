@@ -1,0 +1,58 @@
+# UC-7.3: Mapping of Genetic Response to High-Priority Threats
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-3"
+
+scientific_question: >
+  For a given high-level toxicological category (e.g., Genomic Toxicity), which
+  biological samples possess the most diverse genetic toolkit to biotransform the
+  widest range of high-risk compounds?
+
+description: >
+  This interactive visualization serves as a targeted tool for designing
+  "special operations" consortia. By selecting a high-risk toxicological
+  super-category, the heatmap dynamically updates to map the genetic response
+  of each sample against the specific compounds classified as 'High Toxicity'
+  for that threat.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Allows selection of the Toxicological Super-Category of interest (e.g.,
+      Genomic, Environmental). The plot updates to show compounds and responses
+      specific to that threat class.
+
+  - label: "Y-Axis (High-Risk Compounds)"
+    description: >
+      Represents the individual compounds classified as 'High Toxicity' within
+      the selected super-category.
+
+  - label: "X-Axis (Samples)"
+    description: >
+      Represents the individual biological samples being analyzed for their
+      genetic capability to biotransform high-risk compounds.
+  - label: "Cell Color (Unique Gene Count)"
+    description: >
+      The color intensity indicates the number of unique genes a sample deploys
+      against a specific high-risk compound. Darker/Warmer colors represent a
+      more robust genetic response.
+
+interpretation_guidelines:
+  - >
+    Targeted Consortia Design: Identify samples with high gene counts (dark cells)
+    against specific high-priority threats to form specialized consortia.
+
+  - >
+    Genetic Redundancy: Samples showing multiple genes for a single compound
+    may suggest a robust and potentially redundant biotransformation capability.
+
+  - >
+    Broad-Spectrum Capability: Samples with dark cells across many rows (compounds)
+    within a category indicate broad-spectrum capability against that specific
+    type of threat.
+
+  - >
+    Gap Analysis: Columns (samples) with few or no colored cells may indicate a lack
+    of genetic resources for those specific risk categories.
+
+color_scheme: "success"

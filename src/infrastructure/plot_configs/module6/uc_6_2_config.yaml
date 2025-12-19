@@ -1,0 +1,370 @@
+# ============================================================================
+# UC-6.2: Chemical Class to Gene Flow
+# ============================================================================
+# Description: Sankey diagram showing flow from compound classes to genes
+# Module: module6
+# Plot Type: Sankey (Alluvial Flow)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-6.2"
+  module: "module6"
+  title: "Chemical Class to Gene Flow"
+  description: >
+    Alluvial diagram visualizing the biological flow of interactions from
+    microbial samples through chemical compound classes to enzymatic activities.
+    Shows how samples relate to compound classes and their associated enzyme
+    activities. Enables identification of sample-compound class relationships,
+    enzyme activity patterns, and flow patterns in biological degradation systems.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "sankey"
+    - "flow"
+    - "alluvial"
+    - "compound_class"
+    - "biorempp"
+  plot_type: "sankey"
+  scientific_context:
+    domain: "Chemical Biology and Flow Analysis"
+    application: "Compound class distribution through samples to genes"
+    interpretation: "Flow width indicates class-sample-gene frequency; reveals specialization patterns"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "compoundclass"
+    - "enzymeactivity"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "extract_flow_columns"
+        enabled: true
+        description: "Extract sample, compoundclass, enzymeactivity columns"
+      
+      - name: "aggregate_flows"
+        enabled: true
+        description: "Count occurrences for each unique path"
+      
+      - name: "build_sankey_structure"
+        enabled: true
+        description: "Build node labels and link source/target/value arrays"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "SankeyStrategy"
+  
+  plotly:
+    # Flow configuration
+    flow_columns:
+      - "sample"
+      - "compoundclass"
+      - "enzymeactivity"
+    
+    value_column: null
+    aggregation: "count"
+    
+    # Node configuration
+    node_pad: 15
+    node_thickness: 20
+    color_by_stage: true
+    color_by_first_level: false
+    
+    # Link configuration
+    link_opacity: 0.5
+    link_color: "rgba(180, 180, 180, 0.5)"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Biological Interaction Flow: Sample → Compound Class → Enzyme Activity"
+        font:
+          size: 16
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 900
+      autosize: true
+      font_size: 10
+      
+      paper_bgcolor: "white"
+      
+      margin:
+        l: 10
+        r: 10
+        t: 60
+        b: 20
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-6-2-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render Sankey when accordion opens"
+  
+  outputs:
+    - component_id: "uc-6-2-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Sankey flow diagram"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "compoundclass", "enzymeactivity"]
+      message: "Data must contain 'sample', 'compoundclass', and 'enzymeactivity' columns"
+    
+    - rule: "min_flow_stages"
+      min_count: 2
+      message: "At least 2 flow stages required for Sankey diagram"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_6_2_df_{data_hash}"
+        description: "Cache processed flow data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_6_2_sankey_{data_hash}"
+        description: "Cache generated Sankey diagram"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Sankey requires 'sample', 'compoundclass', and 'enzymeactivity' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No flow data available. Please check BioRemPP dataset."
+    
+    insufficient_stages:
+      action: "display_message"
+      message: "At least 2 flow stages required for Sankey diagram. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    flow_aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate flow data: {error_details}"
+    
+    sankey_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build Sankey structure: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render Sankey diagram: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font.size: Title font size
+# - autosize: true/false (responsive sizing)
+# - font_size: Global font size for labels
+# - flow_columns: List of columns defining flow stages
+# - value_column: Column for value aggregation (null = count)
+# - aggregation: "count", "sum", "nunique"
+# - node_pad: Padding between nodes
+# - node_thickness: Thickness of node rectangles
+# - node_colors: Custom color palette
+# - link_opacity: Link transparency
+# - link_color: Default link color
+# - color_by_stage: Color nodes by stage level
+# - color_by_first_level: Color links by first level source
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - paper_bgcolor: Paper background color
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_6_2_callbacks.py):
+# 1. Extract BioRemPP DataFrame from merged-result-store
+# 2. Map columns: compoundclass, sample, genesymbol
+# 3. Clean data (remove nulls, placeholders)
+# 4. Pass to PlotService
+#
+# STRATEGY (SankeyStrategy):
+# 1. Receives data with ['compoundclass', 'sample', 'genesymbol']
+# 2. Process data:
+#    - Clean data (remove nulls, placeholders)
+#    - Aggregate flows (count occurrences)
+#    - Create unique paths
+# 3. Create figure:
+#    - Build nodes (unique values from each stage)
+#    - Build links (connections between adjacent stages)
+#    - Assign colors (by stage)
+#    - Apply layout configuration
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'compoundclass', 'sample', 'genesymbol' columns
+# - KEGG: ❌ Different structure
+# - HADEG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain compound class data
+#
+# Rendering Logic:
+# - Chart rendering: On accordion open (on-demand)
+# - Single trigger: accordion active_item change
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Sankey diagram (3-level flow)
+# - Stages: compoundclass → sample → genesymbol
+# - Node width: Proportional to total flow through node
+# - Link width: Proportional to flow value (count)
+# - Colors: By stage (blue, orange, green)
+# - Hover: Shows flow details
+# - Interpretation:
+#   * Wide nodes: High-traffic intermediaries
+#   * Narrow nodes: Specialized/rare entities
+#   * Thick links: Frequent connections
+#   * Thin links: Rare connections
+#   * Specialization: Samples/genes specific to certain compound classes
+#
+# Flow Algorithm:
+# 1. Extract flow columns:
+#    compoundclass, sample, genesymbol
+#
+# 2. Clean data:
+#    Remove nulls, placeholders (#N/D, N/A, etc.)
+#
+# 3. Aggregate:
+#    For each unique path (A → B → C):
+#      value = COUNT(occurrences)
+#
+# 4. Build nodes:
+#    For each stage column:
+#      Extract unique values
+#      Assign stage index
+#      Assign color based on stage
+#
+# 5. Build links:
+#    For each adjacent stage pair (i, i+1):
+#      Aggregate flows: source → target
+#      Assign link color
+#      Set opacity
+#
+# Example:
+# Input:
+#   compoundclass  sample  genesymbol
+#   Aromatic       S1      ABC1
+#   Aromatic       S1      DEF2
+#   Aliphatic      S2      ABC1
+#
+# Flow:
+#   Aromatic → S1 → ABC1 (count: 1)
+#   Aromatic → S1 → DEF2 (count: 1)
+#   Aliphatic → S2 → ABC1 (count: 1)
+#
+# Nodes:
+#   Stage 0 (compoundclass): Aromatic, Aliphatic (blue)
+#   Stage 1 (sample): S1, S2 (orange)
+#   Stage 2 (genesymbol): ABC1, DEF2 (green)
+#
+# Links:
+#   Aromatic → S1 (count: 2)
+#   Aliphatic → S2 (count: 1)
+#   S1 → ABC1 (count: 1)
+#   S1 → DEF2 (count: 1)
+#   S2 → ABC1 (count: 1)
+#
+# Scientific Interpretation:
+# - Compound class distribution: How chemical classes spread across samples
+# - Sample specialization: Samples specialized in certain compound classes
+# - Gene specialization: Genes specialized in degrading certain compound classes
+# - Key samples: Samples degrading multiple compound classes
+# - Key genes: Genes degrading multiple compound classes
+# - Use for: Compound class profiling, sample selection, gene targeting
+# - Optimization: Identify samples/genes with broad vs. narrow compound class specificity
+#
+# Color Scheme (by stage):
+# - Stage 0 (compoundclass): Blue - Chemical classes
+# - Stage 1 (sample): Orange - Microbial samples
+# - Stage 2 (genesymbol): Green - Genes
+#
+# Unique Features:
+# - 3-level flow (compound class → sample → gene)
+# - Count-based aggregation
+# - Stage-based coloring
+# - Interactive hover (flow details)
+# - Specialization identification
+# - Compound class profiling
+#
+# Comparison with UC-6.1:
+# - UC-6.1: 4 levels (regulatory → sample → gene → compound)
+# - UC-6.2: 3 levels (compound class → sample → gene)
+# - Both use same SankeyStrategy with different flow_columns
+# - UC-6.1 focuses on regulatory pathways
+# - UC-6.2 focuses on chemical class distribution

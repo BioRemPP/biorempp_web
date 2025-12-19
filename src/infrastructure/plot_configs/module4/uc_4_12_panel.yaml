@@ -1,0 +1,71 @@
+# UC-4.12: Interactive Heatmap of Pathway Relationships by Sample (HADEG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-12"
+
+scientific_question: >
+  For any given biological sample, what is the functional relationship between
+  its broader metabolic pathways (Pathway) and the specific chemical classes
+  (compound_pathway) they belong to?
+
+description: >
+  This interactive visualization provides a functional map of a selected
+  sample's metabolic architecture. By choosing a sample from the dropdown menu,
+  the heatmap dynamically updates to show the functional richness—measured by
+  the count of unique KEGG Orthology (KO) identifiers—at the intersection of
+  each specific Pathway and its corresponding compound_pathway.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Sample to analyze. The plot will update
+      automatically.
+
+  - label: "Y-axis (Rows)"
+    description: >
+      Represents the specific Pathways found in the selected sample.
+
+  - label: "X-axis (Columns)"
+    description: >
+      Represents the broader Compound Pathways (chemical classes).
+
+  - label: "Cell Color Intensity"
+    description: >
+      The color intensity of each cell indicates the count of unique KOs,
+      showing how functionally rich a specific pathway is within a broader
+      chemical context for that sample.
+
+  - label: "Hover Information"
+    description: >
+      Hover over cells to see exact KO counts and identify specific
+      pathway-compound pathway combinations.
+
+interpretation_guidelines:
+  - >
+    Functional Hotspots: Brightly colored cells (hotspots) may identify a strong
+    functional link. This may indicate that a particular metabolic pathway is a
+    major contributor to the biotransformation of a broader class of compounds within
+    that specific biological source.
+
+  - >
+    Sample's Metabolic Strategy: By examining the overall pattern for a
+    selected sample, one can infer its metabolic strategy. A sample with many
+    hotspots in the "Alkanes" column, for example, may be specialized in
+    alkane biotransformation.
+
+  - >
+    Comparative Profiling: Switching between samples in the dropdown allows
+    for direct comparison of their metabolic maps, potentially highlighting key differences
+    in how each biological source organizes its biotransformation capabilities.
+
+  - >
+    Pathway Organization: The matrix can help identify how different chemical compound
+    classes are associated with distinct metabolic pathways within a single
+    sample, showing the biological source's functional organization.
+
+  - >
+    Metabolic Breadth vs. Specialization: A sample with many bright cells
+    across multiple compound pathway columns has broad metabolic capabilities,
+    while one with hotspots concentrated in few columns is a specialist.
+
+color_scheme: "success"

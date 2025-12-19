@@ -1,0 +1,744 @@
+# Download Configuration for Use Cases
+# Maps each use case to its data sources and export strategy
+# Version: 1.0.0
+# Date: 2025-11-28
+
+# ============================================================================
+# Module 1: Data Provenance and Integration
+# ============================================================================
+
+UC-1.1:
+  databases:
+    - biorempp_df
+    - hadeg_df
+    - kegg_df
+  export_strategy: single_file
+  description: "Database-KO pairs from UpSet plot (processed data)"
+  note: "Exports 2-column format: Database and KO for upset analysis"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "upset_data"  # Generate Database-KO pairs
+    result_type: "database_ko_pairs"
+
+UC-1.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Agency-Compound pairs from UpSet plot (processed data)"
+  note: "Exports 2-column format: Reference (Agency) and Compound for upset analysis"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "upset_agency_compound"  # Generate Agency-Compound pairs
+    result_type: "agency_compound_pairs"
+
+UC-1.3:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Percentage Distribution of KO Assignments Across Reference Agencies"
+  note: "Exports 3-column format: Agency, KO_Count, Percentage - Shows proportional contribution of each agency to total KO diversity"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_agency_ko_percentage"
+    agency_column: "Agency"
+    ko_column: "KO"
+
+UC-1.4:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Proportional Functional Diversity of Microbial Samples"
+  note: "Exports 3-column format: Sample, KO_Count, Percentage - Shows proportional contribution of each sample to total KO diversity"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_sample_ko_percentage"
+    sample_column: "Sample"
+    ko_column: "KO"
+
+UC-1.5:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Regulatory Compliance Scorecard - Sample × Agency scores"
+  note: "Exports 3-column format: Sample, Regulatory_Agency, Compliance_Score (%)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "calculate_regulatory_compliance_scores"
+    sample_column: "sample"
+    agency_column: "referenceAG"
+    compound_column: "compoundname"
+
+UC-1.6:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample-Agency Functional Potential Heatmap - Unique KO counts"
+  note: "Exports 3-column format: Sample, ReferenceAG, Unique_KO_Count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_sample_agency_ko_count"
+    sample_column: "sample"
+    agency_column: "referenceAG"
+    ko_column: "ko"
+
+# ============================================================================
+# Module 2: Gene Counts and Distributions
+# ============================================================================
+
+UC-2.1:
+  databases:
+    - biorempp_df
+    - hadeg_df
+    - kegg_df
+  export_strategy: single_file
+  description: "Sample ranking by KO count - Downloads PROCESSED data (aggregated)"
+  note: "Downloads the same aggregated data shown in the chart"
+  interactive: true
+  filter_type: "range_slider"
+  download_behavior: "processed_data"  # Download aggregated/processed data from chart
+  database_selection_buttons:  # Track which database is selected
+    - "uc-2-1-db-biorempp"
+    - "uc-2-1-db-hadeg"
+    - "uc-2-1-db-kegg"
+  data_processing:  # How to process the data before download
+    operation: "aggregate_ko_count"  # Group by Sample, count unique KOs
+    group_by: "Sample"
+    agg_column: "KO"
+    agg_function: "nunique"
+    result_column: "ko_count"
+
+UC-2.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample-Compound count ranking (processed data)"
+  note: "Exports 2-column format: Sample and Compound_Count for bar chart"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_compound_count"  # Count unique compounds per sample
+    group_by: "Sample"
+    agg_column: "cpd"  # Compound column name
+    result_column: "Compound_Count"
+
+UC-2.3:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Compound-Sample count by chemical class (processed data)"
+  note: "Exports 3-column format: Compound_Class, Compound_Name and Sample_Count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_compound_sample_count"  # Count samples per compound by class
+    class_column: "compoundclass"
+    compound_column: "compoundname"
+    sample_column: "sample"
+    result_column: "Sample_Count"
+
+UC-2.4:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Compound-Gene count by chemical class (processed data)"
+  note: "Exports 3-column format: Compound_Class, Compound_Name and Gene_Count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_compound_gene_count"  # Count genes per compound by class
+    class_column: "compoundclass"
+    compound_column: "compoundname"
+    gene_column: "genesymbol"
+    result_column: "Gene_Count"
+
+UC-2.5:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Distribution statistics"
+
+# ============================================================================
+# Module 3: Similarity and Clustering
+# ============================================================================
+
+UC-3.1:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "PCA analysis - Sample coordinates in principal component space"
+  note: "Exports 3-column format: Sample, PC1, PC2 - Principal component coordinates for each sample after PCA transformation"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_pca_coordinates"
+    sample_column: "Sample"
+    feature_column: "KO"
+    n_components: 2
+
+UC-3.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "PCA analysis - Sample coordinates in principal component space (compound-based)"
+  note: "Exports 3-column format: Sample, PC1, PC2 - Principal component coordinates for each sample after PCA transformation based on compound profiles"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_pca_coordinates"
+    sample_column: "Sample"
+    feature_column: "Compound_ID"
+    n_components: 2
+
+UC-3.4:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample Similarity Based on KO Profiles - DOWNLOAD correlation matrix (processed data)"
+  note: "Exports the Pearson correlation matrix between samples (same as correlogram)"
+  download_behavior: "processed_data"  # Download correlation matrix (aggregated/processed)
+  data_processing:
+    operation: "sample_correlation_matrix"  # Compute Sample x Sample correlation matrix
+    group_by: "Sample"
+    pivot_column: "KO"
+    correlation_method: "pearson"
+    result_type: "correlation_matrix"
+
+UC-3.5:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample Similarity Based on Chemical Profiles - DOWNLOAD correlation matrix (processed data)"
+  note: "Exports the Pearson correlation matrix between samples based on shared chemical compounds (same as correlogram)"
+  download_behavior: "processed_data"  # Download correlation matrix (aggregated/processed)
+  data_processing:
+    operation: "sample_correlation_matrix"  # Compute Sample x Sample correlation matrix
+    group_by: "Sample"
+    pivot_column: "Compound_Name"  # Use Compound_Name instead of KO
+    correlation_method: "pearson"
+    result_type: "correlation_matrix"
+
+UC-3.6:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Gene Co-occurrence Patterns - DOWNLOAD correlation matrix (processed data)"
+  note: "Exports the Pearson correlation matrix between genes showing co-occurrence patterns (same as correlogram)"
+  download_behavior: "processed_data"  # Download correlation matrix (aggregated/processed)
+  data_processing:
+    operation: "feature_correlation_matrix"  # Compute Gene x Gene correlation matrix
+    group_by: "Gene_Symbol"  # Correlate genes instead of samples
+    pivot_column: "Sample"  # Pivot by samples
+    correlation_method: "pearson"
+    result_type: "correlation_matrix"
+
+UC-3.7:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Compound x Compound correlation matrix (co-occurrence patterns)"
+  data_processing:
+    operation: "feature_correlation_matrix"  # Compute Compound x Compound correlation matrix
+    group_by: "Compound_Name"  # Correlate compounds instead of samples
+    pivot_column: "Sample"  # Pivot by samples
+    correlation_method: "pearson"
+    result_type: "correlation_matrix"
+
+# ============================================================================
+# Module 4: Pathway Analysis (KEGG Database)
+# ============================================================================
+
+UC-4.1:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "Pathway richness analysis - Pathway, Sample, and unique KO count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: aggregate_pathway_sample_ko_count
+    pathway_column: pathway
+    sample_column: sample
+    ko_column: ko
+    result_column: KO_Count
+
+UC-4.2:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "Sample ranking by pathway richness - Pathway, Sample, and unique KO count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: aggregate_pathway_sample_ko_count
+    pathway_column: pathway
+    sample_column: sample
+    ko_column: ko
+    result_column: KO_Count
+
+UC-4.3:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "Pathway coverage analysis"
+
+UC-4.4:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "Pathway enrichment"
+
+UC-4.5:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "Gene presence map by pathway (dot plot)"
+  download_behavior:
+    button_text: "Download Gene Presence Data"
+    formats:
+      - csv
+      - excel
+      - json
+  data_processing:
+    operation: aggregate_pathway_sample_gene
+    pathway_column: Pathway
+    sample_column: Sample
+    gene_column: GeneSymbol
+
+UC-4.6:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Functional potential by compound (bubble chart)"
+  download_behavior:
+    button_text: "Download Functional Potential Data"
+    formats:
+      - csv
+      - excel
+      - json
+  data_processing:
+    operation: aggregate_compound_sample_ko_count
+    compound_class_column: Compound_Class
+    compound_name_column: Compound_Name
+    sample_column: Sample
+    ko_column: KO
+    result_column: Gene_Count
+
+UC-4.7:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Gene-compound associations - Gene and Compound_Name"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: extract_gene_compound_associations
+    gene_column: genesymbol
+    compound_column: compoundname
+
+UC-4.8:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Gene-sample associations - Gene and Sample"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: extract_gene_sample_associations
+    gene_column: genesymbol
+    sample_column: sample
+
+UC-4.9:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Enzymatic activity profiling - Sample, Enzyme_Activity, and unique gene count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: aggregate_sample_enzyme_gene_count
+    sample_column: sample
+    enzyme_column: enzyme_activity
+    gene_column: genesymbol
+    result_column: Gene_Count
+    filter_value: "#N/D"
+
+UC-4.10:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Genetic diversity by enzyme activity - Sample, Enzyme_Activity, and unique gene count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: aggregate_sample_enzyme_gene_count
+    sample_column: sample
+    enzyme_column: enzyme_activity
+    gene_column: genesymbol
+    result_column: Gene_Count
+    filter_value: "#N/D"
+
+UC-4.11:
+  databases:
+    - biorempp_df
+    - hadeg_df
+  export_strategy: single_file
+  description: "Global Hierarchical View of Genetic Diversity - Treemap hierarchy with database-specific structure"
+  note: "BioRemPP: Compound_Class → Compound_Name → Gene_Symbol. HADEG: Compound → Pathway → Gene. Exports hierarchical structure with unique gene counts."
+  download_behavior: "processed_data"
+  database_selection_buttons:
+    - "uc-4-11-db-biorempp"
+    - "uc-4-11-db-hadeg"
+  data_processing:
+    operation: "export_treemap_hierarchy_multidb"
+
+UC-4.12:
+  databases:
+    - hadeg_df
+  export_strategy: single_file
+  description: "Interactive Pathway Relationships by Sample - Unique KO counts per Pathway × Compound_Pathway × Sample"
+  note: "Exports 4-column format: Pathway, Compound_Pathway, Sample, Unique_KO_Count - ALL samples included"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_pathway_compound_ko_count"
+    pathway_column: "Pathway"
+    compound_pathway_column: "compound_pathway"
+    sample_column: "sample"
+    ko_column: "ko"
+
+UC-4.13:
+  databases:
+    - hadeg_df
+  export_strategy: single_file
+  description: "Interactive Genetic Profile by Compound Pathway - Unique KO counts per Gene × Sample × Compound_Pathway"
+  note: "Exports 4-column format: Gene, Sample, Compound_Pathway, Unique_KO_Count - ALL pathways included"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_gene_sample_ko_count"
+    gene_column: "Gene"
+    sample_column: "sample"
+    ko_column: "ko"
+    pathway_column: "compound_pathway"
+
+# ============================================================================
+# Module 5: Compound Analysis
+# ============================================================================
+
+UC-5.1:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample-compound class interactions - Sample, Compound_Class, and interaction count"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: aggregate_sample_compound_interactions
+    sample_column: sample
+    compound_class_column: compoundclass
+    result_column: Interaction_Count
+
+UC-5.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample similarity based on shared compounds (pairwise chord diagram)"
+  download_behavior:
+    button_text: "Download Similarity Data"
+    formats:
+      - csv
+      - excel
+      - json
+  data_processing:
+    operation: aggregate_sample_similarity_pairwise
+    sample_column: sample
+    shared_column: compoundname
+
+UC-5.3:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Sample-agency regulatory relevance (chord diagram)"
+  download_behavior:
+    button_text: "Download Regulatory Data"
+    formats:
+      - csv
+      - excel
+      - json
+  data_processing:
+    operation: aggregate_sample_agency_interactions
+    sample_column: sample
+    agency_column: referenceag
+    result_column: Interaction_Count
+
+UC-5.4:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Gene-Compound Interaction Network - Network edges (gene-compound pairs)"
+  note: "Exports 2-column format: Gene_Symbol, Compound_Name - Each row represents a unique interaction (edge) in the bipartite network"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_gene_compound_network_edges"
+    gene_column: "genesymbol"
+    compound_column: "compoundname"
+
+UC-5.5:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Gene-Gene Similarity Network - Gene pairs based on shared compounds"
+  note: "Exports 2-column format: Gene_1, Gene_2 - Each row represents a connection (edge) between two genes that share compounds"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_gene_similarity_network"
+    gene_column: "genesymbol"
+    compound_column: "compoundname"
+    min_shared_compounds: 1
+
+UC-5.6:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Compound-Compound Similarity Network - Compound pairs based on shared genes"
+  note: "Exports 2-column format: Compound_1, Compound_2 - Each row represents a connection (edge) between two compounds that share genes"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_compound_similarity_network"
+    compound_column: "compoundname"
+    gene_column: "genesymbol"
+    min_shared_genes: 1
+
+# ============================================================================
+# Module 6: Additional Analysis
+# ============================================================================
+
+UC-6.1:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Regulatory to Molecular Interaction Flow - 4-level Sankey data (Agency, Sample, Gene, Compound)"
+  note: "Exports raw flow data in 4-column format: Agency, Sample, Gene_Symbol, Compound_Name"
+  download_behavior: "raw_data"
+  relevant_columns:
+    - Agency
+    - Sample
+    - Gene_Symbol
+    - Compound_Name
+
+UC-6.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Biological Interaction Flow - 3-level Sankey data (Sample, Chemical Class, Enzyme Activity)"
+  note: "Exports raw flow data in 3-column format: Sample, Compound_Class, Enzyme_Activity"
+  download_behavior: "raw_data"
+  relevant_columns:
+    - Sample
+    - Compound_Class
+    - Enzyme_Activity
+
+UC-6.3:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Chemical Hierarchy of Bioremediation"
+  note: "Exports hierarchical treemap data: Compound_Class → Compound_Name → Sample with unique gene counts. Shows genetic diversity required for chemical degradation."
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_treemap_hierarchy"
+    path_columns: ["Compound_Class", "Compound_Name", "Sample"]
+    value_column: "Gene_Symbol"
+    aggregation: "nunique"
+
+UC-6.4:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Overview of Enzymatic Activity and Substrate Scope"
+  note: "Exports hierarchical treemap data: Enzyme_Activity → Compound_Class → Gene_Symbol with unique compound counts. Shows enzymatic versatility and substrate specificity."
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_treemap_hierarchy"
+    path_columns: ["Enzyme_Activity", "Compound_Class", "Gene_Symbol"]
+    value_column: "Compound_Name"
+    aggregation: "nunique"
+
+UC-6.5:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Chemical-Enzymatic Landscape by Substrate Scope"
+  note: "Exports hierarchical treemap data: Compound_Class → Enzyme_Activity → Gene_Symbol with unique compound counts. Shows chemo-enzymatic versatility and substrate targeting patterns."
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_treemap_hierarchy"
+    path_columns: ["Compound_Class", "Enzyme_Activity", "Gene_Symbol"]
+    value_column: "Compound_Name"
+    aggregation: "nunique"
+
+# ============================================================================
+# Module 7: Toxicity Analysis (ToxCSM)
+# ============================================================================
+
+UC-7.1:
+  databases:
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Compound toxicity profiles - Compound_Name, Super_Category, Endpoint, and Toxicity_Score"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: extract_compound_toxicity_profile
+    compound_column: compoundname
+    super_category_column: super_category
+    endpoint_column: endpoint
+    toxicity_score_column: toxicity_score
+
+UC-7.2:
+  databases:
+    - biorempp_df
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Risk-regulatory concordance (cross-database chord diagram)"
+  download_behavior:
+    button_text: "Download Concordance Data"
+    formats:
+      - csv
+      - excel
+      - json
+  data_processing:
+    operation: aggregate_risk_agency_concordance
+    threshold: 0.7
+
+UC-7.3:
+  databases:
+    - biorempp_df
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Mapping of Genetic Response to High-Priority Threats - Unique Gene counts per Compound × Sample with Super_Category"
+  note: "Exports 4-column format: Compound_Name, Sample, Super_Category, Unique_Gene_Count - ALL threat categories and compounds included (not filtered by dropdown)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "aggregate_gene_sample_compound_count"
+    gene_column: "Gene_Symbol"
+    sample_column: "Sample"
+    compound_column: "Compound_Name"
+    merge_toxcsm: true
+    category_column: "super_category"
+
+UC-7.4:
+  databases:
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Toxicity Score Distribution by Endpoint Category - Filtered by Super-Category"
+  note: "Exports 4-column format: Super_Category, Endpoint, Compound_Name, Toxicity_Score - Respects dropdown selection"
+  download_behavior: "processed_data"
+  interactive: true
+  dropdown_filters:
+    - "uc-7-4-category-dropdown"
+  data_processing:
+    operation: "export_toxicity_endpoint_distribution"
+
+UC-7.5:
+  databases:
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Toxicity endpoint distribution - Super_Category, Endpoint, and Toxicity_Score"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: extract_super_category_endpoint_score
+    super_category_column: super_category
+    endpoint_column: endpoint
+    toxicity_score_column: toxicity_score
+
+UC-7.6:
+  databases:
+    - biorempp_df
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Sample Risk Mitigation Breadth by Compound Variety"
+  note: "Exports 3-column format: Sample, Toxicity_Category, Unique_Compound_Count - Shows variety of high-risk compounds each sample can target within each toxicological category (merged from BioRemPP + ToxCSM)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_sample_toxicity_breadth"
+
+UC-7.7:
+  databases:
+    - biorempp_df
+    - toxcsm_df
+  export_strategy: single_file
+  description: "Sample Risk Mitigation Depth Profile by Genetic Investment"
+  note: "Exports 4-column format: Sample, Toxicity_Category, Compound_Name, Interaction_Count - Shows depth of genetic investment (total interactions) each sample dedicates to each compound within toxicological categories (merged from BioRemPP + ToxCSM)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "export_sample_toxicity_depth"
+
+# ============================================================================
+# Module 8: Integrative Analysis
+# ============================================================================
+
+UC-8.1:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Minimal sample grouping data - Sample, Compound_Name, Group, Compound_Class, and KO"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: extract_sample_compound_group_class_ko
+    sample_column: sample
+    compound_column: compoundname
+    group_column: _group
+    class_column: compoundclass
+    ko_column: ko
+
+UC-8.2:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Chemical Class Completeness Scorecard - Sample × Compound_Class scores"
+  note: "Exports 3-column format: Sample, Category (Compound_Class), Completeness_Score (%)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "calculate_ko_completeness_scores"
+    sample_column: "Sample"
+    category_column: "Compound_Class"
+    ko_column: "KO"
+
+UC-8.3:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Compound-Specific KO Completeness Scorecard - Sample × Compound_Name scores"
+  note: "Exports 3-column format: Sample, Category (Compound_Name), Completeness_Score (%)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "calculate_ko_completeness_scores"
+    sample_column: "Sample"
+    category_column: "Compound_Name"
+    ko_column: "KO"
+
+UC-8.4:
+  databases:
+    - hadeg_df
+  export_strategy: single_file
+  description: "Pathway Completeness Scorecard for HADEG Pathways - Sample × Pathway scores"
+  note: "Exports 3-column format: Sample, Category (Pathway), Completeness_Score (%)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "calculate_ko_completeness_scores"
+    sample_column: "Sample"
+    category_column: "Pathway"
+    ko_column: "KO"
+
+UC-8.5:
+  databases:
+    - kegg_df
+  export_strategy: single_file
+  description: "KEGG Pathway Completeness Scorecard - Sample × KEGG_Pathway scores"
+  note: "Exports 3-column format: Sample, Category (Pathway), Completeness_Score (%)"
+  download_behavior: "processed_data"
+  data_processing:
+    operation: "calculate_ko_completeness_scores"
+    sample_column: "Sample"
+    category_column: "Pathway"
+    ko_column: "KO"
+
+UC-8.6:
+  databases:
+    - biorempp_df
+  export_strategy: single_file
+  description: "Integrative analysis 6"
+
+UC-8.7:
+  databases:
+    - biorempp_df
+    - hadeg_df
+  export_strategy: multi_sheet
+  description: "Cross-database KO overlap (BioRemPP + HADEG)"
+  note: "Multi-sheet Excel for database comparison"

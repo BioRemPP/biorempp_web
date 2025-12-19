@@ -1,0 +1,83 @@
+# UC-6.4: Overview of Enzymatic Activity and Substrate Scope
+# Panel Configuration (YAML)
+
+use_case_id: "uc-6-4"
+
+scientific_question: >
+  Which enzymatic functions are the most versatile (i.e., target the widest
+  range of unique compounds), how is this versatility distributed across
+  different chemical classes, and which specific genes are the primary
+  drivers of these activities?
+
+description: >
+  This visualization provides a hierarchical, top-down view of the functional
+  landscape of the enzymatic activities. The treemap illustrates how broad
+  enzyme functions are composed of activities targeting specific chemical
+  classes, which are in turn carried out by individual genes. The size of
+  each rectangle is proportional to the number of unique compounds associated
+  with it, highlighting the most promiscuous and important enzymatic functions.
+  The nested rectangles represent the hierarchical path: Enzyme Activity ->
+  Compound Class -> Gene Symbol.
+
+visual_elements:
+  - label: "Nested Rectangles (Hierarchy)"
+    description: >
+      The chart uses nested rectangles to represent the hierarchy. The largest
+      rectangles represent the top-level categories (Enzyme Activity),
+      containing smaller rectangles for Compound Class, which in turn contain
+      the smallest rectangles for Gene Symbol.
+
+  - label: "Area (Values)"
+    description: >
+      The area of each rectangle is proportional to the total unique compound
+      count for that category and all categories nested within it. Larger
+      areas indicate a broader substrate scope and more versatile functions.
+
+  - label: "Color Scale (Greens)"
+    description: >
+      The color of each rectangle corresponds to its unique compound count,
+      with darker/more intense greens indicating higher values. This provides
+      immediate visual identification of the most promiscuous enzymatic
+      activities.
+
+  - label: "Interactive Zoom"
+    description: >
+      Click on any rectangle to zoom in and explore that specific branch
+      of the hierarchy in more detail. Click the header bar to zoom out
+      and return to the previous level.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over each rectangle displays the category name and its
+      exact unique compound count value.
+
+interpretation_guidelines:
+  - >
+    Most Versatile Enzyme Functions: The largest rectangles at the top level
+    (e.g., oxidoreductase, transferase) represent the most versatile enzymatic
+    functions that target the widest range of different chemical compounds.
+    These are key functional categories for broad bioremediation potential.
+
+  - >
+    Substrate Specificity: Within a given enzyme activity, the largest
+    Compound Class rectangles can help identify its primary chemical targets. For
+    example, this can show if a hydrolase function is primarily focused
+    on biotransforming aromatic compounds versus aliphatic compounds.
+
+  - >
+    Key Genetic Contributors: At the lowest level, the largest Gene Symbol
+    rectangles represent the key powerhouse genes that are responsible for
+    the broadest substrate activity within their functional and chemical
+    context. These genes may be targets for bioremediation applications.
+
+  - >
+    Functional Promiscuity: Enzyme activities with uniformly distributed
+    compound classes may suggest broad-spectrum biotransformation capability, while
+    those dominated by a single class may indicate specialized function.
+
+  - >
+    Hierarchical Patterns: The overall structure can help identify how enzymatic
+    versatility is distributed across the functional landscape, helping assess
+    which branches are most promiscuous and valuable.
+
+color_scheme: "success"

@@ -1,0 +1,305 @@
+# ============================================================================
+# UC-2.5: Distribution of Unique KO Counts Across Samples
+# ============================================================================
+# Description: Box plot + scatter plot showing KO distribution across samples
+# Module: module2
+# Plot Type: Box Scatter (Box + Jittered Scatter)
+# Rendering: On-demand (accordion open + database selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-2.5"
+  module: "module2"
+  title: "Distribution of Unique KO Counts Across Samples"
+  description: >
+    Statistical distribution analysis of functional richness (unique KO counts)
+    across samples, comparing annotation databases (BioRemPP, HADEG, KEGG).
+    Combines box plot (distribution summary) with jittered scatter plot
+    (individual sample visibility).
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-01"
+  tags:
+    - "ko_distribution"
+    - "functional_richness"
+    - "statistical_analysis"
+    - "box_scatter"
+    - "database_comparison"
+  plot_type: "box_scatter"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Database comparison and functional annotation scope analysis"
+    interpretation: "Higher median KO counts indicate broader functional coverage; tighter distributions indicate consistent annotation depth"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "merged-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "unique_ko_count"
+    - "rank"
+  
+  processing:
+    steps:
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "BoxScatterStrategy"
+  
+  plotly:
+    # Box plot configuration
+    box:
+      y: "unique_ko_count"
+      marker:
+        color: "mediumseagreen"
+      boxmean: true
+      name: "Distribution"
+    
+    # Scatter plot configuration (jittered points)
+    scatter:
+      y: "unique_ko_count"
+      mode: "markers"
+      name: "Samples"
+      marker:
+        color: "rgba(0, 0, 0, 0.5)"  # Black with alpha
+        size: 8
+        line:
+          color: "white"
+          width: 1
+      jitter: 0.06
+      customdata_columns: ["sample", "rank"]
+      hovertemplate: >
+        <b>%{customdata[0]}</b><br>
+        Unique KO Count: %{y}<br>
+        Rank: #%{customdata[1]}<br>
+        <extra></extra>
+    
+    # Title configuration
+    title:
+      show: true
+      text: "Distribution of Unique KO Counts Across Samples"
+      font:
+        size: 18
+        family: "Arial, sans-serif"
+        color: "#2c3e50"
+      x: 0.5
+      xanchor: "center"
+    
+    # Layout configuration
+    layout:
+      height: 600
+      autosize: true
+      orientation: "v"
+      
+      xaxis:
+        title: ""
+        showticklabels: false
+        showgrid: false
+        zeroline: false
+      
+      yaxis:
+        title: "Number of Unique KOs per Sample"
+        gridcolor: "#e0e0e0"
+        zeroline: true
+        zerolinecolor: "#cccccc"
+        zerolinewidth: 1
+      
+      plot_bgcolor: "white"
+      paper_bgcolor: "white"
+      
+      font:
+        family: "Arial, sans-serif"
+        size: 12
+      
+      showlegend: false
+      
+      margin:
+        l: 80
+        r: 50
+        t: 100
+        b: 60
+      
+      hovermode: "closest"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-2-5-accordion"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Initial render when accordion opens (default: BioRemPP)"
+    
+    - component_id: "uc-2-5-db-biorempp"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Update chart with BioRemPP data"
+    
+    - component_id: "uc-2-5-db-hadeg"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Update chart with HADEG data"
+    
+    - component_id: "uc-2-5-db-kegg"
+      property: "n_clicks"
+      trigger_type: "button_click"
+      description: "Update chart with KEGG data"
+  
+  outputs:
+    - component_id: "uc-2-5-chart-container"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "KO distribution box scatter chart"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+    
+    - component_id: "uc-2-5-chart-container"
+      property: "children"
+      description: "Current chart container content"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "unique_ko_count", "rank"]
+      message: "Data must contain 'sample', 'unique_ko_count', and 'rank' columns"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for distribution analysis"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_2_5_df_{data_hash}_{filters_hash}"
+        description: "Cache KO count aggregation per database"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_2_5_box_{data_hash}_{filters_hash}"
+        description: "Cache generated box scatter chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. KO distribution requires 'sample', 'unique_ko_count', and 'rank' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No KO data available for selected database."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 sample required for distribution analysis. Found: {count}"
+    
+    no_database_selected:
+      action: "display_placeholder"
+      message: "Please select a database (BioRemPP, HADEG, or KEGG)."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to calculate KO distribution: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render box scatter chart: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - box.marker.color: Box plot color (mediumseagreen)
+# - box.boxmean: true/false (show mean line)
+# - scatter.marker.color: Scatter point color with alpha
+# - scatter.marker.size: Point size (8)
+# - scatter.jitter: Horizontal jitter amount (0.06)
+# - title.show: true/false (toggle title visibility)
+# - title.text: Chart title text
+# - layout.autosize: true/false (responsive sizing)
+# - layout.height: Chart height in pixels
+# - yaxis.title: Y-axis title
+# - customdata_columns: Columns for hover data
+# - hovertemplate: Custom hover template
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_2_5_callbacks.py):
+# 1. Extract data from selected database (biorempp_df/hadeg_df/kegg_df)
+# 2. Resolve column names (Sample/sample, KO/ko/Gene)
+# 3. Clean data (remove empty, strip whitespace, uppercase KO)
+# 4. Remove duplicates (sample-KO combinations)
+# 5. GroupBy 'sample' and count unique KOs → creates 'unique_ko_count'
+# 6. Calculate rank (method='min', descending)
+# 7. Sort descending by unique_ko_count
+# 8. Pass to PlotService
+#
+# STRATEGY (BoxScatterStrategy):
+# 1. Receives pre-aggregated data with ['sample', 'unique_ko_count', 'rank']
+# 2. Validates columns exist
+# 3. Creates box plot trace (shows median, IQR, outliers)
+# 4. Creates scatter trace with Gaussian jitter (shows individual points)
+# 5. Applies layout configuration
+# 6. Returns combined figure
+#
+# Database Support:
+# - BioRemPP: ✅ Contains 'Sample' and 'KO' columns
+# - HADEG: ✅ Contains 'Sample' and 'KO' columns
+# - KEGG: ✅ Contains 'Sample' and 'KO' columns
+#
+# Rendering Logic:
+# - Initial render: Accordion open (default: BioRemPP)
+# - Database switch: Button click (BioRemPP/HADEG/KEGG)
+# - Immediate update on database selection
+#
+# Visualization Details:
+# - Box plot: Shows statistical distribution (median, Q1, Q3, whiskers, outliers)
+# - Scatter plot: Shows all individual sample points with horizontal jitter
+# - Jitter: Gaussian noise (mean=0, std=0.06) for point separation
+# - Hover: Sample name, exact KO count, rank within database
+# - Colors: mediumseagreen (box) and semi-transparent mediumseagreen (scatter)

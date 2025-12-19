@@ -1,0 +1,306 @@
+/* Analysis Suggestions Styles - BioRemPP v1.0 */
+
+/* ============================================================
+   Offcanvas Customization
+   ============================================================ */
+
+/* Custom width for suggestions offcanvas */
+#suggestions-offcanvas {
+    --bs-offcanvas-width: 600px;
+}
+
+/* Scrollable content area with padding */
+.suggestions-content-area {
+    max-height: calc(100vh - 280px);
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+/* Custom scrollbar for suggestions content */
+.suggestions-content-area::-webkit-scrollbar {
+    width: 8px;
+}
+
+.suggestions-content-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.suggestions-content-area::-webkit-scrollbar-thumb {
+    background: #ffc107;
+    border-radius: 10px;
+}
+
+.suggestions-content-area::-webkit-scrollbar-thumb:hover {
+    background: #e0a800;
+}
+
+/* ============================================================
+   Trigger Button
+   ============================================================ */
+
+/* Position trigger button on bottom-right (below Navigate button) */
+.suggestions-trigger-btn {
+    position: fixed !important;
+    bottom: 20px !important;
+    right: 20px !important;
+    left: auto !important;
+    z-index: 999;
+    /* Below footer but above content */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+}
+
+.suggestions-trigger-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(255, 193, 7, 0.3);
+}
+
+/* ============================================================
+   Tab Styling
+   ============================================================ */
+
+#suggestions-tabs .nav-link {
+    font-size: 0.9rem;
+    padding: 0.6rem 1rem;
+    border-radius: 0.25rem 0.25rem 0 0;
+    transition: all 0.2s ease;
+}
+
+#suggestions-tabs .nav-link.active {
+    background-color: #ffc107;
+    color: #000;
+    border-color: #ffc107;
+    font-weight: 600;
+}
+
+#suggestions-tabs .nav-link:hover:not(.active) {
+    background-color: #fff3cd;
+    border-color: #fff3cd;
+}
+
+/* ============================================================
+   UC Link Styling
+   ============================================================ */
+
+.suggestion-uc-link {
+    transition: all 0.25s ease;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    padding-left: 1rem !important;
+}
+
+.suggestion-uc-link:hover {
+    background-color: #fff3cd !important;
+    border-left-color: #ffc107 !important;
+    padding-left: 1.5rem !important;
+    transform: translateX(4px);
+}
+
+.suggestion-uc-link:active {
+    background-color: #ffe69c !important;
+}
+
+/* Icon animation on hover */
+.suggestion-uc-link:hover .fa {
+    animation: pulse-icon 0.5s ease;
+}
+
+@keyframes pulse-icon {
+
+    0%,
+    100% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.2);
+    }
+}
+
+/* ============================================================
+   Accordion Styling
+   ============================================================ */
+
+#guiding-questions-accordion .accordion-button {
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 0.9rem 1.2rem;
+}
+
+#guiding-questions-accordion .accordion-button:not(.collapsed) {
+    background-color: #fff3cd;
+    color: #000;
+    border-left: 4px solid #ffc107;
+}
+
+#guiding-questions-accordion .accordion-button:focus {
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+/* ============================================================
+   Card Sections (Basic Exploration)
+   ============================================================ */
+
+/* Category cards with colored headers */
+.suggestions-content-area .card {
+    transition: all 0.3s ease;
+}
+
+.suggestions-content-area .card:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-2px);
+}
+
+/* Header icon colors */
+.suggestions-content-area .card-header .text-primary {
+    color: #0d6efd !important;
+}
+
+.suggestions-content-area .card-header .text-success {
+    color: #198754 !important;
+}
+
+.suggestions-content-area .card-header .text-danger {
+    color: #dc3545 !important;
+}
+
+.suggestions-content-area .card-header .text-info {
+    color: #0dcaf0 !important;
+}
+
+/* ============================================================
+   Alert Styling
+   ============================================================ */
+
+.suggestions-content-area .alert {
+    border-radius: 0.375rem;
+    font-size: 0.9rem;
+}
+
+.suggestions-content-area .alert-info {
+    background-color: #cfe2ff;
+    border-color: #b6d4fe;
+    color: #084298;
+}
+
+.suggestions-content-area .alert-success {
+    background-color: #d1e7dd;
+    border-color: #badbcc;
+    color: #0f5132;
+}
+
+/* ============================================================
+   List Group Styling
+   ============================================================ */
+
+.suggestions-content-area .list-group-item {
+    border-left: none;
+    border-right: none;
+    padding: 0.75rem 1rem;
+}
+
+.suggestions-content-area .list-group-item:first-child {
+    border-top: none;
+}
+
+.suggestions-content-area .list-group-item:last-child {
+    border-bottom: none;
+}
+
+/* ============================================================
+   Responsive Adjustments
+   ============================================================ */
+
+/* Tablet and smaller */
+@media (max-width: 768px) {
+    #suggestions-offcanvas {
+        --bs-offcanvas-width: 90%;
+    }
+
+    .suggestions-trigger-btn {
+        bottom: 15px;
+        right: 15px;
+    }
+
+    #suggestions-tabs .nav-link {
+        font-size: 0.8rem;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .suggestion-uc-link {
+        font-size: 0.9rem;
+    }
+}
+
+/* Mobile */
+@media (max-width: 576px) {
+    #suggestions-offcanvas {
+        --bs-offcanvas-width: 100%;
+    }
+
+    .suggestions-trigger-btn {
+        bottom: 10px;
+        right: 10px;
+    }
+
+    .suggestions-content-area {
+        max-height: calc(100vh - 250px);
+    }
+}
+
+/* ============================================================
+   Loading States
+   ============================================================ */
+
+.suggestions-loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+}
+
+.suggestions-loading .spinner-border {
+    color: #ffc107;
+}
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+
+/* Focus states for keyboard navigation */
+.suggestion-uc-link:focus {
+    outline: 2px solid #ffc107;
+    outline-offset: 2px;
+}
+
+.suggestions-trigger-btn:focus {
+    outline: 2px solid #ffc107;
+    outline-offset: 4px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .suggestion-uc-link:hover {
+        border-left-color: #000 !important;
+    }
+
+    #suggestions-tabs .nav-link.active {
+        background-color: #000;
+        color: #fff;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+
+    .suggestion-uc-link,
+    .suggestions-trigger-btn,
+    .suggestions-content-area .card {
+        transition: none;
+    }
+
+    .suggestion-uc-link:hover .fa {
+        animation: none;
+    }
+}

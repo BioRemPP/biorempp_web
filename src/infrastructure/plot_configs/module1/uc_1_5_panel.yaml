@@ -1,0 +1,100 @@
+# UC-1.5: Regulatory Reference Compliance Scorecard
+
+use_case_id: "uc-1-5"
+
+scientific_question: >
+  How "compliant" is the functional potential of each biological sample with
+  the priorities of different regulatory bodies, as measured by the percentage
+  of monitored compounds they can target?
+
+description: >
+  This visualization provides a practical, application-oriented "scorecard"
+  that quantifies how well each sample's degradation capabilities align with
+  the priorities of major regulatory agencies. The heatmap displays a calculated
+  Compliance Score, which represents the percentage of an agency's target
+  compounds that a sample is equipped to interact with. The scorecard is
+  presented as a heatmap matrix comparing Samples (rows) against Regulatory
+  Agencies (columns), with cell values representing the compliance score (0-100%).
+
+visual_elements:
+  - label: "Heatmap Matrix"
+    description: >
+      The visualization is structured as a matrix where rows represent individual
+      biological samples and columns represent different regulatory agencies
+      (e.g., EPA, EPC, ATSDR). Each cell in the matrix displays a compliance
+      score as both color intensity and numerical value, creating an intuitive
+      visual scorecard of regulatory alignment and application readiness.
+  
+  - label: "Color Gradient (Blue Scale)"
+    description: >
+      Cell colors range from light blue (low compliance, 0-20%) through
+      medium blue (moderate compliance, 40-60%) to dark blue (high compliance,
+      80-100%). The color intensity provides an immediate visual indicator of
+      a sample's alignment with each agency's priorities. Brighter/darker cells
+      represent "hotspots" of regulatory compliance excellence, identifying
+      samples with strong application potential for specific regulatory contexts.
+  
+  - label: "Compliance Score Labels"
+    description: >
+      Each cell displays the compliance percentage (e.g., "95.0%") directly
+      within the cell. A score of 100% indicates the sample can target every
+      single compound monitored by that agency, making it a comprehensive
+      solution for that regulatory framework. Scores above 80% suggest strong
+      alignment and application readiness for agency-specific bioremediation.
+  
+  - label: "Sample Rows (Y-axis)"
+    description: >
+      Each row represents a biological sample and shows its compliance scores
+      across all regulatory agencies. Reading across a row allows assessment
+      of a sample's regulatory versatility - multiple high scores (>70%)
+      indicate a broad-spectrum regulatory compliance profile, while selective
+      high scores suggest specialization for specific agency priorities.
+  
+  - label: "Regulatory Agency Columns (X-axis)"
+    description: >
+      Each column represents a regulatory agency (e.g., EPA, EPC, ATSDR) and
+      shows compliance scores across all samples. Reading down a column reveals
+      which samples are best equipped for that agency's environmental standards
+      and can indicate the feasibility of achieving comprehensive compliance
+      with available biological resources.
+
+interpretation_guidelines:
+  - >
+    Identifying High-Compliance Specialists: Brightly colored cells (dark blue,
+    >80% compliance) identify samples that may be potent "specialists" for specific
+    regulatory contexts. A score of 95% for Sample A and the EPA means Sample A
+    can target 95% of the EPA's priority pollutants, suggesting it as a candidate
+    for EPA-focused bioremediation applications. These high-compliance specialists
+    may be prioritized for regulatory approval pathways and field deployment.
+  
+  - >
+    Discovering Versatile Generalists: A sample with consistently high scores
+    across multiple agency columns (>70% across all agencies) may be a functional
+    "generalist" with broad regulatory relevance. Such samples can be valuable
+    for multi-jurisdictional applications or contamination scenarios that must
+    meet multiple regulatory standards simultaneously.
+  
+  - >
+    Consortium Design for Regulatory Compliance: To achieve comprehensive
+    compliance across all relevant agencies, select a combination of samples
+    that together achieve high scores across all agency columns. For example,
+    if Sample A scores 90% for EPA but 40% for ATSDR, while Sample B scores
+    50% for EPA but 95% for ATSDR, combining them creates a consortium with
+    broad regulatory coverage.
+  
+  - >
+    Strategic Sample Selection: For regulatory-driven bioremediation projects,
+    samples may be selected based on the governing agency's standards. For EPA-
+    regulated sites, consider choosing the sample with the highest compliance score
+    for EPA (darkest cell in EPA column). For sites under multiple jurisdictions,
+    samples with balanced high scores or complementary consortia may be explored.
+  
+  - >
+    Compliance Gap Analysis: Cells with low scores (<30%, light blue) represent
+    compliance gaps where samples lack the functional capacity to address
+    agency priorities. These gaps can guide research priorities, bioprospecting
+    efforts, or genetic engineering strategies to develop samples with better
+    regulatory alignment. Identifying which specific compounds are missing can
+    inform targeted capability enhancement.
+
+color_scheme: "primary"

@@ -1,0 +1,67 @@
+# UC-2.5: Distribution of KO Across Samples
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-2-5"
+
+scientific_question: >
+  How does the statistical distribution of functional richness (unique KO counts)
+  compare across different samples and annotation databases, and what insights
+  might this provide about their scope and focus?
+
+description: >
+  This interactive visualization provides a comparative statistical summary of
+  unique KO counts across all analyzed samples, allowing for direct assessment
+  of results from different annotation sources. By selecting a database from the
+  dropdown menu, the chart dynamically updates to show the distribution for that
+  specific dataset. It combines a box plot, which summarizes the distribution,
+  with a jittered scatter plot, which shows the position of each individual sample.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to switch between the BioRemPP, HADEG, and KEGG datasets. The
+      visualization updates automatically to show the distribution for the
+      selected database.
+  
+  - label: "Box Plot"
+    description: >
+      The green box represents the interquartile range (IQR), containing the
+      central 50% of the data for the selected database. The line inside the
+      box marks the median unique KO count.
+  
+  - label: "Jittered Points"
+    description: >
+      Each individual black dot represents a single sample. Its vertical position
+      corresponds to its unique KO count. Horizontal jittering prevents overlapping
+      points for better visibility.
+  
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over any point reveals the sample's name, its exact
+      unique KO count, and its rank within that specific dataset.
+
+interpretation_guidelines:
+  - >
+    Comparing Distributions: By switching between databases, one can compare
+    their overall distributions. A database with a higher median KO count
+    (e.g., KEGG) may offer broader functional coverage, while another with a
+    tighter distribution (a shorter box) may be more consistent in its
+    annotation depth across samples.
+  
+  - >
+    Identifying Database-Specific Outliers: A sample that appears as an outlier
+    in one database but not another may help identify a specific strength or focus
+    of that annotation source (e.g., HADEG identifying exceptionally high KO
+    counts for a known hydrocarbon degrader).
+  
+  - >
+    Assessing Annotation Scope: A narrow distribution from a specialized database
+    like HADEG versus a wider one from a generalist database like KEGG may provide
+    insights into their intended applications and curation strategies.
+  
+  - >
+    Median vs. Mean: The box plot emphasizes the median (middle value) rather
+    than the mean, making it robust to outliers. This is particularly useful
+    when comparing databases with different annotation philosophies.
+
+color_scheme: "success"

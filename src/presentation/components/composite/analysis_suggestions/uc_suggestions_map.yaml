@@ -1,0 +1,1005 @@
+# UC Suggestions Mapping - BioRemPP v1.0
+# Complete mapping of all 56 Use Cases with Data Type categorization
+# Source: docs/use_cases/uc_summary.md
+
+use_cases:
+  # ============================================================================
+  # Module 1: Comparative Assessment (6 UCs)
+  # ============================================================================
+  
+  uc-1-1:
+    title: "Intersections across BioRemPP, HADEG, and KEGG"
+    module: 1
+    icon: "fas fa-venn-diagram"
+    viz_type: "upset"
+    data_type: "genes"
+    entities: ["databases", "genes"]
+    scope: "system"
+    keywords: ["intersection", "consensus", "overlap", "databases"]
+    guiding_questions:
+      - "How many entries are matched in the BioRemPP and HADEG databases?"
+      - "Which genes are unique to each database?"
+    applications:
+      - "consortium_design"
+      - "database_validation"
+
+  uc-1-2:
+    title: "Overlap of Compounds Across Regulatory References"
+    module: 1
+    icon: "fas fa-balance-scale"
+    viz_type: "upset"
+    data_type: "compounds"
+    entities: ["regulatory", "compounds"]
+    scope: "system"
+    keywords: ["regulatory", "overlap", "compounds", "consensus"]
+    guiding_questions:
+      - "Which compounds are monitored by multiple regulatory agencies?"
+    applications:
+      - "regulatory_compliance"
+
+  uc-1-3:
+    title: "Proportional Contribution of Regulatory References"
+    module: 1
+    icon: "fas fa-chart-pie"
+    viz_type: "stacked_bar"
+    data_type: "genes"
+    entities: ["regulatory", "genes"]
+    scope: "system"
+    keywords: ["regulatory", "contribution", "diversity"]
+    guiding_questions:
+      - "Which regulatory agencies cover the most diverse functional space?"
+    applications:
+      - "regulatory_compliance"
+
+  uc-1-4:
+    title: "Proportional Contribution of Samples Unique KO Pool"
+    module: 1
+    icon: "fas fa-chart-pie"
+    viz_type: "stacked_bar"
+    data_type: "genes"
+    entities: ["samples", "genes"]
+    scope: "system"
+    keywords: ["samples", "diversity", "contribution"]
+    guiding_questions:
+      - "Which samples contribute most to overall functional diversity?"
+    applications:
+      - "select_samples"
+
+  uc-1-5:
+    title: "Regulatory Reference Compliance Scorecard"
+    module: 1
+    icon: "fas fa-check-square"
+    viz_type: "heatmap"
+    data_type: "samples"
+    entities: ["samples", "regulatory"]
+    scope: "system"
+    keywords: ["compliance", "regulatory", "scorecard"]
+    guiding_questions:
+      - "Which samples show highest compliance with regulatory standards?"
+    applications:
+      - "regulatory_compliance"
+      - "select_samples"
+
+  uc-1-6:
+    title: "Functional Potential of Samples Across Regulatory References"
+    module: 1
+    icon: "fas fa-fire"
+    viz_type: "heatmap"
+    data_type: "samples"
+    entities: ["samples", "regulatory", "genes"]
+    scope: "system"
+    keywords: ["functional", "regulatory", "potential"]
+    guiding_questions:
+      - "How does sample functional potential align with regulatory priorities?"
+    applications:
+      - "regulatory_compliance"
+      - "select_samples"
+
+  # ============================================================================
+  # Module 2: Exploratory Analysis (5 UCs)
+  # ============================================================================
+
+  uc-2-1:
+    title: "Ranking of Sample Functional Richness Across Databases"
+    module: 2
+    icon: "fas fa-chart-bar"
+    viz_type: "bar"
+    data_type: "genes"
+    entities: ["samples", "genes"]
+    scope: "sample"
+    keywords: ["ranking", "richness", "diversity", "databases"]
+    guiding_questions:
+      - "Which samples show more genes associated with biodegradation?"
+      - "How do rankings change across databases?"
+    applications:
+      - "select_samples"
+      - "identify_specialists"
+
+  uc-2-2:
+    title: "Ranking of Samples by Chemical Diversity"
+    module: 2
+    icon: "fas fa-flask"
+    viz_type: "bar"
+    data_type: "compounds"
+    entities: ["samples", "compounds"]
+    scope: "sample"
+    keywords: ["chemical", "diversity", "compounds"]
+    guiding_questions:
+      - "Which samples interact with the widest variety of compounds?"
+    applications:
+      - "select_samples"
+
+  uc-2-3:
+    title: "Ranking of Compound Richness by Sample per Chemical Class"
+    module: 2
+    icon: "fas fa-flask"
+    viz_type: "bar"
+    data_type: "compounds"
+    entities: ["compounds", "samples"]
+    scope: "molecular"
+    keywords: ["compounds", "richness", "chemical_class"]
+    guiding_questions:
+      - "Which compounds are targeted by the widest range of samples?"
+    applications:
+      - "compound_analysis"
+
+  uc-2-4:
+    title: "Ranking of Compounds Richness by Gene Count per Chemical Classes"
+    module: 2
+    icon: "fas fa-dna"
+    viz_type: "bar"
+    data_type: "genes"
+    entities: ["compounds", "genes"]
+    scope: "molecular"
+    keywords: ["genes", "compounds", "complexity"]
+    guiding_questions:
+      - "Which compounds require the most diverse genetic machinery?"
+    applications:
+      - "prioritize_genes"
+      - "compound_analysis"
+
+  uc-2-5:
+    title: "Descriptive Statistics of Samples Across Databases"
+    module: 2
+    icon: "fas fa-chart-scatter"
+    viz_type: "boxplot"
+    data_type: "samples"
+    entities: ["samples", "genes"]
+    scope: "sample"
+    keywords: ["statistics", "distribution", "outliers"]
+    guiding_questions:
+      - "Are gene distributions balanced across samples or are there outliers?"
+    applications:
+      - "select_samples"
+      - "quality_control"
+
+  # ============================================================================
+  # Module 3: System Structure (7 UCs)
+  # ============================================================================
+
+  uc-3-1:
+    title: "Principal Component Analysis of Samples by Functional Profile"
+    module: 3
+    icon: "fas fa-project-diagram"
+    viz_type: "pca"
+    data_type: "samples"
+    entities: ["samples", "genes"]
+    scope: "system"
+    keywords: ["pca", "clustering", "functional"]
+    guiding_questions:
+      - "How do samples cluster based on functional profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-3-2:
+    title: "Principal Component Analysis of Samples by Chemical Profile"
+    module: 3
+    icon: "fas fa-project-diagram"
+    viz_type: "pca"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["pca", "clustering", "chemical"]
+    guiding_questions:
+      - "How do samples cluster based on chemical interaction profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-3-3:
+    title: "Hierarchical Clustering of Samples by Functional Profile"
+    module: 3
+    icon: "fas fa-sitemap"
+    viz_type: "dendrogram"
+    data_type: "samples"
+    entities: ["samples", "genes"]
+    scope: "system"
+    keywords: ["clustering", "similarity", "hierarchy"]
+    guiding_questions:
+      - "How do samples group based on their functional profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-3-4:
+    title: "Sample Similarity (Based on KO Profiles)"
+    module: 3
+    icon: "fas fa-th"
+    viz_type: "heatmap"
+    data_type: "samples"
+    entities: ["samples", "genes"]
+    scope: "system"
+    keywords: ["similarity", "correlation", "functional"]
+    guiding_questions:
+      - "Which samples have similar functional profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-3-5:
+    title: "Sample Similarity (Based on Chemical Profiles)"
+    module: 3
+    icon: "fas fa-th"
+    viz_type: "heatmap"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["similarity", "correlation", "chemical"]
+    guiding_questions:
+      - "Which samples have similar chemical degradation profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-3-6:
+    title: "Gene Co-occurrence Across Samples"
+    module: 3
+    icon: "fas fa-th"
+    viz_type: "heatmap"
+    data_type: "genes"
+    entities: ["genes", "samples"]
+    scope: "molecular"
+    keywords: ["co-occurrence", "genes", "correlation"]
+    guiding_questions:
+      - "Which genes tend to co-occur across samples?"
+    applications:
+      - "prioritize_genes"
+      - "pathway_analysis"
+
+  uc-3-7:
+    title: "Compound Co-occurrence Across Samples"
+    module: 3
+    icon: "fas fa-th"
+    viz_type: "heatmap"
+    data_type: "compounds"
+    entities: ["compounds", "samples"]
+    scope: "molecular"
+    keywords: ["co-occurrence", "compounds", "correlation"]
+    guiding_questions:
+      - "Which compounds tend to be acted upon together?"
+    applications:
+      - "compound_analysis"
+
+  # ============================================================================
+  # Module 4: Functional and Genetic Profiling (13 UCs)
+  # ============================================================================
+
+  uc-4-1:
+    title: "Functional Profiling of Samples by Metabolic Pathway"
+    module: 4
+    icon: "fas fa-route"
+    viz_type: "bar"
+    data_type: "pathways"
+    entities: ["pathways", "samples"]
+    scope: "pathway"
+    keywords: ["pathways", "metabolism", "profiling"]
+    guiding_questions:
+      - "Which pathways are most active across samples?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-4-2:
+    title: "Ranking of Samples by Pathway Richness"
+    module: 4
+    icon: "fas fa-medal"
+    viz_type: "bar"
+    data_type: "pathways"
+    entities: ["pathways", "samples"]
+    scope: "pathway"
+    keywords: ["pathways", "ranking", "richness"]
+    guiding_questions:
+      - "How do samples differ in pathway activity?"
+    applications:
+      - "pathway_analysis"
+      - "identify_specialists"
+
+  uc-4-3:
+    title: "Functional Fingerprint of Pathway by Samples"
+    module: 4
+    icon: "fas fa-chart-radar"
+    viz_type: "radar"
+    data_type: "pathways"
+    entities: ["pathways", "samples"]
+    scope: "pathway"
+    keywords: ["fingerprint", "pathways", "comparison"]
+    guiding_questions:
+      - "Which samples are key functional players for a given pathway?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-4-4:
+    title: "Functional Fingerprint of Samples by Pathway"
+    module: 4
+    icon: "fas fa-chart-radar"
+    viz_type: "radar"
+    data_type: "samples"
+    entities: ["samples", "pathways"]
+    scope: "sample"
+    keywords: ["fingerprint", "samples", "specialization"]
+    guiding_questions:
+      - "What is the functional fingerprint of each sample?"
+    applications:
+      - "select_samples"
+      - "identify_specialists"
+
+  uc-4-5:
+    title: "Gene Presence Map by Metabolic Pathway"
+    module: 4
+    icon: "fas fa-th"
+    viz_type: "dot_matrix"
+    data_type: "genes"
+    entities: ["genes", "pathways", "samples"]
+    scope: "pathway"
+    keywords: ["genes", "pathways", "presence"]
+    guiding_questions:
+      - "Which genes are present in which samples for a given pathway?"
+    applications:
+      - "prioritize_genes"
+      - "pathway_analysis"
+
+  uc-4-6:
+    title: "Functional Potential by Chemical Compound"
+    module: 4
+    icon: "fas fa-fire"
+    viz_type: "scatter"
+    data_type: "compounds"
+    entities: ["compounds", "samples", "genes"]
+    scope: "molecular"
+    keywords: ["functional", "compounds", "potential"]
+    guiding_questions:
+      - "Which samples have strongest functional potential for specific compounds?"
+    applications:
+      - "compound_analysis"
+      - "select_samples"
+
+  uc-4-7:
+    title: "Gene–Compound Association Explorer"
+    module: 4
+    icon: "fas fa-link"
+    viz_type: "scatter"
+    data_type: "interactions"
+    entities: ["genes", "compounds"]
+    scope: "molecular"
+    keywords: ["association", "genes", "compounds"]
+    guiding_questions:
+      - "Which genes are associated with specific compounds?"
+    applications:
+      - "prioritize_genes"
+      - "compound_analysis"
+
+  uc-4-8:
+    title: "Gene Inventory Explorer"
+    module: 4
+    icon: "fas fa-list"
+    viz_type: "scatter"
+    data_type: "genes"
+    entities: ["genes", "samples"]
+    scope: "molecular"
+    keywords: ["inventory", "genes", "distribution"]
+    guiding_questions:
+      - "What genes are present in each sample?"
+    applications:
+      - "prioritize_genes"
+      - "select_samples"
+
+  uc-4-9:
+    title: "Profiling of Sample Enzymatic Activity"
+    module: 4
+    icon: "fas fa-chart-bar"
+    viz_type: "bar"
+    data_type: "pathways"
+    entities: ["enzymes", "samples", "genes"]
+    scope: "sample"
+    keywords: ["enzymatic", "activity", "profiling"]
+    guiding_questions:
+      - "Which enzymatic functions are most prominent in each sample?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-4-10:
+    title: "Diversity of Enzymatic Activities Across Samples"
+    module: 4
+    icon: "fas fa-circle"
+    viz_type: "bubble"
+    data_type: "pathways"
+    entities: ["enzymes", "samples", "genes"]
+    scope: "system"
+    keywords: ["enzymatic", "diversity", "genetic"]
+    guiding_questions:
+      - "Which enzymatic functions show greatest genetic diversity?"
+    applications:
+      - "pathway_analysis"
+      - "consortium_design"
+
+  uc-4-11:
+    title: "Hierarchical Genetic Diversity in HADEG"
+    module: 4
+    icon: "fas fa-chart-pie"
+    viz_type: "sunburst"
+    data_type: "genes"
+    entities: ["genes", "pathways"]
+    scope: "system"
+    keywords: ["genetic", "diversity", "hierarchical"]
+    guiding_questions:
+      - "How is genetic diversity distributed across pathway classes?"
+    applications:
+      - "prioritize_genes"
+      - "pathway_analysis"
+
+  uc-4-12:
+    title: "Sample-Specific Pathway Distribution"
+    module: 4
+    icon: "fas fa-chart-pie"
+    viz_type: "sunburst"
+    data_type: "pathways"
+    entities: ["pathways", "samples"]
+    scope: "sample"
+    keywords: ["pathways", "distribution", "hierarchical"]
+    guiding_questions:
+      - "How are metabolic pathways distributed across chemical families in each sample?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-4-13:
+    title: "Genetic Profile by Compound Class"
+    module: 4
+    icon: "fas fa-circle"
+    viz_type: "bubble"
+    data_type: "genes"
+    entities: ["genes", "compounds", "samples"]
+    scope: "molecular"
+    keywords: ["genetic", "compounds", "profile"]
+    guiding_questions:
+      - "Which genes are present for specific compound classes?"
+    applications:
+      - "prioritize_genes"
+      - "compound_analysis"
+
+  # ============================================================================
+  # Module 5: Modeling Interactions (6 UCs)
+  # ============================================================================
+
+  uc-5-1:
+    title: "Sample-Compound Class Interaction"
+    module: 5
+    icon: "fas fa-circle-notch"
+    viz_type: "chord"
+    data_type: "interactions"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["interaction", "samples", "compounds"]
+    guiding_questions:
+      - "Which samples are most strongly associated with which chemical classes?"
+    applications:
+      - "select_samples"
+      - "compound_analysis"
+
+  uc-5-2:
+    title: "Sample Similarity (Based on Chemical Profiles)"
+    module: 5
+    icon: "fas fa-circle-notch"
+    viz_type: "chord"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["similarity", "samples", "chemical"]
+    guiding_questions:
+      - "How functionally similar are samples based on chemical profiles?"
+    applications:
+      - "select_samples"
+      - "consortium_design"
+
+  uc-5-3:
+    title: "Regulatory Relevance of Samples"
+    module: 5
+    icon: "fas fa-circle-notch"
+    viz_type: "chord"
+    data_type: "samples"
+    entities: ["samples", "regulatory"]
+    scope: "system"
+    keywords: ["regulatory", "samples", "relevance"]
+    guiding_questions:
+      - "Which samples are most relevant to regulatory priorities?"
+    applications:
+      - "regulatory_compliance"
+      - "select_samples"
+
+  uc-5-4:
+    title: "Gene–Compound Interaction Network"
+    module: 5
+    icon: "fas fa-project-diagram"
+    viz_type: "network"
+    data_type: "interactions"
+    entities: ["genes", "compounds"]
+    scope: "molecular"
+    keywords: ["network", "genes", "compounds", "interaction"]
+    guiding_questions:
+      - "What is the structure of gene-compound interaction networks?"
+    applications:
+      - "prioritize_genes"
+      - "compound_analysis"
+
+  uc-5-5:
+    title: "Gene–Gene Interaction Network (Based on Shared Compounds)"
+    module: 5
+    icon: "fas fa-project-diagram"
+    viz_type: "network"
+    data_type: "interactions"
+    entities: ["genes"]
+    scope: "molecular"
+    keywords: ["network", "genes", "interaction"]
+    guiding_questions:
+      - "Which genes exhibit functional relationships through shared compounds?"
+    applications:
+      - "prioritize_genes"
+      - "pathway_analysis"
+
+  uc-5-6:
+    title: "Compound–Compound Interaction Network (Based on Shared Genes)"
+    module: 5
+    icon: "fas fa-project-diagram"
+    viz_type: "network"
+    data_type: "interactions"
+    entities: ["compounds"]
+    scope: "molecular"
+    keywords: ["network", "compounds", "interaction"]
+    guiding_questions:
+      - "Which compounds are processed by similar enzymatic machinery?"
+    applications:
+      - "compound_analysis"
+      - "pathway_analysis"
+
+  # ============================================================================
+  # Module 6: Toxicity and Environmental Risk (5 UCs)
+  # ============================================================================
+
+  uc-6-1:
+    title: "Regulatory-to-Molecular Interaction Flow"
+    module: 6
+    icon: "fas fa-stream"
+    viz_type: "sankey"
+    data_type: "interactions"
+    entities: ["regulatory", "samples", "genes", "compounds"]
+    scope: "system"
+    keywords: ["flow", "regulatory", "interaction"]
+    guiding_questions:
+      - "How do regulatory contexts cascade to molecular targets?"
+    applications:
+      - "regulatory_compliance"
+      - "consortium_design"
+
+  uc-6-2:
+    title: "Biological Interaction Flow"
+    module: 6
+    icon: "fas fa-stream"
+    viz_type: "sankey"
+    data_type: "interactions"
+    entities: ["samples", "compounds", "enzymes"]
+    scope: "system"
+    keywords: ["flow", "biological", "enzymatic"]
+    guiding_questions:
+      - "How is functional potential distributed across chemical classes?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-6-3:
+    title: "Chemical Hierarchy"
+    module: 6
+    icon: "fas fa-th-large"
+    viz_type: "treemap"
+    data_type: "compounds"
+    entities: ["compounds", "genes", "samples"]
+    scope: "system"
+    keywords: ["hierarchy", "chemical", "genetic"]
+    guiding_questions:
+      - "Which chemical classes require the most diverse genetic toolkit?"
+    applications:
+      - "compound_analysis"
+      - "consortium_design"
+
+  uc-6-4:
+    title: "Enzymatic Hierarchy"
+    module: 6
+    icon: "fas fa-th-large"
+    viz_type: "treemap"
+    data_type: "pathways"
+    entities: ["enzymes", "compounds", "genes"]
+    scope: "system"
+    keywords: ["hierarchy", "enzymatic", "versatility"]
+    guiding_questions:
+      - "Which enzymatic functions are most versatile?"
+    applications:
+      - "pathway_analysis"
+      - "prioritize_genes"
+
+  uc-6-5:
+    title: "Chemical–Enzymatic Hierarchy"
+    module: 6
+    icon: "fas fa-th-large"
+    viz_type: "treemap"
+    data_type: "pathways"
+    entities: ["compounds", "enzymes", "genes"]
+    scope: "system"
+    keywords: ["hierarchy", "chemical", "enzymatic"]
+    guiding_questions:
+      - "Which enzymatic functions are employed for each chemical class?"
+    applications:
+      - "pathway_analysis"
+      - "compound_analysis"
+
+  # ============================================================================
+  # Module 7: Regulatory and Compliance Mapping (7 UCs)
+  # ============================================================================
+
+  uc-7-1:
+    title: "Predicted Compound Toxicity Profiles"
+    module: 7
+    icon: "fas fa-exclamation-triangle"
+    viz_type: "heatmap"
+    data_type: "compounds"
+    entities: ["compounds"]
+    scope: "molecular"
+    keywords: ["toxicity", "risk", "compounds"]
+    guiding_questions:
+      - "Are there any compounds predicted as toxic?"
+      - "Which compounds pose the most significant hazards?"
+    applications:
+      - "toxicity_assessment"
+      - "risk_management"
+
+  uc-7-2:
+    title: "Concordance Between Predicted Risk and Regulatory Scope"
+    module: 7
+    icon: "fas fa-circle-notch"
+    viz_type: "chord"
+    data_type: "compounds"
+    entities: ["regulatory", "compounds"]
+    scope: "system"
+    keywords: ["regulatory", "risk", "concordance"]
+    guiding_questions:
+      - "How well do regulatory lists align with predicted high-risk compounds?"
+    applications:
+      - "regulatory_compliance"
+      - "toxicity_assessment"
+
+  uc-7-3:
+    title: "Mapping of Genetic Response to High-Priority Threats"
+    module: 7
+    icon: "fas fa-th"
+    viz_type: "heatmap"
+    data_type: "genes"
+    entities: ["genes", "samples", "compounds"]
+    scope: "molecular"
+    keywords: ["genetic", "toxicity", "response"]
+    guiding_questions:
+      - "Which samples have diverse genetic toolkits for high-risk compounds?"
+    applications:
+      - "toxicity_assessment"
+      - "select_samples"
+
+  uc-7-4:
+    title: "Distribution of Toxicity Scores by Endpoint"
+    module: 7
+    icon: "fas fa-chart-line"
+    viz_type: "boxplot"
+    data_type: "compounds"
+    entities: ["compounds"]
+    scope: "molecular"
+    keywords: ["toxicity", "distribution", "endpoints"]
+    guiding_questions:
+      - "What is the distribution of toxicity scores?"
+    applications:
+      - "toxicity_assessment"
+
+  uc-7-5:
+    title: "Probability Distributions of Toxicity Scores by Endpoint"
+    module: 7
+    icon: "fas fa-chart-area"
+    viz_type: "kde"
+    data_type: "compounds"
+    entities: ["compounds"]
+    scope: "molecular"
+    keywords: ["toxicity", "probability", "distribution"]
+    guiding_questions:
+      - "Which endpoints show highest toxicity risk?"
+    applications:
+      - "toxicity_assessment"
+
+  uc-7-6:
+    title: "Sample Risk Mitigation Breadth"
+    module: 7
+    icon: "fas fa-th-large"
+    viz_type: "treemap"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["risk", "mitigation", "breadth"]
+    guiding_questions:
+      - "Which samples can mitigate the broadest range of high-risk compounds?"
+    applications:
+      - "toxicity_assessment"
+      - "select_samples"
+
+  uc-7-7:
+    title: "Sample Risk Mitigation Depth"
+    module: 7
+    icon: "fas fa-th-large"
+    viz_type: "treemap"
+    data_type: "samples"
+    entities: ["samples", "compounds", "genes"]
+    scope: "system"
+    keywords: ["risk", "mitigation", "depth"]
+    guiding_questions:
+      - "Which samples invest most genetic resources in risk mitigation?"
+    applications:
+      - "toxicity_assessment"
+      - "select_samples"
+
+  # ============================================================================
+  # Module 8: Pathway Completeness and Functional Coverage (7 UCs)
+  # ============================================================================
+
+  uc-8-1:
+    title: "Minimal Sample Grouping for Complete Compound Coverage"
+    module: 8
+    icon: "fas fa-users"
+    viz_type: "scatter"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["consortium", "coverage", "minimal"]
+    guiding_questions:
+      - "What is the minimum number of samples needed for complete coverage?"
+    applications:
+      - "consortium_design"
+
+  uc-8-2:
+    title: "BioRemPP Chemical Class Completeness Scorecard"
+    module: 8
+    icon: "fas fa-table"
+    viz_type: "heatmap"
+    data_type: "samples"
+    entities: ["samples", "compounds"]
+    scope: "system"
+    keywords: ["completeness", "scorecard", "chemical"]
+    guiding_questions:
+      - "How complete are degradation pathways in my samples?"
+    applications:
+      - "consortium_design"
+      - "select_samples"
+
+  uc-8-3:
+    title: "Compound-Specific KO Completeness Scorecard"
+    module: 8
+    icon: "fas fa-table"
+    viz_type: "heatmap"
+    data_type: "genes"
+    entities: ["samples", "compounds", "genes"]
+    scope: "molecular"
+    keywords: ["completeness", "genes", "compounds"]
+    guiding_questions:
+      - "Which sample has the most complete genetic toolkit for each compound?"
+    applications:
+      - "select_samples"
+      - "compound_analysis"
+
+  uc-8-4:
+    title: "HADEG Pathways Completeness Scorecard"
+    module: 8
+    icon: "fas fa-table"
+    viz_type: "heatmap"
+    data_type: "pathways"
+    entities: ["samples", "pathways"]
+    scope: "pathway"
+    keywords: ["completeness", "pathways", "hadeg"]
+    guiding_questions:
+      - "Which samples have complete genetic toolkits for HADEG pathways?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-8-5:
+    title: "KEGG Pathways Completeness Scorecard"
+    module: 8
+    icon: "fas fa-table"
+    viz_type: "heatmap"
+    data_type: "pathways"
+    entities: ["samples", "pathways"]
+    scope: "pathway"
+    keywords: ["completeness", "pathways", "kegg"]
+    guiding_questions:
+      - "Which samples have complete genetic toolkits for KEGG pathways?"
+    applications:
+      - "pathway_analysis"
+      - "select_samples"
+
+  uc-8-6:
+    title: "Pathway-Centric Consortium Design by KO Coverage"
+    module: 8
+    icon: "fas fa-venn-diagram"
+    viz_type: "upset"
+    data_type: "pathways"
+    entities: ["samples", "pathways", "genes"]
+    scope: "pathway"
+    keywords: ["consortium", "pathways", "coverage"]
+    guiding_questions:
+      - "How do samples contribute to pathway completeness?"
+    applications:
+      - "consortium_design"
+      - "pathway_analysis"
+
+  uc-8-7:
+    title: "Sample-Sample KO Intersection Profile"
+    module: 8
+    icon: "fas fa-venn-diagram"
+    viz_type: "upset"
+    data_type: "genes"
+    entities: ["samples", "genes"]
+    scope: "system"
+    keywords: ["intersection", "samples", "genes"]
+    guiding_questions:
+      - "How many genes are shared across selected samples?"
+    applications:
+      - "consortium_design"
+      - "select_samples"
+
+# ============================================================================
+# Data Type Categories (NEW)
+# ============================================================================
+
+data_types:
+  genes:
+    name: "Genes"
+    description: "Genetic and KO-based functional analyses exploring gene diversity, distribution, and relationships"
+    icon: "fas fa-dna"
+    color: "primary"
+    
+  pathways:
+    name: "Metabolic Pathways"
+    description: "Pathway-centric metabolic profiling and enzymatic activity analyses"
+    icon: "fas fa-project-diagram"
+    color: "success"
+    
+  compounds:
+    name: "Compounds"
+    description: "Chemical diversity, toxicity predictions, and compound-centric analyses"
+    icon: "fas fa-flask"
+    color: "danger"
+    
+  samples:
+    name: "Samples"
+    description: "Sample comparison, clustering, and functional profiling"
+    icon: "fas fa-vial"
+    color: "info"
+    
+  interactions:
+    name: "Associations & Interactions"
+    description: "Network analyses and interaction mapping between entities"
+    icon: "fas fa-network-wired"
+    color: "warning"
+
+# ============================================================================
+# Application Categories
+# ============================================================================
+
+applications:
+  select_samples:
+    name: "Select Samples for Experiments"
+    description: "Identify samples with higher metabolic potential or distinct profiles"
+    icon: "fas fa-vial"
+
+  prioritize_genes:
+    name: "Prioritize Candidate Genes"
+    description: "Identify key genes involved in pathways or repeated across samples"
+    icon: "fas fa-dna"
+
+  pathway_analysis:
+    name: "Explore Dominant Biodegradation Pathways"
+    description: "Track abundant pathways and pathway-specific samples"
+    icon: "fas fa-project-diagram"
+
+  consortium_design:
+    name: "Design Microbial Consortia"
+    description: "Combine complementary samples for complete coverage"
+    icon: "fas fa-users"
+
+  regulatory_compliance:
+    name: "Assess Regulatory Compliance"
+    description: "Check coverage of priority pollutants and regulatory standards"
+    icon: "fas fa-check-square"
+
+  toxicity_assessment:
+    name: "Evaluate Toxicity and Risk"
+    description: "Identify toxic compounds and mitigation strategies"
+    icon: "fas fa-exclamation-triangle"
+
+  compound_analysis:
+    name: "Analyze Chemical Compounds"
+    description: "Explore compound diversity, interactions, and degradation potential"
+    icon: "fas fa-flask"
+
+  identify_specialists:
+    name: "Identify Functional Specialists"
+    description: "Find samples or genes with specialized capabilities"
+    icon: "fas fa-star"
+
+  quality_control:
+    name: "Quality Control and Validation"
+    description: "Assess data quality and identify outliers"
+    icon: "fas fa-check-circle"
+
+  database_validation:
+    name: "Database Validation"
+    description: "Compare and validate annotations across databases"
+    icon: "fas fa-database"
+
+  risk_management:
+    name: "Risk Management"
+    description: "Prioritize high-risk compounds for remediation"
+    icon: "fas fa-shield-alt"
+
+# ============================================================================
+# Entity Categories
+# ============================================================================
+
+entities:
+  genes:
+    name: "Genes"
+    icon: "fas fa-dna"
+    color: "primary"
+
+  pathways:
+    name: "Metabolic Pathways"
+    icon: "fas fa-project-diagram"
+    color: "success"
+
+  compounds:
+    name: "Compounds"
+    icon: "fas fa-flask"
+    color: "danger"
+
+  samples:
+    name: "Samples"
+    icon: "fas fa-vial"
+    color: "info"
+
+  databases:
+    name: "Databases"
+    icon: "fas fa-database"
+    color: "secondary"
+
+  regulatory:
+    name: "Regulatory"
+    icon: "fas fa-balance-scale"
+    color: "warning"
+
+  enzymes:
+    name: "Enzymes"
+    icon: "fas fa-atom"
+    color: "success"

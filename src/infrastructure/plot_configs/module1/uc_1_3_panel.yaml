@@ -1,0 +1,94 @@
+# UC-1.3: Proportional Contribution of References
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-1-3"
+
+scientific_question: >
+  What is the relative contribution of each regulatory agency's associated
+  functional potential to the total unique KO diversity observed across the
+  entire dataset?
+
+description: >
+  This visualization provides a high-level overview of the functional landscape
+  by breaking down the complete set of unique KEGG Orthology (KO) identifiers
+  by the regulatory context in which they appear. The 100% stacked bar chart
+  illustrates the proportional contribution of each reference agency to the total
+  pool of unique KOs identified. The primary entities compared are the regulatory
+  or scientific agencies (e.g., WFD, CONAMA, EPC) that provide a contextual basis
+  for the importance of certain compounds.
+
+visual_elements:
+  - label: "Single Stacked Bar"
+    description: >
+      The chart consists of a single vertical bar that represents the entirety
+      (100%) of the unique KOs found in the dataset. This single-bar format
+      emphasizes the proportional breakdown rather than absolute counts,
+      allowing for immediate visual comparison of relative contributions.
+  
+  - label: "Colored Segments"
+    description: >
+      Each colored segment within the bar corresponds to a specific Reference
+      Agency (e.g., WFD, CONAMA, EPC). Different colors help distinguish between
+      agencies and make it easy to identify which regulatory contexts are
+      associated with the most functionally diverse chemical spaces.
+  
+  - label: "Segment Length and Percentage Labels"
+    description: >
+      The length of each segment, along with its percentage label (e.g., "30.5%"),
+      indicates that agency's proportional contribution to the total unique KO
+      pool. Larger segments represent agencies whose associated compounds are
+      linked to greater metabolic functional diversity. The percentages sum to
+      exactly 100%.
+  
+  - label: "Hover Information"
+    description: >
+      Hovering over any segment reveals detailed information including the
+      Reference Agency name, the exact count of unique KOs associated with that
+      agency, and the percentage share. This provides precise quantification
+      while maintaining the visual clarity of the proportional view.
+  
+  - label: "Legend"
+    description: >
+      The legend on the right side lists all Reference Agencies with their
+      corresponding colors. This allows quick identification of which segment
+      represents which regulatory context without needing to hover over each
+      segment.
+
+interpretation_guidelines:
+  - >
+    Dominant Contributions: Larger segments highlight the regulatory agencies
+    whose associated compounds are linked to the greatest diversity of metabolic
+    functions (KOs) within this dataset. This may indicate which agencies'
+    regulations cover the most functionally diverse or well-represented chemical
+    spaces, potentially reflecting broader regulatory scope or more comprehensive
+    compound lists.
+  
+  - >
+    Specialized Scope: Smaller segments may represent agencies with a more
+    specialized focus, whose target compounds are associated with a narrower
+    or less common set of metabolic pathways. For example, an agency focused
+    solely on pesticides might have fewer associated KOs than one regulating
+    general water quality.
+  
+  - >
+    Comparative Overview: The chart allows for a rapid, at-a-glance comparison
+    of the functional breadth associated with each regulatory context. Researchers
+    can quickly identify which agencies' compound lists contribute most to the
+    overall functional diversity of the dataset and which represent more niche
+    or specialized regulatory domains.
+  
+  - >
+    Functional Coverage Balance: By examining the distribution of percentages,
+    researchers can assess whether the functional diversity is evenly distributed
+    across regulatory contexts or concentrated in a few dominant agencies. A
+    balanced distribution may suggest complementary regulatory frameworks, while
+    concentration may indicate that certain agencies drive the functional landscape.
+  
+  - >
+    Research Priority Guidance: Agencies with larger proportional contributions
+    may warrant prioritized attention in bioremediation research, as their
+    regulated compounds are associated with a broader range of metabolic
+    capabilities. Conversely, agencies with smaller but unique contributions
+    may offer specialized insights into specific functional niches.
+
+color_scheme: "primary"

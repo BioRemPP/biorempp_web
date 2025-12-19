@@ -1,0 +1,83 @@
+# UC-7.1: Faceted Heatmap of Predicted Compound Toxicity Profiles
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-7-1"
+
+scientific_question: >
+  What is the comprehensive toxicological profile of each chemical compound
+  across a wide range of risk categories, and which compounds pose the most
+  significant and multi-faceted hazards?
+
+description: >
+  This visualization provides a detailed toxicological fingerprint for each
+  compound analyzed by the ToxCSM model. The faceted heatmap displays the
+  predicted toxicity scores for each compound across numerous endpoints,
+  which are grouped into five major super-categories. This allows for a
+  direct comparison of the specific risks associated with each chemical.
+
+visual_elements:
+  - label: "Facets (Subplots)"
+    description: >
+      Each of the five subplots represents a major Toxicity Category:
+      Nuclear Response, Stress Response, Genomic, Environmental, and Organic.
+      This faceted layout allows for organized comparison across different
+      toxicological domains.
+
+  - label: "Y-Axis (Compound Names)"
+    description: >
+      Represents the individual Compound Names being analyzed. Each row
+      corresponds to a unique chemical compound from the dataset, allowing
+      the assessment of its complete toxicological profile across all
+      endpoints.
+
+  - label: "X-Axis (Toxicological Endpoints)"
+    description: >
+      Represents the specific Toxicological Endpoints within each category.
+      Different facets may have different numbers of endpoints depending on
+      the available assays and predictions for that toxicity domain.
+
+  - label: "Cell Color (Toxicity Score)"
+    description: >
+      The color intensity of each cell indicates the predicted Toxicity Score,
+      typically ranging from 0 to 1. Darker, warmer colors (reds) indicate a
+      higher predicted risk, while lighter colors indicate lower risk.
+
+  - label: "Hover Information"
+    description: >
+      Hovering over a cell reveals the compound name, the specific endpoint,
+      the predicted numerical score, and its corresponding qualitative label
+      (e.g., 'High Toxicity', 'Moderate Risk').
+
+interpretation_guidelines:
+  - >
+    Compound Risk Fingerprint: By reading across a horizontal row, one can
+    assess the complete toxicological "fingerprint" of a single compound.
+    This can be useful for identifying compounds that pose multiple, distinct
+    types of risk (e.g., a compound that is both carcinogenic and an
+    environmental toxin).
+
+  - >
+    High-Concern Endpoints: Vertical columns that are consistently dark across
+    many compounds represent toxicological endpoints that are a common
+    predicted outcome for the chemicals in this dataset. These endpoints
+    may warrant prioritized attention in remediation strategies.
+
+  - >
+    Prioritizing "Problem" Compounds: Compounds with numerous dark red cells,
+    especially across multiple facets, may be identified as the most hazardous
+    pollutants. This allows for the prioritization of these specific chemicals
+    for targeted bioremediation strategies.
+
+  - >
+    Category-Specific Patterns: Comparing patterns across the five facets
+    helps understand if certain compounds are specialists (toxic in one
+    domain) or generalists (toxic across multiple domains), informing
+    risk assessment strategies.
+
+  - >
+    Identifying Safe Compounds: Compounds with predominantly light-colored
+    cells across all facets may be considered lower priority for immediate
+    remediation efforts, allowing resources to be focused on higher-risk
+    chemicals.
+
+color_scheme: "success"

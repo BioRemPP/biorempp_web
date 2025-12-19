@@ -1,0 +1,77 @@
+# UC-4.7: Interactive Gene-Compound Association Explorer
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-7"
+
+scientific_question: >
+  What are the specific associations between individual genes and chemical
+  compounds, and which biological samples mediate these interactions?
+
+description: >
+  This interactive visualization serves as a query tool to explore the direct
+  links between gene symbols and compound names. By using one or both dropdown
+  menus, a user can dynamically filter the entire dataset to visualize specific
+  relationships. The resulting scatter plot maps the presence of these
+  associations, providing a powerful tool for hypothesis testing and detailed
+  exploration. Each point in the plot represents an observed association between
+  a gene symbol and a compound name from the BioRemPP results.
+
+visual_elements:
+  - label: "Dropdown Menus"
+    description: >
+      Use the "Select Compound Name" and "Select Gene Symbol" menus to filter
+      the data. The plot updates automatically based on your selection(s). You
+      can select one or both filters to explore different perspectives.
+
+  - label: "Y-axis (Compound Names)"
+    description: >
+      Represents the chemical compound names identified in the analysis. Each
+      unique compound is displayed on the vertical axis.
+
+  - label: "X-axis (Gene Symbols)"
+    description: >
+      Represents the gene symbols associated with the compounds. Each unique
+      gene is displayed on the horizontal axis.
+
+  - label: "Points (Associations)"
+    description: >
+      A point at the intersection of a gene and a compound indicates that an
+      association between them was found in the data. The presence of a point
+      confirms this functional link exists in at least one sample.
+
+  - label: "Hover Information"
+    description: >
+      Hovering the cursor over a point reveals which sample and KO identifier
+      are responsible for that specific gene-compound association, enabling
+      detailed traceability.
+
+interpretation_guidelines:
+  - >
+    Single Filter (Compound-centric view): Selecting a single compound can help identify
+    its "genetic interaction profile"—the complete set of genes known to be
+    associated with it in this dataset. This view can help identify which genes
+    are involved in biotransforming or processing a specific compound.
+
+  - >
+    Single Filter (Gene-centric view): Selecting a single gene can help identify its
+    "chemical substrate profile"—the complete set of compounds it is known to
+    target. This view can help understand the functional versatility of a specific
+    gene across different substrates.
+
+  - >
+    Dual Filter (Hypothesis Testing): Selecting both a gene and a compound
+    allows for direct confirmation of a specific interaction. This is useful
+    for validating hypotheses about specific gene-compound relationships.
+
+  - >
+    Sample Identification: The hover data can help identify precisely which samples
+    possess each functional link, providing evidence for targeted analysis and
+    potentially helping identify samples with specific capabilities.
+
+  - >
+    Functional Network Mapping: By exploring different combinations of genes
+    and compounds, you can map the functional network of biotransformation
+    pathways present in your biological consortium, potentially revealing redundancy,
+    specialization, and functional gaps.
+
+color_scheme: "success"

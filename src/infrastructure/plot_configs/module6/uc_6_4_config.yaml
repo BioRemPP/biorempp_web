@@ -1,0 +1,251 @@
+# ============================================================================
+# UC-6.4: Overview of Enzymatic Activity and Substrate Scope
+# ============================================================================
+# Description: Treemap showing hierarchical enzymatic activity distribution
+# Module: module6
+# Plot Type: Treemap (Hierarchical)
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-6.4"
+  module: "module6"
+  title: "Overview of Enzymatic Activity and Substrate Scope"
+  description: >
+    Hierarchical treemap visualizing the distribution of enzymatic functions
+    and their substrate versatility. Shows the nested relationship between
+    enzyme activities, compound classes, and specific genes. Enables identification
+    of versatile enzymatic functions, substrate scope across chemical classes,
+    and key genes driving enzymatic activities.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "treemap"
+    - "hierarchical"
+    - "enzyme"
+    - "compound"
+    - "biorempp"
+  plot_type: "treemap"
+  scientific_context:
+    domain: "Enzymatic Biochemistry and Bioremediation"
+    application: "Hierarchical enzymatic activity analysis"
+    interpretation: "Rectangle size indicates substrate versatility; nesting shows hierarchy"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Enzyme_Activity"
+    - "Compound_Class"
+    - "Gene_Symbol"
+    - "Compound_Name"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "build_hierarchy"
+        enabled: true
+        description: "Build hierarchical path: Enzyme_Activity → Compound_Class → Gene_Symbol"
+      
+      - name: "aggregate_values"
+        enabled: true
+        description: "Count unique compounds per path"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "TreemapStrategy"
+  
+  plotly:
+    # Hierarchy configuration
+    path_columns:
+      - "Enzyme_Activity"
+      - "Compound_Class"
+      - "Gene_Symbol"
+    
+    root_label: "All Enzymatic Activities"
+    
+    # Aggregation configuration
+    value_column: "Compound_Name"
+    aggregation: "nunique"
+    
+    # Color configuration
+    color_mode: "continuous"
+    color_continuous_scale: "Greens"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Enzymatic Activity: Function → Class → Gene"
+        x: 0.5
+        font:
+          size: 16
+      
+      # Text configuration
+      text_info: "label+value"
+      text_font_size: 12
+      
+      # Colorbar configuration
+      colorbar:
+        title: "Unique Compounds"
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      margin:
+        t: 50
+        l: 25
+        r: 25
+        b: 25
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-6-4-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render treemap when accordion opens"
+  
+  outputs:
+    - component_id: "uc-6-4-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Hierarchical treemap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Enzyme_Activity", "Compound_Class", "Gene_Symbol", "Compound_Name"]
+      message: "Data must contain 'Enzyme_Activity', 'Compound_Class', 'Gene_Symbol', and 'Compound_Name' columns"
+    
+    - rule: "min_hierarchy_levels"
+      min_count: 2
+      message: "At least 2 hierarchy levels required for treemap"
+    
+    - rule: "biorempp_data_required"
+      message: "This use case requires BioRemPP database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_6_4_df_{data_hash}"
+        description: "Cache processed hierarchy data"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_6_4_treemap_{data_hash}"
+        description: "Cache generated treemap"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Treemap requires 'Enzyme_Activity', 'Compound_Class', 'Gene_Symbol', and 'Compound_Name' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No hierarchy data available. Please check BioRemPP dataset."
+    
+    insufficient_levels:
+      action: "display_message"
+      message: "At least 2 hierarchy levels required for treemap. Found: {count}"
+    
+    biorempp_data_missing:
+      action: "display_message"
+      message: "BioRemPP database data not found. This use case requires BioRemPP data."
+  
+  processing_errors:
+    hierarchy_build_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to build hierarchy: {error_details}"
+    
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate values: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render treemap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Columns Required (from callback):
+# - Enzyme_Activity: Enzymatic function category
+# - Compound_Class: Chemical class category
+# - Gene_Symbol: Gene identifier
+# - Compound_Name: Compound for counting unique values
+#
+# Hierarchy (3 levels):
+# All Enzymatic Activities (root)
+#   ├─ Oxidoreductase (Enzyme_Activity)
+#   │   ├─ Aromatic (Compound_Class)
+#   │   │   └─ geneA (Gene_Symbol) → Compound_Name count
+#   │   └─ Aliphatic (Compound_Class)
+#   │       └─ geneB (Gene_Symbol) → Compound_Name count
+#   └─ Transferase (Enzyme_Activity)
+#       └─ Aromatic (Compound_Class)
+#           └─ geneC (Gene_Symbol) → Compound_Name count
+#
+# Scientific Interpretation:
+# - Substrate versatility: Number of unique compounds per enzymatic function
+# - Enzymatic diversity: Which functions target widest range of compounds
+# - Chemical class distribution: How versatility distributes across classes
+# - Gene drivers: Which genes are primary drivers of enzymatic activities
+# - Use for: Enzymatic profiling, substrate scope analysis, gene function analysis
+# - Optimization: Identify versatile enzymes for broad bioremediation applications

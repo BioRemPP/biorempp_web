@@ -1,0 +1,371 @@
+# ============================================================================
+# UC-7.3: Mapping of Genetic Response to High-Priority Threats
+# ============================================================================
+# Description: Count-based heatmap showing unique gene counts per sample against high-priority toxic compounds
+# Module: module7
+# Plot Type: Heatmap (Count-based)
+# Rendering: On-demand (super-category dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-7.3"
+  module: "module7"
+  title: "Genetic Response to High-Priority Threats"
+  description: >
+    Count-based heatmap visualizing the number of unique genes each sample
+    possesses to degrade high-priority toxic compounds within a selected
+    super-category. Enables targeted consortia design for high-risk pollutants
+    by revealing which samples have the most genetic potential against specific
+    toxicological threats.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "heatmap"
+    - "count_based"
+    - "genetic_response"
+    - "toxicity"
+    - "consortium_design"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Toxicological Risk Assessment and Bioremediation"
+    application: "Targeted consortia design for high-risk pollutants"
+    interpretation: "Darker cells indicate higher genetic potential (more unique genes) against specific threats"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "merged-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "compoundname"
+    - "genesymbol"
+    - "super_category"
+  
+  processing:
+    steps:
+      - name: "extract_toxcsm_biorempp"
+        enabled: true
+        description: "Extract ToxCSM and BioRemPP data from store"
+      
+      - name: "filter_high_priority"
+        enabled: true
+        description: "Filter to high-priority toxic compounds (toxicity_score >= 0.7)"
+      
+      - name: "filter_by_category"
+        enabled: true
+        description: "Filter data to selected super-category"
+      
+      - name: "aggregate_unique_genes"
+        enabled: true
+        params:
+          group_by: ["compoundname", "sample"]
+          aggregation: "nunique"
+          value_column: "genesymbol"
+        description: "Count unique genes per (compound, sample) pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapStrategy"
+  
+  plotly:
+    # Column mapping
+    row_column: "compoundname"
+    col_column: "sample"
+    value_column: "genesymbol"
+    aggregation: "nunique"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Genetic Response to High-Priority Threats"
+        font:
+          size: 18
+          family: "Arial, sans-serif"
+          color: "#2c3e50"
+        x: 0.5
+        xanchor: "center"
+      
+      # Axis labels
+      xaxis:
+        title: "Sample"
+      yaxis:
+        title: "High-Risk Compound"
+      
+      # Axis angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Color configuration
+      color_label: "Unique Gene Count"
+      color_continuous_scale: "Reds"
+      
+      # Text annotations
+      text_auto: false
+      text_font_size: 10
+      
+      # Colorbar
+      colorbar:
+        title: "Unique<br>Gene Count"
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 800
+      autosize: true
+      
+      margin:
+        l: 150
+        r: 50
+        t: 80
+        b: 120
+      
+      hovermode: "closest"
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-7-3-category-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render heatmap when threat category is selected"
+  
+  outputs:
+    - component_id: "uc-7-3-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Genetic response heatmap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-7-3-category-dropdown"
+      type: "dropdown"
+      label: "Select Threat Category"
+      options_source: "dynamic"
+      placeholder: "Choose a threat category..."
+      clearable: false
+      searchable: true
+      description: "Choose super-category to analyze genetic response"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "compoundname", "genesymbol", "super_category"]
+      message: "Data must contain required columns for genetic response analysis"
+    
+    - rule: "category_selected"
+      message: "Please select a threat category from the dropdown"
+    
+    - rule: "minimum_compounds"
+      min_count: 1
+      message: "At least 1 high-risk compound required for heatmap"
+    
+    - rule: "toxcsm_biorempp_required"
+      message: "This use case requires both ToxCSM and BioRemPP databases"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_7_3_df_{data_hash}"
+        description: "Cache processed compound-sample matrix per category"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_7_3_heatmap_{data_hash}"
+        description: "Cache generated heatmap per category"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Heatmap requires 'sample', 'compoundname', 'genesymbol', and 'super_category' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No genetic response data available. Please check ToxCSM and BioRemPP datasets."
+    
+    no_category_selected:
+      action: "display_info"
+      message: "Please select a threat category from the dropdown above."
+    
+    no_high_priority_compounds:
+      action: "display_message"
+      message: "No high-priority compounds found for category: {category}"
+    
+    toxcsm_biorempp_missing:
+      action: "display_message"
+      message: "ToxCSM and BioRemPP database data not found. This use case requires both databases."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate gene counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render genetic response heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - title.font.size: Title font size
+# - title.font.family: Title font family
+# - title.font.color: Title font color
+# - autosize: true/false (responsive sizing)
+# - xaxis.title: X-axis label
+# - yaxis.title: Y-axis label
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - color_label: Colorbar label
+# - color_continuous_scale: "Reds", "Blues", "Greens", "Viridis", etc.
+# - text_auto: true/false (show values in cells)
+# - text_font_size: Text font size (default: 10)
+# - colorbar.title: Colorbar label
+# - template: "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels (dynamic based on rows)
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - hovermode: "closest", "x", "y", "x unified", "y unified"
+# - aggregation: "nunique", "count", "sum"
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_7_3_callbacks.py):
+# 1. Extract ToxCSM and BioRemPP DataFrames from merged-result-store
+# 2. Validate super-category selection
+# 3. Filter ToxCSM to high-priority compounds (toxicity_score >= 0.7)
+# 4. Filter to selected super-category
+# 5. Merge with BioRemPP to get gene symbols
+# 6. Map columns: sample, compoundname, genesymbol
+# 7. Clean data (remove nulls, normalize)
+# 8. Pass to PlotService
+#
+# STRATEGY (HeatmapStrategy):
+# 1. Receives data with ['compoundname', 'sample', 'genesymbol']
+# 2. Process data:
+#    - Clean data (remove nulls, normalize strings)
+#    - Group by (compoundname, sample)
+#    - Aggregate: nunique(genesymbol)
+#    - Pivot to matrix
+#    - Sort by totals (descending)
+# 3. Create figure:
+#    - Create heatmap matrix (compounds × samples)
+#    - Apply Reds colorscale
+#    - No text annotations (text_auto=false)
+#    - Calculate dynamic height (40px per row + 160px)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - ToxCSM: ✅ Contains 'compoundname', 'endpoint', 'toxicity_score', 'super_category' columns
+# - BioRemPP: ✅ Contains 'sample', 'compoundname', 'genesymbol' columns
+# - KEGG: ❌ Not used for this analysis
+# - HADEG: ❌ Not used for this analysis
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On super-category dropdown selection
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Count-based heatmap
+# - Rows: High-risk compounds (sorted by total gene count descending)
+# - Columns: Samples (sorted by total gene count descending)
+# - Cell values: Count of unique genes for (compound, sample) pair
+# - Color: Reds colorscale (darker = more genes)
+# - Text: No annotations (text_auto=false)
+# - Hover: Shows compound, sample, and unique gene count
+# - Interpretation:
+#   * Darker red: Higher genetic potential
+#   * Lighter red: Lower genetic potential
+#   * Rows at top: Compounds with highest total gene coverage
+#   * Columns at right: Samples with highest total genetic potential
+#
+# Aggregation Algorithm:
+# For each (compound, sample) pair:
+#   count = COUNT(DISTINCT genesymbol WHERE compoundname=X AND sample=Y AND super_category=C AND toxicity_score >= 0.7)
+#
+# Example:
+# Compound "Benzene", Sample "S1", Category "Genomic": 12 unique genes
+# → Cell at (Benzene, S1) shows value 12 with corresponding red shade
+#
+# Scientific Interpretation:
+# - Genetic potential: Number of unique genes for degrading toxic compounds
+# - High-priority threats: Compounds with toxicity_score >= 0.7
+# - Consortia design: Identify samples with complementary genetic capabilities
+# - Use for: Risk mitigation, targeted bioremediation, sample selection
+# - Optimization: Combine samples with diverse genetic responses
+#
+# Super-Categories (Threat Categories):
+# - Nuclear Response: Nuclear receptor endpoints
+# - Stress Response: Cellular stress endpoints
+# - Genomic: Genomic/mutagenic endpoints
+# - Environmental: Environmental toxicity endpoints
+# - Organic: Organic system toxicity endpoints
+#
+# High-Priority Threshold:
+# - toxicity_score >= 0.7 (70% probability of toxicity)
+# - Focuses on most hazardous compounds
+# - Enables targeted risk mitigation
+#
+# Dynamic Height Calculation:
+# - Formula: max(500, min(1200, 40 * n_rows + 160))
+# - Ensures readable row height for varying compound counts
+# - Minimum: 500px, Maximum: 1200px
+#
+# Unique Features:
+# - Multi-database integration (ToxCSM + BioRemPP)
+# - High-priority filtering (toxicity_score >= 0.7)
+# - Super-category-specific analysis
+# - Genetic response profiling
+# - Consortia design support
+# - Reds colorscale for toxicity emphasis

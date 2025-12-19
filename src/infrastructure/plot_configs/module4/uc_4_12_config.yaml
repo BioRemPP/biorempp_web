@@ -1,0 +1,352 @@
+# ============================================================================
+# UC-4.12: Interactive Heatmap of Pathway Relationships by Sample (HADEG)
+# ============================================================================
+# Description: Count-based heatmap showing pathway-compound pathway relationships with unique KO counts
+# Module: module4
+# Plot Type: Heatmap (Count-based)
+# Rendering: On-demand (sample dropdown selection)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-4.12"
+  module: "module4"
+  title: "Interactive Heatmap of Pathway Relationships by Sample"
+  description: >
+    Count-based heatmap visualizing pathway-compound pathway relationships
+    with unique KO counts for a selected sample. Reveals the sample's metabolic
+    architecture and functional organization by showing how specific metabolic
+    pathways interact with different chemical compound classes.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-12-03"
+  tags:
+    - "heatmap"
+    - "count_based"
+    - "pathway_relationships"
+    - "hadeg"
+    - "metabolic_architecture"
+  plot_type: "heatmap"
+  scientific_context:
+    domain: "Metabolic Pathway Analysis and Functional Organization"
+    application: "Analyzing pathway-compound pathway relationships for individual samples"
+    interpretation: "Darker cells indicate higher KO diversity at pathway-compound pathway intersections"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "hadeg-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "Sample"
+    - "Gene"
+    - "Compound"
+    - "Pathway"
+    - "KO"
+  
+  processing:
+    steps:
+      - name: "extract_hadeg"
+        enabled: true
+        description: "Extract HADEG results from store"
+      
+      - name: "filter_by_sample"
+        enabled: true
+        description: "Filter data to selected sample"
+      
+      - name: "aggregate_unique_kos"
+        enabled: true
+        params:
+          group_by: ["Pathway", "compound_pathway"]
+          aggregation: "nunique"
+          value_column: "ko"
+        description: "Count unique KOs per (pathway, compound_pathway) pair"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "HeatmapStrategy"
+  
+  plotly:
+    # Column mapping
+    row_column: "Pathway"
+    col_column: "compound_pathway"
+    value_column: "ko"
+    aggregation: "nunique"
+    
+    # Chart configuration
+    chart:
+      title:
+        show: true
+        text: "Pathway-Compound Pathway Functional Map"
+      
+      # Axis labels
+      xaxis:
+        title: "Compound Pathway (Chemical Class)"
+      yaxis:
+        title: "Pathway"
+      
+      # Axis angles
+      xaxis_tickangle: -45
+      yaxis_tickangle: 0
+      
+      # Color configuration
+      color_label: "Unique KO Count"
+      color_continuous_scale:
+        - "#f7fcf5"  # Very light green
+        - "#3CB371"  # Medium sea green
+      
+      # Text annotations
+      text_auto: true
+      text_font_size: 10
+      
+      # Colorbar
+      colorbar:
+        title: "KO Count"
+    
+    # Layout configuration
+    layout:
+      template: "plotly_white"
+      height: 600
+      autosize: true
+      
+      margin:
+        l: 150
+        r: 80
+        t: 80
+        b: 120
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-4-12-sample-dropdown"
+      property: "value"
+      trigger_type: "dropdown_selection"
+      description: "Render heatmap when sample is selected"
+  
+  outputs:
+    - component_id: "uc-4-12-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Pathway relationships heatmap"
+  
+  states:
+    - component_id: "merged-result-store"
+      property: "data"
+      description: "Merged data from all databases"
+  
+  controls:
+    - component_id: "uc-4-12-sample-dropdown"
+      type: "dropdown"
+      label: "Select Sample"
+      options_source: "dynamic"
+      description: "Choose sample to analyze pathway relationships"
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["Sample", "Gene", "Compound", "Pathway", "KO"]
+      message: "Data must contain required columns for pathway analysis"
+    
+    - rule: "sample_selected"
+      message: "Please select a sample from the dropdown"
+    
+    - rule: "minimum_pathways"
+      min_count: 1
+      message: "At least 1 pathway required for heatmap"
+    
+    - rule: "hadeg_data_required"
+      message: "This use case requires HADEG database"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_4_12_df_{data_hash}"
+        description: "Cache processed pathway-compound matrix per sample"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_4_12_heatmap_{data_hash}"
+        description: "Cache generated heatmap per sample"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+      on_filter_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading:
+    enabled: true
+    render_on_dropdown: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Heatmap requires 'Sample', 'Gene', 'Compound', 'Pathway', and 'KO' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No pathway data available. Please check HADEG dataset."
+    
+    no_sample_selected:
+      action: "display_info"
+      message: "Please select a sample from the dropdown above."
+    
+    no_data_for_sample:
+      action: "display_message"
+      message: "No pathway data found for sample: {sample}"
+    
+    hadeg_data_missing:
+      action: "display_message"
+      message: "HADEG database data not found. This use case requires HADEG data."
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to aggregate KO counts: {error_details}"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+      message: "Failed to render pathway relationships heatmap: {error_details}"
+
+# ============================================================================
+# NOTES: Flexible Properties & Data Flow
+# ============================================================================
+# Flexible Properties (Configurable via YAML):
+# - title.show: true/false (toggle title)
+# - title.text: Title text
+# - autosize: true/false (responsive sizing)
+# - xaxis.title: X-axis label
+# - yaxis.title: Y-axis label
+# - xaxis_tickangle: X-axis label rotation (-90 to 90)
+# - yaxis_tickangle: Y-axis label rotation (-90 to 90)
+# - color_label: Colorbar label
+# - color_continuous_scale: Custom colorscale (list or string)
+# - text_auto: true/false (show values in cells)
+# - text_font_size: Text font size (default: 10)
+# - colorbar.title: Colorbar label
+# - template: "plotly_white", "simple_white", "plotly", "plotly_dark", etc.
+# - height: Chart height in pixels (dynamic based on rows)
+# - width: Chart width (if autosize=false)
+# - margin: {l, r, t, b} margins
+# - aggregation: "nunique", "count", "sum"
+#
+# Data Processing Flow:
+# 
+# CALLBACK (uc_4_12_callbacks.py):
+# 1. Extract HADEG DataFrame from merged-result-store
+# 2. Validate sample selection
+# 3. Filter data to selected sample
+# 4. Map columns: Sample, Gene, Compound, Pathway, KO
+# 5. Create compound_pathway column (chemical class grouping)
+# 6. Clean data (remove nulls, normalize)
+# 7. Pass to PlotService
+#
+# STRATEGY (HeatmapStrategy):
+# 1. Receives data with ['Pathway', 'compound_pathway', 'ko']
+# 2. Process data:
+#    - Clean data (remove nulls, normalize strings)
+#    - Group by (Pathway, compound_pathway)
+#    - Aggregate: nunique(ko)
+#    - Pivot to matrix
+#    - Sort by totals (descending)
+# 3. Create figure:
+#    - Create heatmap matrix (pathways × compound_pathways)
+#    - Apply custom colorscale (light green to medium sea green)
+#    - Add text annotations (if matrix ≤ 400 cells)
+#    - Calculate dynamic height (40px per row + 160px)
+# 4. Returns Plotly figure
+#
+# Database Support:
+# - HADEG: ✅ Contains 'Sample', 'Gene', 'Compound', 'Pathway', 'KO' columns
+# - BioRemPP: ❌ Does NOT contain pathway data
+# - KEGG: ❌ Different structure
+# - ToxCSM: ❌ Does NOT contain pathway data
+#
+# Rendering Logic:
+# - Dropdown population: On accordion open
+# - Chart rendering: On sample dropdown selection
+# - Loading spinner shown during processing
+#
+# Visualization Details:
+# - Plot type: Count-based heatmap
+# - Rows: Specific metabolic pathways (sorted by total KO count descending)
+# - Columns: Compound pathways/chemical classes (sorted by total KO count descending)
+# - Cell values: Count of unique KOs for (pathway, compound_pathway) pair
+# - Color: Custom green gradient (light to medium sea green)
+# - Text: Integer counts displayed in cells (if matrix ≤ 400 cells)
+# - Hover: Shows pathway, compound pathway, and unique KO count
+# - Interpretation:
+#   * Darker green: Higher functional diversity at intersection
+#   * Lighter green: Lower functional diversity
+#   * Rows at top: Pathways with highest total KO coverage
+#   * Columns at right: Compound pathways with highest total functional potential
+#
+# Aggregation Algorithm:
+# For each (pathway, compound_pathway) pair:
+#   count = COUNT(DISTINCT ko WHERE Pathway=X AND compound_pathway=Y AND Sample=S)
+#
+# Example:
+# Pathway "Glycolysis", Compound Pathway "Carbohydrates": 25 unique KOs
+# → Cell at (Glycolysis, Carbohydrates) shows value 25 with corresponding green shade
+#
+# Scientific Interpretation:
+# - Metabolic architecture: How pathways interact with chemical classes
+# - Functional organization: Distribution of enzymatic capabilities
+# - Pathway-compound relationships: Specific vs. broad pathway capabilities
+# - Use for: Metabolic profiling, functional screening, pathway analysis
+# - Optimization: Identify samples with specialized vs. generalized metabolism
+#
+# Compound Pathways (Chemical Classes):
+# - Carbohydrates: Sugar metabolism
+# - Amino Acids: Protein metabolism
+# - Lipids: Fat metabolism
+# - Nucleotides: DNA/RNA metabolism
+# - Others: Various chemical compound classes
+#
+# Dynamic Height Calculation:
+# - Formula: max(500, min(1200, 40 * n_rows + 160))
+# - Ensures readable row height for varying pathway counts
+# - Minimum: 500px, Maximum: 1200px
+#
+# Text Annotation Logic:
+# - Enabled if total cells ≤ 400 (e.g., 20 pathways × 20 compound pathways)
+# - Disabled for larger matrices to avoid clutter
+# - Configurable via text_auto property
+#
+# Unique Features:
+# - Sample-specific analysis (filtered view)
+# - Pathway-compound pathway relationships
+# - Custom green gradient colorscale
+# - Dynamic height based on number of pathways
+# - Automatic sorting by total KO counts

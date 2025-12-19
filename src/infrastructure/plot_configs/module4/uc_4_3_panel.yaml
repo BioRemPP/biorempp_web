@@ -1,0 +1,59 @@
+# UC-4.3: Interactive Comparison of Sample Performance by Pathway (KEGG)
+# Panel Configuration (Informative Collapsible Panel)
+
+use_case_id: "uc-4-3"
+
+scientific_question: >
+  For a given metabolic pathway, what is the relative functional richness of
+  each biological sample, and which samples are the key functional players?
+
+description: >
+  This interactive visualization provides a comparative profile of all samples
+  for a single, user-selected metabolic pathway. By selecting a pathway from
+  the dropdown menu, the radar chart dynamically updates to display the
+  functional richness—measured by the count of unique KEGG Orthology (KO)
+  identifiers—of each sample for that specific function. This allows for a
+  direct comparison of which biological sources are best equipped for a given metabolic
+  task.
+
+visual_elements:
+  - label: "Dropdown Menu"
+    description: >
+      Use this to select the Metabolic Pathway to analyze. The plot will update
+      automatically.
+
+  - label: "Axes (theta)"
+    description: >
+      Each axis radiating from the center represents an individual Sample.
+
+  - label: "Value (r)"
+    description: >
+      The distance of a point from the center along a sample's axis indicates
+      the count of unique KOs that sample possesses for the selected pathway.
+
+  - label: "Shape"
+    description: >
+      The blue shape connecting the points represents the overall "functional
+      footprint" of the selected pathway across the entire consortium of
+      samples.
+
+interpretation_guidelines:
+  - >
+    Functional Strength: Points farther from the center may signify a higher
+    functional richness for that sample within the selected pathway. These
+    samples may be considered the most potent "specialists" for that function.
+
+  - >
+    Identifying Key Players: The overall shape of the radar plot can help
+    identify which samples are the dominant functional players for a given
+    pathway. A shape that is heavily skewed towards one or two samples
+    may indicate a highly specialized function within the community.
+
+  - >
+    Comparative Pathway Analysis: By switching between different pathways in
+    the dropdown, one can rapidly compare how the functional roles of the
+    samples shift. A sample that is a key player for "Toluene biotransformation"
+    might be a minor player for "Methane metabolism," potentially revealing its specific
+    ecological niche.
+
+color_scheme: "success"

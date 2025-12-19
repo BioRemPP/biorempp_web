@@ -1,0 +1,248 @@
+# ============================================================================
+# UC-1.4: Proportional Contribution of Samples Unique KO Pool
+# ============================================================================
+# Description: 100% stacked bar chart showing proportional KO contribution per sample
+# Module: module1
+# Plot Type: Stacked Bar Chart
+# Rendering: On-demand (accordion activation)
+# ============================================================================
+
+# ============================================================================
+# SECTION 1: Metadata (REQUIRED)
+# ============================================================================
+metadata:
+  use_case_id: "UC-1.4"
+  module: "module1"
+  title: "Proportional Contribution of Samples Unique KO Pool"
+  description: >
+    100% stacked bar chart showing the relative functional diversity of
+    each microbial sample in comparison to the entire observed functional
+    landscape. Visualizes which organisms have the most functionally
+    diverse genomes versus specialized metabolic capabilities.
+  version: "1.0.0"
+  author: "BioRemPP Development Team"
+  created_date: "2025-11-30"
+  tags:
+    - "proportional_contribution"
+    - "stacked_bar"
+    - "sample_diversity"
+    - "functional_richness"
+  plot_type: "stacked_bar"
+  scientific_context:
+    domain: "Functional Genomics"
+    application: "Comparative assessment of sample functional diversity"
+    interpretation: "Identifies functionally rich vs. specialized samples for bioremediation"
+
+# ============================================================================
+# SECTION 2: Data Configuration (REQUIRED)
+# ============================================================================
+data:
+  source: "biorempp-result-store"
+  source_type: "store"
+  
+  required_columns:
+    - "sample"
+    - "ko"
+  
+  processing:
+    steps:
+      - name: "extract_biorempp"
+        enabled: true
+        description: "Extract BioRemPP results from store"
+      
+      - name: "validate"
+        enabled: true
+        validator: "standard"
+        description: "Validate required columns exist"
+      
+      - name: "filter_complete"
+        enabled: true
+        description: "Filter to retain only records with valid sample and ko"
+      
+      - name: "normalize_identifiers"
+        enabled: true
+        params:
+          strip_whitespace: true
+          convert_uppercase: true
+          remove_empty: true
+        description: "Normalize KO identifiers and sample names"
+      
+      - name: "aggregate_by_sample"
+        enabled: true
+        params:
+          group_by: "sample"
+          value_column: "ko"
+          aggregation: "nunique"
+        description: "Count unique KOs per sample"
+      
+      - name: "normalize_percentages"
+        enabled: true
+        description: "Normalize counts to percentages for 100% stacked bar"
+
+# ============================================================================
+# SECTION 3: Visualization Configuration (REQUIRED)
+# ============================================================================
+visualization:
+  strategy: "StackedBarChartStrategy"
+  
+  plotly:
+    # Strategy-specific parameters
+    category_column: "sample"
+    value_column: "ko"
+    aggregation_function: "nunique"
+    constant_x_label: "Total Unique KOs"
+    
+    # Chart configuration
+    chart:
+      # Title configuration
+      title:
+        text: "Proportional Functional Diversity of Microbial Samples"
+        font:
+          size: 16
+          family: "Arial"
+          color: "#2c3e50"
+        x: 0.5
+        xanchor: "center"
+      
+      # Axis configuration
+      xaxis:
+        title: null
+        showticklabels: false
+        title_font:
+          size: 14
+      
+      yaxis:
+        title: "Percentage of Unique KOs"
+        ticksuffix: "%"
+        title_font:
+          size: 14
+      
+      # Legend configuration
+      legend:
+        title: "Sample"
+        orientation: "v"
+        yanchor: "top"
+        y: 0.98
+        xanchor: "left"
+        x: 1.02
+        font:
+          size: 10
+      
+      # Color scheme
+      color_discrete_sequence: "Set3"
+      
+      # Hover template
+      hovertemplate: >
+        Sample=%{customdata[0]}<br>
+        Unique KOs=%{y}<br>
+        Share=%{customdata[1]}<extra></extra>
+    
+    # Layout configuration
+    layout:
+      template: "simple_white"
+      height: 600
+      autosize: true
+      margin:
+        l: 60
+        r: 280
+        t: 90
+        b: 60
+      showlegend: true
+
+# ============================================================================
+# SECTION 4: Interactivity Configuration (REQUIRED)
+# ============================================================================
+interactivity:
+  triggers:
+    - component_id: "uc-1-4-accordion-group"
+      property: "active_item"
+      trigger_type: "accordion_open"
+      description: "Render stacked bar chart when accordion opens"
+  
+  outputs:
+    - component_id: "uc-1-4-chart"
+      property: "children"
+      output_type: "dcc.Graph"
+      description: "Stacked bar chart visualization"
+  
+  states: []
+
+# ============================================================================
+# SECTION 5: Validation Configuration (REQUIRED)
+# ============================================================================
+validation:
+  rules:
+    - rule: "not_empty"
+      message: "Input data cannot be empty"
+    
+    - rule: "required_columns"
+      columns: ["sample", "ko"]
+      message: "Data must contain 'sample' and 'ko' columns for proportional analysis"
+    
+    - rule: "minimum_samples"
+      min_count: 1
+      message: "At least 1 sample required for proportional analysis"
+    
+    - rule: "no_nulls"
+      columns: ["sample", "ko"]
+      message: "Null values not allowed in 'sample' or 'ko' columns"
+    
+    - rule: "minimum_data"
+      min_rows: 1
+      message: "Insufficient data to generate visualization"
+
+# ============================================================================
+# SECTION 6: Performance Configuration (REQUIRED)
+# ============================================================================
+performance:
+  cache:
+    enabled: true
+    layers:
+      - layer: "dataframe"
+        ttl: 7200
+        key_template: "uc_1_4_df_{data_hash}"
+        description: "Cache aggregated KO counts per sample"
+      
+      - layer: "graph"
+        ttl: 3600
+        key_template: "uc_1_4_stacked_{data_hash}_{filters_hash}"
+        description: "Cache generated stacked bar chart"
+    
+    invalidation:
+      on_data_change: true
+      on_config_change: true
+  
+  logging:
+    enabled: true
+    level: "INFO"
+    log_cache_hits: true
+    log_generation_time: true
+  
+  lazy_loading: true
+  render_on_accordion: true
+
+# ============================================================================
+# SECTION 7: Error Handling (RECOMMENDED)
+# ============================================================================
+error_handling:
+  validation_errors:
+    missing_columns:
+      action: "display_message"
+      message: "Required columns missing: {columns}. Stacked bar chart requires 'sample' and 'ko' columns."
+    
+    empty_dataframe:
+      action: "display_placeholder"
+      message: "No KO data found in BioRemPP results."
+    
+    insufficient_samples:
+      action: "display_message"
+      message: "At least 1 sample required for proportional analysis. Found: {count}"
+  
+  processing_errors:
+    aggregation_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"
+    
+    plot_render_failure:
+      action: "log_and_notify"
+      fallback: "display_error_message"

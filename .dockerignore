@@ -1,0 +1,332 @@
+# ============================================================================
+# BioRemPP v1.0 - Docker Build Context Exclusions
+# ============================================================================
+# Files and directories to exclude from Docker build context
+# Reduces build time and final image size
+# ============================================================================
+
+# ============================================================================
+# VERSION CONTROL
+# ============================================================================
+.git
+.gitignore
+.gitattributes
+.github/
+
+# ============================================================================
+# VIRTUAL ENVIRONMENTS AND DEPENDENCIES
+# ============================================================================
+# Python virtual environments
+.venv/
+venv/
+ENV/
+env/
+virtualenv/
+
+# Python cache and compiled files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+
+# ============================================================================
+# IDEs AND EDITORS
+# ============================================================================
+# Visual Studio Code
+.vscode/
+
+# PyCharm
+.idea/
+
+# Sublime Text
+*.sublime-project
+*.sublime-workspace
+
+# Vim
+*.swp
+*.swo
+*~
+
+# ============================================================================
+# LOGS AND TEMPORARY FILES
+# ============================================================================
+# Log files (should be volume-mounted, never in image!)
+*.log
+logs/
+src/logs/
+*.log.*
+
+# Temporary files
+*.tmp
+*.temp
+*.backup
+*.bak
+*.cache
+
+# ============================================================================
+# DOCUMENTATION
+# ============================================================================
+# Markdown documentation (except README)
+docs/
+unoff_docs/
+deprecated_docs_biorempp_web/
+*.md
+!README.md
+# MkDocs build output
+site/
+mkdocs.yml
+.readthedocs.yml
+
+# ============================================================================
+# TESTING AND COVERAGE
+# ============================================================================
+tests/
+.pytest_cache/
+.coverage
+.tox/
+htmlcov/
+.hypothesis/
+*.cover
+.mypy_cache/
+.dmypy.json
+dmypy.json
+# Code quality reports
+flake8_report.txt
+pylint_report.txt
+mypy_report.txt
+qc_baseline.json
+.code_quality/
+.docs_quality/
+
+# ============================================================================
+# OS-SPECIFIC FILES
+# ============================================================================
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+.directory
+.Trash-*
+
+# ============================================================================
+# PROFILING AND DEBUG FILES
+# ============================================================================
+*.prof
+*.lprof
+saida_profile.*
+.profiling/
+.benchmarks/
+ANALISE_*.md
+AVALIACAO_*.md
+OTIMIZACAO_*.md
+PHASE*.md
+PROPOSTA_*.md
+CACHE_PERFORMANCE_*.py
+REFACTORING_*.md
+CHANGELOG_*.md
+MIGRATION_*.md
+# Infrastructure documentation
+INFRA_REFACTOR/
+
+# ============================================================================
+# DOCKER FILES (Don't include Docker files in build context)
+# ============================================================================
+.dockerignore
+Dockerfile
+Dockerfile.*
+docker-compose*.yml
+# Keep .docker/entrypoint.sh and .docker/healthcheck.sh
+# But exclude other .docker/ content
+.docker/Dockerfile
+
+# ============================================================================
+# CI/CD CONFIGURATION
+# ============================================================================
+.gitlab-ci.yml
+.travis.yml
+azure-pipelines.yml
+.circleci/
+Jenkinsfile
+
+# ============================================================================
+# ENVIRONMENT FILES (Security - never include in image)
+# ============================================================================
+# Keep .env.example for documentation
+# Exclude actual environment files (should be passed at runtime)
+.env
+.env.local
+.env.development
+.env.production
+.env.test
+
+# ============================================================================
+# SCRIPTS AND UTILITIES
+# ============================================================================
+# Local development scripts
+*.sh
+*.ps1
+*.bat
+*.cmd
+
+# ============================================================================
+# DATA FILES (Optional - depends on use case)
+# ============================================================================
+# Sample/example databases - should be mounted as volumes
+BioRemPP_DB_*/
+data_tables/
+# Uncomment if data should be mounted at runtime instead of built into image
+# data/
+# *.csv
+# *.tsv
+# *.xlsx
+
+# ============================================================================
+# NODE MODULES (If using any Node.js tools)
+# ============================================================================
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ============================================================================
+# JUPYTER NOTEBOOKS (Development artifacts)
+# ============================================================================
+*.ipynb
+.ipynb_checkpoints/
+
+# ============================================================================
+# CONFIGURATION FILES
+# ============================================================================
+# Development-specific configs
+.editorconfig
+.prettierrc
+.eslintrc*
+.flake8
+.pylintrc
+mypy.ini
+# VSCode workspace
+*.code-workspace
+# pytest.ini - needed if running tests in container
+# setup.cfg - legacy, replaced by pyproject.toml
+# pyproject.toml - REQUIRED for pip install
+
+# ============================================================================
+# CACHE DIRECTORIES
+# ============================================================================
+# Application cache (should be volume-mounted)
+cache/
+.cache/
+*.cache/
+# Deprecated/unused directories
+app.py/
+callbacks/
+components/
+utils/
+
+# ============================================================================
+# BACKUP AND RESTORE
+# ============================================================================
+backup/
+backups/
+*.backup
+restore/
+# Copy directories
+**/config copy/
+**/config copy 2/
+**/*copy/
+**/*backup/
+
+# ============================================================================
+# MEDIA AND ASSETS (Large files)
+# ============================================================================
+# Uncomment if media files should be served from external storage
+# media/
+# static/media/
+# uploads/
+
+# ============================================================================
+# SECURITY SENSITIVE FILES
+# ============================================================================
+# Environment files
+.env
+.env.*
+!.env/env.example
+
+# SSL Certificates
+letsencrypt/
+*.pem
+*.key
+*.crt
+*.cer
+
+# Credentials
+credentials.json
+service-account.json
+secrets/
+.secrets/
+
+# ============================================================================
+# DOCKER INFRASTRUCTURE (v2.0)
+# ============================================================================
+# Old Docker files (legacy from v1.0)
+Dockerfile.dev
+Dockerfile.prod
+Dockerfile.nginx
+docker-compose.prod.yml
+
+# Docker volumes and data
+*.volume
+volumes/
+
+# Nginx logs
+nginx/logs/
+
+# ============================================================================
+# SCRIPTS (External to image)
+# ============================================================================
+# Shell scripts are for host management, not in container
+.scripts/
+*.sh
+!.docker/entrypoint.sh
+!.docker/healthcheck.sh
+
+# PowerShell scripts (legacy, not used in v2.0)
+*.ps1
+
+# ============================================================================
+# NOTES
+# ============================================================================
+# This .dockerignore file significantly reduces:
+# 1. Build context transfer time to Docker daemon
+# 2. Final image size
+# 3. Security risks (no credentials, no .git history)
+#
+# What IS included in the image:
+# - Python source code (*.py)
+# - Configuration files (config/)
+# - Static assets (assets/)
+# - Data files (data/) - if needed
+# - pyproject.toml (dependencies)
+# - README.md
+# - .docker/Dockerfile, entrypoint.sh, healthcheck.sh
+#
+# Best Practices:
+# - Review this file when adding new directories/files
+# - Use .dockerignore patterns similar to .gitignore
+# - Mount sensitive data as volumes at runtime
+# - Keep images minimal and focused
+# ============================================================================
