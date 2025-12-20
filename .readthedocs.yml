@@ -24,7 +24,7 @@ python:
     # Install project with documentation dependencies from pyproject.toml
     - method: pip
       path: .
-      extra_requires:
+      extra_requirements:
         - docs
 
 # Formats to build (HTML is default, PDF optional)
