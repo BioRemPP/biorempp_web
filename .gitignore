@@ -26,7 +26,7 @@ profiling/
 
 biorempp_web/site
 # GitHub workflows e configs
-.github/
+
 
 # SH
 # *.sh
