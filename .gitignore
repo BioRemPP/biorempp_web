@@ -250,6 +250,12 @@ data/temp/
 .docs_quality
 .profiling
 .scripts
-docs/
 biorempp_web.code-workspace
-mkdocs.yml
+
+# ============================================================================
+# Git Versioning Message Files (Conventional Commits + Semantic Versioning)
+# ============================================================================
+# These files are used to prepare commit and tag messages following standards
+# They should not be committed to avoid cluttering the repository
+.git_commit_message.txt
+.git_tag_message.txt

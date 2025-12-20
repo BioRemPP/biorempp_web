@@ -1,77 +1,50 @@
-BioRemPP v1.0.0-beta - Initial Public Release
+Release v1.0.1 - Documentation CI Implementation
 
-Bioremediation Potential Profile Web Service
-Official release for organization repository.
+This release adds automated documentation quality checks and ReadTheDocs integration
+for multi-version documentation deployment.
 
-RELEASE HIGHLIGHTS:
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+## What's New
 
-SCIENTIFIC CAPABILITIES
-  • 56 analytical use cases across 8 specialized modules
-  • Integration with 4 curated databases (BioRemPP, KEGG, HADEG, toxCSM)
-  • 7 regulatory framework classifications
-  • Comprehensive toxicological risk assessment
+### Features
+- **GitHub Actions Workflow for Documentation CI** (#001)
+  - Automated MkDocs build validation on push/PR to main and dev branches
+  - Strict build mode with verbose error reporting
+  - Build artifact upload with 7-day retention
+  - Path-based triggering for efficiency (docs/, mkdocs.yml, pyproject.toml)
 
-VISUALIZATIONS
-  • 19 chart types (heatmaps, networks, sunbursts, dendrograms, etc.)
-  • Interactive Plotly-based visualizations
-  • Export to PNG, SVG, JPEG formats
-  • Responsive graphics
+- **ReadTheDocs Multi-Version Support** (#002)
+  - Configured automatic deployment for main (stable) and dev (latest) branches
+  - Webhook integration for automatic builds
+  - PDF and EPUB export formats enabled
 
-ARCHITECTURE
-  • Clean Architecture (4-layer design)
-  • Strategy Pattern for plot generation
-  • Factory Pattern for dynamic panels
-  • YAML-based configuration system
-  • Multi-layer caching (Memory, DataFrame, Graph)
+### Configuration Updates
+- Updated .readthedocs.yml to use pyproject.toml[docs] dependencies
+- Standardized dependency installation: `pip install -e ".[docs]"`
 
-DEPLOYMENT
-  • Docker Compose orchestration
-  • Development and production environments
-  • Gunicorn + gevent workers
-  • Health checks and monitoring
-  • Nginx reverse proxy support
+### Branch Structure
+- **main** → Production documentation (https://biorempp.readthedocs.io/en/stable/)
+- **dev** → Development documentation (https://biorempp.readthedocs.io/en/latest/)
 
-DOCUMENTATION
-  • README.md - Complete setup and usage guide
-  • NumPy-style docstrings throughout
-  • Comprehensive user guide
-  • API reference documentation
-  • Scientific methodology docs
+## Technical Details
 
-DATA POLICY
-  • No user accounts required
-  • Session-based processing
-  • No persistent data storage
-  • Privacy-first design
+**Workflow Configuration:**
+- Python: 3.11 (matches production environment)
+- Actions: checkout@v4, setup-python@v5, upload-artifact@v4
+- Build: `mkdocs build --strict --verbose`
 
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+**ReadTheDocs Configuration:**
+- OS: Ubuntu 22.04
+- Build tool: Python 3.11
+- Install method: pip with extra_requirements=[docs]
+- Formats: HTML (default), PDF, EPUB
 
-SYSTEM REQUIREMENTS:
-  • Python 3.11+
-  • Docker 20.10+ (recommended)
-  • 4GB RAM minimum (8GB recommended)
-  • Modern web browser
+## Changes
+- Documentation deployment now requires ReadTheDocs account and webhook configuration
+- Local builds require installation with docs extras: `pip install -e ".[docs]"`
 
-QUICK START:
-  docker compose --profile prod up -d
-  # Access: http://localhost:8080
+## Migration Guide
+No migration required for existing deployments. New installations should:
+1. Configure ReadTheDocs webhook in GitHub repository settings
+2. Import project to ReadTheDocs
+3. Configure versions: stable (main) and latest (dev)
 
-DOCUMENTATION:
-  • README.md - Complete setup and usage guide
-  • CHANGELOG.md - Detailed version history
-  • LICENSE - Apache 2.0 (code) + CC BY 4.0 (database)
-
-STATUS:
-  Beta release pending article publication.
-  Production-ready for research use.
-
-MAINTAINERS:
-  BioRemPP Development Team
-  Contact: biorempp@gmail.com
-
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-Release Date: 2025-12-19
-Build: stable
-Environment: production

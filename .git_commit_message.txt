@@ -1,43 +1,26 @@
-feat: initial commit - BioRemPP v1.0.0-beta web service
+ci: add GitHub Actions workflow for documentation CI
 
-Complete implementation of BioRemPP (Bioremediation Potential Profile) 
-web service for functional analysis of microbial communities.
+Implement automated documentation quality checks using GitHub Actions
+to validate MkDocs builds on push and pull requests to main and dev branches.
 
-FEATURES:
-- 8 specialized analytical modules (56 use cases total)
-- Clean Architecture implementation (4-layer design)
-- Integration with curated databases (BioRemPP, KEGG, HADEG, toxCSM)
-- 7 regulatory framework classifications (IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA)
-- Interactive visualizations (19 chart strategies via Plotly)
-- Multi-format data export (CSV, Excel, JSON)
-- Docker deployment (development + production)
-- Comprehensive documentation (NumPy-style docstrings)
 
-ARCHITECTURE:
-- Domain layer: Business logic and plot strategies
-- Application layer: Use case orchestration
-- Infrastructure layer: Database integration and caching
-- Presentation layer: Dash-based UI with 56 interactive panels
+Features:
+- Add .github/workflows/docs-ci.yml workflow for documentation CI
+- Configure strict MkDocs build validation
+- Add build artifact upload for successful builds
+- Path-based triggering for docs-related changes only
 
-DATABASES:
-- BioRemPP Database v1.0 (2025)
-- KEGG Release 116.0+/12-19, Dec 25
-- HADEG: Commit 8f1ff8f (2023)
-- toxCSM: v1.0 (2022)
+Configuration:
+- Update .readthedocs.yml to use pyproject.toml[docs] dependencies
+- Use pip install -e ".[docs]" for dependency installation
 
-DEPLOYMENT:
-- Python 3.11+ with Dash framework
-- Docker Compose for containerization
-- Gunicorn + gevent for production
-- Development and production configurations
+Technical Details:
+- Workflow triggers on: push/PR to main and dev branches
+- Python version: 3.11 (matching production environment)
+- Build mode: strict with verbose output
+- Artifact retention: 7 days
 
-DOCUMENTATION:
-- Complete README 
-- Comprehensive API documentation
-- User guide and FAQ
-- 56 use case documentation pages
-- Scientific methodology documentation
+Branch Configuration:
+- Production branch: main → readthedocs.io/en/stable/
+- Development branch: dev → readthedocs.io/en/latest/
 
-This release represents the complete beta version pending article publication.
-
-Refs: #initial-release
