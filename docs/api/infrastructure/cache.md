@@ -7,7 +7,7 @@ The **Cache Layer** provides high-performance in-memory caching implementations 
 
 ### MemoryCache
 
-::: src.infrastructure.cache.memory_cache.MemoryCache
+::: src.infrastructure.cache.MemoryCache
     options:
       show_source: true
       heading_level: 3
@@ -16,7 +16,7 @@ The **Cache Layer** provides high-performance in-memory caching implementations 
 
 ### DataFrameCache
 
-::: src.infrastructure.cache.dataframe_cache.DataFrameCache
+::: src.infrastructure.cache.DataFrameCache
     options:
       show_source: true
       heading_level: 3
@@ -25,7 +25,7 @@ The **Cache Layer** provides high-performance in-memory caching implementations 
 
 ### GraphCache
 
-::: src.infrastructure.cache.graph_cache.GraphCache
+::: src.infrastructure.cache.GraphCache
     options:
       show_source: true
       heading_level: 3
@@ -34,7 +34,7 @@ The **Cache Layer** provides high-performance in-memory caching implementations 
 
 ### GraphCacheManager
 
-::: src.infrastructure.cache.graph_cache_manager.GraphCacheManager
+::: src.infrastructure.cache.GraphCacheManager
     options:
       show_source: true
       heading_level: 3
