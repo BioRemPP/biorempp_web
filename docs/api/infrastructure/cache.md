@@ -2,13 +2,6 @@
 # Cache Layer
 The **Cache Layer** provides high-performance in-memory caching implementations optimized for different data types.
 
-::: src.infrastructure.cache
-    :docstring:
-    :show-root-toc: false
-    :show-source: false
-    :heading-level: 2
-:::
-
 
 ## Cache Implementations
 

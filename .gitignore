@@ -236,7 +236,7 @@ nginx/logs/
 logs/*.log
 
 # Cache
-cache/
+
 *.cache
 
 # Data directories
