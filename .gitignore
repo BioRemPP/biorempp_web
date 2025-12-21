@@ -10,6 +10,8 @@
 #biorempp_web/unoff_docs
 *.env
 
+migration/
+
 biorempp_web/BioRemPP_DB_1.0.0
 
 
