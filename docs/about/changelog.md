@@ -81,6 +81,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1-beta] - 2025-12-20
+
+> **Note on Tag Versioning:** The previous tag `v1.0.1` was incorrectly versioned and should have been `v1.0.1-beta` per semantic versioning guidelines. The application remains in beta status until official article publication.
+
+### Added
+
+#### DevOps & CI/CD
+
+- **GitHub Actions Workflow for Documentation** ([#001])
+  - Automated MkDocs build validation on push/PR to `main` and `dev` branches
+  - Path-based triggering for documentation-related files
+  - Build artifact upload with 7-day retention
+  - Comprehensive error reporting and logging
+  - Dependencies installed via `pyproject.toml[docs]`
+
+- **ReadTheDocs Multi-Version Deployment**
+  - Configured automatic deployment for `main` (stable) and `dev` (latest) branches  
+  - Webhook integration for automatic builds on push
+  - Multi-format export: HTML, PDF, EPUB
+  - Version switcher for accessing different documentation versions
+  - Documentation URLs:
+    - Development (latest): https://biorempp.readthedocs.io/en/latest/
+    - Production (stable): https://biorempp.readthedocs.io/en/stable/
+
+### Fixed
+
+- **API Documentation Module References**
+  - Corrected mkdocstrings import paths for cache module classes
+  - Changed from submodule paths to package-level exports
+  - Resolved `src.infrastructure.cache` import errors in API docs
+
+- **ReadTheDocs Configuration**
+  - Fixed `.readthedocs.yml` syntax: `extra_requires` → `extra_requirements`
+  - Removed `cache/` from `.gitignore` to allow proper module documentation
+
+- **GitHub Actions Permissions**
+  - Added `.github/workflows/docs-ci.yml` to repository (was blocked by gitignore)
+  - Configured proper workflow permissions for actions execution
+
+### Technical Details
+
+- **Python Version:** 3.11
+- **CI Actions:** `checkout@v4`, `setup-python@v5`, `upload-artifact@v4`
+- **Build Command:** `mkdocs build --verbose`
+- **Dependencies:** Managed via `pyproject.toml[docs]` optional dependency group
+
+---
+
 
 ## Upcoming Features
 
