@@ -21,10 +21,11 @@ mkdocs:
 # Python dependencies
 python:
   install:
-    - requirements: docs-requirements.txt
-    # Uncomment if you need the main project installed for API docs
-    # - method: pip
-    #   path: .
+    # Install project with documentation dependencies from pyproject.toml
+    - method: pip
+      path: .
+      extra_requirements:
+        - docs
 
 # Formats to build (HTML is default, PDF optional)
 formats:

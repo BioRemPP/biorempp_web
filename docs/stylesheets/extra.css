@@ -1,0 +1,615 @@
+/* ============================================================================
+   BioRemPP Documentation - Custom Styles
+   ============================================================================
+   Purpose: Custom styling for MkDocs Material theme
+   Author: BioRemPP Team
+   Version: 2.0.0
+   ============================================================================ */
+
+/* ============================================================================
+   Root Variables - Theme Colors
+   ============================================================================ */
+:root {
+  --biorempp-primary: #2e7d32;
+  /* Green (bioremediation) */
+  --biorempp-secondary: #00897b;
+  /* Teal (science) */
+  --biorempp-accent: #ffa726;
+  /* Orange (highlights) */
+  --biorempp-success: #66bb6a;
+  /* Light green */
+  --biorempp-warning: #ffa726;
+  /* Orange */
+  --biorempp-error: #ef5350;
+  /* Red */
+  --biorempp-code-bg: #f5f5f5;
+  /* Code background */
+  --biorempp-border: #e0e0e0;
+  /* Borders */
+}
+
+/* ============================================================================
+   Typography Enhancements
+   ============================================================================ */
+
+/* Improve code font readability */
+code {
+  font-family: 'Roboto Mono', 'Courier New', monospace;
+  font-size: 0.9em;
+  background-color: var(--biorempp-code-bg);
+  padding: 0.2em 0.4em;
+  border-radius: 3px;
+}
+
+/* Inline code in headings */
+h1 code,
+h2 code,
+h3 code {
+  font-size: 0.85em;
+  color: var(--biorempp-primary);
+}
+
+/* Enhance docstring sections */
+.doc-section-title {
+  color: var(--biorempp-secondary);
+  font-weight: 600;
+  margin-top: 1.5em;
+}
+
+/* ============================================================================
+   API Reference Styling
+   ============================================================================ */
+
+/* Function/Method signatures */
+.doc-heading code {
+  background-color: transparent;
+  color: var(--biorempp-primary);
+  font-weight: 600;
+}
+
+/* Parameters and returns sections */
+.field-list {
+  background-color: #fafafa;
+  border-left: 3px solid var(--biorempp-secondary);
+  padding: 1em;
+  margin: 1em 0;
+}
+
+/* Type annotations */
+.annotation {
+  color: var(--biorempp-secondary);
+  font-style: italic;
+  font-size: 0.9em;
+}
+
+/* ============================================================================
+   Admonitions (Info boxes)
+   ============================================================================ */
+
+/* Success boxes */
+.admonition.success {
+  border-left-color: var(--biorempp-success);
+}
+
+/* Warning boxes */
+.admonition.warning {
+  border-left-color: var(--biorempp-warning);
+}
+
+/* Error boxes */
+.admonition.danger {
+  border-left-color: var(--biorempp-error);
+}
+
+/* Custom "Biology" admonition */
+.admonition.bio {
+  border-left-color: var(--biorempp-primary);
+  background-color: #e8f5e9;
+}
+
+/* ============================================================================
+   Code Blocks
+   ============================================================================ */
+
+/* Syntax highlighting improvements */
+.highlight {
+  border-radius: 6px;
+  margin: 1em 0;
+}
+
+/* Line numbers */
+.highlight .linenos {
+  background-color: #f0f0f0;
+  border-right: 1px solid var(--biorempp-border);
+  padding-right: 0.5em;
+}
+
+/* Copy button styling */
+.md-clipboard {
+  color: var(--biorempp-secondary);
+}
+
+.md-clipboard:hover {
+  color: var(--biorempp-primary);
+}
+
+/* ============================================================================
+   Tables
+   ============================================================================ */
+
+/* Striped tables */
+table tbody tr:nth-child(odd) {
+  background-color: #fafafa;
+}
+
+/* Table headers */
+table thead th {
+  background-color: var(--biorempp-primary);
+  color: white;
+  font-weight: 600;
+}
+
+/* Table borders */
+table {
+  border-collapse: collapse;
+  border: 1px solid var(--biorempp-border);
+}
+
+table td,
+table th {
+  border: 1px solid var(--biorempp-border);
+  padding: 0.75em;
+}
+
+/* ============================================================================
+   Navigation Enhancements
+   ============================================================================ */
+
+/* Active navigation item */
+.md-nav__link--active {
+  color: var(--biorempp-primary);
+  font-weight: 600;
+}
+
+/* Hover effect */
+.md-nav__link:hover {
+  color: var(--biorempp-secondary);
+}
+
+/* ============================================================================
+   Custom Components
+   ============================================================================ */
+
+/* Grid cards (for homepage) */
+.grid.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5em;
+  margin: 2em 0;
+}
+
+.grid.cards>* {
+  background-color: white;
+  border: 1px solid var(--biorempp-border);
+  border-radius: 8px;
+  padding: 1.5em;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.grid.cards>*:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Emoji icons in cards */
+.grid.cards svg.lg {
+  width: 3em;
+  height: 3em;
+  color: var(--biorempp-primary);
+  margin-bottom: 0.5em;
+}
+
+/* ============================================================================
+   Buttons and Links
+   ============================================================================ */
+
+/* Primary buttons */
+.md-button--primary {
+  background-color: var(--biorempp-primary);
+  border-color: var(--biorempp-primary);
+  color: white;
+}
+
+.md-button--primary:hover {
+  background-color: #1b5e20;
+  border-color: #1b5e20;
+}
+
+/* External links icon */
+a[href^="http"]:not([href*="biorempp"])::after {
+  content: " ↗";
+  font-size: 0.8em;
+  color: var(--biorempp-secondary);
+}
+
+/* ============================================================================
+   Search
+   ============================================================================ */
+
+/* Search result highlighting */
+mark {
+  background-color: #fff59d;
+  color: #000;
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+/* ============================================================================
+   Responsive Design
+   ============================================================================ */
+
+/* Mobile adjustments */
+@media screen and (max-width: 768px) {
+  .grid.cards {
+    grid-template-columns: 1fr;
+  }
+
+  code {
+    font-size: 0.85em;
+  }
+
+  table {
+    font-size: 0.9em;
+  }
+}
+
+/* ============================================================================
+   Print Styles
+   ============================================================================ */
+
+@media print {
+
+  /* Hide navigation */
+  .md-sidebar,
+  .md-header {
+    display: none;
+  }
+
+  /* Expand content */
+  .md-content {
+    max-width: 100%;
+  }
+
+  /* Improve code blocks */
+  .highlight {
+    border: 1px solid #000;
+  }
+}
+
+/* ============================================================================
+   Custom Utility Classes
+   ============================================================================ */
+
+/* Text colors */
+.text-primary {
+  color: var(--biorempp-primary);
+}
+
+.text-secondary {
+  color: var(--biorempp-secondary);
+}
+
+.text-success {
+  color: var(--biorempp-success);
+}
+
+.text-warning {
+  color: var(--biorempp-warning);
+}
+
+.text-error {
+  color: var(--biorempp-error);
+}
+
+/* Background colors */
+.bg-light {
+  background-color: #f5f5f5;
+}
+
+.bg-success {
+  background-color: #e8f5e9;
+}
+
+.bg-warning {
+  background-color: #fff3e0;
+}
+
+.bg-error {
+  background-color: #ffebee;
+}
+
+/* Spacing utilities */
+.mt-1 {
+  margin-top: 0.5em;
+}
+
+.mt-2 {
+  margin-top: 1em;
+}
+
+.mt-3 {
+  margin-top: 1.5em;
+}
+
+.mb-1 {
+  margin-bottom: 0.5em;
+}
+
+.mb-2 {
+  margin-bottom: 1em;
+}
+
+.mb-3 {
+  margin-bottom: 1.5em;
+}
+
+/* ============================================================================
+   Mermaid Diagrams
+   ============================================================================ */
+
+.mermaid {
+  text-align: center;
+  margin: 2em 0;
+}
+
+/* ============================================================================
+   Footer Customization
+   ============================================================================ */
+
+.md-footer {
+  background-color: var(--biorempp-primary);
+}
+
+.md-footer-meta {
+  background-color: #1b5e20;
+}
+
+/* ============================================================================
+   Emoji Support
+   ============================================================================ */
+
+.twemoji {
+  vertical-align: middle;
+  width: 1.2em;
+  height: 1.2em;
+}
+
+/* ============================================================================
+   API Documentation Specific
+   ============================================================================ */
+
+/* mkdocstrings enhancements */
+.doc-contents {
+  padding-left: 1em;
+  border-left: 2px solid var(--biorempp-border);
+}
+
+/* Source code links */
+.doc-source-link {
+  float: right;
+  font-size: 0.9em;
+  color: var(--biorempp-secondary);
+}
+
+.doc-source-link:hover {
+  color: var(--biorempp-primary);
+}
+
+/* ============================================================================
+   Regulatory References Page Specific
+   ============================================================================ */
+
+/* Organic compounds icon color */
+.organic {
+  color: #795548;
+}
+
+/* Heavy metals icon color */
+.heavy-metals {
+  color: #607d8b;
+}
+
+/* Pesticides icon color */
+.pesticides {
+  color: #558b2f;
+}
+
+/* Industrial chemicals icon color */
+.industrial {
+  color: #5e35b1;
+}
+
+/* Regulatory card styling */
+.regulatory-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+}
+
+.regulatory-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+/* IARC classification badges */
+.iarc-group-1 {
+  background-color: #ef5350;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.iarc-group-2a {
+  background-color: #ffa726;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.iarc-group-2b {
+  background-color: #29b6f6;
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+/* Reference table styling */
+.regulatory-reference-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 1em 0;
+}
+
+.regulatory-reference-table th {
+  background-color: var(--biorempp-primary);
+  color: white;
+  padding: 0.8em;
+  text-align: left;
+}
+
+.regulatory-reference-table td {
+  padding: 0.8em;
+  border-bottom: 1px solid var(--biorempp-border);
+}
+
+.regulatory-reference-table tr:hover {
+  background-color: #f5f5f5;
+}
+
+/* Pollutant category cards */
+.pollutant-category {
+  border-left: 4px solid var(--biorempp-primary);
+  padding: 1em;
+  margin-bottom: 1em;
+  background-color: #fafafa;
+  border-radius: 4px;
+}
+
+/* ============================================================================
+   User Guide Page Specific
+   ============================================================================ */
+
+/* Processing demo styling */
+.processing-demo {
+  text-align: center;
+  padding: 2em;
+  background: linear-gradient(135deg, #f5f5f5 0%, #e8f5e9 100%);
+  border-radius: 8px;
+  margin: 1.5em 0;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 1.1em;
+  color: #2e7d32;
+  border: 2px solid #81c784;
+}
+
+/* Visualization demo container */
+.demo-visualization {
+  border: 2px solid var(--biorempp-border);
+  border-radius: 8px;
+  padding: 1.5em;
+  margin: 1.5em 0;
+  background: #fafafa;
+}
+
+/* Step badges in workflow */
+.step-badge {
+  background-color: var(--biorempp-success);
+  color: white;
+  padding: 0.3em 0.8em;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.9em;
+  margin-right: 0.5em;
+}
+
+/* Workflow step cards */
+.workflow-step {
+  border-left: 4px solid var(--biorempp-primary);
+  padding: 1.5em;
+  margin-bottom: 2em;
+  background: white;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.workflow-step:hover {
+  transform: translateX(4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Example code blocks in user guide */
+.example-format {
+  background-color: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  padding: 1em;
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.9em;
+  margin: 1em 0;
+}
+
+/* Success/Error message styling */
+.validation-success {
+  background-color: #d4edda;
+  border-left: 4px solid #28a745;
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 4px;
+}
+
+.validation-error {
+  background-color: #f8d7da;
+  border-left: 4px solid #dc3545;
+  padding: 1em;
+  margin: 1em 0;
+  border-radius: 4px;
+}
+
+/* Module cards in grid */
+.module-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  border-radius: 8px;
+  border: 1px solid var(--biorempp-border);
+  padding: 1.5em;
+  background: white;
+  height: 100%;
+}
+
+.module-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+  border-color: var(--biorempp-primary);
+}
+
+/* Tips section icons */
+.tip-icon {
+  font-size: 2em;
+  color: var(--biorempp-primary);
+  margin-bottom: 0.5em;
+}
+
+/* Quick start alert styling */
+.quick-start-alert {
+  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+  border: 2px solid var(--biorempp-success);
+  border-radius: 8px;
+  padding: 1.5em;
+  margin: 2em 0;
+}
+
+/* ============================================================================
+   End of Custom Styles
+   ============================================================================ */

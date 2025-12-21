@@ -1,0 +1,341 @@
+# mkdocs.yml — BioRemPP Web Service (Initial Documentation Skeleton)
+
+site_name: BioRemPP Documentation
+site_url: https://biorempp-docs.example.com
+site_description: >-
+  BioRemPP Web Service — documentation for an interactive platform supporting
+  bioremediation-oriented functional analysis and data integration workflows.
+
+repo_url: https://github.com/BioRemPP/biorempp_web
+repo_name: BioRemPP/biorempp_web
+
+theme:
+  name: material
+  palette:
+    # Light mode
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    # Dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: green
+      accent: teal
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+
+  font:
+    text: Roboto
+    code: Roboto Mono
+
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.top
+    - navigation.tracking
+    - search.suggest
+    - search.highlight
+    - search.share
+    - content.code.copy
+    - content.code.annotate
+    - toc.follow
+
+plugins:
+  - search:
+      lang: en
+  - mkdocstrings:
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: numpy
+            show_source: true
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            separate_signature: true
+            merge_init_into_class: true
+            show_if_no_docstring: false
+            inherited_members: true
+            members_order: source
+            group_by_category: true
+            show_category_heading: true
+            show_symbol_type_heading: true
+            show_symbol_type_toc: true
+  - minify:
+      minify_html: true
+
+markdown_extensions:
+  - abbr
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+      title: On this page
+
+  - pymdownx.arithmatex:
+      generic: true
+  - pymdownx.betterem:
+      smart_enable: all
+  - pymdownx.caret
+  - pymdownx.details
+  - pymdownx.emoji:
+      emoji_index: !!python/name:material.extensions.emoji.twemoji
+      emoji_generator: !!python/name:material.extensions.emoji.to_svg
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.keys
+  - pymdownx.mark
+  - pymdownx.smartsymbols
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tilde
+
+  # Optional: enable only if you actually render PlantUML in docs
+  - plantuml_markdown
+
+extra:
+  version:
+    provider: mike
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/BioRemPP/biorempp_web
+    - icon: fontawesome/solid/envelope
+      link: mailto:biorempp@gmail.com
+
+extra_css:
+  - stylesheets/extra.css
+
+extra_javascript:
+  - https://polyfill.io/v3/polyfill.min.js?features=es6
+  - https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+nav:
+  - Home: index.md
+
+  - Developer:
+      - Overview: developer/index.md
+
+  - API Reference:
+    - Overview: api/index.md
+    - Domain Layer:
+        - Overview: api/domain.md
+        - Entities:
+            - Overview: api/domain/entities.md
+            - Sample: api/domain/entities/sample.md
+            - Dataset: api/domain/entities/dataset.md
+            - Analysis: api/domain/entities/analysis.md
+            - Merged Data: api/domain/entities/merged_data.md
+        - Value Objects:
+            - Overview: api/domain/value_objects.md
+            - Sample ID: api/domain/value_objects/sample_id.md
+            - Compound: api/domain/value_objects/compound.md
+            - KEGG Orthology: api/domain/value_objects/kegg_orthology.md
+            - Pathway: api/domain/value_objects/pathway.md
+        - Services:
+            - Overview: api/domain/services.md
+            - Validation Service: api/domain/services/validation_service.md
+            - Sanitization Service: api/domain/services/sanitization_service.md
+            - Merge Service: api/domain/services/merge_service.md
+        - Repositories:
+            - Overview: api/domain/repositories.md
+        - Plot Strategies:
+          - Overview: api/domain/plot_strategies.md
+          - Base:
+              - Overview: api/domain/plot_strategies_base.md
+              - Base Plot Strategy: api/domain/plot_strategies/base/base_plot_strategy.md
+          - Charts:
+              - Overview: api/domain/plot_strategies_charts.md
+              - Bar Chart: api/domain/plot_strategies/charts/bar_chart_strategy.md
+              - Box Scatter: api/domain/plot_strategies/charts/box_scatter_strategy.md
+              - Chord: api/domain/plot_strategies/charts/chord_strategy.md
+              - Correlogram: api/domain/plot_strategies/charts/correlogram_strategy.md
+              - Density Plot: api/domain/plot_strategies/charts/density_plot_strategy.md
+              - Dot Plot: api/domain/plot_strategies/charts/dot_plot_strategy.md
+              - Faceted Heatmap: api/domain/plot_strategies/charts/faceted_heatmap_strategy.md
+              - Frozenset: api/domain/plot_strategies/charts/frozenset_strategy.md
+              - Heatmap: api/domain/plot_strategies/charts/heatmap_strategy.md
+              - Heatmap Scored: api/domain/plot_strategies/charts/heatmap_scored_strategy.md
+              - Hierarchical Clustering: api/domain/plot_strategies/charts/hierarchical_clustering_strategy.md
+              - Network: api/domain/plot_strategies/charts/network_strategy.md
+              - PCA: api/domain/plot_strategies/charts/pca_strategy.md
+              - Radar Chart: api/domain/plot_strategies/charts/radar_chart_strategy.md
+              - Sankey: api/domain/plot_strategies/charts/sankey_strategy.md
+              - Stacked Bar Chart: api/domain/plot_strategies/charts/stacked_bar_chart_strategy.md
+              - Sunburst: api/domain/plot_strategies/charts/sunburst_strategy.md
+              - Treemap: api/domain/plot_strategies/charts/treemap_strategy.md
+              - UpSet: api/domain/plot_strategies/charts/upset_strategy.md
+    - Application Layer:
+      - Overview: api/application.md
+      - Core Handlers:
+          - Overview: api/application/core.md
+          - Upload Handler: api/application/core/upload_handler.md
+          - Data Processor: api/application/core/data_processor.md
+          - Sample Parser: api/application/core/sample_parser.md
+          - Result Exporter: api/application/core/result_exporter.md
+      - Services:
+          - Overview: api/application/services.md
+          - Cache Service: api/application/services/cache_service.md
+          - Analysis Orchestrator: api/application/services/analysis_orchestrator.md
+          - Progress Tracker: api/application/services/progress_tracker.md
+      - DTOs:
+          - Overview: api/application/dtos.md
+          - Upload Result: api/application/dtos/upload_result_dto.md
+          - Validation Result: api/application/dtos/validation_result_dto.md
+          - Merged Data: api/application/dtos/merged_data_dto.md
+          - Processing Progress: api/application/dtos/processing_progress_dto.md
+      - Mappers:
+          - Overview: api/application/mappers.md
+          - Sample Mapper: api/application/mappers/sample_mapper.md
+          - Merged Data Mapper: api/application/mappers/merged_data_mapper.md
+      - Plot Services:
+          - Overview: api/application/plot_services.md
+          - Plot Service: api/application/plot_services/plot_service.md
+          - Plot Factory: api/application/plot_services/plot_factory.md
+          - Plot Config Loader: api/application/plot_services/plot_config_loader.md
+          - Singleton: api/application/plot_services/singleton.md
+    - Infrastructure Layer:
+      - Overview: api/infrastructure.md
+      - Cache:
+          - Overview: api/infrastructure/cache.md
+          - DataFrame Cache: api/infrastructure/cache/dataframe_cache.md
+          - Graph Cache: api/infrastructure/cache/graph_cache.md
+          - Graph Cache Manager: api/infrastructure/cache/graph_cache_manager.md
+          - Memory Cache: api/infrastructure/cache/memory_cache.md
+      - Configuration:
+          - Overview: api/infrastructure/config.md
+          - Settings: api/infrastructure/config/settings.md
+          - Database Config: api/infrastructure/config/database_config.md
+          - Analysis Registry: api/infrastructure/config/analysis_registry.md
+          - Dependency Injection: api/infrastructure/config/dependency_injection.md
+      - Persistence:
+          - Overview: api/infrastructure/persistence.md
+          - BioRemPP Repository: api/infrastructure/persistence/biorempp_repository.md
+          - CSV Database Repository: api/infrastructure/persistence/csv_database_repository.md
+          - HADEG Repository: api/infrastructure/persistence/hadeg_repository.md
+          - KEGG Repository: api/infrastructure/persistence/kegg_repository.md
+          - ToxCSM Repository: api/infrastructure/persistence/toxcsm_repository.md
+    - Presentation Layer:
+      - Callbacks:
+          - Overview: api/presentation/callbacks.md
+          - Core Callbacks:
+              - Download: api/presentation/callbacks/download_callbacks.md
+              - Info Modal: api/presentation/callbacks/info_modal_callbacks.md
+              - Navigation: api/presentation/callbacks/navigation_callbacks.md
+              - Processing: api/presentation/callbacks/processing_callbacks.md
+              - Real Processing: api/presentation/callbacks/real_processing_callbacks.md
+              - Real Upload: api/presentation/callbacks/real_upload_callbacks.md
+              - Results: api/presentation/callbacks/results_callbacks.md
+              - Upload: api/presentation/callbacks/upload_callbacks.md
+          - Module 1:
+              - Overview: api/presentation/callbacks/module1.md
+              - UC 1.1: api/presentation/callbacks/module1/uc_1_1_callbacks.md
+              - UC 1.2: api/presentation/callbacks/module1/uc_1_2_callbacks.md
+              - UC 1.3: api/presentation/callbacks/module1/uc_1_3_callbacks.md
+              - UC 1.4: api/presentation/callbacks/module1/uc_1_4_callbacks.md
+              - UC 1.5: api/presentation/callbacks/module1/uc_1_5_callbacks.md
+              - UC 1.6: api/presentation/callbacks/module1/uc_1_6_callbacks.md
+          - Module 2:
+              - Overview: api/presentation/callbacks/module2.md
+              - UC 2.1: api/presentation/callbacks/module2/uc_2_1_callbacks.md
+              - UC 2.2: api/presentation/callbacks/module2/uc_2_2_callbacks.md
+              - UC 2.3: api/presentation/callbacks/module2/uc_2_3_callbacks.md
+              - UC 2.4: api/presentation/callbacks/module2/uc_2_4_callbacks.md
+              - UC 2.5: api/presentation/callbacks/module2/uc_2_5_callbacks.md
+          - Module 3:
+              - Overview: api/presentation/callbacks/module3.md
+              - UC 3.1: api/presentation/callbacks/module3/uc_3_1_callbacks.md
+              - UC 3.2: api/presentation/callbacks/module3/uc_3_2_callbacks.md
+              - UC 3.3: api/presentation/callbacks/module3/uc_3_3_callbacks.md
+              - UC 3.4: api/presentation/callbacks/module3/uc_3_4_callbacks.md
+              - UC 3.5: api/presentation/callbacks/module3/uc_3_5_callbacks.md
+              - UC 3.6: api/presentation/callbacks/module3/uc_3_6_callbacks.md
+              - UC 3.7: api/presentation/callbacks/module3/uc_3_7_callbacks.md
+          - Module 4:
+              - Overview: api/presentation/callbacks/module4.md
+              - UC 4.1: api/presentation/callbacks/module4/uc_4_1_callbacks.md
+              - UC 4.2: api/presentation/callbacks/module4/uc_4_2_callbacks.md
+              - UC 4.3: api/presentation/callbacks/module4/uc_4_3_callbacks.md
+              - UC 4.4: api/presentation/callbacks/module4/uc_4_4_callbacks.md
+              - UC 4.5: api/presentation/callbacks/module4/uc_4_5_callbacks.md
+              - UC 4.6: api/presentation/callbacks/module4/uc_4_6_callbacks.md
+              - UC 4.7: api/presentation/callbacks/module4/uc_4_7_callbacks.md
+              - UC 4.8: api/presentation/callbacks/module4/uc_4_8_callbacks.md
+              - UC 4.9: api/presentation/callbacks/module4/uc_4_9_callbacks.md
+              - UC 4.10: api/presentation/callbacks/module4/uc_4_10_callbacks.md
+              - UC 4.11: api/presentation/callbacks/module4/uc_4_11_callbacks.md
+              - UC 4.12: api/presentation/callbacks/module4/uc_4_12_callbacks.md
+              - UC 4.13: api/presentation/callbacks/module4/uc_4_13_callbacks.md
+          - Module 5:
+              - Overview: api/presentation/callbacks/module5.md
+              - UC 5.1: api/presentation/callbacks/module5/uc_5_1_callbacks.md
+              - UC 5.2: api/presentation/callbacks/module5/uc_5_2_callbacks.md
+              - UC 5.3: api/presentation/callbacks/module5/uc_5_3_callbacks.md
+              - UC 5.4: api/presentation/callbacks/module5/uc_5_4_callbacks.md
+              - UC 5.5: api/presentation/callbacks/module5/uc_5_5_callbacks.md
+              - UC 5.6: api/presentation/callbacks/module5/uc_5_6_callbacks.md
+          - Module 6:
+              - Overview: api/presentation/callbacks/module6.md
+              - UC 6.1: api/presentation/callbacks/module6/uc_6_1_callbacks.md
+              - UC 6.2: api/presentation/callbacks/module6/uc_6_2_callbacks.md
+              - UC 6.3: api/presentation/callbacks/module6/uc_6_3_callbacks.md
+              - UC 6.4: api/presentation/callbacks/module6/uc_6_4_callbacks.md
+              - UC 6.5: api/presentation/callbacks/module6/uc_6_5_callbacks.md
+          - Module 7:
+              - Overview: api/presentation/callbacks/module7.md
+              - UC 7.1: api/presentation/callbacks/module7/uc_7_1_callbacks.md
+              - UC 7.2: api/presentation/callbacks/module7/uc_7_2_callbacks.md
+              - UC 7.3: api/presentation/callbacks/module7/uc_7_3_callbacks.md
+              - UC 7.4: api/presentation/callbacks/module7/uc_7_4_callbacks.md
+              - UC 7.5: api/presentation/callbacks/module7/uc_7_5_callbacks.md
+              - UC 7.6: api/presentation/callbacks/module7/uc_7_6_callbacks.md
+              - UC 7.7: api/presentation/callbacks/module7/uc_7_7_callbacks.md
+          - Module 8:
+              - Overview: api/presentation/callbacks/module8.md
+              - UC 8.1: api/presentation/callbacks/module8/uc_8_1_callbacks.md
+              - UC 8.2: api/presentation/callbacks/module8/uc_8_2_callbacks.md
+              - UC 8.3: api/presentation/callbacks/module8/uc_8_3_callbacks.md
+              - UC 8.4: api/presentation/callbacks/module8/uc_8_4_callbacks.md
+              - UC 8.5: api/presentation/callbacks/module8/uc_8_5_callbacks.md
+              - UC 8.6: api/presentation/callbacks/module8/uc_8_6_callbacks.md
+              - UC 8.7: api/presentation/callbacks/module8/uc_8_7_callbacks.md
+          - Aggregated:
+              - Overview: api/presentation/callbacks/aggregated.md
+              - Module 1: api/presentation/callbacks/aggregated/module1_callbacks.md
+              - Module 2: api/presentation/callbacks/aggregated/module2_callbacks.md
+              - Module 3: api/presentation/callbacks/aggregated/module3_callbacks.md
+              - Module 4: api/presentation/callbacks/aggregated/module4_callbacks.md
+              - Module 5: api/presentation/callbacks/aggregated/module5_callbacks.md
+              - Module 6: api/presentation/callbacks/aggregated/module6_callbacks.md
+              - Module 7: api/presentation/callbacks/aggregated/module7_callbacks.md
+              - Module 8: api/presentation/callbacks/aggregated/module8_callbacks.md
+      - Data Tables:
+          - Overview: api/presentation/data_tables.md
+          - BioRemPP Table: api/presentation/data_tables/biorempp_table.md
+          - HADEG Table: api/presentation/data_tables/hadeg_table.md
+          - KEGG Table: api/presentation/data_tables/kegg_table.md
+          - ToxCSM Table: api/presentation/data_tables/toxcsm_table.md
+  - About:
+      - How to Cite: about/how-to-cite.md
+      - License: about/license.md
+      - Changelog: about/changelog.md
+      - Contact: about/contact.md
