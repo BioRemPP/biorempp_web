@@ -1,0 +1,19 @@
+# 7 – Toxicological Risk Assessment and Profiling
+
+This module transitions from purely functional annotation to an application-oriented perspective centered on chemical safety and risk mitigation. Using toxicity predictions from the toxCSM model, we systematically evaluate the hazard profile of the compounds present in the system and relate these risks to the mitigation capabilities encoded in the input samples. The analyses are structured as a logical sequence of questions that progress from a broad characterization of the toxicological landscape to a detailed, sample-specific profiling of the biological response. The objective is to provide a toxicology-aware framework for guiding consortium design and deployment in realistic environmental scenarios.
+
+### 7.1. What is the comprehensive toxicological landscape?
+
+We first establish a "risk fingerprint" for each compound across a broad panel of toxicological endpoints predicted by toxCSM. This comprehensive profiling may reveal the full spectrum of potential adverse effects, enabling the identification of multi-faceted threats that span several biological and environmental categories (e.g., genomic damage, organism-level toxicity, environmental persistence). The impact of this step is the construction of a global toxicological landscape that may highlight which compounds are merely of localized concern and which may represent systemic, high-priority hazards. This landscape serves as the foundational layer upon which all subsequent risk-aware analyses are built.
+
+### 7.2. How do these predicted risks align with established regulatory priorities?
+
+To anchor the predictive toxicity data in real-world decision-making contexts, we next evaluate the concordance between high-risk compounds and those monitored or flagged by key environmental and regulatory agencies. This step addresses the critical question of which predicted hazards are also recognized as priorities in existing regulatory frameworks. The outcome is a refined set of "consensus priority compounds" that are important from both a toxicological and a compliance standpoint. Focusing on this consensus set can provide a more targeted and impactful basis for downstream assessments and policy-relevant discussions.
+
+### 7.3. Which samples possess the most potent genetic response to high-priority threats?
+
+Once the most critical chemical threats have been identified, we shift our attention to the biological response capacity encoded in the input samples. For each sample, we quantify the diversity and richness of genetic functions associated with the degradation or transformation of consensus priority compounds. This allows us to identify "elite specialist" samples that exhibit particularly strong, focused mitigation potential against specific high-risk compounds. The impact is a direct mapping between high-priority threats and the samples best equipped to counter them, providing a rational starting point for selective deployment or further engineering.
+
+### 7.4. How can the broader mitigation strategies of the samples be characterized?
+
+Finally, we develop a view of each sample's mitigation profile to inform consortium-level design. We characterize their capabilities along two complementary axes: **breadth**, defined as the variety of distinct high-risk compounds that a sample can target, and **depth**, defined as the magnitude and redundancy of the genetic investment directed toward those targets. By integrating these dimensions, we can generate a strategic mitigation profile for each candidate sample. This can enable the rational design of consortia that not only exhibit high potency against specific threats but also present versatility and functional redundancy to ensure robust performance under diverse environmental conditions.

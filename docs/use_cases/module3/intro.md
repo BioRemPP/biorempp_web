@@ -1,0 +1,15 @@
+# 3 - System Structure: Clustering, Similarity, and Co-occurrence
+
+This module moves from describing individual entities to characterizing the emergent organization of the system as a whole. After ranking samples and compounds by their functional and chemical potential, the next step is to understand how these entities group, relate, and co-vary in a higher-dimensional space. Here, we adopt a systems-level perspective to reveal clusters, similarity gradients, and co-occurrence patterns that may define the functional architecture of the dataset. These structural insights are essential for identifying functional guilds, shared degradation strategies, and recurring molecular "modules" that may underpin robust bioremediation responses.
+
+### 3.1. How do the samples organize into functional and chemical clusters?
+
+We first address the global organization of the samples in both functional and chemical terms. To do so, we apply multivariate dimensionality-reduction and clustering methods. Principal Component Analysis (PCA) is used on the functional (KO-based) and chemical (compound-based) profiles to visualize dominant axes of variation and to highlight groups of samples with similar response patterns. We then complement this with hierarchical clustering, generating dendrograms that reveal nested, fine-grained relationships among sample groups. Together, these approaches can enable the robust identification of distinct "functional guilds"—clusters of samples that appear to share comparable metabolic strategies or chemical degradation repertoires.
+
+### 3.2. What is the quantitative similarity between any two samples?
+
+Once distinct clusters have been defined, we quantify the strength and structure of these relationships. We construct correlograms that assign numerical similarity scores to all pairwise combinations of samples. This analysis is carried out from two complementary perspectives: one based on shared functional repertoires (KO Richness) and another based on shared chemical targets (Compound Richness). The result is a set of similarity matrices that can provide statistical support for the functional guilds identified in the clustering step, while also revealing intermediate degrees of relatedness that may not be immediately apparent from visual inspection alone.
+
+### 3.3. What are the underlying molecular and chemical patterns that drive these sample similarities?
+
+To elucidate the mechanistic basis of the observed sample guilds, we examine co-occurrence patterns among the core molecular and chemical features. Using correlograms and related association metrics, we ask two key questions: which genes tend to co-occur across samples, and which compounds are frequently targeted together? From this, we can infer potential "metabolic modules" (sets of correlated genes or functions) and "chemical suites" (sets of co-targeted compounds) that likely act as recurrent building blocks within the system. These modules and suites can provide a functional and chemical rationale for the sample groupings, linking the emergent system structure to specific molecular strategies and degradation profiles.
