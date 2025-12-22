@@ -27,18 +27,32 @@ export BIOREMPP_SERVER_VCPUS=1
 # ============================================================================
 # APLICAÇÃO - Configurações do Gunicorn
 # ============================================================================
-# Cálculo de workers: (2 * CPU) + 1 = (2 * 1) + 1 = 3
-# Ajustado para 4 workers para balancear performance/memória
-export BIOREMPP_APP_WORKERS=4
+# OTIMIZADO para servidor com recursos limitados (2GB RAM, 1 vCPU)
+#
+# IMPORTANTE: Com recursos limitados, MENOS workers = MELHOR performance!
+# Múltiplos workers causam contenção de memória/CPU (thrashing)
+#
+# Configuração otimizada:
+# - 1 worker: Evita competição por recursos
+# - gevent: Permite concorrência via greenlets (leve)
+# - threads=1000: Muitas conexões simultâneas por worker
+export BIOREMPP_APP_WORKERS=1
 export BIOREMPP_APP_WORKER_CLASS="gevent"
+export BIOREMPP_APP_WORKER_CONNECTIONS=1000  # Conexões simultâneas por worker
+export BIOREMPP_APP_THREADS=1000             # Threads por worker (para gevent)
 export BIOREMPP_APP_PORT=8080
 export BIOREMPP_APP_BIND="0.0.0.0:8080"
 
 # Timeouts (em segundos)
 # Análises podem demorar, então timeout alto
-export BIOREMPP_APP_TIMEOUT=300           # 5 minutos
+export BIOREMPP_APP_TIMEOUT=600           # 10 minutos (aumentado para análises pesadas)
 export BIOREMPP_APP_GRACEFUL_TIMEOUT=30   # Shutdown gracioso
 export BIOREMPP_APP_KEEPALIVE=5
+
+# Otimizações adicionais para recursos limitados
+export BIOREMPP_APP_MAX_REQUESTS=1000     # Reciclar worker após N requisições (previne memory leak)
+export BIOREMPP_APP_MAX_REQUESTS_JITTER=50  # Randomização para evitar restart simultâneo
+export BIOREMPP_APP_PRELOAD=true          # Pre-carregar app (economia de memória)
 
 # ============================================================================
 # NGINX - Configurações do Reverse Proxy
@@ -50,7 +64,8 @@ export BIOREMPP_NGINX_UPSTREAM="127.0.0.1:8080"
 export BIOREMPP_NGINX_UPLOAD_MAX="100M"
 
 # Timeouts (devem ser >= APP_TIMEOUT)
-export BIOREMPP_NGINX_TIMEOUT=300
+# Sincronizado com BIOREMPP_APP_TIMEOUT=600
+export BIOREMPP_NGINX_TIMEOUT=600
 
 # Rate Limiting (ajustado para Dash com muitos callbacks)
 export BIOREMPP_NGINX_RATE_LIMIT_API="300r/m"      # 300 req/min (5 req/s)
