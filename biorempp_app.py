@@ -52,6 +52,7 @@ from src.presentation.pages import (
     create_contact_page,
     create_documentation_page,
     create_faq_page,
+    create_how_to_cite_page,
     create_methods_page,
     create_regulatory_page,
     create_scientific_methods_page,
@@ -207,6 +208,9 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         elif pathname == '/documentation':
             # Documentation page
             return create_documentation_page()
+        elif pathname == '/how-to-cite':
+            # How to Cite page
+            return create_how_to_cite_page()
         elif pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
