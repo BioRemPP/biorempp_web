@@ -72,7 +72,6 @@ class ProgressTracker:
     >>> tracker.start_stage(1, "Validation", "Validating input")
     >>> tracker.update_progress(50.0, "Checked 3/5 samples")
     >>> progress = tracker.get_progress()
-    >>> print(progress.current_stage)
     'Validation'
     """
 

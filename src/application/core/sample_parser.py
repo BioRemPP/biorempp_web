@@ -17,8 +17,6 @@ Examples
 >>> parser = SampleParser()
 >>> content = ">Sample1\\nK00001\\nK00002\\n>Sample2\\nK00003"
 >>> dataset, metrics = parser.parse(content)
->>> print(f"Parsed {dataset.total_samples} samples")
->>> print(f"Ignored {metrics.ignored_kos} invalid KOs")
 """
 
 import logging
@@ -113,8 +111,6 @@ class SampleParser:
     >>> parser = SampleParser()
     >>> content = ">Sample1\\nK00001\\nK00002"
     >>> dataset, metrics = parser.parse(content)
-    >>> print(f"Parsed {metrics.total_samples} samples")
-    >>> print(f"Ignored {metrics.ignored_kos} KOs")
     """
 
     def __init__(self) -> None:
