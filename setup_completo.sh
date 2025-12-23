@@ -283,28 +283,57 @@ run_installation() {
 
     "$BIOREMPP_PROJECT_DIR/start.sh"
 
-    # Aguardar aplicação iniciar e criar PID
+    # Aguardar aplicação iniciar (verificar por processo, não apenas PID)
     biorempp_log_info "Aguardando aplicação iniciar..."
     local max_wait=30
     local waited=0
-    while [[ ! -f "$BIOREMPP_PROJECT_DIR/.biorempp.pid" ]] && [[ $waited -lt $max_wait ]]; do
+    local app_started=false
+
+    while [[ $waited -lt $max_wait ]]; do
+        # Verificar se processo gunicorn está rodando
+        if pgrep -f "gunicorn wsgi:server" > /dev/null 2>&1; then
+            app_started=true
+            biorempp_log_success "Aplicação iniciada (processo detectado)"
+            break
+        fi
         sleep 1
         ((waited++))
     done
 
-    if [[ -f "$BIOREMPP_PROJECT_DIR/.biorempp.pid" ]]; then
-        biorempp_log_success "PID file criado com sucesso"
-    else
-        biorempp_log_warn "PID file não foi criado em ${max_wait}s, mas processo pode estar rodando"
-        biorempp_log_info "Verificando se aplicação está respondendo..."
+    if [[ "$app_started" == "false" ]]; then
+        biorempp_log_error "Aplicação não iniciou em ${max_wait}s"
+        biorempp_log_info "Verifique logs: tail -50 $BIOREMPP_PROJECT_DIR/logs/gunicorn_error.log"
+        biorempp_log_info "Tente iniciar manualmente: cd $BIOREMPP_PROJECT_DIR && ./start.sh"
+        return 1
+    fi
 
-        # Tentar health check mesmo sem PID
-        if biorempp_check_app_health 5; then
-            biorempp_log_success "Aplicação está respondendo (health check OK)"
-        else
-            biorempp_log_error "Aplicação não está respondendo"
-            biorempp_log_info "Verifique logs: tail -50 $BIOREMPP_PROJECT_DIR/logs/gunicorn.error.log"
+    # Aguardar aplicação estar pronta para responder
+    biorempp_log_info "Aguardando aplicação responder (isso pode levar até 60s)..."
+    local health_max_wait=60
+    local health_waited=0
+    local app_healthy=false
+
+    while [[ $health_waited -lt $health_max_wait ]]; do
+        if biorempp_check_app_health 1; then
+            app_healthy=true
+            biorempp_log_success "Aplicação está saudável (health check OK em ${health_waited}s)"
+            break
         fi
+
+        # Mostrar progresso a cada 10 segundos
+        if [[ $((health_waited % 10)) -eq 0 ]] && [[ $health_waited -gt 0 ]]; then
+            biorempp_log_info "Ainda aguardando... (${health_waited}s/${health_max_wait}s)"
+        fi
+
+        sleep 1
+        ((health_waited++))
+    done
+
+    if [[ "$app_healthy" == "false" ]]; then
+        biorempp_log_warn "Health check não respondeu em ${health_max_wait}s"
+        biorempp_log_info "Isso pode ser normal - aplicação pode estar inicializando dados"
+        biorempp_log_info "Aguarde mais 1-2 minutos e teste: curl http://localhost:8080/health"
+        biorempp_log_info "Ou verifique logs: tail -f $BIOREMPP_PROJECT_DIR/logs/gunicorn_error.log"
     fi
 
     echo ""
@@ -818,12 +847,29 @@ show_installation_summary() {
     biorempp_log_info "Verificando status..."
     echo ""
 
+    # Verificar se logs estão sendo criados
+    if [[ -d "$BIOREMPP_PROJECT_DIR/logs" ]]; then
+        biorempp_log_success "Diretório de logs: CRIADO"
+
+        # Verificar se gunicorn_error.log está vazio (bom sinal!)
+        if [[ -f "$BIOREMPP_PROJECT_DIR/logs/gunicorn_error.log" ]]; then
+            local error_log_size=$(stat -f%z "$BIOREMPP_PROJECT_DIR/logs/gunicorn_error.log" 2>/dev/null || stat -c%s "$BIOREMPP_PROJECT_DIR/logs/gunicorn_error.log" 2>/dev/null || echo "0")
+            if [[ "$error_log_size" -eq 0 ]]; then
+                biorempp_log_success "Log de erros vazio (sem erros - ótimo!)"
+            else
+                biorempp_log_info "Log de erros tem dados (verifique se são importantes)"
+            fi
+        fi
+    fi
+
+    echo ""
+
     if [[ -f "$BIOREMPP_PROJECT_DIR/status.sh" ]]; then
         "$BIOREMPP_PROJECT_DIR/status.sh"
     fi
 
     echo ""
-    biorempp_log_info "Executando testes..."
+    biorempp_log_info "Executando testes de conectividade..."
     echo ""
 
     echo -n "  • Health check localhost:8080... "
@@ -841,10 +887,12 @@ show_installation_summary() {
     fi
 
     echo -n "  • Health check $BIOREMPP_SERVER_DOMAIN... "
+    local dns_works=false
     if curl -sf "http://$BIOREMPP_SERVER_DOMAIN/health" >/dev/null 2>&1; then
         echo -e "${BIOREMPP_COLOR_GREEN}✓${BIOREMPP_COLOR_NC}"
+        dns_works=true
     else
-        echo -e "${BIOREMPP_COLOR_YELLOW}⚠${BIOREMPP_COLOR_NC} (DNS pode não estar configurado)"
+        echo -e "${BIOREMPP_COLOR_YELLOW}⚠${BIOREMPP_COLOR_NC} (DNS não configurado ou propagando)"
     fi
 
     echo ""
@@ -852,20 +900,48 @@ show_installation_summary() {
     echo -e "${BIOREMPP_COLOR_GREEN}Próximos Passos:${BIOREMPP_COLOR_NC}"
     echo -e "${BIOREMPP_COLOR_GREEN}════════════════════════════════════════════════════════${BIOREMPP_COLOR_NC}"
     echo ""
-    echo "  1. Configurar SSL/HTTPS (recomendado):"
+
+    # Mostrar aviso de DNS se necessário
+    if [[ "$dns_works" == "false" ]]; then
+        echo -e "${BIOREMPP_COLOR_YELLOW}⚠ IMPORTANTE: Configurar DNS${BIOREMPP_COLOR_NC}"
+        echo ""
+        echo "  O domínio $BIOREMPP_SERVER_DOMAIN não está respondendo."
+        echo "  Você precisa configurar um registro DNS tipo A:"
+        echo ""
+        echo "    Tipo:  A"
+        echo "    Nome:  @ (ou biorempp)"
+        echo "    Valor: $BIOREMPP_SERVER_IP"
+        echo "    TTL:   3600"
+        echo ""
+        echo "  Depois de configurar, aguarde propagação (5-30 minutos)."
+        echo "  Teste com: curl http://$BIOREMPP_SERVER_DOMAIN/health"
+        echo ""
+        echo "  Enquanto DNS não propaga, acesse por IP:"
+        echo "    http://$BIOREMPP_SERVER_IP"
+        echo ""
+        echo -e "${BIOREMPP_COLOR_GREEN}════════════════════════════════════════════════════════${BIOREMPP_COLOR_NC}"
+        echo ""
+    fi
+
+    echo "  1. Monitorar aplicação:"
+    echo "     ./status.sh      # Ver status"
+    echo "     ./logs.sh        # Ver logs em tempo real"
+    echo ""
+    echo "  2. Acessar aplicação:"
+    if [[ "$dns_works" == "true" ]]; then
+        echo "     http://$BIOREMPP_SERVER_DOMAIN  (recomendado)"
+        echo "     http://$BIOREMPP_SERVER_IP      (alternativo)"
+    else
+        echo "     http://$BIOREMPP_SERVER_IP      (use este até DNS propagar)"
+        echo "     http://$BIOREMPP_SERVER_DOMAIN  (depois que DNS propagar)"
+    fi
+    echo ""
+    echo "  3. Configurar SSL/HTTPS (depois que DNS funcionar):"
     echo "     ./setup_completo.sh --ssl"
     echo ""
-    echo "  2. Monitorar aplicação:"
-    echo "     ./status.sh      # Ver status"
-    echo "     ./logs.sh        # Ver logs"
-    echo ""
-    echo "  3. Troubleshooting se necessário:"
+    echo "  4. Troubleshooting se necessário:"
     echo "     ./setup_completo.sh --diagnose   # Diagnosticar problemas"
     echo "     ./setup_completo.sh --fix        # Corrigir automaticamente"
-    echo ""
-    echo "  4. Acessar aplicação:"
-    echo "     http://$BIOREMPP_SERVER_DOMAIN"
-    echo "     http://$BIOREMPP_SERVER_IP"
     echo ""
     echo -e "${BIOREMPP_COLOR_GREEN}✓ Setup completo! BioRemPP v1.0 rodando${BIOREMPP_COLOR_NC}"
     echo ""

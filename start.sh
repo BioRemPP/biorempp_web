@@ -216,16 +216,17 @@ prepare_environment() {
 
         cat > "$ENV_FILE" << 'EOF'
 # BioRemPP Production Configuration
+# IMPORTANTE: Use 1 worker em servidores com pouca RAM (2GB ou menos)
 BIOREMPP_ENV=production
 BIOREMPP_HOST=0.0.0.0
 BIOREMPP_PORT=8080
 BIOREMPP_DEBUG=False
 BIOREMPP_HOT_RELOAD=False
 BIOREMPP_LOG_LEVEL=WARNING
-BIOREMPP_WORKERS=4
+BIOREMPP_WORKERS=1
 BIOREMPP_WORKER_CLASS=gevent
 BIOREMPP_WORKER_CONNECTIONS=1000
-BIOREMPP_TIMEOUT=300
+BIOREMPP_TIMEOUT=600
 BIOREMPP_KEEPALIVE=5
 BIOREMPP_UPLOAD_MAX_SIZE_MB=100
 EOF
@@ -266,36 +267,51 @@ start_production() {
             --daemon \
             --pid "$PIDFILE"
 
-        # Wait a moment and check if it started
-        sleep 2
+        # Wait for application to start (verificar por processo, não só PID)
+        log_info "Waiting for application to start..."
+        local max_wait=15
+        local waited=0
+        local started=false
 
-        if [[ -f "$PIDFILE" ]]; then
-            PID=$(cat "$PIDFILE")
-            if ps -p "$PID" > /dev/null 2>&1; then
-                echo ""
-                log_info "${GREEN}✓${NC} Application started successfully!"
-                log_info "PID: $PID"
-                log_info "Mode: Production (Gunicorn)"
-                log_info "Workers: ${BIOREMPP_WORKERS:-4}"
-                log_info "Port: ${BIOREMPP_PORT:-8080}"
-                echo ""
-                log_info "Access: http://localhost:${BIOREMPP_PORT:-8080}"
-                log_info "Health: http://localhost:${BIOREMPP_PORT:-8080}/health"
-                echo ""
-                log_info "Useful commands:"
-                log_info "  View logs:    ./logs.sh"
-                log_info "  Stop server:  ./stop.sh"
-                log_info "  Restart:      ./restart.sh"
-                log_info "  Status:       ./status.sh"
-                echo ""
-            else
-                log_error "Failed to start application"
-                log_info "Check logs: tail -50 $LOG_DIR/gunicorn_error.log"
-                exit 1
+        while [[ $waited -lt $max_wait ]]; do
+            # Verificar se processo gunicorn está rodando
+            if pgrep -f "gunicorn wsgi:server" > /dev/null 2>&1; then
+                started=true
+                break
+            fi
+            sleep 1
+            ((waited++))
+        done
+
+        if [[ "$started" == true ]]; then
+            # Pegar PID do processo (pode não estar no arquivo ainda)
+            PID=$(pgrep -f "gunicorn wsgi:server" | head -n 1)
+
+            echo ""
+            log_info "${GREEN}✓${NC} Application started successfully!"
+            log_info "PID: $PID"
+            log_info "Mode: Production (Gunicorn)"
+            log_info "Workers: ${BIOREMPP_WORKERS:-1}"
+            log_info "Port: ${BIOREMPP_PORT:-8080}"
+            echo ""
+            log_info "Access: http://localhost:${BIOREMPP_PORT:-8080}"
+            log_info "Health: http://localhost:${BIOREMPP_PORT:-8080}/health"
+            echo ""
+            log_info "Useful commands:"
+            log_info "  View logs:    ./logs.sh"
+            log_info "  Stop server:  ./stop.sh"
+            log_info "  Restart:      ./restart.sh"
+            log_info "  Status:       ./status.sh"
+            echo ""
+
+            # Verificar se PID file foi criado (não crítico)
+            if [[ ! -f "$PIDFILE" ]]; then
+                log_warn "PID file not created yet (normal, may appear in a few seconds)"
             fi
         else
-            log_error "PID file not created - application may have failed to start"
+            log_error "Application did not start within ${max_wait}s"
             log_info "Check logs: tail -50 $LOG_DIR/gunicorn_error.log"
+            log_info "Or check if port 8080 is already in use: lsof -i:8080"
             exit 1
         fi
     fi
