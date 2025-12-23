@@ -144,7 +144,7 @@ run_installation() {
     fi
 
     # PASSO 1: Verificar pré-requisitos
-    biorempp_log_step "1/8 - Verificando pré-requisitos..."
+    biorempp_log_step "1/9 - Verificando pré-requisitos..."
 
     biorempp_check_python || exit 1
     biorempp_check_nginx || exit 1
@@ -162,7 +162,7 @@ run_installation() {
     echo ""
 
     # PASSO 2: Criar .env com SECRET_KEY
-    biorempp_log_step "2/8 - Configurando arquivo .env..."
+    biorempp_log_step "2/9 - Configurando arquivo .env..."
 
     if [[ -f "$BIOREMPP_PROJECT_DIR/.env" ]]; then
         biorempp_log_warn "Arquivo .env já existe"
@@ -193,7 +193,7 @@ run_installation() {
     echo ""
 
     # PASSO 3: Verificar configurações .env
-    biorempp_log_step "3/8 - Verificando configurações do .env..."
+    biorempp_log_step "3/9 - Verificando configurações do .env..."
 
     if grep -q "REPLACE_WITH_SECURE_KEY" "$BIOREMPP_PROJECT_DIR/.env"; then
         biorempp_log_error "SECRET_KEY não foi configurada no .env!"
@@ -208,41 +208,104 @@ run_installation() {
     echo ""
 
     # PASSO 4: Validar sincronização de configs
-    biorempp_log_step "4/8 - Validando sincronização de configurações..."
+    biorempp_log_step "4/9 - Validando sincronização de configurações..."
     biorempp_validate_config_sync || biorempp_log_warn "Algumas configurações podem estar desincronizadas"
     echo ""
 
     # PASSO 5: Configurar Nginx
-    biorempp_log_step "5/8 - Configurando Nginx..."
+    biorempp_log_step "5/9 - Configurando Nginx..."
 
     setup_nginx_production || exit 1
 
     echo ""
 
     # PASSO 6: Parar aplicação legada
-    biorempp_log_step "6/8 - Parando aplicação legada..."
+    biorempp_log_step "6/9 - Parando aplicação legada..."
 
     stop_legacy_app
 
     echo ""
 
-    # PASSO 7: Preparar scripts
-    biorempp_log_step "7/8 - Preparando scripts de gerenciamento..."
+    # PASSO 7: Preparar scripts e diretórios
+    biorempp_log_step "7/9 - Preparando scripts e diretórios..."
 
-    chmod +x "$BIOREMPP_PROJECT_DIR"/*.sh 2>/dev/null || true
-    biorempp_log_success "Scripts configurados"
+    # Tornar todos os scripts .sh executáveis
+    biorempp_log_info "Tornando scripts executáveis..."
+    find "$BIOREMPP_PROJECT_DIR" -maxdepth 1 -name "*.sh" -type f -exec chmod +x {} \; 2>/dev/null || true
+
+    # Criar diretórios necessários
+    biorempp_log_info "Criando diretórios necessários..."
+    mkdir -p "$BIOREMPP_PROJECT_DIR/logs"
+    mkdir -p "$BIOREMPP_PROJECT_DIR/.cache"
+    mkdir -p "$BIOREMPP_PROJECT_DIR/data"
+    mkdir -p "$BIOREMPP_PROJECT_DIR/.archive"
+
+    # Tornar gunicorn executável no venv (se existir)
+    if [[ -f "$BIOREMPP_VENV_DIR/bin/gunicorn" ]]; then
+        chmod +x "$BIOREMPP_VENV_DIR/bin/gunicorn"
+        biorempp_log_info "Gunicorn configurado como executável"
+    fi
+
+    biorempp_log_success "Scripts e diretórios configurados"
 
     echo ""
 
-    # PASSO 8: Iniciar BioRemPP v1.0
-    biorempp_log_step "8/8 - Iniciando BioRemPP v1.0..."
+    # PASSO 8: Limpar processos e PIDs antigos
+    biorempp_log_step "8/9 - Limpando processos e PIDs antigos..."
+
+    # Remover PID files antigos
+    rm -f "$BIOREMPP_PROJECT_DIR/.biorempp.pid" 2>/dev/null || true
+    rm -f "$BIOREMPP_PROJECT_DIR/biorempp.pid" 2>/dev/null || true
+
+    # Verificar se porta 8080 está em uso
+    if command -v lsof &> /dev/null; then
+        if lsof -Pi:8080 -sTCP:LISTEN -t >/dev/null 2>&1; then
+            biorempp_log_warn "Porta 8080 em uso, parando processos..."
+            lsof -ti:8080 | xargs kill -9 2>/dev/null || true
+            sleep 2
+        fi
+    fi
+
+    biorempp_log_success "Limpeza concluída"
+
+    echo ""
+
+    # PASSO 9: Iniciar BioRemPP v1.0
+    biorempp_log_step "9/9 - Iniciando BioRemPP v1.0..."
 
     if [[ ! -f "$BIOREMPP_PROJECT_DIR/start.sh" ]]; then
         biorempp_log_error "Script start.sh não encontrado"
         exit 1
     fi
 
+    # Aguardar um pouco antes de iniciar (garantir porta livre)
+    sleep 1
+
     "$BIOREMPP_PROJECT_DIR/start.sh"
+
+    # Aguardar aplicação iniciar e criar PID
+    biorempp_log_info "Aguardando aplicação iniciar..."
+    local max_wait=30
+    local waited=0
+    while [[ ! -f "$BIOREMPP_PROJECT_DIR/.biorempp.pid" ]] && [[ $waited -lt $max_wait ]]; do
+        sleep 1
+        ((waited++))
+    done
+
+    if [[ -f "$BIOREMPP_PROJECT_DIR/.biorempp.pid" ]]; then
+        biorempp_log_success "PID file criado com sucesso"
+    else
+        biorempp_log_warn "PID file não foi criado em ${max_wait}s, mas processo pode estar rodando"
+        biorempp_log_info "Verificando se aplicação está respondendo..."
+
+        # Tentar health check mesmo sem PID
+        if biorempp_check_app_health 5; then
+            biorempp_log_success "Aplicação está respondendo (health check OK)"
+        else
+            biorempp_log_error "Aplicação não está respondendo"
+            biorempp_log_info "Verifique logs: tail -50 $BIOREMPP_PROJECT_DIR/logs/gunicorn.error.log"
+        fi
+    fi
 
     echo ""
 
