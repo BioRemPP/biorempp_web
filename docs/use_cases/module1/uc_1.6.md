@@ -95,6 +95,10 @@ This use case characterizes how the functional potential encoded in each biologi
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_1.6.png)
+
+  <a class="glightbox" href="../uc_1.6.png">
+    <img src="../uc_1.6.png" alt="Activity diagram of the use case">
+  </a>
+
 
 

@@ -106,6 +106,10 @@ This use case provides a practical, application-oriented **scorecard** that quan
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_1.5.png)
+
+  <a class="glightbox" href="../uc_1.5.png">
+    <img src="../uc_1.5.png" alt="Activity diagram of the use case">
+  </a>
+
 
 

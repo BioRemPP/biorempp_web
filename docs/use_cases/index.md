@@ -3,6 +3,78 @@
 
 This page centralizes the documented use cases for BioRemPP grouped by analysis module. Use the links below to open each module Module Description and the individual use-case markdown pages.
 
+## How to Navigate the Use Case Documentation
+
+The BioRemPP use case documentation is organized into **analysis modules**, each composed of a set of **self-contained analytical use cases**. This structure is designed to guide users from high-level methodological questions to detailed, reproducible analytical workflows.
+
+Each **module** represents a thematic analytical block (e.g., database comparison, functional ranking, regulatory assessment), while each **use case** within a module corresponds to a **specific scientific question** addressed through a standardized computational and visualization pipeline.
+
+### Standard Structure of a Use Case
+
+All use cases follow a consistent documentation pattern to ensure clarity, interpretability, and reproducibility:
+
+1. **Use Case Overview**  
+   Each use case begins with a concise summary describing:
+
+   - The associated module and analytical scope  
+   - The visualization or analytical strategy employed  
+   - The primary data sources and outputs involved  
+
+2. **Scientific Question and Rationale**  
+   A clearly stated scientific question motivates the analysis, followed by a rationale explaining:
+
+   - Why the analysis is relevant for bioremediation research  
+   - What biological, functional, or regulatory insight is being explored  
+
+3. **Data and Inputs**  
+   This section specifies:
+
+   - Required input data sources and identifiers  
+   - Accepted formats and preprocessing assumptions  
+   - Any normalization or validation steps applied to the inputs  
+
+4. **Analytical Workflow**  
+   A step-by-step description of the computational process, typically covering:
+   
+   - Data loading and parsing  
+   - Identifier standardization and filtering  
+   - Core analytical or statistical operations  
+   - Visualization or aggregation logic  
+
+5. **How to Read the Results**  
+   Guidance on interpreting the generated plots or tables, explaining:
+
+   - The meaning of each visual component  
+   - How to relate patterns in the visualization to biological or functional hypotheses  
+
+6. **Interpretation and Key Messages**  
+   A synthesis of the main insights that can be drawn from the analysis, including:
+
+   - Consensus signals across databases or samples  
+   - Database- or sample-specific patterns  
+   - Limitations or caveats in interpretation  
+
+7. **Reproducibility and Assumptions**  
+   Explicit documentation of assumptions, constraints, and reproducibility conditions, such as:
+
+   - Identifier handling and deduplication rules  
+   - Input resolution limitations  
+   - Fixed database versions used at analysis time  
+
+8. **Activity Diagram**  
+   Each use case concludes with an **activity diagram** that visually summarizes the analytical flow, from input ingestion to result generation. These diagrams provide a high-level operational view of how the pipeline components interact.
+
+### Intended Usage
+
+Users may:
+
+- Read individual use cases independently, based on specific analytical needs  
+- Navigate sequentially within a module to understand complementary analyses  
+- Use the activity diagrams as a conceptual reference for reproducing or extending analyses programmatically  
+
+This modular and standardized structure allows BioRemPP use cases to function both as **executable analytical documentation** and as **methodological references** for bioremediation-focused functional analysis workflows.
+
+
 - Module 1 - Comparative Assessment of Databases, Samples, and Regulatory Frameworks
 	- [Module Description](module1/intro.md)
 	- [UC 1.1 — Intersections across BioRemPP, HADEG, and KEGG](module1/uc_1.1.md)

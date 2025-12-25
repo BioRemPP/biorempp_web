@@ -89,6 +89,10 @@ The 100% stacked bar chart can be interpreted as follows:
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_1.4.png)
+
+  <a class="glightbox" href="../uc_1.4.png">
+    <img src="../uc_1.4.png" alt="Activity diagram of the use case">
+  </a>
+
 
 
