@@ -106,3 +106,13 @@ This use case investigates **compound co-occurrence** patterns across all biolog
 
 - **Interpretation Scope**  
   The correlogram captures **co-occurrence patterns**, not causality. Compounds that co-occur frequently are candidates for shared pathways, co-contamination, or common enzymatic treatment, but additional biochemical or environmental evidence is needed to confirm mechanistic relationships.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.7.png)
+
+

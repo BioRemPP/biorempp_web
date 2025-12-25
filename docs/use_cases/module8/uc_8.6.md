@@ -130,3 +130,13 @@ This may directly support rational, pathway-oriented consortium design.
 - **Interpretation Scope**  
   - The UpSet plot encodes **presence/absence** relationships, not kinetic rates, expression levels, or regulatory control.  
   - It should be interpreted as a **structural map of KO distribution** across samples, to be integrated with completeness scores (UC-8.4 / UC-8.5) and other BioRemPP analyses during consortium design.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.6.png)
+
+

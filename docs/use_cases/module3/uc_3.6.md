@@ -103,3 +103,13 @@ This use case investigates **gene co-occurrence** patterns across all biological
 
 - **Interpretation Scope**  
   The correlogram captures patterns of **co-occurrence**, not causality. Co-correlated genes are candidates for functional linkage or co-regulation, but experimental validation or additional contextual data (e.g., genomic neighborhood, regulatory information) is required to confirm mechanistic relationships.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.6.png)
+
+

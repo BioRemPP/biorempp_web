@@ -125,3 +125,13 @@ This use case builds a **bipartite interaction network** linking all detected **
   The graph reveals **topological patterns of interaction**, not mechanistic or kinetic details:
   - co-connectivity may suggest potential functional relationships but does not itself establish biochemical mechanisms,  
   - further validation using pathway databases, structural information, or experimental data is required to confirm mechanistic roles.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.4.png)
+
+

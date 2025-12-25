@@ -120,4 +120,14 @@ The same high-level enzymatic activity (e.g., *oxidoreductase*, *hydrolase*) can
   - The chart reflects **annotated enzymatic potential**, not measured expression or activity levels.  
   - `enzyme_activity` labels depend on upstream annotation pipelines; misannotations or incomplete mappings will affect the profile.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.9.png)
+
+
+
  

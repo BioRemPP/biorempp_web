@@ -111,3 +111,13 @@ The goal is to characterize, for a given sample, **which KEGG metabolic pathways
 - **Scope of Inference**  
   - The visualization reflects **genetic potential** (presence of annotated KOs), not expression, regulation, or kinetic performance.  
   - It should be integrated with other BioRemPP layers (e.g., toxicology, regulatory mapping, network analyses) when designing bioremediation experiments or consortia.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.1.png)
+
+

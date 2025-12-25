@@ -113,3 +113,13 @@ This use case maps the **interaction strength** between each biological sample a
   The chord diagram summarizes **association frequency**, not mechanistic detail:
   - it does not directly encode pathway completeness, kinetic efficiency, or regulatory control,  
   - but it can provide a high-level map that may guide more detailed, pathway-focused or gene-level analyses in subsequent use cases.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.1.png)
+
+

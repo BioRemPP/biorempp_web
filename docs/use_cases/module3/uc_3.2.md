@@ -99,3 +99,13 @@ This use case applies **Principal Component Analysis (PCA)** to characterize rel
 
 - **Variance-Based Interpretation**  
   PCA captures **linear** combinations of compounds that explain variance in the data. It does not explicitly model nonlinear relationships or interaction effects between compounds, which may be explored using complementary methods in other use cases.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.2.png)
+
+

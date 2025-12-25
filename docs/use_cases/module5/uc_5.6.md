@@ -129,3 +129,13 @@ This use case infers **functional similarity between compounds** by examining wh
 - **Interpretation Scope**  
   - The network captures **association patterns** inferred from shared enzymatic machinery; it does not directly encode chemical structure, thermodynamics, or kinetic parameters.  
   - Co-connectivity should be seen as **hypothesis-generating evidence** for chemical relatedness or pathway co-membership, requiring further structural, biochemical, or environmental validation.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.6.png)
+
+

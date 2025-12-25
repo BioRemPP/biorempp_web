@@ -114,3 +114,13 @@ This use case provides a detailed **toxicological fingerprint** for each compoun
 
 - **Model Dependency**  
   All toxicity scores originate from the ToxCSM predictive model. The visualization assumes that the model's output is internally calibrated and comparable across endpoints, but it does not account for experimental validation, dose–response relationships, or exposure scenarios, which must be evaluated separately.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.1.png)
+
+

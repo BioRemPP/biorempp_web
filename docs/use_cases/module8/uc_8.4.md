@@ -121,3 +121,13 @@ This use case focuses on **pathway-level completeness** using degradation pathwa
 
 - **Interpretation Scope**  
   As with other completeness metrics in Module 8, the Pathway Completeness Score measures **genetic potential**, not kinetic performance, expression, or regulation. It should be interpreted as a **structural capacity indicator** to be integrated with other functional, toxicological, and network-level analyses in BioRemPP.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.4.png)
+
+

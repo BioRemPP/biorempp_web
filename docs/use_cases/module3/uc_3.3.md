@@ -115,3 +115,13 @@ This use case provides an interactive framework for exploring **hierarchical rel
 
 - **Interpretation Scope**  
   The dendrogram reflects similarity in KO **repertoires**, not expression levels, gene copy numbers, or kinetic properties. These additional dimensions may be explored in complementary analyses.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.3.png)
+
+

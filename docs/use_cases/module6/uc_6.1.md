@@ -133,3 +133,13 @@ This use case connects **regulatory priorities** to **molecular actions** by tra
 - **Scope and Limitations**  
   - The alluvial diagram encodes **frequency of observation**, not kinetic rates, toxicity levels, or regulatory severity.  
   - It should be interpreted as a **structural mapping** of how regulatory contexts, samples, genes, and compounds are linked, serving as a guide for more detailed downstream analyses rather than a complete risk or performance assessment on its own.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_6.1.png)
+
+

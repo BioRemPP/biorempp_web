@@ -125,3 +125,13 @@ This use case provides a **top-down, hierarchical view** of the **genetic invest
 - **Interpretation Scope**  
   - Unique-gene count is used as a **proxy for genetic diversity and metabolic complexity**; it does not directly encode gene expression levels, kinetic parameters, or regulatory effects.  
   - The treemap is therefore best interpreted as a **structural and comparative map of genetic investment**, informing where more detailed functional or experimental analyses may be most impactful.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_6.3.png)
+
+

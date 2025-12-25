@@ -123,3 +123,13 @@ This use case extends the completeness framework to the **KEGG metabolic pathway
 
 - **Interpretation Scope**  
   As with other completeness metrics in Module 8, the KEGG Pathway Completeness Score reflects **genetic potential** (presence of KOs), not kinetic rates, gene expression levels, or regulatory control. It should be interpreted as a **structural capacity indicator**, to be integrated with other BioRemPP analyses when designing and evaluating bioremediation consortia.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.5.png)
+
+

@@ -131,4 +131,14 @@ The same **compound pathway** can be implemented through different **genetic str
   - The heatmap quantifies **annotated genetic potential**, not expression levels or in situ activity.  
   - Observed patterns depend on the completeness and curation of the HADEG mapping and KO annotations.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.13.png)
+
+
+
  

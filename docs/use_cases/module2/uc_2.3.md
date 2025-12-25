@@ -89,3 +89,13 @@ This use case ranks compounds according to how many distinct biological samples 
 
 - **Sampling and Annotation Bias**  
   The observed diversity of interacting samples for a given compound is constrained by the composition of the dataset and the completeness of the annotations in BioRemPP.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_2.3.png)
+
+

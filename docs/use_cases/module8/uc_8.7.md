@@ -138,3 +138,13 @@ Instead of relying on Venn diagrams—which become unreadable as the number of s
 - **Scope of Inference**  
   - The UpSet plot encodes **presence/absence relationships** only; it does not account for KO copy number, expression, or regulation.  
   - Results should be interpreted as a **structural map of genetic potential**, to be integrated with other BioRemPP modules (e.g., pathway completeness, toxicological profiling, regulatory relevance) for comprehensive bioremediation design.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.7.png)
+
+

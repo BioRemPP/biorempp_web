@@ -103,3 +103,13 @@ This use case provides a comparative **statistical summary** of unique KEGG Orth
 
 - **Jitter and Determinism**  
   The horizontal jitter applied to sample points is seeded to produce a **stable layout** for a given dataset, so the same input data yields identical visual arrangements across runs. The box plot itself is a deterministic statistical summary of the `unique_ko_count` distribution.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_2.5.png)
+
+

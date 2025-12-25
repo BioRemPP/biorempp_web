@@ -121,3 +121,13 @@ This use case provides the most **fine-grained** view of functional potential in
 
 - **Interpretation Scope**  
   As with the class-level scorecard (UC-8.2), KO Completeness reflects **genetic potential**, not kinetic parameters, gene expression levels, or environmental regulation. It should be interpreted as a **structural capacity metric** to be integrated with other BioRemPP analyses when designing and evaluating bioremediation strategies.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.3.png)
+
+

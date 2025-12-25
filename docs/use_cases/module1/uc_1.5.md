@@ -99,3 +99,13 @@ This use case provides a practical, application-oriented **scorecard** that quan
 
 - **Uniqueness Handling**  
   Sets are constructed from **unique compound** per sample and per agency. Duplicate occurrences of the same compound within a given sample or agency are ignored when computing intersections and totals.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_1.5.png)
+
+

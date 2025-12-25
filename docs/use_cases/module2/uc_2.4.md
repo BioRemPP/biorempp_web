@@ -91,3 +91,13 @@ This use case ranks compounds according to the diversity of **unique genes** ass
 
 - **Class-Specific Context**  
   All rankings and interpretations are conditional on the selected chemical class. A compound may be genetically complex in one class but absent in another simply because it is not annotated there.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_2.4.png)
+
+

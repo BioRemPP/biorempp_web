@@ -82,3 +82,13 @@ The UpSet plot is composed of three main components:
 
 - **Uniqueness Definition**  
   All counts are based on **unique compound names** per agency. Duplicate entries within the same `referenceAG` group are removed before computing set sizes and intersections.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_1.2.png)
+
+

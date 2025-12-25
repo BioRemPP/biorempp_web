@@ -81,3 +81,13 @@ This use case ranks each biological sample according to the total number of **un
 
 - **Scope of Interpretation**  
   The interpretation is directly dependent on the compounds present in `BioRemPP_Results.xlsx or BioRemPP_Results.csv`. Samples may appear less diverse simply because certain compound classes or environmental conditions are not represented in the underlying dataset.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_2.2.png)
+
+

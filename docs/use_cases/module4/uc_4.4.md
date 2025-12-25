@@ -120,4 +120,14 @@ By summarizing, for a selected sample, the **unique KO richness** per pathway an
   - The metric captures **genetic potential** (annotated KO presence) rather than expression, regulation, or actual metabolic flux.  
   - Radar plots are most interpretable when the number of pathways shown is moderate; in cases with very many low-richness pathways, pre-filtering (e.g., minimum KO count threshold) may be applied for clarity.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.4.png)
+
+
+
  

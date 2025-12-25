@@ -112,3 +112,13 @@ This use case quantifies how strongly each biological sample is functionally con
 - **Scope and Limitations**  
   - The visualization summarizes **frequency of functional linkage** to regulatory contexts, not compliance status, toxicity levels, or pathway completeness.  
   - It should be interpreted as a high-level map to prioritize detailed downstream analyses, rather than a standalone compliance assessment.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.3.png)
+
+

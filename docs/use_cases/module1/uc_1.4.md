@@ -82,3 +82,13 @@ The 100% stacked bar chart can be interpreted as follows:
 
 - **Normalization**  
   Percentages are computed relative to the **global union** of all unique KOs across all samples, ensuring that the full bar always corresponds to the complete KO diversity present in the dataset.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_1.4.png)
+
+

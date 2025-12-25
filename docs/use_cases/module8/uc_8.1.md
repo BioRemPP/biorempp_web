@@ -124,3 +124,13 @@ This use case formalizes consortium design as a **set cover problem**. By cluste
 
 - **Functional Interpretation**  
   The analysis is based on **observed sample–compound associations**. It does not encode kinetic parameters, environmental abundance, or interaction strength; it answers a structural question: **Which distinct functional profiles are minimally required to cover all compounds in a given class?**
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.1.png)
+
+

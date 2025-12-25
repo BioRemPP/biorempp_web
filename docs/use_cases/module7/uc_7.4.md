@@ -114,3 +114,13 @@ This use case provides a detailed, endpoint-level view of the **predicted toxici
   The box plots represent **statistical summaries** of model predictions, not measured experimental toxicity. Interpretation should consider:
   - potential model biases, and  
   - the intended context of the ToxCSM predictions (e.g., ranking, screening, or approximate risk estimation).
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.4.png)
+
+

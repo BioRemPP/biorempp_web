@@ -112,3 +112,13 @@ This use case quantifies **pairwise chemical similarity** between biological sam
 - **Scope and Limitations**  
   - The chord diagram summarizes **overlap in compound repertoires**, not kinetics, expression levels, or pathway completeness.  
   - It is best interpreted as a structural map of who shares what targets, to be complemented by more detailed mechanistic analyses in subsequent modules.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.2.png)
+
+

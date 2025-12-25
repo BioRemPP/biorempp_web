@@ -134,3 +134,13 @@ The quantitative value is the **total count of gene–compound interactions** fo
 
 - **Model and Annotation Context**  
   As with other UC-7 analyses, the concept of risk is based on **ToxCSM predictions**, and interaction depth is based on the coverage and granularity of **BioRemPP annotations**. The treemap should be interpreted as a model- and annotation-informed view of genetic investment, rather than a direct measurement of in situ metabolic flux or expression levels.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.7.png)
+
+

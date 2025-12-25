@@ -99,3 +99,13 @@ This use case applies **Principal Component Analysis (PCA)** to visualize high-d
 
 - **Variance-Based Interpretation**  
   PCA captures **linear** combinations of KOs that explain variance in the dataset. It does not directly model nonlinear relationships or interaction effects, which may be addressed by complementary methods in other use cases.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.1.png)
+
+

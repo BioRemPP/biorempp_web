@@ -120,3 +120,13 @@ The quantitative value displayed is the **count of distinct high-risk compounds*
 
 - **Model Dependency**  
   The notion of "risk" is derived from ToxCSM's predictive outputs. The treemap does not directly reflect exposure levels, environmental concentrations, or experimental toxicology; it should be interpreted as a model-informed **relative breadth** of potential mitigation.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.6.png)
+
+

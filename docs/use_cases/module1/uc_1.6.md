@@ -88,3 +88,13 @@ This use case characterizes how the functional potential encoded in each biologi
 
 - **Functional Interpretation**  
   KO counts are used as a proxy for functional potential. The heatmap does not distinguish between differences in expression levels, gene copy number, or kinetic efficiency, which are addressed in other parts of the analytical framework or in downstream experimental validation.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_1.6.png)
+
+

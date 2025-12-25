@@ -127,4 +127,14 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
   - Interpretation assumes that higher KO diversity is a reasonable proxy for:
     - more robust or versatile degradation capacity, and/or  
     - more complex enzymatic strategies for acting on that compound.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.6.png)
+
+
  

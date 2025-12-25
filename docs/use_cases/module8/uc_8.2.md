@@ -118,3 +118,13 @@ Rather than simply asking whether a sample can interact with any compound from a
 
 - **Modeling Scope**  
   The Completeness Score reflects **genetic potential** (KO presence), not kinetic performance, expression levels, or environmental constraints. It should be interpreted as a **structural capacity metric**, complementary to other functional and toxicological analyses in BioRemPP.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_8.2.png)
+
+

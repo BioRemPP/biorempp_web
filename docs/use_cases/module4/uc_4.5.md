@@ -126,4 +126,14 @@ By mapping **gene symbols vs. samples** as a presence/absence dot matrix, the vi
   - The visualization captures **structural genetic potential**, not expression or regulation.  
   - The set of genes and KOs is determined entirely by the input file; it does not incorporate external knowledge about canonical pathway completeness beyond what is represented in the dataset.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.5.png)
+
+
+
  

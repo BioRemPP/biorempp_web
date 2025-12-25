@@ -117,3 +117,13 @@ Although this visualization is compound-centric, it indirectly informs how diffe
   As with UC-7.4, the curves represent **model predictions**, not experimental measurements. Interpretation should consider:
   - potential biases or limitations of the ToxCSM model, and  
   - the intended use of these predictions (e.g., for ranking, screening, or initial risk stratification).
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.5.png)
+
+

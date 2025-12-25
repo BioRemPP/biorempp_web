@@ -131,4 +131,14 @@ A single sample can simultaneously encode pathways for multiple **compound class
   - The heatmap describes **genetic potential**, not pathway expression or activity.  
   - Differences in annotation depth or KO mapping across pathways or compound classes may influence the observed counts.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.12.png)
+
+
+
  

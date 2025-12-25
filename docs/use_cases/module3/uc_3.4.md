@@ -103,3 +103,13 @@ This use case quantifies the **pairwise functional similarity** between all biol
 
 - **Interpretation Scope**  
   The correlogram reflects similarity in **functional repertoires**, not expression levels, gene copy numbers, or kinetic parameters. These aspects require additional layers of data and analysis beyond the presence/absence of KO identifiers.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.4.png)
+
+

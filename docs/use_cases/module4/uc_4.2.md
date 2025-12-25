@@ -126,3 +126,13 @@ This may be directly useful for pathway-oriented candidate selection and consort
 - **Comparability Across Pathways**  
   - KO counts are not normalized by the total possible KOs in each pathway in this use case; they should therefore be interpreted **within a pathway** (comparing samples to each other) rather than directly across very different pathways.  
   - For normalized comparisons across pathways, the pathway completeness scorecards (e.g., UC-8.5) provide a complementary view.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.2.png)
+
+

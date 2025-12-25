@@ -143,4 +143,14 @@ By exposing gene–compound associations at full resolution, UC-4.7 and UC-4.8 c
   - The approach reflects **annotated potential**, not measured activity or kinetics.  
   - Multiple `ko` entries per `(sample, genesymbol, compoundname)` reflect additional functional detail but do not alter the presence of the point itself.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.7.png)
+
+
+
  

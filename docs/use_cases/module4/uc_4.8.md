@@ -152,3 +152,11 @@ This use case can support **comparative genomics**, **candidate gene tracking**,
 
 
  
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.8.png)
+
+
+ 

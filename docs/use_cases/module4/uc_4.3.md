@@ -120,3 +120,13 @@ Instead of a Cartesian bar chart, the analysis uses a **radar (polar) plot** to 
   - The metric reflects **genetic potential** (presence of annotated KOs), not expression levels, regulatory control, or actual metabolic flux.  
   - Radar plots are most interpretable when the number of samples (axes) is moderate; very large sample sets may require pre-filtering or grouping for clarity.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.3.png)
+
+
+

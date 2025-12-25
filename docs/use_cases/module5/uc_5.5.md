@@ -128,3 +128,13 @@ This use case infers **functional relationships between genes** by examining whe
 - **Interpretation Scope**  
   - The network captures **association patterns** inferred from shared compound targets; it does not directly encode regulatory direction, reaction stoichiometry, or kinetic parameters.  
   - Co-connectivity should be interpreted as **hypothesis-generating evidence** for functional relationships that require additional biochemical, genomic, or regulatory validation.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_5.5.png)
+
+

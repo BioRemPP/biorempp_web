@@ -124,3 +124,13 @@ This use case characterizes the **metabolic strategies** of the biological sampl
 - **Scope and Limitations**  
   - The alluvial diagram encodes **frequency of observed associations**, not reaction rates, kinetic efficiencies, or thermodynamic feasibility.  
   - It should be interpreted as a **structural and comparative overview** of which metabolic routes are most frequently represented, and not as a direct measure of in situ activity or performance.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_6.2.png)
+
+

@@ -110,3 +110,13 @@ This use case quantifies the **concordance** between compounds flagged as high-r
 
 - **Intersection Metric**  
   The strength of the connection between entities is expressed as the **absolute count of shared compounds**, not weighted by toxicity magnitude, exposure, or frequency.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.2.png)
+
+

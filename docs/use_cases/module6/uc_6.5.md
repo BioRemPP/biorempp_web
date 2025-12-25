@@ -125,3 +125,13 @@ This use case provides a **chemical-first, top-down view** of the **functional l
 - **Interpretation Scope**  
   - Unique-compound count is used as a **proxy for functional versatility or substrate scope**; it does not encode enzyme kinetics, expression levels, or in situ performance.  
   - The treemap should be interpreted as a **structural and comparative map** of where enzymatic and genetic breadth is concentrated within the chemical space of interest.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_6.5.png)
+
+

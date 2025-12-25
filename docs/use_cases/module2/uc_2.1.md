@@ -96,3 +96,13 @@ This use case enables a direct comparison of the **functional richness** of each
 
 - **Comparability Across Databases**  
   Rankings are based on direct comparisons of unique KO counts within each database. Cross-database differences in curation depth, pathway coverage, and update cycles can influence KO diversity and should be considered when interpreting shifts in rank.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_2.1.png)
+
+

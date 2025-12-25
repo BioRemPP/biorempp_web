@@ -136,4 +136,14 @@
   - The sunburst reflects **annotated gene diversity in HADEG**, not pathway expression, flux, or kinetic capacity.  
   - Any biases in HADEG curation or gene labeling (e.g., synonyms not merged) will directly influence slice sizes.
 
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_4.11.png)
+
+
+
  

@@ -99,3 +99,13 @@ This use case quantifies **pairwise similarity** between all biological samples 
 
 - **Interpretation Scope**  
   The correlogram reflects similarity in **chemical interaction repertoires**, not interaction strength, kinetic efficiency, or environmental abundance of compounds. These aspects require additional data and analyses beyond the presence/absence of `compoundname`.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_3.5.png)
+
+

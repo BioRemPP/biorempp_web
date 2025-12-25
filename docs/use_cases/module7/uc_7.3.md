@@ -125,3 +125,13 @@ This use case acts as a tool for designing **risk-oriented consortia**. By focus
   - the predictive scope and calibration of ToxCSM, and  
   - the coverage and curation of BioRemPP annotations.  
   It does not directly incorporate expression levels, kinetic parameters, or environmental exposure, which may require additional data and analyses.
+
+
+ 
+---
+
+## Activity diagram of the use case
+
+![Activity diagram of the use case](uc_7.3.png)
+
+
