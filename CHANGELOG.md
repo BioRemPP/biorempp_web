@@ -26,11 +26,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### Legal and Citation Pages
 - **How to Cite page**: Comprehensive citation guidelines with:
   - Pre-DOI provisional citation formats
-  - Post-DOI citation instructions  
+  - Post-DOI citation instructions
   - BibTeX templates for academic references
   - Third-party resource attribution (KEGG, HADEG, toxCSM)
   - FAIR principles and versioning best practices
-- **Terms of Use**: Complete legal framework covering scope, permitted/prohibited uses, user responsibilities, privacy policy, service limitations, licensing (Apache 2.0 / CC BY 4.0), and warranty disclaimers
+- **Terms of Use page**: Complete legal framework in documentation (`docs/about/terms-of-use.md`) covering:
+  - Scope and purpose of BioRemPP as academic research tool
+  - Permitted uses (research, education) and prohibited uses (clinical, regulatory)
+  - User responsibilities (data ownership, citation, third-party license compliance)
+  - Privacy-by-design philosophy (no accounts, no persistent storage, session-based processing)
+  - Service limitations and availability (best-effort, no SLA)
+  - Licensing details (Apache 2.0 for code, CC BY 4.0 for database)
+  - Warranty disclaimers and liability limitations
+  - Contact information for institutional support
 
 #### Documentation Site Enhancements
 - MkDocs navigation structure for 65+ documentation pages
