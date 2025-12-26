@@ -130,7 +130,11 @@ The same enzymatic activity can be implemented by multiple, non-identical genes,
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.10.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.10.png">
+  <img src="../uc_4.10.png" alt="Activity diagram of the use case">
+</a>
 
 
  

@@ -88,6 +88,10 @@ This use case ranks each biological sample according to the total number of **un
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_2.2.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_2.2.png">
+  <img src="../uc_2.2.png" alt="Activity diagram of the use case">
+</a>
 
 

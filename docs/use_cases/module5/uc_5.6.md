@@ -136,6 +136,10 @@ This use case infers **functional similarity between compounds** by examining wh
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_5.6.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_5.6.png">
+  <img src="../uc_5.6.png" alt="Activity diagram of the use case">
+</a>
 
 

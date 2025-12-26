@@ -126,7 +126,11 @@ The same high-level enzymatic activity (e.g., *oxidoreductase*, *hydrolase*) can
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.9.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.9.png">
+  <img src="../uc_4.9.png" alt="Activity diagram of the use case">
+</a>
 
 
 

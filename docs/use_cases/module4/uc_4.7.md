@@ -149,7 +149,11 @@ By exposing gene–compound associations at full resolution, UC-4.7 and UC-4.8 c
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.7.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.7.png">
+  <img src="../uc_4.7.png" alt="Activity diagram of the use case">
+</a>
 
 
 

@@ -122,6 +122,10 @@ This use case provides an interactive framework for exploring **hierarchical rel
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_3.3.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_3.3.png">
+  <img src="../uc_3.3.png" alt="Activity diagram of the use case">
+</a>
 
 

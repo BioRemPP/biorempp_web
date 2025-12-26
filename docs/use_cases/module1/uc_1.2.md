@@ -89,6 +89,8 @@ The UpSet plot is composed of three main components:
 
 ## Activity diagram of the use case
 
+*Click on the image to enlarge and explore details.*
+
 <a class="glightbox" href="../uc_1.2.png">
   <img src="../uc_1.2.png" alt="Activity diagram of the use case">
 </a>

@@ -130,6 +130,10 @@ This use case extends the completeness framework to the **KEGG metabolic pathway
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_8.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_8.5.png">
+  <img src="../uc_8.5.png" alt="Activity diagram of the use case">
+</a>
 
 

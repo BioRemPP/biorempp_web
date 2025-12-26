@@ -119,6 +119,10 @@ This use case quantifies **pairwise chemical similarity** between biological sam
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_5.2.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_5.2.png">
+  <img src="../uc_5.2.png" alt="Activity diagram of the use case">
+</a>
 
 

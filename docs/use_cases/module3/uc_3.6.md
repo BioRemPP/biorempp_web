@@ -110,6 +110,10 @@ This use case investigates **gene co-occurrence** patterns across all biological
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_3.6.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_3.6.png">
+  <img src="../uc_3.6.png" alt="Activity diagram of the use case">
+</a>
 
 

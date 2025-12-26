@@ -137,7 +137,11 @@ The same **compound pathway** can be implemented through different **genetic str
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.13.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.13.png">
+  <img src="../uc_4.13.png" alt="Activity diagram of the use case">
+</a>
 
 
 

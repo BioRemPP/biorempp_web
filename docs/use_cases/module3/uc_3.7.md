@@ -113,6 +113,10 @@ This use case investigates **compound co-occurrence** patterns across all biolog
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_3.7.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_3.7.png">
+  <img src="../uc_3.7.png" alt="Activity diagram of the use case">
+</a>
 
 

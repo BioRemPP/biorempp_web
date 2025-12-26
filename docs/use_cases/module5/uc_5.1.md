@@ -120,6 +120,10 @@ This use case maps the **interaction strength** between each biological sample a
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_5.1.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_5.1.png">
+  <img src="../uc_5.1.png" alt="Activity diagram of the use case">
+</a>
 
 

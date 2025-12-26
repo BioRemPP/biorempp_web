@@ -137,7 +137,11 @@ A single sample can simultaneously encode pathways for multiple **compound class
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.12.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.12.png">
+  <img src="../uc_4.12.png" alt="Activity diagram of the use case">
+</a>
 
 
 

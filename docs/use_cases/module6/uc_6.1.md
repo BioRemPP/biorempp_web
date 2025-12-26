@@ -140,6 +140,10 @@ This use case connects **regulatory priorities** to **molecular actions** by tra
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_6.1.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_6.1.png">
+  <img src="../uc_6.1.png" alt="Activity diagram of the use case">
+</a>
 
 

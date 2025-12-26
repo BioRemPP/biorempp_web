@@ -121,6 +121,10 @@ This use case provides a detailed **toxicological fingerprint** for each compoun
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.1.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.1.png">
+  <img src="../uc_7.1.png" alt="Activity diagram of the use case">
+</a>
 
 

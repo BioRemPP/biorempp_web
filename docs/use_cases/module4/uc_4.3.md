@@ -126,7 +126,11 @@ Instead of a Cartesian bar chart, the analysis uses a **radar (polar) plot** to 
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.3.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.3.png">
+  <img src="../uc_4.3.png" alt="Activity diagram of the use case">
+</a>
 
 
 

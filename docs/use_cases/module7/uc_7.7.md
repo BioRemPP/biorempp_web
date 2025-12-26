@@ -141,6 +141,10 @@ The quantitative value is the **total count of gene–compound interactions** fo
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.7.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.7.png">
+  <img src="../uc_7.7.png" alt="Activity diagram of the use case">
+</a>
 
 

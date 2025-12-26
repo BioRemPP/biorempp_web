@@ -121,6 +121,10 @@ This use case provides a detailed, endpoint-level view of the **predicted toxici
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.4.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.4.png">
+  <img src="../uc_7.4.png" alt="Activity diagram of the use case">
+</a>
 
 

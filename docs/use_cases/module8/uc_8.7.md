@@ -145,6 +145,10 @@ Instead of relying on Venn diagrams—which become unreadable as the number of s
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_8.7.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_8.7.png">
+  <img src="../uc_8.7.png" alt="Activity diagram of the use case">
+</a>
 
 

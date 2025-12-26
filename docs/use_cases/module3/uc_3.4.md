@@ -110,6 +110,10 @@ This use case quantifies the **pairwise functional similarity** between all biol
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_3.4.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_3.4.png">
+  <img src="../uc_3.4.png" alt="Activity diagram of the use case">
+</a>
 
 

@@ -135,6 +135,10 @@ This use case infers **functional relationships between genes** by examining whe
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_5.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_5.5.png">
+  <img src="../uc_5.5.png" alt="Activity diagram of the use case">
+</a>
 
 

@@ -137,6 +137,10 @@ This may directly support rational, pathway-oriented consortium design.
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_8.6.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_8.6.png">
+  <img src="../uc_8.6.png" alt="Activity diagram of the use case">
+</a>
 
 

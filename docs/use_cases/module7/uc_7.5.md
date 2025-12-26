@@ -124,6 +124,10 @@ Although this visualization is compound-centric, it indirectly informs how diffe
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.5.png">
+  <img src="../uc_7.5.png" alt="Activity diagram of the use case">
+</a>
 
 

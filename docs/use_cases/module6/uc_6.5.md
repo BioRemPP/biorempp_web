@@ -132,6 +132,10 @@ This use case provides a **chemical-first, top-down view** of the **functional l
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_6.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_6.5.png">
+  <img src="../uc_6.5.png" alt="Activity diagram of the use case">
+</a>
 
 

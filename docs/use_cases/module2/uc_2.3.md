@@ -96,6 +96,10 @@ This use case ranks compounds according to how many distinct biological samples 
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_2.3.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_2.3.png">
+  <img src="../uc_2.3.png" alt="Activity diagram of the use case">
+</a>
 
 

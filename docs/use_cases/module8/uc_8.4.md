@@ -128,6 +128,10 @@ This use case focuses on **pathway-level completeness** using degradation pathwa
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_8.4.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_8.4.png">
+  <img src="../uc_8.4.png" alt="Activity diagram of the use case">
+</a>
 
 

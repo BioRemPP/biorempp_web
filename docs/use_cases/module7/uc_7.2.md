@@ -117,6 +117,10 @@ This use case quantifies the **concordance** between compounds flagged as high-r
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.2.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.2.png">
+  <img src="../uc_7.2.png" alt="Activity diagram of the use case">
+</a>
 
 

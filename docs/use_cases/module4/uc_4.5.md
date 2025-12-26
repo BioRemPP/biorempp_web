@@ -132,7 +132,11 @@ By mapping **gene symbols vs. samples** as a presence/absence dot matrix, the vi
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.5.png">
+  <img src="../uc_4.5.png" alt="Activity diagram of the use case">
+</a>
 
 
 

@@ -106,6 +106,10 @@ This use case quantifies **pairwise similarity** between all biological samples 
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_3.5.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_3.5.png">
+  <img src="../uc_3.5.png" alt="Activity diagram of the use case">
+</a>
 
 

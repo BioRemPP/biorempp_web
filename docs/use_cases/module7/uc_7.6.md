@@ -127,6 +127,10 @@ The quantitative value displayed is the **count of distinct high-risk compounds*
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_7.6.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_7.6.png">
+  <img src="../uc_7.6.png" alt="Activity diagram of the use case">
+</a>
 
 

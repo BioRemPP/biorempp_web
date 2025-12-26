@@ -132,6 +132,10 @@ This use case builds a **bipartite interaction network** linking all detected **
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_5.4.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_5.4.png">
+  <img src="../uc_5.4.png" alt="Activity diagram of the use case">
+</a>
 
 

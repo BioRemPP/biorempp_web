@@ -134,7 +134,11 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_4.6.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_4.6.png">
+  <img src="../uc_4.6.png" alt="Activity diagram of the use case">
+</a>
 
 
  

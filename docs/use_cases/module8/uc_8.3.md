@@ -128,6 +128,10 @@ This use case provides the most **fine-grained** view of functional potential in
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_8.3.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_8.3.png">
+  <img src="../uc_8.3.png" alt="Activity diagram of the use case">
+</a>
 
 

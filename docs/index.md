@@ -131,6 +131,7 @@ BioRemPP is a research tool subject to the following limitations:
 - **In silico toxicity predictions:** Toxicological assessments derived from toxCSM are computational predictions based on machine learning models trained on experimental data. These predictions provide probabilistic estimates and require experimental validation before use in risk assessment or regulatory contexts.
 
 - **Quantitative limitations:** BioRemPP operates on presence/absence data (binary functional potential). Quantitative expression levels, transcript abundances, protein concentrations, and metabolic flux rates are not incorporated.
+  
 ---
 
 ## Citation

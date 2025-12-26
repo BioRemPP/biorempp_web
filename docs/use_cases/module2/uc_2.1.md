@@ -103,6 +103,10 @@ This use case enables a direct comparison of the **functional richness** of each
 
 ## Activity diagram of the use case
 
-![Activity diagram of the use case](uc_2.1.png)
+*Click on the image to enlarge and explore details.*
+
+<a class="glightbox" href="../uc_2.1.png">
+  <img src="../uc_2.1.png" alt="Activity diagram of the use case">
+</a>
 
 
