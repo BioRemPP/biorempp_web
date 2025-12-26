@@ -28,7 +28,11 @@ from ..components.composite import (
     create_upload_panel,
     create_validation_panel,
 )
-from ..pages.new_user import create_new_user_guide_button, create_new_user_guide_modal
+from ..pages.new_user import (
+    create_new_user_guide_button,
+    create_new_user_guide_modal,
+)
+from ..pages.terms_of_use import create_terms_button, create_terms_modal
 
 
 def create_home_layout(session_id: Optional[str] = None) -> html.Div:
@@ -94,6 +98,17 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                         [create_new_user_guide_button()],
                         md=8,
                         lg=6,
+                        className="mx-auto mb-2",
+                    )
+                ]
+            ),
+            # Terms of Use Card
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [create_terms_button()],
+                        md=8,
+                        lg=6,
                         className="mx-auto mb-4",
                     )
                 ]
@@ -141,7 +156,8 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                 [intro, upload_workflow, help_section], fluid=False, className="px-4"
             ),
             footer,
-            create_new_user_guide_modal(),  # Add modal
+            create_new_user_guide_modal(),  # Guided tour modal
+            create_terms_modal(),  # Terms of use modal
         ]
     )
 

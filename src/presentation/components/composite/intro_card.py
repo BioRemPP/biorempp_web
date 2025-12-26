@@ -32,16 +32,24 @@ def create_intro_card() -> html.Div:
             dbc.CardBody(
                 [
                     html.P(
-                        "Data and analyses generated through BioRemPP must be cited as follows:",
-                        className="text-dark mb-3",
-                        style={"fontSize": "1.08rem"},
-                    ),
-                    html.P(
                         [
                             html.I("Citation placeholder "),
                         ],
-                        className="text-dark mb-0",
+                        className="text-dark mb-3",
                         style={"fontSize": "1.02rem"},
+                    ),
+                    html.Div(
+                        dbc.Button(
+                            [
+                                html.I(className="fas fa-quote-right me-2"),
+                                "How to Cite",
+                            ],
+                            href="/how-to-cite",
+                            color="success",
+                            outline=True,
+                            size="sm",
+                        ),
+                        className="text-center",
                     ),
                 ],
                 className="text-center",

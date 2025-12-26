@@ -1,0 +1,15 @@
+# 5- Modeling Interactions among Samples, Genes, and Compounds
+
+This module shifts the focus from isolated profiles to the web of interactions that connects samples, genes, and compounds. Having established which functions and pathways are present (Modules 2–4), we now ask how these components are organized into interaction networks that may reveal specialization, redundancy, and potential synergies. By integrating information across multiple layers—samples, functional genes, chemical classes, and regulatory frameworks—we aim to reconstruct an interaction landscape that is directly relevant to bioremediation decision-making.
+
+### 5.1. What is the structure of sample-level interactions?
+
+We first examine the highest-level interaction patterns to understand how samples relate to each other and to their chemical and regulatory context. Chord diagrams are used to address three complementary questions: (i) how samples cluster based on shared chemical profiles; (ii) which samples are most strongly associated with particular chemical classes; and (iii) which samples are most relevant to specific regulatory agencies or frameworks. The result is a global interaction map that can summarize the functional roles and specializations of each sample, potentially revealing generalists, specialists, and potential niche complementarity across the dataset.
+
+### 5.2. What are the underlying molecular networks that define this landscape?
+
+To uncover the mechanisms driving the observed sample-level patterns, we next interrogate the molecular interaction layer. Here, we construct networks whose nodes represent genes and compounds, and whose edges encode functional relationships—such as shared chemical targets, co-occurrence in degradation pathways, or joint participation in specific metabolic routes. This perspective allows us to ask: which genes are functionally linked through common substrates, and which compounds are related through shared enzymatic machinery? The resulting networks may reveal core metabolic modules and chemically coherent groups that act as the building blocks of the broader functional landscape.
+
+### 5.3. Which interaction hubs and motifs are most relevant for bioremediation strategies?
+
+Finally, we integrate the sample-level and molecular-level views to identify key elements within the interaction landscape that are particularly relevant for practical applications. By analyzing network properties such as connectivity, redundancy, and shared neighbors across samples, genes, and compounds, we may highlight interaction hubs (e.g., highly connected genes or compounds) and recurrent motifs (e.g., small gene–compound–sample triads) that may represent points of intervention. This synthesis can enable the prioritization of candidate samples, pathways, and chemical targets not only based on their individual properties, but also on their centrality and role within the interaction network, providing a more informed basis for designing bioremediation consortia and deployment strategies.

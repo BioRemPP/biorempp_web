@@ -9,6 +9,7 @@ from .documentation import create_documentation_page
 from .faq_page import create_faq_page
 from .home_page import create_home_layout
 from .home_page import get_layout as get_home_layout
+from .how_to_cite_page import create_how_to_cite_page
 from .methods_page import create_methods_page
 from .regulatory_page import create_regulatory_page
 from .results_page import get_results_layout
@@ -23,6 +24,7 @@ __all__ = [
     "create_regulatory_page",
     "create_contact_page",
     "create_user_guide_page",
+    "create_how_to_cite_page",
     "create_methods_page",
     "create_scientific_methods_page",
     "create_documentation_page",

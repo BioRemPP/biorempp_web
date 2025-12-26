@@ -1,0 +1,19 @@
+# 8 – Assembly of Functional Consortia
+
+The rational design of a functional consortium in BioRemPP is explicitly framed as a multi-objective optimization problem. Rather than selecting individual samples in isolation, this module synthesizes all previous analyses into an integrated decision-support framework. Here, we use the functional, toxicological, and regulatory insights obtained in earlier modules to propose consortia that balance chemical coverage, functional completeness, and pathway completeness. The ultimate goal is to translate the analytical results into practical, scenario-aware strategies for assembling consortia suitable for bioremediation applications.
+
+### 8.1. Optimizing for Efficiency: The Minimal Coverage Strategy
+
+The first objective is to achieve the broadest possible chemical coverage using the smallest number of functional units. To this end, we begin by identifying non-redundant "functional guilds," defined as groups of samples that share identical or highly similar chemical profiles. We then formulate and solve a set cover problem to determine the minimal set of guilds required to cover all compounds within a given chemical class or target list. The impact of this analysis is a parsimonious consortium blueprint that can maximize functional **breadth** while minimizing redundancy and potential complexity in downstream implementation.
+
+### 8.2. Optimizing for Functional Completeness: The Specialist Selection Strategy
+
+The second objective is to maximize functional effectiveness against specific targets where performance and completeness are critical. For this purpose, we define a "Completeness Score" that quantifies how fully a sample's genetic toolkit covers the required functions for broad chemical classes and for individual high-priority compounds. This score integrates information on KO presence, pathway coverage, and relevant degradation functions. By ranking samples based on this metric, we can identify "elite specialists" that provide the most complete functional repertoire for a given task, supporting targeted selection in scenarios where depth of capability is more important than breadth.
+
+### 8.3. Optimizing for Process Integrity: The Pathway Completion Strategy
+
+The third objective is to ensure that entire multi-step biological processes can be carried out successfully by the assembled consortium. We address this by examining the distribution of all required KOs for a target metabolic pathway across the available samples. Rather than demanding that a single sample encode a complete pathway, we adopt the principle of **functional complementarity**, designing consortia in which different samples contribute distinct segments of the pathway. The impact of this analysis is a systematic method for assembling consortia that collectively encode all enzymatic steps necessary for complex transformations, such as the degradation of recalcitrant or multi-step pollutants.
+
+### 8.4. Balancing Trade-offs: Integrating Strategies into Consortium Profiles
+
+Finally, we integrate the outcomes of the minimal coverage, specialist selection, and pathway completion strategies into coherent consortium profiles. By jointly considering coverage (breadth), completeness (depth), and process integrity (complementarity), we can characterize each candidate consortium in terms of its strengths, limitations, and expected trade-offs. This integrated view allows users to select between alternative designs according to practical criteria—such as prioritizing fewer members for operational simplicity, favoring highly specialized consortia for targeted interventions, or emphasizing pathway robustness for long-term deployments. In this way, the framework moves from individual optimization objectives to a flexible, scenario-aware toolbox for rational consortium assembly.
