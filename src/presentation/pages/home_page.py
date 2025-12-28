@@ -32,6 +32,7 @@ from ..pages.new_user import (
     create_new_user_guide_button,
     create_new_user_guide_modal,
 )
+from ..pages.review_disclaimer import create_reviewer_disclaimer_modal
 from ..pages.terms_of_use import create_terms_button, create_terms_modal
 
 
@@ -158,6 +159,7 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             footer,
             create_new_user_guide_modal(),  # Guided tour modal
             create_terms_modal(),  # Terms of use modal
+            create_reviewer_disclaimer_modal(),  # Reviewer disclaimer modal (temporary)
         ]
     )
 
