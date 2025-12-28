@@ -233,7 +233,7 @@ def create_reviewer_disclaimer_modal():
                                     html.Br(),
                                     html.A(
                                         "Click here to view BioRemPP running in optimal local environment",
-                                        href="https://placeholder-video-url.com",  # PLACEHOLDER for actual video URL
+                                        href="https://www.youtube.com/watch?v=lmITHS831BQ",  
                                         target="_blank",
                                         className="fw-bold",
                                         style={"color": "#0d6efd", "textDecoration": "underline"},
