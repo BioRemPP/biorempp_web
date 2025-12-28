@@ -5,7 +5,7 @@ from ..base import create_button, create_upload
 
 
 def create_upload_panel() -> dbc.Card:
-    example_download_href = "/data/example_dataset.txt"
+    example_download_href = "/data/exemple_dataset.txt"
 
     instructions = html.Div(
         [

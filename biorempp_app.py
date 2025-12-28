@@ -357,6 +357,32 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
 
     logger.info("[OK] Health check endpoints registered (/health, /ready)")
 
+    # Add static file route for example dataset download
+    @app.server.route('/data/<path:filename>')
+    def serve_data_files(filename):
+        """
+        Serve static data files (e.g., example datasets) for download.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the file to serve
+
+        Returns
+        -------
+        Response
+            File download response or 404 if not found
+        """
+        from flask import send_from_directory
+        data_dir = Path(__file__).parent / "data"
+        try:
+            return send_from_directory(data_dir, filename, as_attachment=True)
+        except FileNotFoundError:
+            logger.warning(f"File not found: {filename} in {data_dir}")
+            return {"error": "File not found"}, 404
+
+    logger.info("[OK] Static data file route registered (/data/<filename>)")
+
     logger.info("\n" + "=" * 80)
     logger.info("[OK] APPLICATION INITIALIZED SUCCESSFULLY")
     logger.info("=" * 80 + "\n")
