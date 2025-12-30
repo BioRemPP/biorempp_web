@@ -268,7 +268,7 @@ def create_documentation_page() -> html.Div:
                                     "regulatory information integrated in our system."
                                 ),
                                 icon_class="fas fa-database",
-                                link_url="https://readthedocs.org",
+                                link_url="https://biorempp-database.readthedocs.io/en/latest/",
                                 link_text="View Database Docs",
                                 card_color="success",
                             )
