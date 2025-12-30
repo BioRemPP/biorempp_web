@@ -233,7 +233,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-book me-2"),
                                     "View Documentation",
                                 ],
-                                href="https://biorempp-docs.placeholder.com",  # Placeholder URL
+                                href="https://biormepp-web.readthedocs.io/en/latest/",  # Official documentation
                                 target="_blank",
                                 color="warning",
                                 outline=True,
