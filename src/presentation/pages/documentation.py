@@ -289,7 +289,7 @@ def create_documentation_page() -> html.Div:
                                     "the platform for your bioremediation research."
                                 ),
                                 icon_class="fas fa-server",
-                                link_url="https://readthedocs.org",
+                                link_url="https://biormepp-web.readthedocs.io/en/latest/",
                                 link_text="View Webservice Docs",
                                 card_color="primary",
                             )

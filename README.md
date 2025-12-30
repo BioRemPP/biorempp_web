@@ -2,18 +2,18 @@
 
 **Bioremediation Potential Profile - Scientific Web Application**
 
-[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](placeholder)
+[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](https://biormepp-web.readthedocs.io/en/latest/)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen)](https://hub.docker.com/r/biorempp/biorempp-web)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Database: CC BY 4.0](https://img.shields.io/badge/Database-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ## Quick Links
 
-- **🌐 Live Application:** [https://biorempp.org](https://biorempp.org) *(placeholder)*
-- **📚 Documentation:** [https://biorempp.readthedocs.io](https://biorempp.readthedocs.io) *(placeholder)*
+- **🌐 Live Application:** [https://biorempp.cloud](https://biorempp.cloud) 
+- **📚 Documentation:** [https://biormepp-web.readthedocs.io/en/latest/](https://biormepp-web.readthedocs.io/en/latest/)
 - **📖 Methods:** [Article DOI](https://doi.org/placeholder) *(pending publication)*
-- **📘 User Guide:** [Getting Started](https://biorempp.readthedocs.io/en/latest/user-guide/) *(placeholder)*
-- **🐛 Issue Tracker:** [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues) *(placeholder)*
+- **📘 User Guide:** [Getting Started](https://biormepp-web.readthedocs.io/en/latest/user-guide/)
+- **🐛 Issue Tracker:** [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues) 
 - **📝 How to Cite:** [See Citation](#citation)
 
 ---
@@ -795,5 +795,5 @@ Future updates to the contribution guidelines will explicitly address the incorp
 
 ---
 
-**BioRemPP v1.0.0-beta** | [Documentation](https://biorempp.readthedocs.io) | [GitHub](https://github.com/BioRemPP/biorempp_web) | [License](LICENSE)
+**BioRemPP v1.0.0-beta** | [Documentation](https://biormepp-web.readthedocs.io/en/latest/) | [GitHub](https://github.com/BioRemPP/biorempp_web) | [License](LICENSE)
 

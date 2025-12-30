@@ -58,7 +58,7 @@ BioRemPP integrates the following resources:
 - **toxCSM Database:** Computational toxicity predictions for chemical compounds, including 50+ toxicological endpoints covering nuclear receptor binding, stress response pathways, genotoxicity, organ-specific toxicity, and environmental impact.  
 ([toxCSM Prediction Tool](https://biosig.lab.uq.edu.au/toxcsm/))
 
-- **Regulatory Frameworks:** International and national priority pollutant classifications from IARC (International Agency for Research on Cancer), EPA (United States Environmental Protection Agency), ATSDR (Agency for Toxic Substances and Disease Registry), WFD (Water Framework Directive, EU), PSL (Priority Substances List, Canada), EPC (European Parliament Commission), and CONAMA (National Environmental Council, Brazil).
+- **Regulatory Frameworks:** Priority pollutant classifications from IARC (International Agency for Research on Cancer), EPA (United States Environmental Protection Agency), ATSDR (Agency for Toxic Substances and Disease Registry), WFD (Water Framework Directive, EU), PSL (Priority Substances List, Canada), EPC (European Parliament Commission), and CONAMA (National Environmental Council, Brazil).
 
 
 

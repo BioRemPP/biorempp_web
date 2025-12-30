@@ -4,6 +4,45 @@ from dash import html
 from .info_modal import create_info_modal
 
 
+def _create_reviewer_disclaimer_button_inline():
+    """
+    Create reviewer disclaimer button (inline to avoid circular imports).
+
+    This is a temporary component for the initial submission review period.
+    The full implementation is in review_disclaimer.py.
+
+    Returns
+    -------
+    dbc.Card
+        Card containing button to open reviewer disclaimer modal
+    """
+    return dbc.Card(
+        [
+            dbc.CardBody(
+                [
+                    html.Div(
+                        [
+                            dbc.Button(
+                                [
+                                    html.I(className="fas fa-info-circle me-2"),
+                                    "Disclaimer for Reviewers - Please Read Before Proceeding",
+                                    html.I(className="fas fa-info-circle ms-2"),
+                                ],
+                                id="reviewer-disclaimer-btn",
+                                color="info",
+                                size="lg",
+                                className="shadow-sm",
+                            )
+                        ],
+                        className="d-grid",
+                    ),
+                ]
+            )
+        ],
+        className="shadow-sm mb-4",
+    )
+
+
 def create_intro_card() -> html.Div:
     """
     Create an introduction block with the BioRemPP logo, description,
@@ -106,6 +145,11 @@ def create_intro_card() -> html.Div:
                                         n_clicks=0,
                                     ),
                                     className="text-center",
+                                ),
+                                # Reviewer Disclaimer button (temporary for initial submission)
+                                html.Div(
+                                    _create_reviewer_disclaimer_button_inline(),
+                                    className="mt-3",
                                 ),
                             ],
                             className="p-3 text-center",

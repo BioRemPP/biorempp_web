@@ -52,6 +52,7 @@ from src.presentation.pages import (
     create_contact_page,
     create_documentation_page,
     create_faq_page,
+    create_how_to_cite_page,
     create_methods_page,
     create_regulatory_page,
     create_scientific_methods_page,
@@ -63,6 +64,9 @@ from src.presentation.pages.methods.callbacks import (
     register_callbacks as register_methods_callbacks,
 )
 from src.presentation.pages.new_user import register_new_user_guide_callbacks
+from src.presentation.pages.review_disclaimer import (
+    register_reviewer_disclaimer_callbacks,
+)
 from src.presentation.pages.uc_user_guide import register_demo_callbacks
 
 # Initialize application settings and logging
@@ -207,6 +211,9 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         elif pathname == '/documentation':
             # Documentation page
             return create_documentation_page()
+        elif pathname == '/how-to-cite':
+            # How to Cite page
+            return create_how_to_cite_page()
         elif pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
@@ -302,6 +309,10 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("Registering New User Guide callbacks...")
     register_new_user_guide_callbacks(app)
 
+    # Register Reviewer Disclaimer callbacks (temporary for initial submission)
+    logger.info("Registering Reviewer Disclaimer callbacks...")
+    register_reviewer_disclaimer_callbacks(app)
+
     # Add health check endpoints
     @app.server.route('/health')
     def health_check():
@@ -352,6 +363,32 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             }, 503
 
     logger.info("[OK] Health check endpoints registered (/health, /ready)")
+
+    # Add static file route for example dataset download
+    @app.server.route('/data/<path:filename>')
+    def serve_data_files(filename):
+        """
+        Serve static data files (e.g., example datasets) for download.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the file to serve
+
+        Returns
+        -------
+        Response
+            File download response or 404 if not found
+        """
+        from flask import send_from_directory
+        data_dir = Path(__file__).parent / "data"
+        try:
+            return send_from_directory(data_dir, filename, as_attachment=True)
+        except FileNotFoundError:
+            logger.warning(f"File not found: {filename} in {data_dir}")
+            return {"error": "File not found"}, 404
+
+    logger.info("[OK] Static data file route registered (/data/<filename>)")
 
     logger.info("\n" + "=" * 80)
     logger.info("[OK] APPLICATION INITIALIZED SUCCESSFULLY")
