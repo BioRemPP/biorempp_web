@@ -259,8 +259,7 @@ def create_reviewer_disclaimer_modal():
                             html.P(
                                 [
                                     "If you prefer to evaluate BioRemPP with optimal performance on your own infrastructure, "
-                                    "we provide full Docker Compose support for easy local deployment in development mode. "
-                                    "This allows you to run the application with adequate resources and experience the intended performance.",
+                                    "you can run the pre-built Docker image with a single command:",
                                 ],
                                 className="text-dark mb-3",
                             ),
@@ -271,45 +270,65 @@ def create_reviewer_disclaimer_modal():
                                         [
                                             html.H6(
                                                 [
-                                                    html.I(className="fas fa-terminal me-2"),
-                                                    "Quick Local Deployment Instructions",
+                                                    html.I(className="fas fa-docker me-2"),
+                                                    "Quick Local Deployment (Recommended)",
                                                 ],
-                                                className="mb-3",
+                                                className="mb-3 text-primary",
                                             ),
                                             html.P(
-                                                "Follow these steps to run BioRemPP locally using Docker Compose:",
-                                                className="mb-2",
+                                                "Run BioRemPP locally with optimal resources using Docker:",
+                                                className="mb-2 fw-bold",
                                             ),
                                             html.Pre(
                                                 html.Code(
-                                                    """# 1. Clone the repository
-git clone https://github.com/biorempp/biorempp_web.git
-cd biorempp_web
-
-# 2. Run in development mode
-docker compose --env-file .env/env.development --profile dev up
-
-# 3. Access the application
-# Open your browser at: http://localhost:8050""",
+                                                    "docker run -p 8050:8050 biorempp/biorempp-web:v1.0.2-beta-nar",
                                                     className="language-bash",
                                                 ),
-                                                className="bg-dark text-light p-3 rounded",
-                                                style={"fontSize": "0.9rem"},
+                                                className="bg-dark text-light p-3 rounded mb-3",
+                                                style={"fontSize": "0.95rem"},
+                                            ),
+                                            html.P(
+                                                [
+                                                    "Then open your browser at: ",
+                                                    html.Code(
+                                                        "http://localhost:8050",
+                                                        className="bg-light text-dark p-1 rounded",
+                                                    ),
+                                                ],
+                                                className="mb-3",
                                             ),
                                             dbc.Alert(
                                                 [
                                                     html.I(className="fas fa-info-circle me-2"),
-                                                    html.Strong("Note: "),
-                                                    "Ensure Docker and Docker Compose are installed on your system. "
-                                                    "The development mode includes hot-reload capabilities and detailed logging.",
+                                                    html.Strong("Requirements: "),
+                                                    "Docker Desktop installed. ",
+                                                    html.A(
+                                                        "Download Docker",
+                                                        href="https://www.docker.com/products/docker-desktop",
+                                                        target="_blank",
+                                                        className="alert-link fw-bold",
+                                                    ),
+                                                    html.Br(),
+                                                    html.Small(
+                                                        "First download: ~1 GB. Subsequent runs are instant.",
+                                                        className="text-muted",
+                                                    ),
+                                                ],
+                                                color="info",
+                                                className="mb-2",
+                                            ),
+                                            dbc.Alert(
+                                                [
+                                                    html.I(className="fas fa-globe me-2"),
+                                                    html.Strong("This section may appear differently from the docker image source."),
                                                 ],
                                                 color="light",
-                                                className="mb-0 mt-3",
+                                                className="mb-0",
                                             ),
                                         ]
                                     )
                                 ],
-                                className="mb-3 border-secondary",
+                                className="mb-3 border-primary",
                             ),
 
                             html.H6(

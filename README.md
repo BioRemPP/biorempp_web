@@ -68,12 +68,38 @@ BioRemPP (Bioremediation Potential Profile) is a scientific web service for bior
 
 ## Quick Start
 
-### Docker Deployment (Recommended)
+### Option 1: Pre-Built Docker Image (Recommended)
 
-### Prerequisites
+**Fastest way to run BioRemPP locally with optimal performance:**
 
-- Docker and Docker Compose (recommended for reproducibility)
-- Python 3.11+ (for local development)
+```bash
+docker run -p 8050:8050 biorempp/biorempp-web:v1.0.2-beta-nar
+```
+
+Then open your browser at: **http://localhost:8050**
+
+**Requirements:**
+- Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
+- First download: ~1 GB (subsequent runs are instant)
+
+**Alternative Registry (if Docker Hub is unavailable):**
+```bash
+docker run -p 8050:8050 ghcr.io/biorempp/biorempp-web:v1.0.2-beta-nar
+```
+
+**Docker Image Details:**
+- **Size:** ~1.9 GB
+- **Registry:** Docker Hub (primary), GitHub Container Registry (backup)
+- **Tags:** `v1.0.2-beta-nar`
+- **Platform:** Linux/AMD64
+- **Documentation:** https://biormepp-web.readthedocs.io/en/latest/
+
+---
+
+### Option 2: Docker Compose (For Development)
+
+**Prerequisites:**
+- Docker and Docker Compose
 - 4 GB RAM minimum (8 GB recommended for larger datasets)
 
 **Development Mode:**
