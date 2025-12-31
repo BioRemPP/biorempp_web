@@ -124,6 +124,18 @@ EXPOSE 8050
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8050/_health || exit 1
 
+# Image labels and metadata for development
+LABEL org.opencontainers.image.title="BioRemPP Web Application (Development)" \
+      org.opencontainers.image.description="Bioremediation Potential Profile - Functional genomics analysis platform for bioremediation research" \
+      org.opencontainers.image.authors="biorempp@gmail.com" \
+      org.opencontainers.image.url="https://biorempp.github.io" \
+      org.opencontainers.image.documentation="https://biormepp-web.readthedocs.io/en/latest/" \
+      org.opencontainers.image.source="https://github.com/biorempp/biorempp_web" \
+      org.opencontainers.image.version="1.0.2-beta-nar" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="BioRemPP Development Team" \
+      maintainer="biorempp@gmail.com"
+
 # Development command (hot-reload enabled)
 CMD ["python", "biorempp_app.py"]
 
@@ -175,14 +187,17 @@ HEALTHCHECK --interval=60s --timeout=30s --start-period=60s --retries=3 \
 # Set entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
+# Image labels and metadata for production
+LABEL org.opencontainers.image.title="BioRemPP Web Application (Production)" \
+      org.opencontainers.image.description="Bioremediation Potential Profile - Functional genomics analysis platform for bioremediation research" \
+      org.opencontainers.image.authors="biorempp@gmail.com" \
+      org.opencontainers.image.url="https://biorempp.github.io" \
+      org.opencontainers.image.documentation="https://biormepp-web.readthedocs.io/en/latest/" \
+      org.opencontainers.image.source="https://github.com/biorempp/biorempp_web" \
+      org.opencontainers.image.version="1.0.2-beta-nar" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.vendor="BioRemPP Development Team" \
+      maintainer="biorempp@gmail.com"
+
 # Default command (can be overridden)
 CMD ["gunicorn", "wsgi:server", "-c", "gunicorn_config.py"]
-
-# ============================================================================
-# METADATA
-# ============================================================================
-LABEL maintainer="BioRemPP Development Team" \
-    version="1.0.0" \
-    description="BioRemPP Web Service - Unified Docker Image" \
-    org.opencontainers.image.source="https://github.com/BioRemPP" \
-    org.opencontainers.image.licenses="Apache-2.0"
