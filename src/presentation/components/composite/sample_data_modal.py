@@ -91,7 +91,7 @@ def create_sample_data_modal() -> dbc.Modal:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-bacterium me-2 text-primary"),
+                            html.I(className="fas me-2 text-primary"),
                             html.Strong("Bacteria"),
                         ],
                         className="bg-light",
@@ -152,7 +152,7 @@ def create_sample_data_modal() -> dbc.Modal:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-leaf me-2 text-success"),
+                            html.I(className="fas me-2 text-success"),
                             html.Strong("Fungi"),
                         ],
                         className="bg-light",
@@ -213,7 +213,7 @@ def create_sample_data_modal() -> dbc.Modal:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-water me-2 text-info"),
+                            html.I(className="fas me-2 text-info"),
                             html.Strong("Microalgae / Cyanobacteria"),
                         ],
                         className="bg-light",

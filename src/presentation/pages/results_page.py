@@ -7,22 +7,6 @@ Functions
 ---------
 create_results_layout
     Create complete results page layout with accordions
-
-Notes
------
-- Feed-style layout with sections
-- Accordion-based table rendering
-- Overview card with general information
-- 4 database results: BioRemPP, HADEG, ToxCSM, KEGG
-- Module 1: Comparative Assessment (Databases, Samples, Regulatory Frameworks)
-- Module 2: Exploratory Analysis (Gene Counts and Distributions)
-- Module 3: System Structure (Clustering, Similarity, Co-occurrence)
-- Module 4: Functional and Genetic Profiling
-- Module 5: Modeling Interactions (Samples, Genes, Compounds)
-- Module 6: Hierarchical and Flow-based Functional Analysis
-- Module 7: Toxicological Risk Assessment and Profiling
-- Module 8: Assembly of Functional Consortia
-- Modular components for maintainability
 """
 
 from typing import Any, Dict, Optional
@@ -87,18 +71,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         - Download button
         - Analytical highlight
         - Accordion with on-demand table
-      - Module 2 overview header (guiding questions)
-      - Module 2 exploratory analysis section
-      - Module 3 overview header (guiding questions)
-      - Module 3 system structure analysis section
-      - Module 4 overview header (guiding questions)
-      - Module 4 functional and genetic profiling section
-      - Module 5 overview header (guiding questions)
-      - Module 5 interaction modeling section
-      - Module 6 overview header (guiding questions)
-      - Module 6 hierarchical and flow-based analysis section
-      - Module 7 overview header (guiding questions)
-      - Module 7 toxicological risk assessment section
+        - Analytical Modules (8 modules)
     """
     # Default empty data
     if merged_data is None:

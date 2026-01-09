@@ -2,7 +2,7 @@
 # NOTE: API Reference section is preserved exactly as provided.
 
 site_name: BioRemPP Documentation
-site_url: https://biorempp-docs.example.com
+site_url: https://biorempp.cloud
 site_description: >-
   BioRemPP Web Service — documentation for an interactive platform supporting
   bioremediation-oriented functional analysis and data integration workflows.
@@ -137,6 +137,18 @@ extra_javascript:
 # ---------------------------
 nav:
   - Home: index.md
+
+  - Getting Started:
+      - Quickstart: getting-started/quickstart.md
+      - Input Format: getting-started/input-format.md
+      - Example Datasets: getting-started/example-datasets.md
+      - FAQ: getting-started/faq.md
+
+  - User Guide:
+      - Results Page: user-guide/results-page.md
+      - Interpretation: user-guide/interpretation.md
+      - Troubleshooting: user-guide/troubleshooting.md
+      - Downloads: user-guide/downloads.md
 
   # Make the analytical catalog visible in the first screen of the sidebar.
   - Use Cases (Methods):
