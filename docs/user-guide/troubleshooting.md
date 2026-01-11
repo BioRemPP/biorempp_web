@@ -476,3 +476,13 @@ Support does **not** provide assistance with:
 - Input file preparation or KO annotation (see [Input Format](../getting-started/input-format.md))
 - Statistical analysis of exported data
 - Custom feature requests or software modifications
+
+---
+
+## Related Pages
+
+- [Input Format](../getting-started/input-format.md) — Complete format specification and validation rules
+- [FAQ](../getting-started/faq.md#common-issues) — Common questions and quick solutions
+- [Results Page](results-page.md) — Understanding the analytical interface
+- [Downloads Guide](downloads.md) — Export troubleshooting
+- [Contact](../about/contact.md) — Report bugs and technical issues

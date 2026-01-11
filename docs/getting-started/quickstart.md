@@ -31,7 +31,7 @@ K00128
 - KO identifiers follow (one per line, format: `K#####`)
 - No blank lines between samples
 
-For complete format specification, see [Input Format](input-format.md).
+For complete format specification, see [Input Format](input-format.md). If you encounter validation errors, consult the [Troubleshooting Guide](../user-guide/troubleshooting.md).
 
 ---
 
@@ -53,7 +53,7 @@ System automatically validates format and displays summary (samples detected, KO
 
 ### 4. Navigate to Results
 
-After processing, scroll to **Module 1** section.
+After processing, scroll to **Module 1** section. Learn more about the [Results Page structure](../user-guide/results-page.md).
 
 ### 5. Run Your First Analysis
 
@@ -68,7 +68,7 @@ Download options available:
 - **Database tables:** Click "Download Data" (CSV, Excel, or JSON)
 - **Plots:** Hover over chart → camera icon (PNG, SVG)
 
-**Session timeout:** 4 hours. Download results before closing browser.
+**Session timeout:** 4 hours. Download results before closing browser. See [Downloads Guide](../user-guide/downloads.md) for export details and reproducibility requirements.
 
 ---
 
@@ -76,8 +76,10 @@ Download options available:
 
 **To understand your results:**
 
-- [User Guide](../user-guide/overview.md) — Interpretation and troubleshooting
+- [Results Page Overview](../user-guide/results-page.md) — Structure and organization of analytical interface
+- [Interpretation Guidelines](../user-guide/interpretation.md) — How to interpret functional potential results
 - [Use Cases Index](../use_cases/index.md) — All 56 analytical workflows
+- [Downloads Guide](../user-guide/downloads.md) — Export results for external analysis
 
 **To use your own data:**
 
@@ -87,6 +89,8 @@ Download options available:
 **Need help?**
 
 - [FAQ](faq.md) — Common questions and solutions
+- [Troubleshooting](../user-guide/troubleshooting.md) — Technical issues and error resolution
+- [Contact](../about/contact.md) — Support and collaboration
 
 ---
 
@@ -99,6 +103,19 @@ BioRemPP provides **computational inference** of bioremediation potential based 
 ✗ NOT gene expression levels  
 ✗ NOT enzyme activity
 
-**All predictions require experimental validation.** This tool supports exploratory analysis and hypothesis generation for research purposes only.
+**All predictions require experimental validation.** This tool supports exploratory analysis and hypothesis generation for research purposes only. See [Interpretation Guidelines](../user-guide/interpretation.md) for detailed guidance on result interpretation.
 
 **Limits:** 100 samples, 500,000 KOs, 5 MB file size.
+
+---
+
+## Related Pages
+
+- [Home](../index.md) — BioRemPP overview and scope
+- [Input Format](input-format.md) — Detailed format specification
+- [Example Datasets](example-datasets.md) — Ready-to-use test datasets
+- [FAQ](faq.md) — Frequently asked questions
+- [Methods Overview](../methods/methods-overview.md) — Scientific methodology
+- - [Use Cases Index](../use_cases/index.md) — All 56 analytical workflows for dataset analysis
+- [Contact](../about/contact.md) — Support and collaboration
+

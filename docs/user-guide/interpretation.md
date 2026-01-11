@@ -281,3 +281,16 @@ For reproducible interpretation:
 - **Database access dates:** Especially for KEGG (updated regularly)
 - **Annotation tool:** Report how KO identifiers were generated (e.g., eggNOG-mapper v2.1.12)
 
+See [Downloads Guide](downloads.md) for complete reproducibility requirements when exporting results.
+
+---
+
+## Related Pages
+
+- [Results Page](results-page.md) — Understanding the analytical interface
+- [Downloads Guide](downloads.md) — Export results with proper documentation
+- [Use Cases Index](../use_cases/index.md) — Detailed documentation of all 56 analytical workflows
+- [Methods Overview](../methods/methods-overview.md) — Scientific methodology
+- [FAQ](../getting-started/faq.md#what-do-biorempp-results-represent) — Common questions about result interpretation
+- [About - How to Cite](../about/how-to-cite.md) — Citation requirements for publications
+

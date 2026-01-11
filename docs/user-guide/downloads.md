@@ -316,7 +316,7 @@ To ensure scientific reproducibility, document and retain:
 
 **Use-case-level exports:**
 
-- Reflect **visualization parameters** (Top N, filters)
+- Reflect **use case visualization** 
 - May be aggregated (e.g., by pathway, category)
 - Not necessarily complete database subset
 
@@ -365,3 +365,14 @@ Always interpret results as **exploratory** and validate experimentally.
 6. **Archive:**
     - Commit to version control or repository
     - Include in supplementary materials
+
+---
+
+## Related Pages
+
+- [Results Page](results-page.md) — Understanding export locations and data scopes
+- [Interpretation Guidelines](interpretation.md) — How to interpret exported results
+- [About - How to Cite](../about/how-to-cite.md) — Citation requirements for publications
+- [Troubleshooting](troubleshooting.md#download-related-issues) — Resolve export errors
+- [FAQ](../getting-started/faq.md#how-do-i-download-results) — Common download questions
+- [Methods Overview](../methods/methods-overview.md) — Scientific methodology for reproducibility

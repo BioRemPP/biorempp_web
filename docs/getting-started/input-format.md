@@ -13,7 +13,7 @@ BioRemPP accepts **functional annotations** as input, specifically KEGG Ortholog
 - Protein or nucleotide sequences
 - Gene expression data or abundance tables
 
-Input must be **pre-annotated** using external tools (e.g., KAAS, eggNOG-mapper, BlastKOALA, GhostKOALA).
+Input must be **pre-annotated** using external tools (e.g., KAAS, eggNOG-mapper, BlastKOALA, GhostKOALA). See [FAQ](faq.md#how-do-i-obtain-ko-identifiers) for detailed annotation tool guidance.
 
 ---
 
@@ -122,6 +122,8 @@ The following limits are enforced by the validation system:
 - Duplicate KO identifiers within a sample are **permitted** but may be deduplicated during processing
 - Empty samples (sample header with no KO identifiers) are **not permitted**
 - Blank lines are **not permitted** anywhere in the file
+
+For troubleshooting validation errors, see the [Troubleshooting Guide](../user-guide/troubleshooting.md#common-processing-errors).
 
 ---
 
@@ -313,3 +315,13 @@ To ensure reproducible results, document:
 - BioRemPP version used for analysis
 
 Input files should be retained and deposited alongside results for scientific reproducibility.
+
+---
+
+## Related Pages
+
+- [Quickstart](quickstart.md) — Get started with your first analysis
+- [Example Datasets](example-datasets.md) — Ready-to-use test files with correct formatting
+- [FAQ](faq.md) — Common questions about input requirements
+- [Troubleshooting Guide](../user-guide/troubleshooting.md) — Resolve validation and parsing errors
+- [Methods Overview](../methods/methods-overview.md) — Scientific methodology and data processing workflow

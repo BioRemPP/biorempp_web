@@ -45,6 +45,8 @@ K00052
 - **No blank lines:** Samples immediately follow KO lists
 - **Shared KOs:** Both samples have identical KO profiles (useful for testing comparative analyses)
 
+For complete format specification, see [Input Format](input-format.md).
+
 
 
 ## Published Demonstration Dataset: Nine Representative Organisms
@@ -106,6 +108,8 @@ DOI: [10.3390/microorganisms9081695](https://doi.org/10.3390/microorganisms90816
 - **Cross-kingdom comparison:** Compare bacterial vs. fungal vs. microalgal bioremediation potential
 - **Consortium optimization:** Identify complementary gene profiles for mixed-culture applications
 - **Regulatory compliance:** Verify presence of genes for priority pollutant degradation
+
+See [Use Cases Index](../use_cases/index.md) for all 56 analytical workflows available for these types of comparisons.
 
 ---
 
@@ -216,5 +220,11 @@ grep -v "^>" your_dataset.txt | grep -v "^K"
 
 ---
 
-- Review [Quickstart Prerequisites](quickstart.md#what-you-need-before-starting)
-- Contact: biorempp@gmail.com
+## Related Pages
+
+- [Quickstart](quickstart.md) — Get started with your first analysis
+- [Input Format](input-format.md) — Complete format specification and validation rules
+- [FAQ](faq.md#how-do-i-obtain-ko-identifiers) — How to obtain KO identifiers
+- [Troubleshooting Guide](../user-guide/troubleshooting.md) — Resolve file upload and validation errors
+- [Use Cases Index](../use_cases/index.md) — All 56 analytical workflows for dataset analysis
+- [Contact](../about/contact.md) — Support and collaboration

@@ -223,7 +223,7 @@ Repository: https://github.com/BioRemPP
 - Empty samples (sample with no KO identifiers)
 - File exceeds size/sample/KO limits
 
-See [Input Format](input-format.md) for complete validation rules.
+See [Input Format](input-format.md) for complete validation rules. For step-by-step error resolution, consult the [Troubleshooting Guide](../user-guide/troubleshooting.md#common-processing-errors).
 
 ### Why are some database results empty?
 
@@ -247,4 +247,19 @@ This is **expected behavior** for samples without relevant annotations.
 
 - Hover over chart → toolbar appears (top-right)
 - Click camera icon
+
+For detailed export options and reproducibility requirements, see the [Downloads Guide](../user-guide/downloads.md).
+
+---
+
+## Related Pages
+
+- [Quickstart](quickstart.md) — Get started with your first analysis
+- [Input Format](input-format.md) — Complete format specification
+- [Example Datasets](example-datasets.md) — Ready-to-use test files
+- [Results Page](../user-guide/results-page.md) — Understanding the analytical interface
+- [Interpretation](../user-guide/interpretation.md) — How to interpret results
+- [Troubleshooting](../user-guide/troubleshooting.md) — Resolve common issues
+- [Downloads](../user-guide/downloads.md) — Export and reproducibility guide
+- [Contact](../about/contact.md) — Get help and support
 

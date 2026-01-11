@@ -222,4 +222,15 @@ Results displayed on screen can be exported for external analysis and reproducib
 - **Database-level exports:** Available in database section headers
 - **Use-case-level exports:** Available in use case headers
 
-For complete documentation on export formats, scopes, metadata, and reproducibility requirements, see **Downloads** section.
+For complete documentation on export formats, scopes, metadata, and reproducibility requirements, see [Downloads Guide](downloads.md).
+
+---
+
+## Related Pages
+
+- [Quickstart](../getting-started/quickstart.md) — Your first analysis walkthrough
+- [Interpretation Guidelines](interpretation.md) — How to interpret functional potential results
+- [Downloads Guide](downloads.md) — Export results for external analysis
+- [Use Cases Index](../use_cases/index.md) — Detailed documentation of all 56 analytical workflows
+- [Troubleshooting](troubleshooting.md) — Resolve visualization and performance issues
+- [FAQ](../getting-started/faq.md) — Common questions about results and analysis
