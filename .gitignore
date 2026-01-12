@@ -250,6 +250,7 @@ data/temp/
 .docs_quality
 .profiling
 .scripts
+.internal_validation
 biorempp_web.code-workspace
 
 # ============================================================================
