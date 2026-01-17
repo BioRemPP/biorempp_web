@@ -1,5 +1,19 @@
 """
-Unit tests for HADEG Repository.
+Unit tests for HADEGRepository.
+
+This module tests the HADEGRepository class, which provides data access
+to the HADEG (Hydrocarbon Aerobic Degradation Genes) database.
+
+Test Coverage:
+- Initialization with default and custom paths
+- Required columns validation (ko, Gene, Pathway)
+- Real database loading
+- KO column structure verification
+- Repository caching behavior
+- Gene column existence
+- Pathway column existence
+- Database schema validation
+- KO-Gene relationship integrity
 """
 
 import pytest

@@ -1,5 +1,19 @@
 """
-Unit tests for Graph Cache.
+Unit tests for GraphCache.
+
+This module tests the GraphCache class, which provides specialized
+caching for Plotly figure objects with filter-based key generation.
+
+Test Coverage:
+- Cache initialization
+- Plotly figure caching
+- Cached figure retrieval
+- Non-existent figure retrieval
+- Figure key generation
+- Key consistency for same/different filters
+- Multiple figures caching
+- Figure data preservation
+- Config-based key generation
 """
 
 import plotly.graph_objects as go

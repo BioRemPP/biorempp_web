@@ -1,5 +1,21 @@
 """
-Unit tests for DataFrame Cache.
+Unit tests for DataFrameCache.
+
+This module tests the DataFrameCache class, which provides specialized
+caching for pandas DataFrames with optional compression for large datasets.
+
+Test Coverage:
+- Cache initialization
+- Small DataFrame caching (no compression)
+- Large DataFrame caching (with compression)
+- Non-existent DataFrame retrieval
+- DataFrame key generation
+- Key consistency for same/different DataFrames
+- TTL-based caching
+- Cache metadata storage
+- Compression flag behavior
+- Multiple DataFrames caching
+- DataFrame copy isolation
 """
 
 import pytest

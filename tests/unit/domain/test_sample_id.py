@@ -1,5 +1,16 @@
 """
-Unit Tests for SampleId Value Object
+Unit tests for SampleId Value Object.
+
+This module tests the SampleId value object, which represents a unique
+identifier for biological samples with validation rules.
+
+Test Coverage:
+- SampleId creation and validation
+- String and repr representations
+- Immutability enforcement
+- Equality and hashability
+- Invalid SampleId handling (empty, whitespace-only)
+- Special character handling
 """
 
 import pytest

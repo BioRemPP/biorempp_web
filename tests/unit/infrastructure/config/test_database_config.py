@@ -1,5 +1,18 @@
 """
-Unit tests for Database Config module.
+Unit tests for DatabaseConfig.
+
+This module tests the DatabaseConfig class, which manages database
+configuration including paths, encodings, and separators for CSV databases.
+
+Test Coverage:
+- Configuration initialization
+- Available databases retrieval
+- Database path retrieval (valid and invalid)
+- Database encoding retrieval (with defaults)
+- Database separator retrieval
+- All database paths retrieval
+- Path validation
+- Complete database info retrieval
 """
 
 import pytest

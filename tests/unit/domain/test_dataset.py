@@ -1,5 +1,17 @@
 """
-Unit Tests for Dataset Entity
+Unit tests for Dataset Entity.
+
+This module tests the Dataset entity, which represents a collection of
+biological samples containing KEGG Orthology (KO) annotations for analysis.
+
+Test Coverage:
+- Dataset creation and initialization
+- Sample addition and removal
+- Sample retrieval by ID
+- KO counting and distribution
+- Dataset-to-dictionary conversion
+- Dataset validation
+- String representation
 """
 
 import pytest

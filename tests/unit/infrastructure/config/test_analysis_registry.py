@@ -1,5 +1,19 @@
 """
-Unit tests for Analysis Registry module.
+Unit tests for AnalysisRegistry.
+
+This module tests the AnalysisRegistry class, which manages the registration
+and retrieval of analysis configurations for different use cases.
+
+Test Coverage:
+- Registry initialization
+- Analysis ID retrieval
+- All analyses retrieval
+- Use case listing
+- Analysis existence checking
+- Registry statistics
+- Analysis retrieval by ID (including non-existent)
+- Analyses filtering by use case
+- Plot type retrieval
 """
 
 import pytest

@@ -1,5 +1,19 @@
 """
-Unit tests for Settings module.
+Unit tests for Settings.
+
+This module tests the Settings class, which provides application-wide
+configuration management with YAML file support and singleton pattern.
+
+Test Coverage:
+- Singleton pattern enforcement
+- Default settings when file missing
+- Loading from YAML file
+- Dot notation value access
+- Default value fallback
+- Value setting
+- Nested value setting
+- Section retrieval
+- All settings retrieval
 """
 
 import pytest

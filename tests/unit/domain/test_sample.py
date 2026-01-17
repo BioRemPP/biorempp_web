@@ -1,5 +1,19 @@
 """
-Unit Tests for Sample Entity
+Unit tests for Sample Entity.
+
+This module tests the Sample entity, which represents a biological sample
+containing a set of KEGG Orthology (KO) annotations with metadata.
+
+Test Coverage:
+- Sample creation and initialization
+- KO addition and removal
+- Duplicate KO handling
+- KO presence checking
+- Sample validation
+- Metadata handling
+- String representation
+- Sample equality and hashability
+- Business rules (timestamp, many KOs)
 """
 
 from datetime import datetime

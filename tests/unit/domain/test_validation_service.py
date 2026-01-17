@@ -1,5 +1,17 @@
 """
-Unit Tests for ValidationService
+Unit tests for ValidationService.
+
+This module tests the ValidationService domain service, which provides
+validation logic for raw input content, datasets, and KO lists.
+
+Test Coverage:
+- Raw input validation (valid, empty, no sample, no KO, invalid lines)
+- Empty sample name handling
+- Invalid KO format detection
+- Empty line handling
+- Dataset validation (valid, empty, invalid samples)
+- KO list validation (valid, empty, invalid KOs)
+- Duplicate sample detection
 """
 
 import pytest
