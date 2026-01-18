@@ -607,14 +607,12 @@ hbd;K00019;D_P3HV;Polymers
 HRbin29_00073;K21104;D_PET;Polymers
 HRbin29_00073;K27357;D_PET;Polymers
 ISF6_0224;K21105;D_PET;Polymers
-ISF6_4831;K21104 ;D_PET;Polymers
 ISF6_4831;K21104;D_PET;Polymers
 lac;K00421;D_LDPE;Polymers
 lac;K22552;D_LDPE;Polymers
 lac;K05909;D_LDPE;Polymers
-latA;K23118;D_NR;Polymers
 latA;K00428;D_NR;Polymers
-latA;K23118 ;D_NR;Polymers
+latA;K23118;D_NR;Polymers
 lcp;K23117;D_NR;Polymers
 lip;K01046;D_PU;Polymers
 lip;K01046;D_PET;Polymers
@@ -850,7 +848,7 @@ ppsD;K15666;E_Plipastatin;Biosurfactant
 ppsE;K02364;E_Plipastatin;Biosurfactant
 ppsE;K15656;E_Plipastatin;Biosurfactant
 ppsE;K15668;E_Plipastatin;Biosurfactant
-"pswP;""K11062	"";E_Serrawetin;Biosurfactant"
+pswP;K11062;E_Serrawetin;Biosurfactant
 rhlA;K18100;E_Rhamnolipids;Biosurfactant
 rhlC;K12990;E_Rhamnolipids;Biosurfactant
 rhlR;K07782;E_Rhamnolipids;Biosurfactant

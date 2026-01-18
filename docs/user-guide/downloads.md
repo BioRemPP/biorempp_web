@@ -134,7 +134,7 @@ While BioRemPP does not automatically embed metadata in exported files, users sh
 
 **Required for reproducibility:**
 
-- **BioRemPP version:** Displayed in page footer (e.g., v1.0.0-beta)
+- **BioRemPP version:** Displayed in page footer (e.g., v1.0.0)
 - **Analysis date:** Timestamp of export in file name (automatically generated)
 - **Module and Use Case ID:** e.g., Module 2, UC-2.1 (automatically generated)
 - **Parameters:** Top N values, thresholds, filters applied
@@ -304,39 +304,11 @@ To ensure scientific reproducibility, document and retain:
 
 ---
 
-## Limitations of Exported Data
+## Limitations
 
-### Data Scope Constraints
+BioRemPP results indicate genetic potential for exploratory analysis, not definitive biological activity or regulatory compliance.
 
-**Dataset-level exports:**
-
-- Contain **only matched data** (not complete databases)
-- Empty downloads indicate no matches for that database
-- Sample column ensures traceability to input
-
-**Use-case-level exports:**
-
-- Reflect **use case visualization** 
-- May be aggregated (e.g., by pathway, category)
-- Not necessarily complete database subset
-
-### Session Constraints
-
-**Critical:** Exports are only available during active session (4 hours).
-
-- No retrieval after session timeout
-- No server-side archival
-- Download immediately after analysis
-
-### Interpretation Caveats
-
-Exported data represents **computational inferences**, not experimental validation:
-
-- Gene presence ≠ expression or activity
-- Pathway completeness ≠ metabolic flux
-- Toxicity predictions ≠ measured endpoints
-
-Always interpret results as **exploratory** and validate experimentally.
+For complete scope and limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
 
 ---
 

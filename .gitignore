@@ -252,6 +252,7 @@ data/temp/
 .scripts
 .internal_validation
 biorempp_web.code-workspace
+profiling_biorempp/
 
 # ============================================================================
 # Git Versioning Message Files (Conventional Commits + Semantic Versioning)

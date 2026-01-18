@@ -289,7 +289,7 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Module 6: "), "KEGG Pathway Completeness"]
+                                [html.Strong("Module 6: "), "Hierarchical and Flow-based Functional Analysis"]
                             ),
                             html.Li(
                                 [
@@ -824,7 +824,7 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Module 6: "), "KEGG Pathway Completeness"]
+                                [html.Strong("Module 6: "), "Hierarchical and Flow-based Functional Analysis"]
                             ),
                             html.Li(
                                 [

@@ -100,7 +100,7 @@ def create_intro_section() -> html.Div:
                                     html.Li(
                                         [
                                             html.Strong("Module 6: "),
-                                            "KEGG Pathway Completeness",
+                                            "Hierarchical and Flow-based Functional Analysis",
                                         ]
                                     ),
                                     html.Li(

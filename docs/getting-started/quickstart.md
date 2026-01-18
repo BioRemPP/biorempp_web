@@ -98,12 +98,14 @@ Download options available:
 
 BioRemPP provides **computational inference** of bioremediation potential based on genomic annotations. Results indicate:
 
-✓ Genetic capacity (gene presence)  
-✗ NOT actual degradation activity  
-✗ NOT gene expression levels  
+✓ Genetic capacity (gene presence)
+✗ NOT actual degradation activity
+✗ NOT gene expression levels
 ✗ NOT enzyme activity
 
-**All predictions require experimental validation.** This tool supports exploratory analysis and hypothesis generation for research purposes only. See [Interpretation Guidelines](../user-guide/interpretation.md) for detailed guidance on result interpretation.
+**All predictions require experimental validation.** This tool supports exploratory analysis and hypothesis generation for research purposes only.
+
+For details on scope and limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
 
 **Limits:** 100 samples, 500,000 KOs, 5 MB file size.
 

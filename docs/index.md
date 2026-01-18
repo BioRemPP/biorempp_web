@@ -1,10 +1,6 @@
 # BioRemPP Web Service
 
-*Scientific Web Service* | **v1.0.0-beta** | **Last Updated:** 2025-12-20
-
-**Type:** Scientific Web Service  
-**Version:** v1.0.0-beta  
-**Last Updated:** 2025-12-20
+*Scientific Web Service* | **v1.0.3-beta** | **Last Updated:** 2025-01-17
 
 ---
 
@@ -64,7 +60,7 @@ BioRemPP produces the following output categories:
 
 All outputs are **session-based and temporary**.
 
-### 4.3 Integrated Resources
+### Integrated Resources
 
 BioRemPP integrates the following resources:
 

@@ -279,29 +279,11 @@ K00002
 
 ---
 
-## Scope Notes
+## Limitations
 
-### What BioRemPP Does NOT Do
+BioRemPP results indicate genetic potential for exploratory analysis, not definitive biological activity or regulatory compliance.
 
-BioRemPP is a **functional analysis tool**, not an annotation pipeline. The system:
-
-- **Does not** perform genome assembly
-- **Does not** annotate raw sequences
-- **Does not** convert gene IDs to KO identifiers
-- **Does not** quantify gene expression or abundance
-- **Does not** align sequences or predict ORFs
-
-### Expected Input Workflow
-
-User responsibilities:
-
-1. Obtain genomic or metagenomic sequences
-2. Perform quality control and assembly (if applicable)
-3. Annotate sequences with KO identifiers using external tools
-4. Format KO annotations according to this specification
-5. Upload to BioRemPP
-
-BioRemPP begins processing **after** functional annotation is complete.
+For complete scope and limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
 
 ---
 

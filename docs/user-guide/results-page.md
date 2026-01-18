@@ -44,14 +44,14 @@ The Results Page organizes analytical workflows into **8 thematic modules**:
 
 | Module | Focus | Use Cases | Primary Output Types |
 |--------|-------|-----------|---------------------|
-| **Module 1** | Comparative Assessment (Databases, Samples, Regulatory) | 8 | Heatmaps, Stacked bar charts, UpSet plots |
-| **Module 2** | Exploratory Analysis (Functional Potential Ranking) | 8 | Bar charts, Box-scatter plots |
+| **Module 1** | Comparative Assessment (Databases, Samples, Regulatory) | 6 | Heatmaps, Stacked bar charts, UpSet plots |
+| **Module 2** | Exploratory Analysis (Functional Potential Ranking) | 5 | Bar charts, Box-scatter plots |
 | **Module 3** | System Structure (Clustering, Similarity, Co-occurrence) | 7 | Correlograms, Dendrograms, Scatter plots |
-| **Module 4** | Functional and Genetic Profiling | 7 | Bar charts, Dot plots, Heatmaps, Radar charts, Sunbursts |
-| **Module 5** | Modeling Interactions (Samples, Genes, Compounds) | 7 | Chord diagrams, Network graphs |
-| **Module 6** | KEGG Pathway Completeness | 6 | Sankey diagrams, Treemaps |
+| **Module 4** | Functional and Genetic Profiling | 13 | Bar charts, Dot plots, Heatmaps, Radar charts, Sunbursts |
+| **Module 5** | Modeling Interactions (Samples, Genes, Compounds) | 6 | Chord diagrams, Network graphs |
+| **Module 6** | Hierarchical and Flow-based Functional Analysis | 5 | Sankey diagrams, Treemaps |
 | **Module 7** | Toxicological Risk Assessment | 7 | Box-scatter plots, Chord diagrams, Density plots, Heatmaps, Treemaps |
-| **Module 8** | Assembly of Functional Consortia | 6 | Frozenset visualizations, Heatmaps, UpSet plots |
+| **Module 8** | Assembly of Functional Consortia | 7 | Frozenset visualizations, Heatmaps, UpSet plots |
 
 **Total:** 56 use cases across 8 modules
 
@@ -167,51 +167,11 @@ Session-based architecture ensures:
 
 ---
 
-## Limitations of On-Screen Results
+## Limitations
 
-### Display Constraints
+BioRemPP results indicate genetic potential for exploratory analysis, not definitive biological activity or regulatory compliance.
 
-**Visualizations:**
-
-- Aggregation by category, pathway, or compound class
-- Performance limits for very large datasets
-
-**Tables:**
-
-- Paginated display (default: 10-50 rows per page)
-- Search/filter applied to displayed subset
-
-### Resolution Limitations
-
-BioRemPP provides **functional inference**, not experimental measurements:
-
-**What results represent:**
-
-- Genetic potential (gene presence/absence)
-- Pathway completeness (based on KO assignments)
-- Computational predictions (toxicity, regulatory classifications)
-
-**What results do NOT represent:**
-
-- Gene expression levels or transcript abundance
-- Enzyme activity or metabolic flux
-- Actual degradation rates or in situ performance
-
-### Analytical Scope
-
-Use cases are designed for **exploratory analysis**:
-
-- Hypothesis generation
-- Candidate prioritization for experimental validation
-- Comparative functional profiling
-
-**Not designed for:**
-
-- Definitive mechanistic conclusions
-- Regulatory compliance submissions
-- Clinical or risk-based decision-making
-
-All computational inferences require wet-lab or field validation.
+For complete scope and limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
 
 ---
 

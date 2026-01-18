@@ -42,31 +42,6 @@ Results represent:
 
 ---
 
-## What the Results Do Not Represent
-
-### Critical Limitations
-
-BioRemPP results do **not** indicate:
-
-- **Gene expression:** KO presence does not confirm transcriptional activity
-- **Protein abundance:** Genes may not be translated into functional enzymes
-- **Enzymatic activity:** Proteins may be post-translationally inactive
-- **Metabolic flux:** Pathway completeness does not guarantee metabolic throughput
-- **In situ performance:** Laboratory or field degradation rates cannot be inferred
-- **Regulatory compliance:** Results are not validated for legal or clinical decisions
-
-### Scope Boundaries
-
-Results are **not suitable for:**
-
-- Determining safe exposure levels to pollutants
-- Assessing bioremediation treatment efficacy without experimental validation
-- Making clinical or regulatory decisions
-- Quantifying degradation rates or kinetics
-- Predicting community-level interactions or ecological dynamics
-
----
-
 ## Functional Potential vs Biological Activity
 
 ### Genetic Potential
@@ -234,30 +209,7 @@ toxCSM provides **machine learning–based predictions** for 66 toxicological en
 
 ---
 
-## Interpretation Boundaries
-
-### What Can Be Concluded
-
-**Supported conclusions:**
-
-- Identification of functional potential for specific bioremediation pathways
-- Comparative functional profiling across samples or conditions
-- Hypothesis generation for targeted experimental validation
-- Prioritization of candidates for laboratory testing
-- Assessment of database-specific coverage and complementarity
-
-### What Cannot Be Concluded
-
-**Unsupported conclusions:**
-
-- Definitive proof of degradation activity
-- Quantitative degradation rates or kinetics
-- In situ bioremediation performance
-- Regulatory compliance or safety assessments
-- Clinical or toxicological decision-making
-- Prediction of community-level ecological dynamics
-
-### Recommended Workflow
+## Recommended Interpretation Workflow
 
 For scientifically rigorous interpretation:
 
@@ -270,13 +222,21 @@ For scientifically rigorous interpretation:
 
 ---
 
+## Limitations
+
+BioRemPP results indicate genetic potential for exploratory analysis, not definitive biological activity or regulatory compliance.
+
+For complete scope and limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
+
+---
+
 ## Reproducibility and Transparency
 
 ### Required Documentation
 
 For reproducible interpretation:
 
-- **BioRemPP version:** Report version used (e.g., v1.0.0-beta)
+- **BioRemPP version:** Report version used (e.g., v1.0.0)
 - **Analysis parameters:** Document thresholds, filters, or Top N settings
 - **Database access dates:** Especially for KEGG (updated regularly)
 - **Annotation tool:** Report how KO identifiers were generated (e.g., eggNOG-mapper v2.1.12)

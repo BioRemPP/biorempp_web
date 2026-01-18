@@ -459,7 +459,7 @@ Contact support if:
 For efficient troubleshooting, include:
 
 1. **Error message:** Exact text of error or screenshot
-2. **BioRemPP version:** From page footer (e.g., v1.0.0-beta)
+2. **BioRemPP version:** From page footer (e.g., v1.0.0)
 3. **Browser and version:** Chrome 120, Firefox 119, etc.
 4. **Dataset characteristics:**
     - Number of samples

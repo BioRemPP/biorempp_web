@@ -19,6 +19,8 @@ BioRemPP is **not**:
 - An experimental validation tool (does not measure degradation rates)
 - A clinical or regulatory decision-support system
 
+For details on scope and limitations, see [Limitations](../methods/limitations.md).
+
 ### Do I need to create an account?
 
 No. BioRemPP operates with session-based storage. Data is processed in real-time and automatically deleted after 4 hours of inactivity or when the browser is closed.
@@ -75,6 +77,8 @@ Results indicate **genetic potential** (presence of genes encoding bioremediatio
 - Enzyme activity or metabolic flux
 - In situ bioremediation performance
 
+For details, see [Limitations](../methods/limitations.md).
+
 ### How should results be interpreted?
 
 Results are **computational inferences** for:
@@ -83,7 +87,7 @@ Results are **computational inferences** for:
 - Prioritization of candidates for experimental validation
 - Comparative functional profiling
 
-All predictions require wet-lab or field validation.
+All predictions require wet-lab or field validation. See [Interpretation Guidelines](../user-guide/interpretation.md) for detailed guidance.
 
 ### What does "pathway completeness" mean?
 

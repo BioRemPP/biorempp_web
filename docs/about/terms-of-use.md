@@ -31,6 +31,8 @@ BioRemPP is an **academic web service** provided on a best-effort basis without 
     - Environmental remediation decisions without independent validation
     - Commercial product claims without experimental confirmation
 
+For complete scientific and methodological limitations, see **[Limitations and Scope Boundaries](../methods/limitations.md)**.
+
 ---
 
 ## 3. User Responsibilities

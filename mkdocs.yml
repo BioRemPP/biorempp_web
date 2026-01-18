@@ -136,23 +136,66 @@ extra_javascript:
 # NAVIGATION (Use-Case-First)
 # ---------------------------
 nav:
-  - Home: index.md
+  - Home:
+      - Overview: index.md
+      - How to Cite: about/how-to-cite.md
+      - Terms of Use: about/terms-of-use.md
+      - License: about/license.md
+      - Changelog: about/changelog.md
+      - Contact: about/contact.md
 
   - Getting Started:
+      - Index: getting-started/index.md
       - Quickstart: getting-started/quickstart.md
       - Input Format: getting-started/input-format.md
       - Example Datasets: getting-started/example-datasets.md
       - FAQ: getting-started/faq.md
 
   - User Guide:
+      - Index: user-guide/index.md
       - Results Page: user-guide/results-page.md
+      - Downloads: user-guide/downloads.md
       - Interpretation: user-guide/interpretation.md
       - Troubleshooting: user-guide/troubleshooting.md
-      - Downloads: user-guide/downloads.md
+
+
+  - Methods:
+      - Index: methods/index.md
+      - Overview: methods/methods-overview.md
+      - Data Sources: methods/data-sources.md
+      - Mapping Strategy: methods/mapping-strategy.md
+      - Regulatory Frameworks: methods/regulatory-frameworks.md
+      - Use Case YAML Configuration: methods/use-case-yaml.md
+      - Limitations: methods/limitations.md
+
+  - Database Schemas:
+      - Index: database_schemas/index.md
+      - BioRemPP: database_schemas/biorempp-schema.md
+      - HADEG: database_schemas/hadeg-schema.md
+      - KEGG Degradation: database_schemas/kegg-schema.md
+      - ToxCSM: database_schemas/toxcsm-schema.md
+
+  - Validation & QC:
+      - Index: validation/index.md
+      - Internal Validation: validation/internal-validation.md
+      - Validation Suite: validation/validation-suite.md
+      - Validation Results v1.0: validation/validation-v1.md
+      - Profiling Suite: validation/profiling-biorempp.md
+      - Unit Test Suite: validation/test-suite.md
+
+  - Configuration:
+      - Overview: config/index.md
+      - Environment Variables: config/environment-variables.md
+      - YAML Configuration: config/yaml-configuration.md
+      - Gunicorn: config/gunicorn.md
+      - Health Endpoints: config/health-endpoints.md
+      - Logging: config/logging.md
+      - Nginx Integration: config/nginx-integration.md
+      - Docker Integration: config/docker-integration.md
 
   # Make the analytical catalog visible in the first screen of the sidebar.
-  - Use Cases (Methods):
-      - Use Case (Index): use_cases/index.md
+  - Use Cases:
+      - Index: use_cases/index.md
 
       - Module 1 — Comparative Assessment of Databases, Samples, and Regulatory Frameworks:
           - Module Overview: use_cases/module1/intro.md
@@ -206,7 +249,7 @@ nav:
           - UC 5.5: use_cases/module5/uc_5.5.md
           - UC 5.6: use_cases/module5/uc_5.6.md
 
-      - Module 6 — KEGG Pathway Completeness:
+      - Module 6 — Hierarchical and Flow-based Functional Analysis:
           - Module Overview: use_cases/module6/intro.md
           - UC 6.1: use_cases/module6/uc_6.1.md
           - UC 6.2: use_cases/module6/uc_6.2.md
@@ -234,9 +277,6 @@ nav:
           - UC 8.6: use_cases/module8/uc_8.6.md
           - UC 8.7: use_cases/module8/uc_8.7.md
 
-  # Keep Developer content available, but after user-facing methods/use-cases.
-  - Developer:
-      - Overview: developer/index.md
 
   # ---------------------------
   # API Reference (DO NOT EDIT)
@@ -440,10 +480,3 @@ nav:
           - HADEG Table: api/presentation/data_tables/hadeg_table.md
           - KEGG Table: api/presentation/data_tables/kegg_table.md
           - ToxCSM Table: api/presentation/data_tables/toxcsm_table.md
-
-  - About:
-      - How to Cite: about/how-to-cite.md
-      - Terms of Use: about/terms-of-use.md
-      - License: about/license.md
-      - Changelog: about/changelog.md
-      - Contact: about/contact.md
