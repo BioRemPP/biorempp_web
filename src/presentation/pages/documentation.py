@@ -188,7 +188,7 @@ def create_documentation_page() -> html.Div:
         className="mb-5",
     )
 
-    # Framework description with documentation citation
+    # Framework description
     framework_description = dbc.Card(
         [
             dbc.CardBody(
@@ -244,7 +244,7 @@ def create_documentation_page() -> html.Div:
         className="shadow-sm mb-5",
     )
 
-    # Documentation card section (single centered card)
+    # Documentation cards section
     documentation_cards = html.Div(
         [
             html.H2(
@@ -256,7 +256,28 @@ def create_documentation_page() -> html.Div:
             ),
             dbc.Row(
                 [
-                    # Centered Webservice Documentation Card
+                    # Database Documentation Card
+                    dbc.Col(
+                        [
+                            create_documentation_card(
+                                title="Database Documentation",
+                                description=(
+                                    "Comprehensive guide to the BioRemPP database structure, "
+                                    "data sources, schema design, and usage instructions. "
+                                    "Learn about chemical compounds, genes, enzymes, and "
+                                    "regulatory information integrated in our system."
+                                ),
+                                icon_class="fas fa-database",
+                                link_url="https://readthedocs.org",
+                                link_text="View Database Docs",
+                                card_color="success",
+                            )
+                        ],
+                        width=12,
+                        md=6,
+                        className="mb-4",
+                    ),
+                    # Webservice Documentation Card
                     dbc.Col(
                         [
                             create_documentation_card(
@@ -274,8 +295,7 @@ def create_documentation_page() -> html.Div:
                             )
                         ],
                         width=12,
-                        md=8,
-                        lg=6,
+                        md=6,
                         className="mb-4",
                     ),
                 ],

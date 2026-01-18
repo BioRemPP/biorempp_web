@@ -14,7 +14,7 @@ Notes
 - Reusable across pages
 - DashBootstrap styling
 - Logo and title link to /about
-- Version set to 1.0.3-beta
+- Version set to 1.0.0-beta
 - Responsive navbar with hamburger menu for mobile
 """
 
@@ -62,7 +62,7 @@ def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
                     html.Div(
                         [
                             html.H3(
-                                "BioRemPP 1.0.3-beta",
+                                "BioRemPP 1.0.0-beta",
                                 className="mb-0 text-success fw-bold",
                                 style={"lineHeight": "1.1", "fontSize": "1.5rem"},
                             ),

@@ -120,16 +120,17 @@ def create_intro_card() -> html.Div:
                         html.Div(
                             [
                                 html.P(
-                                    "The Bioremediation Potential Profile (BioRemPP) is a scientific "
-                                    "web service designed for the integrative functional "
-                                    "exploration of annotated genomes in the context of bioremediation research",
+                                    "The Bioremediation Potential Profile (BioRemPP) is a scientific web application "
+                                    "designed to explore the biotechnological potential of microbial, fungal, and plant "
+                                    "genomes for bioremediation purposes.",
                                     className=text_class,
                                 ),
                                 html.P(
-                                    "By combining multiple curated bioremediation-related databases, "
-                                    "BioRemPP supports the interpretation of metabolic pathways, "
-                                    "enzymatic functions, and associations among genes, compounds, "
-                                    "samples, and toxicity-related annotations",
+                                    "BioRemPP enables functional analysis of annotated genomes through integration with "
+                                    "multiple curated bioremediation-related databases and supports the understanding of "
+                                    "degradation mechanisms, metabolic pathways, enzymatic functions, and relationships "
+                                    "between samples, genes, compounds, toxic compound associations, and other significant "
+                                    "biological results.",
                                     className=text_class,
                                 ),
                                 # More Info button
