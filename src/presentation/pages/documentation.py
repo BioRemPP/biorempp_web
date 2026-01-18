@@ -244,7 +244,7 @@ def create_documentation_page() -> html.Div:
         className="shadow-sm mb-5",
     )
 
-    # Documentation cards section
+    # Documentation card section (single centered card)
     documentation_cards = html.Div(
         [
             html.H2(
@@ -256,28 +256,7 @@ def create_documentation_page() -> html.Div:
             ),
             dbc.Row(
                 [
-                    # Database Documentation Card
-                    dbc.Col(
-                        [
-                            create_documentation_card(
-                                title="Database Documentation",
-                                description=(
-                                    "Comprehensive guide to the BioRemPP database structure, "
-                                    "data sources, schema design, and usage instructions. "
-                                    "Learn about chemical compounds, genes, enzymes, and "
-                                    "regulatory information integrated in our system."
-                                ),
-                                icon_class="fas fa-database",
-                                link_url="https://readthedocs.org",
-                                link_text="View Database Docs",
-                                card_color="success",
-                            )
-                        ],
-                        width=12,
-                        md=6,
-                        className="mb-4",
-                    ),
-                    # Webservice Documentation Card
+                    # Centered Webservice Documentation Card
                     dbc.Col(
                         [
                             create_documentation_card(
@@ -295,7 +274,8 @@ def create_documentation_page() -> html.Div:
                             )
                         ],
                         width=12,
-                        md=6,
+                        md=8,
+                        lg=6,
                         className="mb-4",
                     ),
                 ],
