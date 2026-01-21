@@ -151,7 +151,7 @@ def create_methods_layout() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2024)
+    footer = create_footer()
 
     # Complete layout
     layout = html.Div([header, content, footer])

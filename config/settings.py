@@ -80,6 +80,44 @@ def _get_int(env_var: str, default: int) -> int:
         return default
 
 
+def get_app_version() -> str:
+    """
+    Read application version from pyproject.toml.
+
+    Returns
+    -------
+    str
+        Application version string (e.g., "1.0.3-beta")
+
+    Notes
+    -----
+    Falls back to "1.0.0" if pyproject.toml cannot be read.
+    """
+    try:
+        import tomllib
+    except ImportError:
+        # Python < 3.11 fallback
+        try:
+            import tomli as tomllib
+        except ImportError:
+            return "1.0.0"
+
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+
+    try:
+        with open(pyproject_path, "rb") as f:
+            pyproject_data = tomllib.load(f)
+        return pyproject_data.get("project", {}).get("version", "1.0.0")
+    except (FileNotFoundError, KeyError, Exception):
+        return "1.0.0"
+
+
+# =============================================================================
+# APPLICATION VERSION (read from pyproject.toml)
+# =============================================================================
+APP_VERSION: str = get_app_version()
+
+
 @dataclass
 class Settings:
     """

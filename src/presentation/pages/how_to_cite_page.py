@@ -670,7 +670,7 @@ def create_how_to_cite_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="2.0.0", year=2024)
+    footer = create_footer()
 
     # Assemble complete layout
     layout = html.Div(

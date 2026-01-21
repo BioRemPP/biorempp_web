@@ -15,15 +15,18 @@ Notes
 - Links to external resources
 """
 
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
 
+from config.settings import APP_VERSION
+
 
 def create_footer(
-    version: str = "1.0.0",
-    year: int = 2022,
+    version: str = APP_VERSION,
+    year: int = datetime.now().year,
     show_links: bool = True,
     additional_links: Optional[List[Dict[str, str]]] = None,
 ) -> html.Footer:
