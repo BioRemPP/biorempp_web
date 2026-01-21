@@ -302,7 +302,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2025)
+    footer = create_footer()
 
     # Navigation components
     nav_button = create_navigation_button()

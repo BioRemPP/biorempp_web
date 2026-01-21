@@ -19,6 +19,8 @@ Notes
 import dash_bootstrap_components as dbc
 from dash import html
 
+from config.settings import APP_VERSION
+
 from ..components.base import create_footer, create_header
 from ..components.composite.faq_item import (
     create_code_block,
@@ -31,8 +33,8 @@ from ..components.composite.faq_section import (
 )
 
 # ==================== FAQ CONSTANTS ====================
-# Version and contact information
-FAQ_APP_VERSION = "1.0.0-beta"
+# Version and contact information (now from centralized settings)
+FAQ_APP_VERSION = APP_VERSION
 FAQ_SUPPORT_EMAIL = "biorempp@gmail.com"
 FAQ_CANONICAL_URL = "https://biorempp.cloud/"
 
@@ -3425,7 +3427,7 @@ def create_faq_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version=FAQ_APP_VERSION, year=2024)
+    footer = create_footer()
 
     # Assemble complete layout
     layout = html.Div(

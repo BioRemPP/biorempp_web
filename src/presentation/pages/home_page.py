@@ -130,7 +130,7 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     help_section = dbc.Container([create_help_links()], className="mb-5")
 
     # Section 5: Footer
-    footer = create_footer(version="2.0.0", year=2024)
+    footer = create_footer()
 
     # State Management Stores (Legacy stores only)
     stores = html.Div(

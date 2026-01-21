@@ -284,7 +284,7 @@ def create_documentation_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2024)
+    footer = create_footer()
 
     # Assemble complete layout
     layout = html.Div(

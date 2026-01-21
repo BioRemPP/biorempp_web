@@ -604,7 +604,7 @@ def create_regulatory_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2025)
+    footer = create_footer()
 
     # =================== Assemble Layout ===========================
     layout = html.Div(
