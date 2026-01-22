@@ -158,41 +158,6 @@ nav:
       - Interpretation: user-guide/interpretation.md
       - Troubleshooting: user-guide/troubleshooting.md
 
-
-  - Methods:
-      - Index: methods/index.md
-      - Overview: methods/methods-overview.md
-      - Data Sources: methods/data-sources.md
-      - Mapping Strategy: methods/mapping-strategy.md
-      - Regulatory Frameworks: methods/regulatory-frameworks.md
-      - Use Case YAML Configuration: methods/use-case-yaml.md
-      - Limitations: methods/limitations.md
-
-  - Database Schemas:
-      - Index: database_schemas/index.md
-      - BioRemPP: database_schemas/biorempp-schema.md
-      - HADEG: database_schemas/hadeg-schema.md
-      - KEGG Degradation: database_schemas/kegg-schema.md
-      - ToxCSM: database_schemas/toxcsm-schema.md
-
-  - Validation & QC:
-      - Index: validation/index.md
-      - Internal Validation: validation/internal-validation.md
-      - Validation Suite: validation/validation-suite.md
-      - Validation Results v1.0: validation/validation-v1.md
-      - Profiling Suite: validation/profiling-biorempp.md
-      - Unit Test Suite: validation/test-suite.md
-
-  - Configuration:
-      - Overview: config/index.md
-      - Environment Variables: config/environment-variables.md
-      - YAML Configuration: config/yaml-configuration.md
-      - Gunicorn: config/gunicorn.md
-      - Health Endpoints: config/health-endpoints.md
-      - Logging: config/logging.md
-      - Nginx Integration: config/nginx-integration.md
-      - Docker Integration: config/docker-integration.md
-
   # Make the analytical catalog visible in the first screen of the sidebar.
   - Use Cases:
       - Index: use_cases/index.md
@@ -276,6 +241,40 @@ nav:
           - UC 8.5: use_cases/module8/uc_8.5.md
           - UC 8.6: use_cases/module8/uc_8.6.md
           - UC 8.7: use_cases/module8/uc_8.7.md
+
+  - Methods:
+      - Index: methods/index.md
+      - Overview: methods/methods-overview.md
+      - Data Sources: methods/data-sources.md
+      - Mapping Strategy: methods/mapping-strategy.md
+      - Regulatory Frameworks: methods/regulatory-frameworks.md
+      - Use Case YAML Configuration: methods/use-case-yaml.md
+      - Limitations: methods/limitations.md
+
+  - Database Schemas:
+      - Index: database_schemas/index.md
+      - BioRemPP: database_schemas/biorempp-schema.md
+      - HADEG: database_schemas/hadeg-schema.md
+      - KEGG Degradation: database_schemas/kegg-schema.md
+      - ToxCSM: database_schemas/toxcsm-schema.md
+
+  - Validation & QC:
+      - Index: validation/index.md
+      - Internal Validation: validation/internal-validation.md
+      - Validation Suite: validation/validation-suite.md
+      - Validation Results v1.0: validation/validation-v1.md
+      - Profiling Suite: validation/profiling-biorempp.md
+      - Unit Test Suite: validation/test-suite.md
+
+  - Configuration:
+      - Overview: config/index.md
+      - Environment Variables: config/environment-variables.md
+      - YAML Configuration: config/yaml-configuration.md
+      - Gunicorn: config/gunicorn.md
+      - Health Endpoints: config/health-endpoints.md
+      - Logging: config/logging.md
+      - Nginx Integration: config/nginx-integration.md
+      - Docker Integration: config/docker-integration.md
 
 
   # ---------------------------

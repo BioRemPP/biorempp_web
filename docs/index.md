@@ -1,6 +1,13 @@
+---
+title: BioRemPP Documentation - Bioremediation Potential Profile Analysis
+description: Open-access scientific web service for integrative functional analysis of bioremediation potential using KEGG Orthology identifiers. Explore 8 analytical modules with 56 use cases.
+---
+
 # BioRemPP Web Service
 
-*Scientific Web Service* | **v1.0.3-beta** | **Last Updated:** 2025-01-17
+*Open-Access Scientific Platform for Bioremediation Functional Analysis*
+
+**Version:** 1.0.3-beta | **Last Updated:** 2025-01-21
 
 ---
 
@@ -8,21 +15,72 @@
 
 ### Quick Links (Recommended)
 
-- **Quickstart (3–5 min):** `getting-started/quickstart.md`
-- **Input format (KO by sample):** `getting-started/input-format.md`
-- **Use Cases (Index):** `use_cases/index.md`
-- **Methods overview:** `methods/methods-overview.md`
-- **Validation & limitations:** `validation/limitations.md`
-- **How to cite:** `about/how-to-cite.md`
-- **Terms of use:** `about/terms-of-use.md`
-- **Contact:** `about/contact.md`
+<div class="grid cards" markdown>
 
-> If you are evaluating BioRemPP as a scientific web server, start with **Use Cases → Module 1 (UC 1.1)** and **Methods overview**.
+-   :material-rocket-launch:{ .lg .middle } **Quickstart Guide**
+
+    ---
+
+    Get started in 3–5 minutes with a step-by-step tutorial
+
+    [:octicons-arrow-right-24: Quickstart](getting-started/quickstart.md)
+
+-   :material-file-document-edit:{ .lg .middle } **Input Format**
+
+    ---
+
+    Learn how to prepare your KO annotations by sample
+
+    [:octicons-arrow-right-24: Input Format](getting-started/input-format.md)
+
+-   :material-view-grid:{ .lg .middle } **Use Cases**
+
+    ---
+
+    Explore 8 modules with 56 analytical use cases
+
+    [:octicons-arrow-right-24: Use Cases Index](use_cases/index.md)
+
+-   :material-flask:{ .lg .middle } **Methods Overview**
+
+    ---
+
+    Understand the scientific methodology behind BioRemPP
+
+    [:octicons-arrow-right-24: Methods](methods/methods-overview.md)
+
+</div>
+
+### Additional Resources
+
+| Resource | Description |
+|----------|-------------|
+| [Validation & Limitations](validation/limitations.md) | Understanding scope and constraints |
+| [How to Cite](about/how-to-cite.md) | Citation guidelines for publications |
+| [Terms of Use](about/terms-of-use.md) | Usage policies and licensing |
+| [Contact](about/contact.md) | Support and institutional contact |
+
+!!! tip "For Scientific Reviewers"
+    If you are evaluating BioRemPP as a scientific web server, start with **[Use Cases → Module 1 (UC 1.1)](use_cases/module1/uc_1.1.md)** and **[Methods Overview](methods/methods-overview.md)**.
 
 ---
+
 ## Overview
 
-BioRemPP (Bioremediation Potential Profile) is an open-access scientific web service for exploratory, integrative functional analysis of bioremediation potential based on KEGG Orthology (KO) identifiers. The platform integrates four curated databases (BioRemPP Database, KEGG, HADEG, toxCSM) with seven international regulatory frameworks to enable comprehensive assessment of functional capabilities relevant to environmental remediation contexts. BioRemPP addresses the analytical gap in bioremediation research by providing a compound-centric functional mapping approach that links genetic potential to specific environmental pollutants and toxicological profiles.  The service provides modular analytical outputs including comparative cross-database assessments, functional profiling, hierarchical pathway visualization, and toxicological risk evaluation. It is **not** designed for clinical diagnostics, regulatory compliance assessments, or direct remediation decision-making without independent experimental validation.
+**BioRemPP** (Bioremediation Potential Profile) is an **open-access scientific web service** for exploratory, integrative functional analysis of bioremediation potential based on **KEGG Orthology (KO) identifiers**.
+
+The platform integrates four curated databases with seven international regulatory frameworks to enable comprehensive assessment of functional capabilities relevant to environmental remediation contexts.
+
+### Key Features
+
+- :material-database-check: **Multi-database integration** — BioRemPP, KEGG, HADEG, toxCSM
+- :material-chart-box: **56 analytical use cases** across 8 specialized modules
+- :material-shield-check: **7 regulatory frameworks** — IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA
+- :material-download: **Exportable results** — CSV, Excel, JSON formats
+- :material-lock-open: **No registration required** — session-based, privacy-first design
+
+!!! warning "Research Tool Disclaimer"
+    BioRemPP is designed for **exploratory research** and hypothesis generation. It is **not** validated for clinical diagnostics, regulatory compliance, or direct remediation decisions without independent experimental validation.
 
 ---
 
@@ -30,11 +88,10 @@ BioRemPP (Bioremediation Potential Profile) is an open-access scientific web ser
 
 BioRemPP is designed for:
 
-- Bioinformatics researchers developing or evaluating analytical pipelines for metagenomics and functional annotation
-- Bioinformatics researchers developing bioremediation-oriented analytical workflows
-- Computational and environmental biologists conducting functional genomics research
-- Scientific reviewers evaluating functional annotation pipelines and integrative database platforms
-- Scientific reviewers assessing bioremediation-oriented data analysis workflows
+- **Bioinformatics researchers** developing analytical pipelines for metagenomics and functional annotation
+- **Environmental biologists** conducting functional genomics research on bioremediation
+- **Scientific reviewers** evaluating integrative database platforms and bioremediation workflows
+- **Graduate students** exploring compound-centric functional analysis approaches
 
 ---
 
@@ -42,209 +99,212 @@ BioRemPP is designed for:
 
 ### Inputs
 
-BioRemPP accepts **functional annotation identifiers** as input, specifically **KEGG Orthology (KO)** codes organized by sample.
+BioRemPP accepts **KEGG Orthology (KO) identifiers** organized by sample.
 
-- Input represents **functional annotations** derived from upstream pipelines (e.g., genome/metagenome annotation).
-- BioRemPP does **not** perform sequence assembly, gene calling, or functional annotation.
-- Users must generate KO identifiers before submission (e.g., via eggNOG, KEGG KAAS, KOfamScan, or similar tools).
+| Requirement | Details |
+|-------------|---------|
+| **Format** | Plain text (`.txt`) with FASTA-like headers (`>SampleName`) |
+| **Content** | KO identifiers (one per line under each sample header) |
+| **Size limit** | 5 MB maximum |
+| **Preprocessing** | KO annotations must be generated upstream (eggNOG, KEGG KAAS, KOfamScan) |
 
-Each submission is a dataset containing one or more samples, where each sample is associated with a KO list representing its functional potential.
+!!! note "BioRemPP does not perform"
+    Sequence assembly, gene calling, or functional annotation. Users must generate KO identifiers before submission.
 
 ### Outputs
 
-BioRemPP produces the following output categories:
+| Category | Description |
+|----------|-------------|
+| **Integrated tables** | Merged annotations from BioRemPP, HADEG, KEGG, and toxCSM |
+| **Interactive visualizations** | 8 modules with 56 Plotly-based analytical charts |
+| **Downloadable data** | CSV, Excel, and JSON export formats |
 
-1. **Integrated result tables:** merged annotation tables combining user-uploaded KO identifiers with BioRemPP Database, HADEG, KEGG, and toxCSM fields (enzymes, pathways, compounds, regulatory tags, toxicity endpoints).
-2. **Interactive visual analytics:** **8 analytical modules** with **56 use cases**, implemented as Plotly-based charts and linked plot-ready tables.
-3. **Downloads:** exportable datasets in standard formats (CSV/TSV/JSON) and chart export support for reporting.
+---
 
-All outputs are **session-based and temporary**.
+## Integrated Resources
 
-### Integrated Resources
+<div class="grid cards" markdown>
 
-BioRemPP integrates the following resources:
+-   :material-database:{ .lg .middle } **BioRemPP Database v1.0**
 
-- **BioRemPP Database (v1.0):** Manually curated database linking KO identifiers to bioremediation-relevant compounds, genes, enzymatic activities, and regulatory agency classifications. This database represents the platform's novel contribution by providing compound-centric functional mappings.
+    ---
 
-- **KEGG Database (Release 116.0+/12-19):** Metabolic pathway annotations and KO definitions providing functional context. ([KEGG](https://www.kegg.jp/kegg/legal.html))
+    Curated compound-centric mappings linking KO → genes → compounds → regulatory context
 
-- **HADEG Database (Commit 8f1ff8f):** Gene and pathway annotations focused on hydrocarbon and xenobiotic degradation pathways. ([HADEG Database](https://github.com/jarojasva/HADEG))
+-   :material-dna:{ .lg .middle } **KEGG Database**
 
+    ---
 
-- **toxCSM Database:** Computational toxicity predictions for chemical compounds, including 50+ toxicological endpoints covering nuclear receptor binding, stress response pathways, genotoxicity, organ-specific toxicity, and environmental impact.  
-([toxCSM Prediction Tool](https://biosig.lab.uq.edu.au/toxcsm/))
+    Metabolic pathway annotations and functional definitions ([KEGG](https://www.kegg.jp/kegg/legal.html))
 
-- **Regulatory Frameworks:** Priority pollutant classifications from IARC (International Agency for Research on Cancer), EPA (United States Environmental Protection Agency), ATSDR (Agency for Toxic Substances and Disease Registry), WFD (Water Framework Directive, EU), PSL (Priority Substances List, Canada), EPC (European Parliament Commission), and CONAMA (National Environmental Council, Brazil).
+-   :material-oil:{ .lg .middle } **HADEG Database**
 
+    ---
 
+    Hydrocarbon and xenobiotic degradation pathways ([GitHub](https://github.com/jarojasva/HADEG))
+
+-   :material-flask-outline:{ .lg .middle } **toxCSM Database**
+
+    ---
+
+    Computational toxicity predictions with 50+ endpoints ([toxCSM](https://biosig.lab.uq.edu.au/toxcsm/))
+
+</div>
+
+### Regulatory Frameworks
+
+| Agency | Scope |
+|--------|-------|
+| **IARC** | International Agency for Research on Cancer |
+| **EPA** | United States Environmental Protection Agency |
+| **ATSDR** | Agency for Toxic Substances and Disease Registry |
+| **WFD** | Water Framework Directive (EU) |
+| **PSL** | Priority Substances List (Canada) |
+| **EPC** | European Parliament Commission |
+| **CONAMA** | National Environmental Council (Brazil) |
 
 ---
 
 ## High-Level Workflow
 
-BioRemPP follows five conceptual stages:
+```mermaid
+flowchart LR
+    A[Upload KO Data] --> B[Validation]
+    B --> C[Database Integration]
+    C --> D[Modular Analysis]
+    D --> E[Visualization & Export]
+```
 
-1. **Data submission:** users upload plain-text files containing KO identifiers organized by sample (FASTA-like headers prefixed with `>`).
-2. **Validation and preprocessing:** format compliance checks, KO identifier validation, structural constraints (sample count, identifier count, encoding), and parsing into internal entities.
-3. **Database integration:** cascading joins across integrated resources to link KO → compound → pathway → gene → toxicity/regulatory context through exact matching and cross-referencing.
-4. **Modular analysis execution:** configuration-driven execution across modules/use cases (clustering, network analysis, toxicological profiling, consortium assembly), leveraging cached intermediate results where applicable.
-5. **Results visualization and export:** interactive charts plus plot-ready tables and downloads for downstream analyses.
+1. **Data submission** — Upload plain-text files with KO identifiers by sample
+2. **Validation** — Format compliance, KO validation, structural constraints
+3. **Database integration** — Cascading joins across BioRemPP, KEGG, HADEG, toxCSM
+4. **Modular analysis** — Execute 56 use cases across 8 analytical modules
+5. **Results** — Interactive charts, tables, and downloadable exports
 
 ---
 
 ## Data Policy & Privacy
 
-BioRemPP uses a strict session-based processing model to minimize privacy risks:
+| Policy | Implementation |
+|--------|----------------|
+| :material-account-off: **No accounts** | No registration, authentication, or profiles |
+| :material-timer-sand: **Session-based** | Data discarded after 4 hours of inactivity |
+| :material-shield-lock: **No persistent storage** | Files processed in-memory only |
+| :material-share-off: **No data sharing** | Uploaded content never shared externally |
+| :material-https: **Secure transport** | HTTPS/TLS encryption on production |
 
-- **No user accounts required:** no authentication, no registration, no persistent profiles.
-- **No persistent storage of uploaded data:** files are processed in-memory and discarded after session end or **4 hours of inactivity** (whichever comes first).
-- **Session isolation:** no cross-session sharing or aggregation.
-- **Logging policy:** only technical metadata required for operations and abuse prevention:
-  - IP addresses (rate limiting and abuse detection)
-  - User-agent strings (browser compatibility monitoring)
-  - Error stack traces (debugging and stability improvement)
-  - **Uploaded content is never logged**
-- **No third-party data sharing:** uploaded data/results are not transmitted to external services.
-- **Security measures:** HTTPS/TLS on production deployments; size limits (**5 MB max**), format validation, and sanitization before processing.
-
+!!! info "Logging Policy"
+    Only technical metadata is logged (IP, user-agent, errors). **Uploaded content is never logged**.
 
 ---
 
 ## Reproducibility & Availability
 
-BioRemPP supports reproducibility through:
-
-- **Open-access web service:** freely accessible without registration.  
-  Access URL: **https://biorempp.cloud**
-- **Public source code:** Apache-2.0 licensed repository:  
-  https://github.com/BioRemPP/biorempp_web
-- **Database versioning:** integrated database versions are tracked and referenced.
-- **Local execution:** Docker-based deployment for offline or institutional use.
-- **Configuration-driven analyses:** workflows defined in YAML for transparency and customization.
-
+| Resource | Link |
+|----------|------|
+| :material-web: **Web Service** | [https://biorempp.cloud](https://biorempp.cloud) |
+| :material-github: **Source Code** | [github.com/BioRemPP/biorempp_web](https://github.com/BioRemPP/biorempp_web) |
+| :material-docker: **Docker Image** | Available for local/institutional deployment |
+| :material-license: **License** | Apache-2.0 (code) / CC BY 4.0 (database) |
 
 ---
 
 ## Limitations & Scope
 
-BioRemPP is a research tool subject to the following limitations:
+!!! warning "Important Considerations"
 
-- **Research-only usage:** BioRemPP is designed exclusively for exploratory scientific research and hypothesis generation. It is not validated for clinical diagnostics, regulatory submissions, or direct remediation decision-making. All outputs require independent experimental validation before application in operational contexts.
+    - **Research-only** — Not validated for clinical, regulatory, or operational decisions
+    - **Database-dependent** — Results constrained by integrated database coverage
+    - **KO-level resolution** — Does not capture isoform or substrate specificity
+    - **Computational toxicity** — toxCSM predictions require experimental validation
+    - **Presence/absence only** — No quantitative expression or metabolic flux data
 
-- **Database coverage dependence:** Results are constrained by the completeness and accuracy of integrated databases. The absence of an annotation does not imply the absence of biological function; it may reflect incomplete database coverage, evolving nomenclature, or knowledge gaps in bioremediation research.
-
-- **Functional resolution limits:** KEGG Orthology identifiers represent functional groups and may not capture fine-grained enzymatic specificity, substrate preference, or isoform-level variation. Functional potential inferred from KO presence does not guarantee enzymatic activity under specific environmental conditions.
-
-- **In silico toxicity predictions:** Toxicological assessments derived from toxCSM are computational predictions based on machine learning models trained on experimental data. These predictions provide probabilistic estimates and require experimental validation before use in risk assessment or regulatory contexts.
-
-- **Quantitative limitations:** BioRemPP operates on presence/absence data (binary functional potential). Quantitative expression levels, transcript abundances, protein concentrations, and metabolic flux rates are not incorporated.
-  
 ---
 
 ## Citation
 
 ### Web Service
 
-If you use BioRemPP in your research, please cite:
-
-```
-BioRemPP Development Team (2025). BioRemPP: Bioremediation Potential Profile Web Service (v1.0.0-beta). Available at: https://biorempp.org
-```
-
-**BibTeX format:**
-
-```bibtex
-@misc{biorempp2025,
-  title={BioRemPP: Bioremediation Potential Profile Web Service},
-  author={BioRemPP Development Team},
-  year={2025},
-  url={https://biorempp.org},
-  note={Version 1.0.0-beta}
-}
+```text
+BioRemPP Development Team (2025). BioRemPP: Bioremediation Potential Profile 
+Web Service (v1.0.3-beta). Available at: https://biorempp.cloud
 ```
 
-### Manuscript Reference
+??? note "BibTeX Format"
+    ```bibtex
+    @misc{biorempp2025,
+      title={BioRemPP: Bioremediation Potential Profile Web Service},
+      author={BioRemPP Development Team},
+      year={2025},
+      url={https://biorempp.cloud},
+      note={Version 1.0.3-beta}
+    }
+    ```
 
 ---
 
 ## License Summary
 
-### Database Content
-
-**License:** Creative Commons Attribution 4.0 International (CC BY 4.0)
-
-The BioRemPP Database (compound-gene-pathway mappings, regulatory classifications, and annotations) is licensed under CC BY 4.0. Users are free to share, adapt, and build upon the database for any purpose, including commercial applications, provided appropriate attribution is given as specified in the [Citation](#citation) section.
-
-**Full license:** [https://creativecommons.org/licenses/by/4.0/](https://creativecommons.org/licenses/by/4.0/)
-
-### Web Service Source Code
-
-**License:** Apache License 2.0
-
-The BioRemPP web service source code (Python application, Docker configuration, tests, documentation) is licensed under Apache 2.0. This license permits commercial use, modification, distribution, and patent use, subject to the terms specified in the LICENSE file distributed with the source code.
-
-Users must retain copyright notices and provide attribution.
-
-**Full license:** [https://www.apache.org/licenses/LICENSE-2.0](https://www.apache.org/licenses/LICENSE-2.0)
-
-### Third-Party Databases
-
-BioRemPP integrates data from external sources, each governed by independent licenses:
-
-- **KEGG:** Academic use is free; commercial use requires a separate license from Kanehisa Laboratories ([KEGG License Terms](https://www.kegg.jp/kegg/legal.html)).
-- **HADEG:** Open access under permissive license ([GitHub Repository](https://github.com/jarojasva/HADEG)).
-- **toxCSM:** Open access for academic research ([toxCSM License](https://biosig.lab.uq.edu.au/toxcsm/)).
-
-Users are responsible for ensuring compliance with all applicable third-party licenses when using BioRemPP outputs derived from these resources.
+| Component | License |
+|-----------|---------|
+| **Database Content** | [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/) |
+| **Source Code** | [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0) |
+| **KEGG** | Academic free; commercial requires license |
+| **HADEG** | Open access ([GitHub](https://github.com/jarojasva/HADEG)) |
+| **toxCSM** | Open access for academic research |
 
 ---
 
 ## Contact & Support
 
-### Institutional Contact
+### Get Help
 
-**Email:** biorempp@gmail.com
+| Channel | Details |
+|---------|---------|
+| :material-email: **Email** | [biorempp@gmail.com](mailto:biorempp@gmail.com) |
+| :material-bug: **Bug Reports** | [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues) |
+| :material-clock-outline: **Response Time** | ~5 business days |
 
-**Response Expectations:** Inquiries are addressed on a best-effort basis. We aim to respond within 5 business days. For urgent technical issues affecting service availability, please indicate "URGENT" in the subject line.
-
-### Bug Reports and Feature Requests
-
-**Issue Tracking:** [https://github.com/BioRemPP/biorempp_web/issues](https://github.com/BioRemPP/biorempp_web/issues)
-
-When reporting issues, please include:
-
-1. BioRemPP version (available in application footer or `/version` endpoint)
-2. Browser type and version
-3. Operating system
-4. Steps to reproduce the issue
-5. Expected behavior vs. observed behavior
-6. Example input file (if applicable and non-confidential)
-7. Screenshots or error messages
-
-Feature requests should include scientific justification, proposed functionality, expected input/output formats, and potential impact on existing analytical workflows.
-
-### Support Limitations
-
-BioRemPP is provided without warranty of any kind. User support is offered on a best-effort basis by the development team.  
-Institutional users requiring service-level agreements (SLAs) or prioritized support may contact the project team through the official institutional email **biorempp@gmail.com** , clearly describing the intended service scope.
-
-Requests of this nature will be reviewed and responded to within **five (5) business days**.
-
+??? info "Bug Report Template"
+    When reporting issues, please include:
+    
+    1. BioRemPP version (from footer)
+    2. Browser type and version
+    3. Operating system
+    4. Steps to reproduce
+    5. Expected vs. observed behavior
+    6. Example input file (if applicable)
+    7. Screenshots or error messages
 
 ---
 
 ## Acknowledgments
 
-BioRemPP development is supported by:
+**Institutional Support:**
 
-- **Institutional Affiliation:** Federal University of Rio Grande do Norte (UFRN) — Graduate Program in Bioinformatics (PPg-Bioinfo) and Instituto Metrópole Digital (IMD)
-- **Research Group / Laboratory:** Laboratory of Molecular Biology and Genomics (LBMG–UFRN) and associated collaborative research groups within UFRN
-- **Funding and Institutional Support:** Institutional and academic support from UFRN and research and innovation programs in Brazil, CNPq and CAPES.
-We acknowledge the developers and curators of **KEGG**, **HADEG**, and **toxCSM** for making their resources available to the scientific community. We also thank the open-source software communities behind **Python**, **Dash**, **Plotly**, **Pandas**, and related libraries that provide the technical foundation for BioRemPP.
+- Federal University of Rio Grande do Norte (UFRN)
+- Graduate Program in Bioinformatics (PPg-Bioinfo)
+- Instituto Metrópole Digital (IMD)
+- Laboratory of Molecular Biology and Genomics (LBMG–UFRN)
 
+**Funding:** CNPq, CAPES
+
+We acknowledge the developers of **KEGG**, **HADEG**, **toxCSM**, and the open-source communities behind **Python**, **Dash**, **Plotly**, and **Pandas**.
 
 ---
 
-**Last Documentation Update:** 2025-12-20
+<div class="grid cards" markdown>
 
-**Application Version:** 1.0.0-beta
+-   :material-rocket-launch:{ .lg .middle } **Ready to start?**
+
+    ---
+
+    [:octicons-arrow-right-24: Go to Quickstart](getting-started/quickstart.md)
+
+-   :material-view-grid:{ .lg .middle } **Explore Use Cases**
+
+    ---
+
+    [:octicons-arrow-right-24: View All Modules](use_cases/index.md)
+
+</div>

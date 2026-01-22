@@ -102,7 +102,7 @@ visualization:
         - "#3CB371"  # Medium sea green
       
       # Text annotations
-      text_auto: true
+      text_auto: false
       text_font_size: 10
       
       # Colorbar
