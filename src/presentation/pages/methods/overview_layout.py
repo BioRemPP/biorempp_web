@@ -107,7 +107,6 @@ def _create_hero_section() -> dbc.Container:
                 [
                     html.H1(
                         [
-                            html.I(className="fas fa-microscope me-3"),
                             "Scientific Foundations of BioRemPP",
                         ],
                         className="display-4 mb-3 text-success",
@@ -158,11 +157,11 @@ def _create_scientific_section(data: Dict) -> dbc.Container:
     return dbc.Container(
         [
             html.H2(
-                [html.I(className="fas fa-flask me-3"), "Core Scientific Metrics"],
+                "Core Scientific Concepts",
                 className="mb-4 mt-5 text-primary",
             ),
             html.P(
-                "Foundational metrics used throughout BioRemPP to quantify functional "
+                "Concepts used throughout BioRemPP to quantify functional "
                 "diversity and bioremediation potential",
                 className="lead mb-4",
             ),
@@ -793,10 +792,7 @@ def _create_datascience_section(data: Dict) -> dbc.Container:
     return dbc.Container(
         [
             html.H2(
-                [
-                    html.I(className="fas fa-chart-line me-3"),
-                    "Data Science & Feature Engineering",
-                ],
+                "Data Science & Feature Engineering",
                 className="mb-4 mt-5 text-primary",
             ),
             html.P(
@@ -980,10 +976,7 @@ def _create_fair_section(data: Dict) -> dbc.Container:
     return dbc.Container(
         [
             html.H2(
-                [
-                    html.I(className="fas fa-database me-3"),
-                    "FAIR Principles & Integrated Databases",
-                ],
+                "FAIR Principles & Integrated Databases",
                 className="mb-4 mt-5 text-primary",
             ),
             html.P(
@@ -1031,10 +1024,7 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
         [
             # Main Title
             html.H2(
-                [
-                    html.I(className="fas fa-layer-group me-3"),
-                    "Multi-omics Integration & Interoperability",
-                ],
+                "Multi-omics Integration & Interoperability",
                 className="mb-4 mt-5 text-primary",
             ),
             html.P(framework.get("description", ""), className="lead mb-5"),
@@ -1044,10 +1034,7 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
             html.Div(
                 [
                     html.H3(
-                        [
-                            html.I(className="fas fa-dna me-2"),
-                            framework.get("title", "BioRemPP Multi-omics Framework"),
-                        ],
+                        framework.get("title", "BioRemPP Multi-omics Framework"),
                         className="mb-3 text-success",
                     ),
                     html.P(
@@ -1057,10 +1044,7 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
                     ),
                     # Core Identifiers
                     html.H4(
-                        [
-                            html.I(className="fas fa-fingerprint me-2"),
-                            "Core Interoperable Identifiers",
-                        ],
+                        "Interoperable Identifiers",
                         className="mb-3 mt-4",
                     ),
                     dbc.Row(
@@ -1120,7 +1104,7 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
                     ),
                     # Omics Layers
                     html.H4(
-                        [html.I(className="fas fa-layer-group me-2"), "Omics Layers"],
+                        "Omics Layers",
                         className="mb-3 mt-5",
                     ),
                     dbc.Row(
@@ -1130,12 +1114,7 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
                                     dbc.Card(
                                         [
                                             dbc.CardHeader(
-                                                [
-                                                    html.I(
-                                                        className=f"fas {layer.get('icon', 'fa-dna')} me-2"
-                                                    ),
-                                                    html.Strong(layer.get("label", "")),
-                                                ],
+                                                html.Strong(layer.get("label", "")),
                                                 className=f"bg-{layer.get('color', 'primary')} text-white",
                                             ),
                                             dbc.CardBody(
@@ -1199,13 +1178,10 @@ def _create_multiomics_section(data: Dict) -> dbc.Container:
             html.Div(
                 [
                     html.H3(
-                        [
-                            html.I(className="fas fa-plug me-2"),
-                            interop.get(
-                                "title",
-                                "Interoperability with Multi-omics Technologies",
-                            ),
-                        ],
+                        interop.get(
+                            "title",
+                            "Interoperability with Multi-omics Technologies",
+                        ),
                         className="mb-3 text-info",
                     ),
                     html.P(
@@ -1441,7 +1417,7 @@ def _create_tool_category_section(
     return html.Div(
         [
             html.H4(
-                [html.I(className=f"fas {icon} me-2 text-{color}"), title],
+                title,
                 className="mb-2 mt-5",
             ),
             html.P(description, className="text-muted mb-3"),

@@ -24,26 +24,20 @@ def create_methods_layout() -> html.Div:
     content = html.Div(
         [
             # Page Header
-            dbc.Container(
+            html.Div(
                 [
-                    html.Div(
-                        [
-                            html.H1(
-                                "Analytical Methods",
-                                className="display-4 mb-3",
-                                style={"fontWeight": "600"},
-                            ),
-                            html.P(
-                                "Comprehensive analytical workflows for all 56 use cases across 8 modules",
-                                className="lead text-muted mb-4",
-                            ),
-                            html.Hr(),
-                        ],
-                        className="text-center py-4",
-                    )
+                    html.H1(
+                        "Analytical Methods",
+                        className="display-4 mb-3 text-center",
+                        style={"fontWeight": "600"},
+                    ),
+                    html.P(
+                        "Comprehensive analytical workflows for all 56 use cases across 8 modules",
+                        className="lead mb-4 text-center fw-bold",
+                    ),
+                    html.Hr(),
                 ],
-                fluid=True,
-                className="bg-light",
+                className="mb-4",
             ),
             # Scientific Overview Card
             dbc.Container(
@@ -57,12 +51,7 @@ def create_methods_layout() -> html.Div:
                                             dbc.Col(
                                                 [
                                                     html.H4(
-                                                        [
-                                                            html.I(
-                                                                className="fas fa-microscope me-2"
-                                                            ),
-                                                            "Scientific Foundations",
-                                                        ],
+                                                        "Representative Analytical Concepts",
                                                         className="mb-3",
                                                     ),
                                                     html.P(

@@ -71,7 +71,6 @@ def create_regulatory_card(
                 [
                     html.Div(
                         [
-                            html.I(className=f"fas {icon} fa-2x text-{color} mb-2"),
                             html.H5(acronym, className="mb-0 mt-2"),
                             html.Small(country, className="text-muted"),
                         ],
@@ -137,10 +136,7 @@ def create_reference_table(references: List[Dict[str, str]]) -> dbc.Table:
                     html.Td(
                         [
                             html.A(
-                                [
-                                    html.I(className="fas fa-external-link-alt me-2"),
-                                    ref["url"],
-                                ],
+                                ref["url"],
                                 href=ref["url"],
                                 target="_blank",
                                 className="text-decoration-none small",
@@ -198,7 +194,7 @@ def create_info_alert(
     ... )
     """
     return dbc.Alert(
-        [html.I(className=f"fas {icon} me-2"), message],
+        message,
         color=alert_type,
         dismissable=dismissable,
         className="mb-3",
@@ -241,7 +237,6 @@ def create_pollutant_category_card(
                 [
                     html.Div(
                         [
-                            html.I(className=f"fas {icon} fa-2x text-danger mb-3"),
                             html.H5(category, className="mb-3"),
                             html.P(description, className="mb-3"),
                             html.Hr(),

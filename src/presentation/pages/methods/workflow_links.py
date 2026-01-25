@@ -29,7 +29,6 @@ def create_workflow_link(workflow: Dict) -> html.Li:
     # Create link button with pattern-matching ID
     link = dbc.Button(
         [
-            html.I(className="fas fa-flask me-2", style={"color": "#2ecc71"}),
             html.Strong(f"{uc_id}: ", className="text-primary"),
             html.Span(title, className="text-dark"),
         ],

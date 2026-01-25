@@ -54,21 +54,19 @@ def create_regulatory_page() -> html.Div:
     # Header
     header = create_header(show_nav=True, logo_size="60px")
 
-    # ==================== Page Title Section ====================
+    # Page Header Section
     page_intro = html.Div(
         [
             html.H1(
-                [
-                    html.I(className="fas fa-balance-scale me-3 text-success"),
-                    "Regulatory Reference",
-                ],
-                className="text-center mb-3",
+                "Regulatory Reference",
+                className="display-4 mb-3 text-center",
+                style={"fontWeight": "600"},
             ),
             html.P(
                 "Comprehensive information about environmental regulatory "
                 "agencies and frameworks that guide BioRemPP's priority "
                 "pollutant database.",
-                className="text-center text-muted mb-4 lead",
+                className="lead mb-4 text-center fw-bold",
             ),
             html.Hr(),
         ],
@@ -83,12 +81,7 @@ def create_regulatory_page() -> html.Div:
                     dbc.Col(
                         [
                             html.H2(
-                                [
-                                    html.I(
-                                        className="fas fa-book-open me-2 text-success"
-                                    ),
-                                    "About BioRemPP Database",
-                                ],
+                                "About BioRemPP Database",
                                 className="mb-4",
                             ),
                             html.P(
@@ -108,7 +101,7 @@ def create_regulatory_page() -> html.Div:
                             ),
                             create_info_alert(
                                 "All regulatory references were last reviewed and "
-                                "updated on August 25, 2025.",
+                                "updated on January, 2026.",
                                 alert_type="info",
                                 icon="fa-calendar-check",
                             ),
@@ -125,10 +118,7 @@ def create_regulatory_page() -> html.Div:
     priority_pollutants_section = html.Div(
         [
             html.H2(
-                [
-                    html.I(className="fas fa-exclamation-triangle me-2 text-warning"),
-                    "Priority Environmental Pollutants",
-                ],
+                "Priority Environmental Pollutants",
                 className="mb-4",
             ),
             dbc.Row(
@@ -263,10 +253,7 @@ def create_regulatory_page() -> html.Div:
     regulatory_agencies_section = html.Div(
         [
             html.H2(
-                [
-                    html.I(className="fas fa-landmark me-2 text-primary"),
-                    "Key Environmental Regulatory Agencies",
-                ],
+                "Key Environmental Regulatory Agencies",
                 className="mb-4",
             ),
             html.P(
@@ -406,10 +393,7 @@ def create_regulatory_page() -> html.Div:
                     dbc.CardBody(
                         [
                             html.H4(
-                                [
-                                    html.I(className="fas fa-tint me-2 text-info"),
-                                    "Water Framework Directive (WFD)",
-                                ],
+                                "Water Framework Directive (WFD)",
                                 className="mb-3",
                             ),
                             html.P(
@@ -455,10 +439,7 @@ def create_regulatory_page() -> html.Div:
     iarc_section = html.Div(
         [
             html.H3(
-                [
-                    html.I(className="fas fa-microscope me-2 text-danger"),
-                    "IARC Carcinogenicity Classifications",
-                ],
+                "IARC Carcinogenicity Classifications",
                 className="mb-4",
             ),
             html.P(
@@ -569,10 +550,7 @@ def create_regulatory_page() -> html.Div:
     reference_section = html.Div(
         [
             html.H2(
-                [
-                    html.I(className="fas fa-link me-2 text-success"),
-                    "Regulatory Sources and References",
-                ],
+                "Regulatory Sources and References",
                 className="mb-4",
             ),
             html.P(
@@ -613,7 +591,7 @@ def create_regulatory_page() -> html.Div:
                                 ]
                             ),
                             html.Small(
-                                "All links were last reviewed and verified on December, 2025.",
+                                "All links were last reviewed and verified on January, 2026.",
                                 className="text-muted mt-3 d-block",
                             ),
                         ]

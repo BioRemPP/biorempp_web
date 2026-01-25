@@ -169,19 +169,17 @@ def create_documentation_page() -> html.Div:
     # Header
     header = create_header(show_nav=True, logo_size="60px")
 
-    # Page title and intro
+    # Page header
     page_intro = html.Div(
         [
             html.H1(
-                [
-                    html.I(className="fas fa-book me-3 text-success"),
-                    "Documentation",
-                ],
-                className="text-center mb-3",
+                "Documentation",
+                className="display-4 mb-3 text-center",
+                style={"fontWeight": "600"},
             ),
             html.P(
                 "Access comprehensive documentation for the BioRemPP framework",
-                className="text-center text-muted mb-4 lead",
+                className="lead mb-4 text-center fw-bold",
             ),
             html.Hr(),
         ],

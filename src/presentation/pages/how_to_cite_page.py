@@ -652,20 +652,20 @@ def create_how_to_cite_page() -> html.Div:
 
     # Page title and intro
     page_intro = html.Div(
-        [
-            html.H1(
+                [
+                    html.H1(
                 [
                     html.I(className="fas fa-quote-right me-3 text-success"),
                     "How to Cite BioRemPP",
                 ],
                 className="text-center mb-3",
-            ),
-            html.P(
+                    ),
+                    html.P(
                 "Citation guidelines for the BioRemPP web service and database",
                 className="text-center text-muted mb-4 lead",
-            ),
-            html.Hr(),
-        ],
+                    ),
+                    html.Hr(),
+                ],
         className="mb-5",
     )
 

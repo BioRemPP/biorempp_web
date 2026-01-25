@@ -73,8 +73,7 @@ integrated_databases:
   description: "BioRemPP integrates multiple curated databases to provide comprehensive bioremediation potential profiles"
   
   databases:
-    - name: "BioRemPP_Results"
-      icon: "fa-flask"
+    - name: "BioRemPP"
       type: "Primary"
       description: "Curated bioremediation potential profiles from metagenomic and genomic studies"
       data_types:
@@ -85,7 +84,6 @@ integrated_databases:
       size: "1000+ samples, 5000+ genes, 500+ compounds"
     
     - name: "KEGG"
-      icon: "fa-project-diagram"
       type: "Reference"
       description: "Kyoto Encyclopedia of Genes and Genomes - pathway and orthology annotations"
       data_types:
@@ -96,7 +94,6 @@ integrated_databases:
       url: "https://www.genome.jp/kegg/"
     
     - name: "HADEG"
-      icon: "fa-oil-can"
       type: "Specialized"
       description: "Hydrocarbon Aerobic Degradation Genes database"
       data_types:
@@ -106,7 +103,6 @@ integrated_databases:
       focus: "Aerobic degradation of petroleum hydrocarbons"
     
     - name: "ToxCSM"
-      icon: "fa-exclamation-triangle"
       type: "Toxicity"
       description: "Comprehensive toxicity prediction for chemical compounds"
       data_types:
