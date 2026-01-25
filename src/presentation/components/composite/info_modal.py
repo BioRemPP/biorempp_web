@@ -20,7 +20,7 @@ def create_info_modal() -> dbc.Modal:
     # Platform Overview Section
     platform_overview = html.Div(
         [
-            html.H4("🌍 Bioremediation Framework", className="text-success mb-3"),
+            html.H4("Bioremediation Framework", className="text-success mb-3"),
             html.P(
                 [
                     html.Strong("BioRemPP"),
@@ -84,7 +84,7 @@ def create_info_modal() -> dbc.Modal:
                 className="mb-3",
             ),
             # Framework Architecture
-            html.H5("🔬 Framework Architecture", className="text-primary mb-2 mt-3"),
+            html.H5("Framework Architecture", className="text-primary mb-2 mt-3"),
             html.P(
                 [
                     "BioRemPP integrates ",
@@ -102,16 +102,16 @@ def create_info_modal() -> dbc.Modal:
                             html.Ul(
                                 [
                                     html.Li(
-                                        "Module 1: Comparative Assessment of Databases, Samples, and Regulatory Frameworks (7 use cases)"
+                                        "Module 1: Comparative Assessment of Databases, Samples, and Regulatory Frameworks (6 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 2: Exploratory Analysis: Ranking the Functional Potential of Samples and Compounds (7 use cases)"
+                                        "Module 2: Exploratory Analysis: Ranking the Functional Potential of Samples and Compounds (5 use cases)"
                                     ),
                                     html.Li(
                                         "Module 3: System Structure: Clustering, Similarity, and Co-occurrence (7 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 4: Functional and Genetic Profiling (7 use cases)"
+                                        "Module 4: Functional and Genetic Profiling (13 use cases)"
                                     ),
                                 ],
                                 className="small",
@@ -124,10 +124,10 @@ def create_info_modal() -> dbc.Modal:
                             html.Ul(
                                 [
                                     html.Li(
-                                        "Module 5: Modeling Interactions among Samples, Genes, and Compounds (7 use cases)"
+                                        "Module 5: Modeling Interactions among Samples, Genes, and Compounds (6 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 6: Hierarchical and Flow-based Functional Analysis (7 use cases)"
+                                        "Module 6: Hierarchical and Flow-based Functional Analysis (5 use cases)"
                                     ),
                                     html.Li(
                                         "Module 7: Toxicological Risk Assessment and Profiling (7 use cases)"
@@ -145,7 +145,7 @@ def create_info_modal() -> dbc.Modal:
                 className="mb-3",
             ),
             # Data Integration
-            html.H5("🗄️ Integrated Databases", className="text-primary mb-2 mt-3"),
+            html.H5("Integrated Databases", className="text-primary mb-2 mt-3"),
             html.P("BioRemPP integrates four specialized databases:", className="mb-2"),
             dbc.ListGroup(
                 [
@@ -263,7 +263,7 @@ def create_info_modal() -> dbc.Modal:
                 className="mb-3",
             ),
             # Database Statistics - Compact
-            html.H5("📊 Database Statistics", className="text-primary mb-2"),
+            html.H5("Database Statistics", className="text-primary mb-2"),
             dbc.Row(
                 [
                     dbc.Col(
@@ -358,7 +358,7 @@ def create_info_modal() -> dbc.Modal:
                 className="mb-3",
             ),
             # Compound Classes - Compact
-            html.H5("🧪 Compound Classes", className="text-primary mb-2"),
+            html.H5("Compound Classes", className="text-primary mb-2"),
             html.Div(
                 [
                     html.Span("Aromatic", className="badge bg-secondary me-1 mb-1"),
@@ -386,7 +386,7 @@ def create_info_modal() -> dbc.Modal:
                 className="mb-3",
             ),
             # Regulatory Frameworks - Compact
-            html.H5("⚖️ Regulatory Frameworks", className="text-primary mb-2"),
+            html.H5("Regulatory Frameworks", className="text-primary mb-2"),
             html.Div(
                 [
                     html.Span(
@@ -407,7 +407,7 @@ def create_info_modal() -> dbc.Modal:
     # Use Cases Documentation Section
     use_cases_section = html.Div(
         [
-            html.H4("📚 Use Cases Documentation", className="text-success mb-3 mt-4"),
+            html.H4("Use Cases Documentation", className="text-success mb-3 mt-4"),
             html.P(
                 [
                     "Explore detailed documentation for all 56 analytical use cases across 8 modules, "
