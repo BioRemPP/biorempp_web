@@ -48,7 +48,7 @@ def create_toxcsm_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "323", className="text-warning mb-0"
+                                                    "370", className="text-warning mb-0"
                                                 ),
                                                 html.Small(
                                                     "Environmental Compounds",

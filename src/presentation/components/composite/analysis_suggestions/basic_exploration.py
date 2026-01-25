@@ -84,9 +84,7 @@ def create_basic_exploration_content() -> html.Div:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(
-                                className="fas fa-project-diagram me-2 text-success"
-                            ),
+                            html.Strong("Metabolic Pathways", className="text-success"),
                         ],
                         className="bg-light",
                     ),
