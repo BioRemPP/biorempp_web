@@ -39,7 +39,6 @@ def create_basic_exploration_content() -> html.Div:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-dna me-2 text-primary"),
                             html.Strong("Genes", className="text-primary"),
                         ],
                         className="bg-light",
@@ -88,7 +87,6 @@ def create_basic_exploration_content() -> html.Div:
                             html.I(
                                 className="fas fa-project-diagram me-2 text-success"
                             ),
-                            html.Strong("Metabolic Pathways", className="text-success"),
                         ],
                         className="bg-light",
                     ),
@@ -128,7 +126,6 @@ def create_basic_exploration_content() -> html.Div:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-flask me-2 text-danger"),
                             html.Strong("Compounds", className="text-danger"),
                         ],
                         className="bg-light",
@@ -169,7 +166,6 @@ def create_basic_exploration_content() -> html.Div:
                 [
                     dbc.CardHeader(
                         [
-                            html.I(className="fas fa-vial me-2 text-info"),
                             html.Strong("Samples", className="text-info"),
                         ],
                         className="bg-light",

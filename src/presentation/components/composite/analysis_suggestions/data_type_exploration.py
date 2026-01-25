@@ -88,7 +88,6 @@ def create_entity_accordion_item(
             html.P(description, className="text-muted small mb-3"),
             html.P(
                 [
-                    html.I(className="fas fa-chart-bar me-2 text-muted"),
                     html.Strong(f"{len(ucs)} use cases", className="text-muted"),
                 ],
                 className="small mb-3",
@@ -102,10 +101,7 @@ def create_entity_accordion_item(
                 )
             ),
         ],
-        title=[
-            html.I(className=f"{icon} me-2 text-{color}"),
-            html.Span(entity_name, className=f"text-{color} fw-bold"),
-        ],
+        title=html.Span(entity_name, className=f"text-{color} fw-bold"),
         item_id=entity_id,
     )
 
@@ -140,7 +136,6 @@ def create_data_type_exploration_content() -> html.Div:
         [
             dbc.Alert(
                 [
-                    html.I(className="fas fa-info-circle me-2"),
                     html.Strong("Explore by Data Type: "),
                     "Use cases organized by the primary data entity they analyze. "
                     "Click each category to expand and view relevant use cases.",
@@ -243,7 +238,6 @@ def create_data_type_exploration_content() -> html.Div:
             html.Hr(className="my-3"),
             dbc.Alert(
                 [
-                    html.I(className="fas fa-lightbulb me-2"),
                     html.Strong("Tip: "),
                     f"Total of {len(genes_ucs) + len(pathways_ucs) + len(compounds_ucs) + len(samples_ucs) + len(interactions_ucs)} "
                     "use cases available across all data types. Click any use case to navigate directly to the visualization.",

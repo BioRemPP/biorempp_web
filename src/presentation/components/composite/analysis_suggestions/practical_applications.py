@@ -59,10 +59,7 @@ def create_application_accordion_item(app_data: dict, index: int) -> dbc.Accordi
             ),
             # Guiding Questions
             html.H6(
-                [
-                    html.I(className="fas fa-question-circle me-2 text-info"),
-                    "Key Questions:",
-                ],
+                "Key Questions:",
                 className="mb-2",
             ),
             html.Ul(
@@ -74,10 +71,7 @@ def create_application_accordion_item(app_data: dict, index: int) -> dbc.Accordi
             ),
             # Relevant Use Cases
             html.H6(
-                [
-                    html.I(className="fas fa-link me-2 text-success"),
-                    f"Relevant Use Cases ({len(uc_links)}):",
-                ],
+                f"Relevant Use Cases ({len(uc_links)}):",
                 className="mb-2",
             ),
             (
@@ -86,15 +80,10 @@ def create_application_accordion_item(app_data: dict, index: int) -> dbc.Accordi
                 else html.P("No use cases mapped yet.", className="text-muted small")
             ),
         ],
-        title=[
-            html.I(
-                className=f"{app_data.get('icon', 'fas fa-lightbulb')} me-2 text-{app_data.get('color', 'primary')}"
-            ),
-            html.Span(
-                app_data["title"],
-                className=f"text-{app_data.get('color', 'primary')} fw-bold",
-            ),
-        ],
+        title=html.Span(
+            app_data["title"],
+            className=f"text-{app_data.get('color', 'primary')} fw-bold",
+        ),
         item_id=f"practical-app-{index}",
     )
 
@@ -118,7 +107,6 @@ def create_practical_applications_content() -> html.Div:
         [
             dbc.Alert(
                 [
-                    html.I(className="fas fa-industry me-2"),
                     html.Strong("Practical Applications: "),
                     "Discover how BioRemPP supports real-world bioremediation decisions. "
                     "Click each application to expand and view details.",
@@ -140,7 +128,6 @@ def create_practical_applications_content() -> html.Div:
             html.Hr(className="my-3"),
             dbc.Alert(
                 [
-                    html.I(className="fas fa-check-circle me-2"),
                     html.Strong("Ready to Apply: "),
                     f"{len(applications)} practical applications demonstrating how BioRemPP's analytical "
                     "capabilities translate into actionable insights for bioremediation projects.",

@@ -63,7 +63,6 @@ def create_navigation_offcanvas() -> dbc.Offcanvas:
     navigation_callbacks : Navigation interaction callbacks
     """
     navigation_content = [
-        html.H5("Navigation", className="mb-4 fw-bold text-primary"),
         # ========================================
         # Database Tables Section
         # ========================================
@@ -674,7 +673,7 @@ def create_navigation_offcanvas() -> dbc.Offcanvas:
     offcanvas = dbc.Offcanvas(
         navigation_content,
         id="navigation-offcanvas",
-        title="BioRemPP v1.0 - Navigation",
+        title="Navigation Menu",
         is_open=False,
         placement="end",  # Right-to-left
         scrollable=True,

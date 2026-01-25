@@ -43,7 +43,7 @@ def create_reference_link(ref_data: dict) -> html.Li:
     return html.Li(
         [
             html.A(
-                [html.I(className="fas fa-external-link-alt me-2"), ref_data["title"]],
+                ref_data["title"],
                 href=ref_data["url"],
                 target="_blank",
                 className="text-decoration-none",
@@ -87,7 +87,7 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
         [
             # Summary
             html.H6(
-                [html.I(className="fas fa-book-open me-2 text-primary"), "Overview:"],
+                "Overview:",
                 className="mb-2",
             ),
             html.P(
@@ -97,10 +97,7 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
             ),
             # Why Relevant
             html.H6(
-                [
-                    html.I(className="fas fa-lightbulb me-2 text-warning"),
-                    "Why It Matters for BioRemPP:",
-                ],
+                "Why It Matters for BioRemPP:",
                 className="mb-2",
             ),
             html.P(
@@ -110,10 +107,7 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
             ),
             # Suggested Questions
             html.H6(
-                [
-                    html.I(className="fas fa-question-circle me-2 text-info"),
-                    "Key Research Questions:",
-                ],
+                "Key Research Questions:",
                 className="mb-2",
             ),
             html.Ul(
@@ -125,10 +119,7 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
             ),
             # Relevant Use Cases
             html.H6(
-                [
-                    html.I(className="fas fa-link me-2 text-success"),
-                    f"Relevant Use Cases ({len(uc_links)}):",
-                ],
+                f"Relevant Use Cases ({len(uc_links)}):",
                 className="mb-2",
             ),
             (
@@ -140,10 +131,7 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
             ),
             # References
             html.H6(
-                [
-                    html.I(className="fas fa-graduation-cap me-2 text-danger"),
-                    f"Scientific References ({len(references)}):",
-                ],
+                f"Scientific References ({len(references)}):",
                 className="mb-2",
             ),
             (
@@ -152,15 +140,10 @@ def create_trend_accordion_item(trend_data: dict, index: int) -> dbc.AccordionIt
                 else html.P("No references available.", className="text-muted small")
             ),
         ],
-        title=[
-            html.I(
-                className=f"{trend_data.get('icon', 'fas fa-flask')} me-2 text-{trend_data.get('color', 'info')}"
-            ),
-            html.Span(
-                trend_data["title"],
-                className=f"text-{trend_data.get('color', 'info')} fw-bold",
-            ),
-        ],
+        title=html.Span(
+            trend_data["title"],
+            className=f"text-{trend_data.get('color', 'info')} fw-bold",
+        ),
         item_id=f"trend-{index}",
     )
 
@@ -184,7 +167,6 @@ def create_current_trends_content() -> html.Div:
         [
             dbc.Alert(
                 [
-                    html.I(className="fas fa-microscope me-2"),
                     html.Strong("Current Research Trends: "),
                     "Explore cutting-edge research areas in bioremediation. "
                     "Click each trend to expand and view scientific context, use cases, and references.",
@@ -206,7 +188,6 @@ def create_current_trends_content() -> html.Div:
             html.Hr(className="my-3"),
             dbc.Alert(
                 [
-                    html.I(className="fas fa-atom me-2"),
                     html.Strong("Stay Current: "),
                     f"{len(trends)} emerging research trends with peer-reviewed references. "
                     "Click reference links to access full publications.",
