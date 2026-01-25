@@ -144,7 +144,7 @@ def create_reviewer_disclaimer_modal():
                                     html.Strong("6.0 CPUs / 8 GB RAM"),
                                     html.Br(),
                                     html.Br(),
-                                    html.Em("The current configuration is running below 25% CPU capacity and below 25% RAM capacity of the recommended production specifications."),
+                                    html.Em("The current configuration is running below 75% CPU capacity and below 75% RAM capacity of the recommended production specifications."),
                                 ],
                                 color="danger",
                                 className="mb-3",
@@ -343,7 +343,7 @@ def create_reviewer_disclaimer_modal():
                                 [
                                     "This infrastructure limitation is ",
                                     html.Strong("temporary and will be resolved"),
-                                    " as soon as the UFRN IT department staff return from their holiday vacation. "
+                                    " as soon as the UFRN IT department staff return from their vacation (expected return date: 15 Feb 2026). "
                                     "At that time, BioRemPP will be deployed on the university's production infrastructure "
                                     "with full computational resources, delivering the optimal performance demonstrated in our "
                                     "development, staging, and production testing environments.",
@@ -364,7 +364,13 @@ def create_reviewer_disclaimer_modal():
                                         href="mailto:biorempp@gmail.com",
                                         className="fw-bold",
                                     ),
-                                    ".",
+                                    " or ",
+                                    html.A(
+                                        "dougbiomed@gmail.com",
+                                        href="mailto:dougbiomed@gmail.com",
+                                        className="fw-bold",
+                                    ),
+                                    " (email of the official submission on NAR WSI page).",
                                 ],
                                 className="text-dark mb-3",
                             ),
