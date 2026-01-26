@@ -281,7 +281,7 @@ def create_reviewer_disclaimer_modal():
                                             ),
                                             html.Pre(
                                                 html.Code(
-                                                    "docker run -p 8050:8050 biorempp/biorempp-web:v1.0.2-beta-nar",
+                                                    "docker run -p 8050:8050 biorempp/biorempp-web:v1.0.3-beta-nar",
                                                     className="language-bash",
                                                 ),
                                                 className="bg-dark text-light p-3 rounded mb-3",
