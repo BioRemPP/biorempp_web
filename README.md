@@ -1,20 +1,20 @@
-# BioRemPP Web Service (v1.0.0-beta)
+# BioRemPP Web Service (v1.0.3-beta)
 
 **Bioremediation Potential Profile - Scientific Web Application**
 
-[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](placeholder)
+[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](https://biormepp-web.readthedocs.io/en/latest/)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen)](https://hub.docker.com/r/biorempp/biorempp-web)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 [![Database: CC BY 4.0](https://img.shields.io/badge/Database-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
 
 ## Quick Links
 
-- **🌐 Live Application:** [https://biorempp.org](https://biorempp.org) *(placeholder)*
-- **📚 Documentation:** [https://biorempp.readthedocs.io](https://biorempp.readthedocs.io) *(placeholder)*
+- **🌐 Live Application:** [https://biorempp.cloud](https://biorempp.cloud) 
+- **📚 Documentation:** [https://biormepp-web.readthedocs.io/en/latest/](https://biormepp-web.readthedocs.io/en/latest/)
 - **📖 Methods:** [Article DOI](https://doi.org/placeholder) *(pending publication)*
-- **📘 User Guide:** [Getting Started](https://biorempp.readthedocs.io/en/latest/user-guide/) *(placeholder)*
-- **🐛 Issue Tracker:** [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues) *(placeholder)*
-- **📝 How to Cite:** [See Citation](#citation)
+- **📘 User Guide:** [Getting Started](https://biormepp-web.readthedocs.io/en/latest/user-guide/)
+- **🐛 Issue Tracker:** [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues) 
+- **📝 How to Cite:** [See Citation](https://biormepp-web.readthedocs.io/en/latest/about/how-to-cite/)
 
 ---
 
@@ -68,12 +68,38 @@ BioRemPP (Bioremediation Potential Profile) is a scientific web service for bior
 
 ## Quick Start
 
-### Docker Deployment (Recommended)
+### Option 1: Pre-Built Docker Image (Recommended)
 
-### Prerequisites
+**Fastest way to run BioRemPP locally with optimal performance:**
 
-- Docker and Docker Compose (recommended for reproducibility)
-- Python 3.11+ (for local development)
+```bash
+docker run -p 8050:8050 biorempp/biorempp-web:v1.0.3-beta-nar
+```
+
+Then open your browser at: **http://localhost:8050**
+
+**Requirements:**
+- Docker Desktop installed ([Download here](https://www.docker.com/products/docker-desktop))
+- First download: ~1 GB (subsequent runs are instant)
+
+**Alternative Registry (if Docker Hub is unavailable):**
+```bash
+docker run -p 8050:8050 ghcr.io/biorempp/biorempp-web:v1.0.3-beta-nar
+```
+
+**Docker Image Details:**
+- **Size:** ~1.9 GB
+- **Registry:** Docker Hub (primary), GitHub Container Registry (backup)
+- **Tags:** `v1.0.3-beta-nar`
+- **Platform:** Linux/AMD64
+- **Documentation:** https://biormepp-web.readthedocs.io/en/latest/
+
+---
+
+### Option 2: Docker Compose (For Development)
+
+**Prerequisites:**
+- Docker and Docker Compose
 - 4 GB RAM minimum (8 GB recommended for larger datasets)
 
 **Development Mode:**
@@ -120,7 +146,7 @@ curl http://localhost/health        # Production (via nginx)
 ```json
 {
   "status": "healthy",
-  "version": "1.0.0-beta",
+  "version": "1.0.0",
   "environment": "production"
 }
 ```
@@ -321,58 +347,12 @@ The BioRemPP mapping strategy follows a structured, multi-stage integration work
 
 - Input validation (format, encoding, KO pattern matching)
 - Database consistency checks (referential integrity)
-- Missing data handling (explicit reporting of unavailable annotations)
 
-### Computational Approach
-
-- **Architecture:** Clean Architecture with 4 layers (Domain, Application, Infrastructure, Presentation)
-- **Caching:** Multi-layer caching system (memory, DataFrame, graph) for performance optimization
-- **Visualization:** Strategy Pattern for dynamic chart generation (19 chart types)
-- **Configuration:** YAML-based configuration for use cases and info panels
-
-**For detailed methods, see:** [Official Use Case Documentation](https://doi.org/placeholder) *(pending publication)*
+**For detailed methods, see:** [Official Documentation](https://biormepp-web.readthedocs.io/en/latest/)
 
 ---
 
-## Architecture Overview
-
-BioRemPP follows **Clean Architecture** principles with clear separation of concerns:
-
-### Architectural Layers
-
-```
-┌─────────────────────────────────────────────────┐
-│         Presentation Layer (Dash/Flask)         │
-│   - Web pages (homepage, results, user guide)   │
-│   - Callbacks (upload, navigation, downloads)   │
-│   - Components (charts, tables, accordions)     │
-└─────────────────────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────┐
-│          Application Layer (Services)           │
-│   - Data processing orchestration               │
-│   - DTO mappers (domain ↔ presentation)         │
-│   - Plot services (visualization generation)    │
-│   - Cache management                            │
-└─────────────────────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────┐
-│            Domain Layer (Business Logic)        │
-│   - Entities: Sample, Dataset, MergedData       │
-│   - Value Objects: KO, SampleName               │
-│   - Domain Services: Validation, aggregation    │
-│   - Plot Strategies (module-specific logic)     │
-└─────────────────────────────────────────────────┘
-                       ↓
-┌─────────────────────────────────────────────────┐
-│       Infrastructure Layer (Data Access)        │
-│   - CSV/TSV repositories (database loaders)     │
-│   - File parsers (upload processing)            │
-│   - Logging and configuration management        │
-└─────────────────────────────────────────────────┘
-```
-
-### Technology Stack
+## Technology Stack
 
 **Backend**:
 - **Python 3.11+**: Core language
@@ -405,65 +385,6 @@ BioRemPP follows **Clean Architecture** principles with clear separation of conc
 - **black, isort, flake8**: Code formatting
 - **MkDocs**: Documentation generation
 
-### Directory Structure
-
-```
-biorempp_web/
-├── src/                          # Source code (Clean Architecture)
-│   ├── domain/                   # Business entities and logic
-│   │   ├── entities/             # Sample, Dataset, MergedData
-│   │   ├── value_objects/        # KO, SampleName, CompoundClass
-│   │   ├── services/             # Domain services (validation, etc.)
-│   │   └── plot_strategies/      # Module-specific plot generation
-│   ├── application/              # Application services
-│   │   ├── services/             # Orchestration, caching, progress
-│   │   ├── dto/                  # Data Transfer Objects
-│   │   ├── mappers/              # DTO ↔ Entity conversion
-│   │   └── plot_services/        # Plot generation coordination
-│   ├── infrastructure/           # Data access and external systems
-│   │   ├── repositories/         # CSV/TSV loaders
-│   ├── presentation/             # Web UI (Dash)
-│   │   ├── pages/                # Homepage, results, user guide, FAQ
-│   │   ├── components/           # Reusable UI components
-│   │   ├── callbacks/            # Dash callback handlers
-│   │   └── layouts/              # Module-specific layouts
-│   └── shared/                   # Cross-cutting utilities
-│       └── logging/              # Logging configuration
-├── data/                         # Databases and examples
-│   ├── databases/                # BioRemPP, HADEG, ToxCSM, KEGG DBs
-│   └── exemple_dataset.txt       # Sample input file
-├── config/                       # Configuration
-│   ├── settings.py               # Environment-based settings
-│   ├── logging_dev.yaml          # Development logging config
-│   └── logging_prod.yaml         # Production logging config
-├── docs/                         # MkDocs documentation
-│   ├── scientific/               # Methods, validation
-│   ├── user-guide/               # User tutorials
-│   ├── api/                      # API reference (auto-generated)
-│   └── use_cases/                # Module-specific use cases
-├── tests/                        # Test suite
-│   ├── unit/                     # Unit tests (domain, services)
-├── .docker/                      # Docker configuration
-│   ├── Dockerfile                # Multi-stage build
-│   └── healthcheck.sh            # Container health probe
-├── biorempp_app.py               # Main application entry point
-├── wsgi.py                       # WSGI entry for Gunicorn
-├── gunicorn_config.py            # Gunicorn production settings
-├── docker-compose.yml            # Multi-environment orchestration
-├── pyproject.toml                # Python project metadata + deps
-├── pytest.ini                    # Test configuration
-├── mkdocs.yml                    # Documentation site config
-└── README.md                     # (This file, once finalized)
-```
-
-### Key Design Patterns
-
-- **Repository Pattern**: Abstracts database access (CSV files treated as repositories)
-- **Strategy Pattern**: Plot generation varies by module (Module2PlotStrategy, Module3PlotStrategy, etc.)
-- **Singleton Pattern**: PlotService instance shared across callbacks
-- **DTO Pattern**: Decouples domain entities from presentation layer
-- **Dependency Injection**: Services receive dependencies via constructor (testability)
-
 ---
 
 ## System Requirements & Deployment Notes
@@ -477,9 +398,9 @@ biorempp_web/
 - Docker: 20.10+ and Docker Compose 2.0+
 
 **Production (Recommended):**
-- CPU: 4 cores
+- CPU: 6 cores
 - RAM: 8 GB
-- Disk: 20 GB free space (for logs and caching)
+- Disk: 50 GB free space (for logs and caching)
 - Docker: 20.10+ and Docker Compose 2.0+
 - Reverse proxy: nginx (included in Docker Compose)
 
@@ -496,13 +417,6 @@ reservations:
   memory: 4G
 ```
 
-### Caching
-
-- **Memory cache:** In-memory caching for frequently accessed data
-- **DataFrame cache:** Disk-based caching for processed DataFrames
-- **Graph cache:** Disk-based caching for visualizations
-- **Optional Redis:** Can be enabled for distributed caching (see `docker-compose.yml` profile `cache`)
-
 ### Upload/Payload Limits
 
 - Maximum file upload: 5 MB
@@ -512,14 +426,11 @@ reservations:
 
 ### Scalability Notes
 
-- **Horizontal Scaling**  
-  Not currently supported due to stateful session-based processing. Horizontal scalability will be re-evaluated based on real-world usage patterns observed after public release.
-
 - **Vertical Scaling**  
   Resource allocation (CPU and RAM) can be increased via Docker Compose configuration to accommodate higher workloads.
 
 - **Performance**  
-  Typical analyses (up to 50 samples and 10,000 KO identifiers) complete in under 30 seconds under standard deployment conditions.
+  Typical analyses (up to 100 samples and 500,000 KO identifiers) complete in under 30 seconds under standard deployment conditions.
 
 - **Concurrency**  
   The service is deployed using Gunicorn with gevent workers (default configuration: 4 workers, up to 1,000 concurrent connections per worker).
@@ -737,8 +648,8 @@ BioRemPP is a research-oriented platform designed to support exploratory functio
 
 ### Web Service Version
 
-- **Current Version:** 1.0.0-beta
-- **Release Date:** 2025-12-14
+- **Current Version:** 1.0.3-beta
+- **Release Date:** 2026-01-26
 - **Status:** Beta (pending article publication)
 
 ### Changelog
@@ -747,8 +658,8 @@ See [`CHANGELOG.md`](CHANGELOG.md) for detailed version history.
 
 ### Last Updated
 
-**Documentation:** 2025-12-19  
-**Application:** 2025-12-14
+**Documentation:** 2026-01-26  
+**Application:** 2026-01-26
 
 ---
 
@@ -795,5 +706,5 @@ Future updates to the contribution guidelines will explicitly address the incorp
 
 ---
 
-**BioRemPP v1.0.0-beta** | [Documentation](https://biorempp.readthedocs.io) | [GitHub](https://github.com/BioRemPP/biorempp_web) | [License](LICENSE)
+**BioRemPP v1.0.3-beta** | [Documentation](https://biormepp-web.readthedocs.io/en/latest/) | [GitHub](https://github.com/BioRemPP/biorempp_web) | [License](LICENSE)
 
