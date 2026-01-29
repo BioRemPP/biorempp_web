@@ -199,48 +199,46 @@ All label columns use a 6-level categorical scale:
 | `Medium Toxicity` | Significant toxicity |
 | `High Toxicity` | Severe toxicity concern |
 
-### Toxicological Endpoints
+### Toxicological Endpoints (31 total)
 
-| Endpoint Category | Label Column | Value Column | Description |
-|-------------------|--------------|--------------|-------------|
-| **Ecotoxicity** | | | |
-| Avian | `label_Avian` | `value_Avian` | Bird toxicity |
-| Crustacean | `label_Crustacean` | `value_Crustacean` | Crustacean toxicity |
-| Fathead Minnow | `label_Fathead_Minnow` | `value_Fathead_Minnow` | Fish toxicity |
-| Honey Bee | `label_Honey_Bee` | `value_Honey_Bee` | Pollinator toxicity |
-| T. Pyriformis | `label_T._Pyriformis` | `value_T._Pyriformis` | Protozoan toxicity |
-| **Environmental** | | | |
-| Biodegradation | `label_Biodegradation` | `value_Biodegradation` | Environmental persistence |
-| **Human Health** | | | |
-| Eye Corrosion | `label_Eye_Corrosion` | `value_Eye_Corrosion` | Ocular corrosion |
-| Eye Irritation | `label_Eye_Irritation` | `value_Eye_Irritation` | Ocular irritation |
-| Skin Sensitisation | `label_Skin_Sensitisation` | `value_Skin_Sensitisation` | Allergic response |
-| Respiratory Disease | `label_Respiratory_Disease` | `value_Respiratory_Disease` | Respiratory effects |
-| Liver Injury I | `label_Liver_Injury_I` | `value_Liver_Injury_I` | Hepatotoxicity type I |
-| Liver Injury II | `label_Liver_Injury_II` | `value_Liver_Injury_II` | Hepatotoxicity type II |
-| **Genotoxicity** | | | |
-| AMES Mutagenesis | `label_Genomic_AMES_Mutagenesis` | `value_Genomic_AMES_Mutagenesis` | Bacterial mutagenicity |
-| Carcinogenesis | `label_Genomic_Carcinogenesis` | `value_Genomic_Carcinogenesis` | Cancer potential |
-| Micronucleus | `label_Genomic_Micronucleus` | `value_Genomic_Micronucleus` | Chromosomal damage |
-| **Nuclear Receptors** | | | |
-| Androgen Receptor | `label_NR_AR` | `value_NR_AR` | AR binding |
-| AR Ligand-Binding Domain | `label_NR_AR_LBD` | `value_NR_AR_LBD` | AR-LBD binding |
-| Aryl Hydrocarbon Receptor | `label_NR_AhR` | `value_NR_AhR` | AhR activation |
-| Aromatase | `label_NR_Aromatase` | `value_NR_Aromatase` | Aromatase inhibition |
-| Estrogen Receptor | `label_NR_ER` | `value_NR_ER` | ER binding |
-| ER Ligand-Binding Domain | `label_NR_ER_LBD` | `value_NR_ER_LBD` | ER-LBD binding |
-| Glucocorticoid Receptor | `label_NR_GR` | `value_NR_GR` | GR binding |
-| PPAR-gamma | `label_NR_PPAR_gamma` | `value_NR_PPAR_gamma` | PPAR-γ activation |
-| Thyroid Receptor | `label_NR_TR` | `value_NR_TR` | TR binding |
-| **Stress Response** | | | |
-| ARE | `label_SR_ARE` | `value_SR_ARE` | Antioxidant response |
-| ATAD5 | `label_SR_ATAD5` | `value_SR_ATAD5` | DNA damage response |
-| HSE | `label_SR_HSE` | `value_SR_HSE` | Heat shock response |
-| MMP | `label_SR_MMP` | `value_SR_MMP` | Mitochondrial toxicity |
-| p53 | `label_SR_p53` | `value_SR_p53` | Tumor suppressor activation |
-| **Cardiotoxicity** | | | |
-| hERG I Inhibitor | `label_hERG_I_Inhibitor` | `value_hERG_I_Inhibitor` | hERG channel block (class I) |
-| hERG II Inhibitor | `label_hERG_II_Inhibitor` | `value_hERG_II_Inhibitor` | hERG channel block (class II) |
+| Endpoint Category | Endpoint | Label Column | Value Column | Samples | Source |
+|-------------------|----------|--------------|--------------|---------|--------|
+| **Environmental** | | | | | |
+| | Avian | `label_Avian` | `value_Avian` | 591 (501/90) | Zhang et al., 2015 |
+| | Biodegradation | `label_Biodegradation` | `value_Biodegradation` | 1592 (1007/585) | Cheng et al., 2012 |
+| | Crustacean | `label_Crustacean` | `value_Crustacean` | 1020 (487/533) | Cao et al., 2018 |
+| | Fathead Minnow | `label_Fathead_Minnow` | `value_Fathead_Minnow` | 554 (188/366) | Fei-xiong et al., 2010 |
+| | Honey Bee | `label_Honey_Bee` | `value_Honey_Bee` | 195 (96/99) | Fei-xiong et al., 2010 |
+| | T. Pyriformis | `label_T._Pyriformis` | `value_T._Pyriformis` | 1571 (354/1217) | Cheng et al., 2011 |
+| **Genomic** | | | | | |
+| | AMES Mutagenesis | `label_Genomic_AMES_Mutagenesis` | `value_Genomic_AMES_Mutagenesis` | 8102 (3470/4632) | Xu et al., 2012 |
+| | Carcinogenesis | `label_Genomic_Carcinogenesis` | `value_Genomic_Carcinogenesis` | 278 (220/58) | Li et al., 2015 |
+| | Micronucleus | `label_Genomic_Micronucleus` | `value_Genomic_Micronucleus` | 641 (377/264) | Fan et al., 2018 |
+| **Organic** | | | | | |
+| | Eye Corrosion | `label_Eye_Corrosion` | `value_Eye_Corrosion` | 2299 (1412/887) | Wang et al., 2017 |
+| | Eye Irritation | `label_Eye_Irritation` | `value_Eye_Irritation` | 5220 (1346/3874) | Wang et al., 2017 |
+| | hERG I Inhibitor | `label_hERG_I_Inhibitor` | `value_hERG_I_Inhibitor` | 368 (289/79) | Marchese et al., 2011 |
+| | hERG II Inhibitor | `label_hERG_II_Inhibitor` | `value_hERG_II_Inhibitor` | 806 (373/433) | Wang et al., 2012 |
+| | Liver Injury I | `label_Liver_Injury_I` | `value_Liver_Injury_I` | 515 (277/238) | Fourches et al., 2010 |
+| | Liver Injury II | `label_Liver_Injury_II` | `value_Liver_Injury_II` | 960 (670/290) | Mulliner et al., 2016 |
+| | Respiratory Disease | `label_Respiratory_Disease` | `value_Respiratory_Disease` | 2529 (1089/1440) | Wang et al., 2021 |
+| | Skin Sensitisation | `label_Skin_Sensitisation` | `value_Skin_Sensitisation` | 404 (130/274) | Alves et al, 2015 |
+| **Nuclear Response** | | | | | |
+| | NR-AhR | `label_NR_AhR` | `value_NR_AhR` | 6876 (6088/788) | Huang et al., 2016 |
+| | NR-AR | `label_NR_AR` | `value_NR_AR` | 7583 (7307/276) | Huang et al., 2016 |
+| | NR-AR-LBD | `label_NR_AR_LBD` | `value_NR_AR_LBD` | 6922 (6698/224) | Huang et al., 2016 |
+| | NR-Aromatase | `label_NR_Aromatase` | `value_NR_Aromatase` | 5961 (5664/297) | Huang et al., 2016 |
+| | NR-ER | `label_NR_ER` | `value_NR_ER` | 6437 (5725/712) | Huang et al., 2016 |
+| | NR-ER-LBD | `label_NR_ER_LBD` | `value_NR_ER_LBD` | 7133 (6813/320) | Huang et al., 2016 |
+| | NR-GR | `label_NR_GR` | `value_NR_GR` | 6055 (5454/601) | Sun et al., 2019 |
+| | NR-PPAR-gamma | `label_NR_PPAR_gamma` | `value_NR_PPAR_gamma` | 6602 (6418/184) | Huang et al., 2016 |
+| | NR-TR | `label_NR_TR` | `value_NR_TR` | 5372 (4999/373) | Sun et al., 2019 |
+| **Stress Response** | | | | | |
+| | SR-ARE | `label_SR_ARE` | `value_SR_ARE` | 5956 (5014/942) | Huang et al., 2016 |
+| | SR-ATAD5 | `label_SR_ATAD5` | `value_SR_ATAD5` | 7251 (6999/252) | Huang et al., 2016 |
+| | SR-HSE | `label_SR_HSE` | `value_SR_HSE` | 6613 (6257/356) | Huang et al., 2016 |
+| | SR-MMP | `label_SR_MMP` | `value_SR_MMP` | 6094 (5163/931) | Huang et al., 2016 |
+| | SR-p53 | `label_SR_p53` | `value_SR_p53` | 7112 (6686/426) | Huang et al., 2016 |
 
 ---
 

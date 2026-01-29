@@ -50,7 +50,7 @@ The BioRemPP Database uses a **flat, denormalized schema** optimized for analyti
 
 **Character encoding:** UTF-8
 
-**Field delimiter:** Comma (`,`)
+**Field delimiter:** Semicolon (;)
 
 **Text qualifier:** Double quote (`"`)
 
