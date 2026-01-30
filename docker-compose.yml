@@ -1,18 +1,43 @@
 # ============================================================================
-# BioRemPP v1.0 - Docker Compose Configuration
+# BioRemPP v1.0.3 - Docker Compose Configuration (Optimized)
 # ============================================================================
 # Unified orchestration for development and production environments
-# 
-# CONFIGURAÇÃO DE AMBIENTE:
-#   1. Copie .env/env.development para .env/env.local (desenvolvimento)
-#      OU .env/env.production para .env/env.local (produção)
-#   2. Ajuste valores conforme necessário (SECRET_KEY, portas, etc)
-#   3. Use: docker compose --env-file .env/env.local --profile <dev|prod> up
 #
-# QUICK START:
+# ============================================================================
+# IMPORTANT - DEVELOPMENT TOOLS (pytest, black, mypy, mkdocs)
+# ============================================================================
+# Development tools are NOT included in Docker images to reduce size.
+# Install them LOCALLY in your virtual environment:
+#
+#   # Create and activate virtualenv
+#   python -m venv .venv
+#   source .venv/bin/activate    # Linux/Mac
+#   .venv\Scripts\activate       # Windows
+#
+#   # Install development dependencies locally
+#   pip install -e ".[dev,docs,profiling]"
+#
+#   # Now you can run:
+#   pytest tests/                # Run tests
+#   black src/                   # Format code
+#   mypy src/                    # Type checking
+#   mkdocs serve                 # Documentation
+#
+# ============================================================================
+# QUICK START
+# ============================================================================
 #   Development:  docker compose --env-file .env/env.development --profile dev up
-#   Production:   docker compose --env-file .env/env.production --profile prod --profile nginx up -d
+#   Production:   docker compose --env-file .env/env.production --profile prod up -d
+#   With nginx:   docker compose --env-file .env/env.production --profile prod --profile nginx up -d
 #   With cache:   docker compose --env-file .env/env.production --profile prod --profile cache up -d
+#
+# ============================================================================
+# ENVIRONMENT CONFIGURATION
+# ============================================================================
+#   1. Copy .env/env.development to .env/env.local (development)
+#      OR .env/env.production to .env/env.local (production)
+#   2. Adjust values as needed (SECRET_KEY, ports, etc.)
+#   3. Use: docker compose --env-file .env/env.local --profile <dev|prod> up
 # ============================================================================
 
 # ============================================================================

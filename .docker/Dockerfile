@@ -1,11 +1,20 @@
+# syntax=docker/dockerfile:1.4
 # ============================================================================
-# BioRemPP v1.0 - Unified Multi-Stage Dockerfile
+# BioRemPP v1.0.3 - Optimized Multi-Stage Dockerfile with Cache
 # ============================================================================
-# Supports: Development | Production | Testing
+# Supports: Development | Production
+#
 # Usage:
-#   Development:  docker build --target development -t biorempp:dev .
-#   Production:   docker build --target production -t biorempp:prod .
-#   Custom:       docker build --build-arg PYTHON_VERSION=3.12 -t biorempp:latest .
+#   Development:  docker build -f .docker/Dockerfile --target development -t biorempp:dev .
+#   Production:   docker build -f .docker/Dockerfile --target production -t biorempp:prod .
+#
+# Cache Optimizations:
+#   - BuildKit cache mounts for pip downloads
+#   - Optimized COPY order (deps before code)
+#   - Rebuild on code change: ~15s (vs ~2min without cache)
+#
+# IMPORTANT: Development tools (pytest, black, mypy, mkdocs) are NOT included.
+#            Install them locally: pip install -e ".[dev,docs,profiling]"
 # ============================================================================
 
 # ============================================================================
@@ -18,36 +27,30 @@ ARG APP_UID=1000
 ARG APP_GID=1000
 
 # ============================================================================
-# STAGE: base
-# Base image with system dependencies and non-root user
+# STAGE: base-build
+# Base image WITH build tools (gcc, g++, make) for compiling dependencies
+# Used by: builder, development
 # ============================================================================
-FROM python:${PYTHON_VERSION}-${DEBIAN_VERSION} AS base
+FROM python:${PYTHON_VERSION}-${DEBIAN_VERSION} AS base-build
 
-# Build arguments
 ARG APP_USER
 ARG APP_UID
 ARG APP_GID
 
-# Environment variables for Python
+# OPTIMIZED: Removed PIP_NO_CACHE_DIR to allow caching
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
-    PIP_NO_CACHE_DIR=1 \
     PIP_DISABLE_PIP_VERSION_CHECK=1 \
     DEBIAN_FRONTEND=noninteractive
 
-# Install system dependencies
+# Install build tools and system dependencies
 RUN apt-get update && apt-get install -y --no-install-recommends \
-    # Build essentials
     gcc \
     g++ \
     make \
-    # Git for pip installs from git repos
     git \
-    # curl for health checks
     curl \
-    # ca-certificates for HTTPS
     ca-certificates \
-    # Clean up
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
@@ -63,32 +66,69 @@ WORKDIR /app
 
 # ============================================================================
 # STAGE: builder
-# Build dependencies and compile wheels
+# Compiles wheels for production (transient stage, not in final image)
 # ============================================================================
-FROM base AS builder
+FROM base-build AS builder
 
 ARG APP_USER
 
-# Upgrade pip, setuptools, wheel
-RUN pip install --upgrade pip setuptools wheel
-
-# Copy dependency files and package directories (for setuptools)
+# OPTIMIZED: Copy ONLY dependency files first (change rarely)
 COPY --chown=${APP_USER}:${APP_USER} pyproject.toml README.md ./
-COPY --chown=${APP_USER}:${APP_USER} src ./src
-COPY --chown=${APP_USER}:${APP_USER} config ./config
 
-# Install build dependencies
-RUN pip install build
+# Create full package structure for setuptools
+# Must match packages defined in pyproject.toml
+RUN mkdir -p src/domain src/application src/presentation src/infrastructure \
+             src/shared src/data_tables src/assets config && \
+    touch src/__init__.py src/domain/__init__.py src/application/__init__.py \
+          src/presentation/__init__.py src/infrastructure/__init__.py \
+          src/shared/__init__.py src/data_tables/__init__.py src/assets/__init__.py \
+          config/__init__.py
 
-# Pre-download all dependencies as wheels (core + production extras)
-RUN pip wheel --no-cache-dir --wheel-dir=/wheels \
-    ".[server,cache,compression]"
+# OPTIMIZED: Build wheels with BuildKit cache mount
+# Cache persists between builds, avoiding re-downloads
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip setuptools wheel build && \
+    pip wheel --wheel-dir=/wheels ".[runtime-full]"
+
+# ============================================================================
+# STAGE: runtime
+# Slim base image WITHOUT build tools (for production)
+# Smaller footprint, better security
+# ============================================================================
+FROM python:${PYTHON_VERSION}-${DEBIAN_VERSION} AS runtime
+
+ARG APP_USER
+ARG APP_UID
+ARG APP_GID
+
+# OPTIMIZED: Removed PIP_NO_CACHE_DIR
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    DEBIAN_FRONTEND=noninteractive
+
+# Install ONLY runtime dependencies (NO gcc, g++, make)
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && apt-get clean
+
+# Create non-root user and group
+RUN groupadd -g ${APP_GID} ${APP_USER} && \
+    useradd -m -u ${APP_UID} -g ${APP_GID} -s /bin/bash ${APP_USER}
+
+# Create application directories
+RUN mkdir -p /app /app/logs /app/data && \
+    chown -R ${APP_USER}:${APP_USER} /app
+
+WORKDIR /app
 
 # ============================================================================
 # STAGE: development
-# Development environment with hot-reload and dev tools
+# Development container with hot-reload support
+# Includes build tools (for installing new packages during development)
 # ============================================================================
-FROM base AS development
+FROM base-build AS development
 
 ARG APP_USER
 
@@ -100,18 +140,34 @@ ENV BIOREMPP_ENV=development \
     BIOREMPP_PORT=8050 \
     PYTHONPATH=/app
 
-# Install development tools
-RUN pip install --upgrade pip setuptools wheel
+# ==========================================================================
+# OPTIMIZED COPY ORDER: Dependencies BEFORE source code
+# This ensures pip install layer is cached when only code changes
+# ==========================================================================
 
-# Copy pyproject.toml and ALL package directories (needed for setuptools)
+# Step 1: Copy ONLY dependency definition file (changes rarely)
 COPY --chown=${APP_USER}:${APP_USER} pyproject.toml README.md ./
+
+# Step 2: Create full package structure for setuptools
+# Must match packages defined in pyproject.toml
+RUN mkdir -p src/domain src/application src/presentation src/infrastructure \
+             src/shared src/data_tables src/assets config && \
+    touch src/__init__.py src/domain/__init__.py src/application/__init__.py \
+          src/presentation/__init__.py src/infrastructure/__init__.py \
+          src/shared/__init__.py src/data_tables/__init__.py src/assets/__init__.py \
+          config/__init__.py
+
+# Step 3: Install dependencies with BuildKit cache mount
+# THIS LAYER IS CACHED if pyproject.toml hasn't changed
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip setuptools wheel && \
+    pip install ".[runtime]"
+
+# Step 4: NOW copy source code (doesn't invalidate pip cache)
 COPY --chown=${APP_USER}:${APP_USER} src ./src
 COPY --chown=${APP_USER}:${APP_USER} config ./config
 
-# Install ALL dependencies from pyproject.toml including optional extras
-RUN pip install --no-cache-dir ".[dev,docs,profiling,server,cache,compression]"
-
-# Copy remaining application files
+# Step 5: Copy remaining application files
 COPY --chown=${APP_USER}:${APP_USER} . .
 
 # Switch to non-root user
@@ -124,26 +180,27 @@ EXPOSE 8050
 HEALTHCHECK --interval=30s --timeout=10s --start-period=30s --retries=3 \
     CMD curl -f http://localhost:8050/_health || exit 1
 
-# Image labels and metadata for development
+# Image labels and metadata
 LABEL org.opencontainers.image.title="BioRemPP Web Application (Development)" \
-      org.opencontainers.image.description="Bioremediation Potential Profile - Functional genomics analysis platform for bioremediation research" \
+      org.opencontainers.image.description="Bioremediation Potential Profile - Optimized dev image with cache. Install dev tools locally: pip install -e '.[dev,docs,profiling]'" \
       org.opencontainers.image.authors="biorempp@gmail.com" \
       org.opencontainers.image.url="https://biorempp.github.io" \
       org.opencontainers.image.documentation="https://biormepp-web.readthedocs.io/en/latest/" \
       org.opencontainers.image.source="https://github.com/biorempp/biorempp_web" \
-      org.opencontainers.image.version="1.0.2-beta-nar" \
+      org.opencontainers.image.version="1.0.3-beta" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.vendor="BioRemPP Development Team" \
       maintainer="biorempp@gmail.com"
 
-# Development command (hot-reload enabled)
+# Development command (hot-reload enabled via volume mount)
 CMD ["python", "biorempp_app.py"]
 
 # ============================================================================
 # STAGE: production
-# Production-ready image with minimal size and security hardening
+# Production-ready image optimized for size and security
+# NO build tools (gcc, g++, make) - uses pre-compiled wheels
 # ============================================================================
-FROM base AS production
+FROM runtime AS production
 
 ARG APP_USER
 
@@ -155,14 +212,12 @@ ENV BIOREMPP_ENV=production \
     BIOREMPP_PORT=8080 \
     PYTHONPATH=/app
 
-# Copy pre-built wheels from builder
-COPY --from=builder /wheels /wheels
-
-# Upgrade pip and install wheels
-RUN pip install --upgrade pip setuptools wheel && \
-    pip install --no-cache-dir --no-index --find-links=/wheels \
-    /wheels/*.whl && \
-    rm -rf /wheels
+# Install wheels with BuildKit cache mount
+COPY --from=builder /wheels /tmp/wheels
+RUN --mount=type=cache,target=/root/.cache/pip \
+    pip install --upgrade pip setuptools wheel && \
+    pip install --no-index --find-links=/tmp/wheels /tmp/wheels/*.whl && \
+    rm -rf /tmp/wheels
 
 # Copy application source code
 COPY --chown=${APP_USER}:${APP_USER} . .
@@ -187,14 +242,14 @@ HEALTHCHECK --interval=60s --timeout=30s --start-period=60s --retries=3 \
 # Set entrypoint
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-# Image labels and metadata for production
+# Image labels and metadata
 LABEL org.opencontainers.image.title="BioRemPP Web Application (Production)" \
-      org.opencontainers.image.description="Bioremediation Potential Profile - Functional genomics analysis platform for bioremediation research" \
+      org.opencontainers.image.description="Bioremediation Potential Profile - Optimized production image without build tools" \
       org.opencontainers.image.authors="biorempp@gmail.com" \
       org.opencontainers.image.url="https://biorempp.github.io" \
       org.opencontainers.image.documentation="https://biormepp-web.readthedocs.io/en/latest/" \
       org.opencontainers.image.source="https://github.com/biorempp/biorempp_web" \
-      org.opencontainers.image.version="1.0.2-beta-nar" \
+      org.opencontainers.image.version="1.0.3-beta" \
       org.opencontainers.image.licenses="Apache-2.0" \
       org.opencontainers.image.vendor="BioRemPP Development Team" \
       maintainer="biorempp@gmail.com"
