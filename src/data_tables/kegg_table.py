@@ -101,85 +101,6 @@ def create_kegg_section() -> html.Div:
             ],
             className="mb-3 shadow-sm",
         ),
-        # Top pathways card
-        dbc.Card(
-            [
-                dbc.CardHeader(
-                    [
-                        html.I(className="fas fa-chart-bar me-2"),
-                        html.Strong("Top Degradation Pathways"),
-                    ],
-                    className="bg-light",
-                ),
-                dbc.CardBody(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Aromatic: "),
-                                                        "215 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Benzoate: "),
-                                                        "106 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Aminobenzoate: "),
-                                                        "89 genes",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Toluene: "),
-                                                        "46 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Cl. alkane/alkene: "
-                                                        ),
-                                                        "43 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Others: "),
-                                                        "15+ pathways",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                            ]
-                        )
-                    ]
-                ),
-            ],
-            className="mb-3",
-        ),
     ]
 
     # Create download button for merged database
@@ -196,6 +117,19 @@ def create_kegg_section() -> html.Div:
         show_spinner=True,
     )
 
+    # Create Database Info button that opens schema page in new tab
+    # Using html.A instead of dbc.Button to bypass Dash router and open in new tab
+    info_button = html.A(
+        [
+            html.I(className="fas fa-info-circle me-2"),
+            "Database Info",
+        ],
+        href="/schemas/kegg",
+        target="_blank",
+        rel="noopener noreferrer",
+        className="btn btn-outline-info btn-sm",
+    )
+
     # Enhanced database description
     description_component = create_database_description(
         title="KEGG Degradation Pathway Mapping",
@@ -203,15 +137,10 @@ def create_kegg_section() -> html.Div:
             "Integrates your data with the KEGG Degradation Database, mapping KO numbers "
             "to xenobiotic degradation pathways and gene symbols for metabolic context analysis."
         ),
-        insights=(
-            "Pathway Coverage: 20 degradation routes for major pollutant classes\n"
-            "Gene Catalog: 517 unique KO numbers with degradation functions\n"
-            "Major Pathways: Aromatic (215 genes), Benzoate (106), Aminobenzoate (89), Toluene (46), Chlorinated compounds (43)\n"
-            "KEGG Integration: Direct links to metabolic pathway context"
-        ),
         section_id="kegg-results-table",
         custom_components=custom_components,
-        download_button=download_button,  # Add download button to header
+        download_button=download_button,
+        info_button=info_button,
     )
 
     # Accordion with on-demand table and enhanced title
@@ -232,46 +161,6 @@ def create_kegg_section() -> html.Div:
                     ),
                     # Table container
                     html.Div(id="kegg-container", className="chart-container"),
-                    # Column descriptions
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                [
-                                    html.I(className="fas fa-table me-2"),
-                                    html.Strong("Column Descriptions"),
-                                ],
-                                className="bg-light",
-                            ),
-                            dbc.CardBody(
-                                [
-                                    html.Ul(
-                                        [
-                                            html.Li(
-                                                [
-                                                    html.Strong("ko: "),
-                                                    "KEGG Orthology identifier linking to metabolic functions (e.g., K00001)",
-                                                ]
-                                            ),
-                                            html.Li(
-                                                [
-                                                    html.Strong("pathname: "),
-                                                    "Degradation pathway category (e.g., Aromatic, Benzoate, Toluene, Naphthalene)",
-                                                ]
-                                            ),
-                                            html.Li(
-                                                [
-                                                    html.Strong("genesymbol: "),
-                                                    "Gene symbol associated with the degradation enzyme (e.g., benA, xylC, nahAa)",
-                                                ]
-                                            ),
-                                        ],
-                                        className="mb-0",
-                                    )
-                                ]
-                            ),
-                        ],
-                        className="mt-3",
-                    ),
                 ],
                 title="View KEGG Degradation Pathway Table",
             )

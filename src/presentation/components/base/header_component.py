@@ -14,12 +14,14 @@ Notes
 - Reusable across pages
 - DashBootstrap styling
 - Logo and title link to /about
-- Version set to 1.0.3-beta
+- Version dynamically loaded from config.settings
 - Responsive navbar with hamburger menu for mobile
 """
 
 import dash_bootstrap_components as dbc
 from dash import html
+
+from config.settings import APP_VERSION
 
 
 def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
@@ -62,7 +64,7 @@ def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
                     html.Div(
                         [
                             html.H3(
-                                "BioRemPP 1.0.3-beta",
+                                f"BioRemPP {APP_VERSION}",
                                 className="mb-0 text-success fw-bold",
                                 style={"lineHeight": "1.1", "fontSize": "1.5rem"},
                             ),
@@ -89,17 +91,20 @@ def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
     if show_nav:
         nav_items = [
             dbc.NavItem(dbc.NavLink("Home", href="/about", className="px-2")),
-            dbc.NavItem(dbc.NavLink("Methods", href="/methods", className="px-2")),
             dbc.NavItem(
                 dbc.NavLink("User Guide", href="/help/user-guide", className="px-2")
             ),
-            dbc.NavItem(dbc.NavLink("FAQ", href="/faq", className="px-2")),
+            dbc.NavItem(
+                dbc.NavLink("Databases", href="/schemas", className="px-2")
+            ),
             dbc.NavItem(
                 dbc.NavLink("Regulatory", href="/regulatory", className="px-2")
             ),
+            dbc.NavItem(dbc.NavLink("Methods", href="/methods", className="px-2")),
             dbc.NavItem(
                 dbc.NavLink("Documentation", href="/documentation", className="px-2")
             ),
+            dbc.NavItem(dbc.NavLink("FAQ", href="/faq", className="px-2")),
             dbc.NavItem(dbc.NavLink("Contact", href="/help/contact", className="px-2")),
         ]
 

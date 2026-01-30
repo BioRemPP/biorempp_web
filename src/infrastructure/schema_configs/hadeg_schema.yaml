@@ -1,0 +1,190 @@
+# HADEG Database Schema Configuration
+# Formal specification extracted from docs/database_schemas/hadeg-schema.md
+
+schema_id: "hadeg"
+title: "HADEG Database Schema"
+version: "1.0.0"
+last_updated: "2026-01-17"
+color: "info"
+
+# Overview section
+overview:
+  description: >
+    The HADEG (Hydrocarbon Aerobic Degradation Genes) Database uses a flat, 
+    denormalized schema optimized for gene-pathway relationship queries. 
+    The schema consists of a single table with 4 columns representing 
+    gene-KO-pathway associations for hydrocarbon aerobic degradation.
+  design_rationale:
+    - title: "Simplicity"
+      description: "Single tidy table structure facilitates direct import into R, Python, and spreadsheet tools"
+    - title: "Pathway-centric"
+      description: "Organized by degradation pathways for functional analysis"
+    - title: "Interoperability"
+      description: "Standard CSV format ensures compatibility with bioinformatics pipelines"
+    - title: "KEGG integration"
+      description: "KO identifiers enable cross-referencing with KEGG databases"
+
+# Schema definition
+schema_definition:
+  format: "CSV (Comma-Separated Values)"
+  rows: 867
+  columns: 4
+  encoding: "UTF-8"
+  delimiter: "Semicolon (;)"
+  text_qualifier: 'Double quote (")'
+  header: true
+  completeness: "100% — Zero missing values across all fields"
+
+# Column specifications
+columns:
+  - name: "Gene"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Standard gene nomenclature"
+    example: "alkB"
+    description: "Gene symbol for hydrocarbon degradation"
+    purpose: "Identifies the gene symbol associated with hydrocarbon degradation function"
+    uniqueness: "Not unique — 323 unique genes, some appear in multiple pathways"
+    cardinality: 323
+    notes:
+      - "Short gene abbreviations (lowercase typical for microbial genes)"
+      - "May include alphanumeric suffixes (e.g., alkB1, alkB2)"
+      - "Organism-agnostic naming"
+
+  - name: "ko"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "K##### (capital K followed by exactly 5 digits)"
+    regex: "^K\\d{5}$"
+    example: "K00496"
+    description: "KEGG Orthology identifier"
+    purpose: "Links genes to functional orthologs in KEGG for cross-database integration"
+    uniqueness: "Not unique — 337 unique KO entries, some appear in multiple pathways"
+    cardinality: 337
+    cross_references:
+      - name: "KEGG Orthology"
+        url_pattern: "https://www.kegg.jp/entry/{value}"
+      - name: "BioRemPP Database"
+
+  - name: "Pathway"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Pathway name with prefix"
+    example: "A_Terminal/biterminal_oxidation"
+    description: "Metabolic pathway name"
+    purpose: "Categorizes genes by their metabolic pathway in hydrocarbon degradation"
+    uniqueness: "Not unique — Multiple genes belong to each pathway"
+    cardinality: 71
+    notes:
+      - "Prefix indicates compound class: A_ (Alkanes), AR_ (Aromatics), AE_ (Alkenes)"
+      - "Underscore separates pathway components"
+    top_pathways:
+      - name: "A_Terminal/biterminal_oxidation"
+        count: 45
+        class: "Alkanes"
+      - name: "A_Finnerty_pathway"
+        count: 30
+        class: "Alkanes"
+      - name: "AR_benzoate"
+        count: 25
+        class: "Aromatics"
+      - name: "AR_catechol"
+        count: 20
+        class: "Aromatics"
+
+  - name: "compound_pathway"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Compound class name"
+    example: "Alkanes"
+    description: "Hydrocarbon type classification"
+    purpose: "High-level classification of hydrocarbon type targeted by the degradation pathway"
+    uniqueness: "Not unique — Multiple genes/pathways belong to each class"
+    cardinality: 5
+    valid_values:
+      - class: "Alkanes"
+        description: "Linear and branched alkanes"
+        count: 350
+      - class: "Aromatics"
+        description: "Single-ring aromatic compounds"
+        count: 250
+      - class: "Alkenes"
+        description: "Unsaturated hydrocarbons"
+        count: 100
+      - class: "Cycloalkanes"
+        description: "Cyclic hydrocarbons"
+        count: 80
+      - class: "BTEX"
+        description: "Benzene, Toluene, Ethylbenzene, Xylene"
+        count: 80
+
+# Schema constraints
+constraints:
+  primary_key: null
+  conceptual_key: ["Gene", "ko", "Pathway"]
+  foreign_keys:
+    - column: "ko"
+      references: "KEGG Orthology database"
+    - column: "ko"
+      references: "BioRemPP Database"
+  cardinality_relationships:
+    - name: "Gene-to-Pathway"
+      type: "Many-to-Many"
+      description: "One gene can participate in multiple pathways"
+      example: "alkB → 5 different pathways"
+    - name: "Pathway-to-Compound Class"
+      type: "Many-to-One"
+      description: "Each pathway belongs to exactly one compound class"
+
+# Data quality
+data_quality:
+  completeness:
+    status: "100%"
+    description: "Zero missing values across all 4 columns"
+  consistency:
+    - "All ko values match ^K\\d{5}$"
+    - "All compound_pathway values match one of 5 valid classes"
+  accuracy:
+    - column: "Gene"
+      source: "Curated from literature and KEGG annotations"
+    - column: "ko"
+      source: "KEGG Orthology database"
+    - column: "Pathway"
+      source: "Expert curation based on biochemical pathways"
+    - column: "compound_pathway"
+      source: "Manual classification"
+  source: "HADEG database (Hydrocarbon Aerobic Degradation Genes)"
+
+# Usage examples
+usage_examples:
+  r: |
+    # Load database
+    library(readr)
+    db <- read_delim("path/hadeg_db.csv", delim=";")
+    
+    # Inspect schema
+    str(db)
+    # tibble [867 × 4]
+  python: |
+    import pandas as pd
+    
+    # Load database
+    db = pd.read_csv("path/hadeg_db.csv", sep=";")
+    
+    # Inspect schema
+    db.info()
+    # RangeIndex: 867 entries
+  common_queries:
+    - description: "Find all genes in alkane degradation"
+      code: 'alkane_genes <- db[db$compound_pathway == "Alkanes", ]'
+    - description: "Find pathways for a specific gene"
+      code: 'alkB_pathways <- unique(db[db$Gene == "alkB", "Pathway"])'
+
+# Contact
+contact:
+  github_issues: "https://github.com/BioRemPP/biorempp_db/issues"
+  email: "biorempp@gmail.com"

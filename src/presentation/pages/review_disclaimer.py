@@ -281,7 +281,7 @@ def create_reviewer_disclaimer_modal():
                                             ),
                                             html.Pre(
                                                 html.Code(
-                                                    "docker run -p 8050:8050 biorempp/biorempp-web:v1.0.3-beta-nar",
+                                                    "docker run -p 8050:8050 biorempp/biorempp-web:v1.0.4-beta-nar",
                                                     className="language-bash",
                                                 ),
                                                 className="bg-dark text-light p-3 rounded mb-3",
@@ -319,8 +319,18 @@ def create_reviewer_disclaimer_modal():
                                             ),
                                             dbc.Alert(
                                                 [
-                                                    html.I(className="fas fa-globe me-2"),
-                                                    html.Strong("This section may appear differently from the docker image source."),
+                                                    html.Strong("Docker Hub: "),
+                                                    html.A(
+                                                        "biorempp/biorempp-web",
+                                                        href="https://hub.docker.com/r/biorempp/biorempp-web",
+                                                        target="_blank",
+                                                        className="alert-link fw-bold",
+                                                    ),
+                                                    html.Br(),
+                                                    html.Small(
+                                                        "View all available versions and deployment documentation.",
+                                                        className="text-muted",
+                                                    ),
                                                 ],
                                                 color="light",
                                                 className="mb-0",

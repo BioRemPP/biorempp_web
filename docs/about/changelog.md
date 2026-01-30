@@ -2,13 +2,189 @@
 
 All notable changes to BioRemPP will be documented in this file.
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [Unreleased]
+
+### To-Do
+
+- Structure and document Profiling Suite scripts for public release
+- Structure and document Internal Validation Suite scripts for public release
+- Publish validation results as supplementary materials
+
+---
+
+## [1.0.4-beta] - 2026-01-30
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Database Schema Documentation
+
+- **Database Schema Pages** - Comprehensive schema documentation for all 4 integrated databases
+  - Each schema includes: column specifications, data types, controlled vocabularies, cross-references, usage examples (R/Python)
+
+#### CI/CD & Infrastructure
+
+- **Docker Build Cache Optimization**
+  - Implemented BuildKit cache mounts for pip installations (`--mount=type=cache,target=/root/.cache/pip`)
+  - Reordered COPY commands to preserve dependency cache when only source code changes
+  - Removed `PIP_NO_CACHE_DIR=1` environment variable to enable pip caching
+  - Created minimal package structure before pip install to satisfy setuptools requirements
+  - **Impact**: Rebuild time reduced to ~15 seconds for code-only changes
+
+### Changed
+
+#### User Interface
+
+- **Navigation Header** - Reordered and renamed navigation links for improved UX
+  - New order: Home → User Guide → **Databases** (renamed from "Schemas") → Regulatory → Methods → Documentation → FAQ → Contact
+  - File: `src/presentation/components/base/header_component.py`
+
+#### Database Schema Corrections
+
+- **Column Descriptions** - Enhanced accuracy and clarity
+  - **BioRemPP Schema**:
+    - `cpd`: Clarified as unique KEGG Compound identifier
+    - `referenceAG`: Updated to indicate regulatory framework references
+    - `compoundname`: Specified IUPAC nomenclature
+    - `genesymbol`: Clarified KEGG annotation origin
+    - `enzyme_activity`: Corrected source attribution to IUBMB/IUPAC Biochemical Nomenclature Committee
+  - **KEGG Schema**:
+    - `genesymbol`: Updated to reflect KEGG annotation and origin
+
+- **Usage Examples** - Standardized file path placeholders
+  - Changed hardcoded paths (e.g., `"data/databases/biorempp_db.csv"`) to generic `"path/"` placeholder
+  - Improved portability and clarity of R and Python code examples
+  - Files: All 4 schema YAML configuration files
+
+### Removed
+
+- **UI Component Redundancy**
+  - Removed "Top Pathways" card from KEGG table section
+  - Removed redundant sections from `database_description.py` component
+
+### Fixed
+
+- **Session Continuity** - Database Info buttons now open in new tabs without disrupting active analysis sessions
+- **Schema Rendering** - Corrected toxicity endpoint category labels to match actual database values
+
+---
+
+## [1.0.3-beta] - 2026-01-17
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Documentation Structure
+
+- **Comprehensive Index Pages** - Added index.md for all major documentation sections
+  - `docs/getting-started/index.md` - Quick navigation, workflow overview, FAQ summary (107 lines)
+  - `docs/user-guide/index.md` - Results, interpretation, downloads, troubleshooting overview (79 lines)
+  - `docs/database_schemas/index.md` - 4 database schemas with integration architecture diagram (196 lines)
+  - `docs/validation/index.md` - 3-pillar validation framework overview (235 lines)
+
+#### Validation & Quality Assurance
+
+- **Computational Profiling Suite (v1.0)** - Performance characterization and reproducibility
+  - `docs/validation/profiling-biorempp.md` - Consolidated profiling documentation (280 lines)
+  - 5 profiling targets: database_load, biorempp_operations, io_operations, batch_export, data_transforms
+  - Total execution time: 12.50 seconds, Total memory: 167.3 MB
+  - Instrumentation: cProfile, tracemalloc, psutil
+
+- **Unit Test Suite Documentation**
+  - `docs/validation/test-suite.md` - 53 unit test modules across 3 architectural layers (378 lines)
+  - Coverage: Domain (entities, value objects, strategies), Application (services, DTOs, mappers), Infrastructure (cache, config, repositories)
+  - Test design principles: Determinism, Isolation, Dependency Substitution, Fast Execution
+
+- **Internal Validation Suite**
+  - 7 validation components: Provenance Snapshot, Schema Integrity, Cross-Database Overlap, Mapping Consistency, Roundtrip Regression, Use Case Invariants, Controlled Vocabulary Audit
+
+### Changed
+
+#### Documentation Improvements
+
+- **MkDocs Navigation** - Updated `mkdocs.yml` with index entries for all sections
+  - Added index pages to: Getting Started, User Guide, Database Schemas, Validation & QC
+  - Reordered Validation & QC entries for logical flow
+
+- **Use Cases Index** - Fixed markdown list rendering for proper MkDocs display
+  - Added blank lines after numbered items with sub-content
+  - Improved visual separation of list items in rendered output
+
+
+- **Version Numbering** - Updated application version
+  - Changed from `v1.0.0-beta` to `v1.0.3-beta` in `docs/index.md`
+  - Reflects documentation consolidation milestone
+
+### Removed
+
+- **Redundant UI Components**
+  - Database Documentation card from documentation page (consolidated into single webservice card)
+
+### Fixed
+
+- **Markdown Rendering** - Fixed numbered list display in use_cases/index.md
+- **Schema Examples** - Corrected file paths in R and Python code snippets
+- **Regex Patterns** - Fixed escape sequences in hadeg-schema.md and kegg-schema.md (`\\\\d` → `\\\\\\\\d`)
+
+---
+
+## [1.0.2-beta] - 2025-12-25
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Documentation Infrastructure
+- Complete use case documentation for all 56 analytical use cases organized into 8 modules
+  - Module 1 (6 cases): Comparative Assessment of Databases, Samples, and Regulatory Frameworks
+  - Module 2 (5 cases): Exploratory Analysis - Ranking Functional Potential
+  - Module 3 (7 cases): System Structure - Clustering, Similarity, Co-occurrence
+  - Module 4 (13 cases): Functional and Genetic Profiling 
+  - Module 5 (6 cases): Modeling Interactions among Samples, Genes, and Compounds
+  - Module 6 (5 cases): Hierarchical and Flow-based Functional Analysis
+  - Module 7 (7 cases): Toxicological Risk Assessment and Profiling
+  - Module 8 (7 cases): Assembly of Functional Consortia
+- Each use case includes scientific rationale, analytical workflow, interpretation guidelines, and activity diagrams
+
+#### Legal and Citation Pages
+- **How to Cite page**: Comprehensive citation guidelines with:
+  - Pre-DOI provisional citation formats
+  - Post-DOI citation instructions
+  - BibTeX templates for academic references
+  - Third-party resource attribution (KEGG, HADEG, toxCSM)
+  - FAIR principles and versioning best practices
+- **Terms of Use page**: Complete legal framework in documentation (`docs/about/terms-of-use.md`) covering:
+  - Scope and purpose of BioRemPP as academic research tool
+  - Permitted uses (research, education) and prohibited uses (clinical, regulatory)
+  - User responsibilities (data ownership, citation, third-party license compliance)
+  - Privacy-by-design philosophy (no accounts, no persistent storage, session-based processing)
+  - Service limitations and availability (best-effort, no SLA)
+  - Licensing details (Apache 2.0 for code, CC BY 4.0 for database)
+  - Warranty disclaimers and liability limitations
+  - Contact information for institutional support
+
+#### Documentation Site Enhancements
+- MkDocs navigation structure for 65+ documentation pages
+- ReadTheDocs integration configuration (`.readthedocs.yml`)
+- Enhanced `docs/index.md` homepage with detailed service overview
+- GLightbox integration for lightbox viewing of activity diagrams
+  - `docs/javascripts/glightbox.min.js`: Core library
+  - `docs/javascripts/lightbox-init.js`: Initialization script with timeout
+  - `docs/stylesheets/glightbox.min.css`: Styling
+
+### Changed
+- Updated FAQ with cross-references to new citation and terms pages
+- Enhanced home page navigation to include citation and terms links
+- Improved page registration system for new pages
+
+---
+
 ## [1.0.0-beta] - 2025 (2025-12-14)
-##### The application will remain in beta (v1.0.0-beta) until the article is officially released.
+##### The application will remain in beta until the article is officially released.
 ### Added
 
 #### Architecture & Design
@@ -81,63 +257,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.1-beta] - 2025-12-20
-
-> **Note on Tag Versioning:** The previous tag `v1.0.1` was incorrectly versioned and should have been `v1.0.1-beta` per semantic versioning guidelines. The application remains in beta status until official article publication.
-
-### Added
-
-#### DevOps & CI/CD
-
-- **GitHub Actions Workflow for Documentation** ([#001])
-  - Automated MkDocs build validation on push/PR to `main` and `dev` branches
-  - Path-based triggering for documentation-related files
-  - Build artifact upload with 7-day retention
-  - Comprehensive error reporting and logging
-  - Dependencies installed via `pyproject.toml[docs]`
-
-- **ReadTheDocs Multi-Version Deployment**
-  - Configured automatic deployment for `main` (stable) and `dev` (latest) branches  
-  - Webhook integration for automatic builds on push
-  - Multi-format export: HTML, PDF, EPUB
-  - Version switcher for accessing different documentation versions
-  - Documentation URLs:
-    - Development (latest): https://biorempp.readthedocs.io/en/latest/
-    - Production (stable): https://biorempp.readthedocs.io/en/stable/
-
-### Fixed
-
-- **API Documentation Module References**
-  - Corrected mkdocstrings import paths for cache module classes
-  - Changed from submodule paths to package-level exports
-  - Resolved `src.infrastructure.cache` import errors in API docs
-
-- **ReadTheDocs Configuration**
-  - Fixed `.readthedocs.yml` syntax: `extra_requires` → `extra_requirements`
-  - Removed `cache/` from `.gitignore` to allow proper module documentation
-
-- **GitHub Actions Permissions**
-  - Added `.github/workflows/docs-ci.yml` to repository (was blocked by gitignore)
-  - Configured proper workflow permissions for actions execution
-
-### Technical Details
-
-- **Python Version:** 3.11
-- **CI Actions:** `checkout@v4`, `setup-python@v5`, `upload-artifact@v4`
-- **Build Command:** `mkdocs build --verbose`
-- **Dependencies:** Managed via `pyproject.toml[docs]` optional dependency group
-
----
-
-
 ## Upcoming Features
 
 ### Under Consideration
-- REST API for programmatic access
-- Batch processing capabilities
 - Additional visualization types
 - Performance optimizations
-- Mobile app (iOS/Android)
 - Python package (pip installable)
 - Command-line interface (CLI)
 - Integration with additional databases
@@ -160,4 +284,4 @@ For questions, bug reports, or feature requests:
 - **Email:** biorempp@gmail.com
 ---
 
-**Last Updated:** 2025
+**Last Updated:** 2026 -  Migration to organization repository

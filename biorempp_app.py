@@ -60,6 +60,13 @@ from src.presentation.pages import (
     get_home_layout,
     get_results_layout,
 )
+from src.presentation.pages.database_schemas import (
+    create_schemas_index_page,
+    create_biorempp_schema_page,
+    create_hadeg_schema_page,
+    create_kegg_schema_page,
+    create_toxcsm_schema_page,
+)
 from src.presentation.pages.methods.callbacks import (
     register_callbacks as register_methods_callbacks,
 )
@@ -214,6 +221,21 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         elif pathname == '/how-to-cite':
             # How to Cite page
             return create_how_to_cite_page()
+        elif pathname == '/schemas':
+            # Database Schemas index page
+            return create_schemas_index_page()
+        elif pathname == '/schemas/biorempp':
+            # BioRemPP schema page
+            return create_biorempp_schema_page()
+        elif pathname == '/schemas/hadeg':
+            # HADEG schema page
+            return create_hadeg_schema_page()
+        elif pathname == '/schemas/kegg':
+            # KEGG schema page
+            return create_kegg_schema_page()
+        elif pathname == '/schemas/toxcsm':
+            # ToxCSM schema page
+            return create_toxcsm_schema_page()
         elif pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
