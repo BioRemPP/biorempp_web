@@ -136,22 +136,31 @@ def create_biorempp_section() -> html.Div:
         show_spinner=True,
     )
 
+    # Create Database Info button that opens schema page in new tab
+    # Using html.A instead of dbc.Button to bypass Dash router and open in new tab
+    info_button = html.A(
+        [
+            html.I(className="fas fa-info-circle me-2"),
+            "Database Info",
+        ],
+        href="/schemas/biorempp",
+        target="_blank",
+        rel="noopener noreferrer",
+        className="btn btn-outline-info btn-sm",
+    )
+
     # Enhanced database description
     description_component = create_database_description(
-        title="BioRemPP Integrated Results",
+        title="BioRemPP Integrated Database",
         description=(
-            "Integrates your KO annotations with the BioRemPP database, linking KEGG Orthology numbers "
-            "to pollutants, enzyme activities, compound classes, and regulatory frameworks."
-        ),
-        insights=(
-            "Enzyme-Pollutant Links: Connects KO numbers to gene symbols, enzyme names, and degradation targets\n"
-            "Compound Coverage: 384 environmental pollutants (Aromatic, Aliphatic, Chlorinated, Metal, Nitrogen-containing)\n"
-            "Regulatory Mapping: Compounds classified by 9 international frameworks (IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA, and others)\n"
-            "Activity Classification: 205 enzyme mechanisms (dehydrogenase, oxidase, reductase, hydrolase)"
+            "Integrates your data with the BioRemPP curated database of "
+            "bioremediation-associated genes, enzymes, and pathways, enabling "
+            "comprehensive annotation and functional analysis."
         ),
         section_id="biorempp-results-table",
         custom_components=custom_components,
-        download_button=download_button,  # Add download button to header
+        download_button=download_button,
+        info_button=info_button,
     )
 
     # Accordion with on-demand table and enhanced title
@@ -172,109 +181,6 @@ def create_biorempp_section() -> html.Div:
                     ),
                     # Table container
                     html.Div(id="biorempp-container", className="chart-container"),
-                    # Column descriptions
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                [
-                                    html.I(className="fas fa-table me-2"),
-                                    html.Strong("Column Descriptions"),
-                                ],
-                                className="bg-light",
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        [
-                                            dbc.Col(
-                                                [
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong("ko: "),
-                                                                    "KEGG Orthology identifier (e.g., K00001)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "genesymbol: "
-                                                                    ),
-                                                                    "Gene symbol or enzyme code (e.g., E1.1.1.1)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "genename: "
-                                                                    ),
-                                                                    "Full enzyme name (e.g., alcohol dehydrogenase)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "cpd: "
-                                                                    ),
-                                                                    "KEGG Compound ID for the pollutant",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="mb-0",
-                                                    )
-                                                ],
-                                                md=6,
-                                            ),
-                                            dbc.Col(
-                                                [
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "compoundclass: "
-                                                                    ),
-                                                                    "Chemical classification (Aromatic, Chlorinated, Metal, etc.)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "referenceAG: "
-                                                                    ),
-                                                                    "Regulatory agency (IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "compoundname: "
-                                                                    ),
-                                                                    "Common name of the pollutant",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "enzyme_activity: "
-                                                                    ),
-                                                                    "Type of enzymatic activity (dehydrogenase, oxidase, reductase, etc.)",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="mb-0",
-                                                    )
-                                                ],
-                                                md=6,
-                                            ),
-                                        ]
-                                    )
-                                ]
-                            ),
-                        ],
-                        className="mt-3",
-                    ),
                 ],
                 title="View BioRemPP Integrated Results Table",
             )

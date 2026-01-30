@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 # ============================================================================
 [project]
 name = "biorempp-web"
-version = "1.0.3-beta"
+version = "1.0.4-beta"
 description = "BioRemPP Web - Bioremediation Potential Profile"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -164,7 +164,27 @@ compression = [
     "zstandard>=0.23.0,<1.0.0",
 ]
 
-# All extras for complete development environment
+# ==========================================================================
+# DOCKER RUNTIME EXTRAS
+# ==========================================================================
+# These are the only extras installed in Docker images.
+# Development tools (dev, docs, profiling) should be installed locally.
+
+# Runtime minimal - For Docker development image
+runtime = [
+    "biorempp-web[server]",
+]
+
+# Runtime full - For Docker production image (with cache and compression)
+runtime-full = [
+    "biorempp-web[server,cache,compression]",
+]
+
+# ==========================================================================
+# COMBINED EXTRAS
+# ==========================================================================
+
+# All extras for complete LOCAL development environment
 all = [
     "biorempp-web[dev,docs,server,cache,profiling,compression]",
 ]

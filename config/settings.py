@@ -118,6 +118,33 @@ def get_app_version() -> str:
 APP_VERSION: str = get_app_version()
 
 
+# =============================================================================
+# DATABASE VERSIONS
+# =============================================================================
+DATABASE_VERSIONS: dict = {
+    "biorempp": {
+        "version": "v1.0.0",
+        "name": "BioRemPP Database",
+        "color": "success",
+    },
+    "kegg": {
+        "version": "Release 116.0+/12-19",
+        "name": "KEGG Degradation",
+        "color": "info",
+    },
+    "hadeg": {
+        "version": "Commit 8f1ff8f",
+        "name": "HADEG",
+        "color": "primary",
+    },
+    "toxcsm": {
+        "version": "v1.0",
+        "name": "ToxCSM",
+        "color": "danger",
+    },
+}
+
+
 @dataclass
 class Settings:
     """

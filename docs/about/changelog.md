@@ -17,7 +17,65 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.4-beta] - 2026-01-30
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Database Schema Documentation
+
+- **Database Schema Pages** - Comprehensive schema documentation for all 4 integrated databases
+  - Each schema includes: column specifications, data types, controlled vocabularies, cross-references, usage examples (R/Python)
+
+#### CI/CD & Infrastructure
+
+- **Docker Build Cache Optimization**
+  - Implemented BuildKit cache mounts for pip installations (`--mount=type=cache,target=/root/.cache/pip`)
+  - Reordered COPY commands to preserve dependency cache when only source code changes
+  - Removed `PIP_NO_CACHE_DIR=1` environment variable to enable pip caching
+  - Created minimal package structure before pip install to satisfy setuptools requirements
+  - **Impact**: Rebuild time reduced to ~15 seconds for code-only changes
+
+### Changed
+
+#### User Interface
+
+- **Navigation Header** - Reordered and renamed navigation links for improved UX
+  - New order: Home → User Guide → **Databases** (renamed from "Schemas") → Regulatory → Methods → Documentation → FAQ → Contact
+  - File: `src/presentation/components/base/header_component.py`
+
+#### Database Schema Corrections
+
+- **Column Descriptions** - Enhanced accuracy and clarity
+  - **BioRemPP Schema**:
+    - `cpd`: Clarified as unique KEGG Compound identifier
+    - `referenceAG`: Updated to indicate regulatory framework references
+    - `compoundname`: Specified IUPAC nomenclature
+    - `genesymbol`: Clarified KEGG annotation origin
+    - `enzyme_activity`: Corrected source attribution to IUBMB/IUPAC Biochemical Nomenclature Committee
+  - **KEGG Schema**:
+    - `genesymbol`: Updated to reflect KEGG annotation and origin
+
+- **Usage Examples** - Standardized file path placeholders
+  - Changed hardcoded paths (e.g., `"data/databases/biorempp_db.csv"`) to generic `"path/"` placeholder
+  - Improved portability and clarity of R and Python code examples
+  - Files: All 4 schema YAML configuration files
+
+### Removed
+
+- **UI Component Redundancy**
+  - Removed "Top Pathways" card from KEGG table section
+  - Removed redundant sections from `database_description.py` component
+
+### Fixed
+
+- **Session Continuity** - Database Info buttons now open in new tabs without disrupting active analysis sessions
+- **Schema Rendering** - Corrected toxicity endpoint category labels to match actual database values
+
+---
+
 ## [1.0.3-beta] - 2026-01-17
+##### The application will remain in beta until the article is officially released.
 
 ### Added
 
@@ -75,58 +133,58 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
-## [1.0.1-beta] - 2025-12-20
-
-> **Note on Tag Versioning:** The previous tag `v1.0.1` was incorrectly versioned and should have been `v1.0.1-beta` per semantic versioning guidelines. The application remains in beta status until official article publication.
+## [1.0.2-beta] - 2025-12-25
+##### The application will remain in beta until the article is officially released.
 
 ### Added
 
-#### DevOps & CI/CD
+#### Documentation Infrastructure
+- Complete use case documentation for all 56 analytical use cases organized into 8 modules
+  - Module 1 (6 cases): Comparative Assessment of Databases, Samples, and Regulatory Frameworks
+  - Module 2 (5 cases): Exploratory Analysis - Ranking Functional Potential
+  - Module 3 (7 cases): System Structure - Clustering, Similarity, Co-occurrence
+  - Module 4 (13 cases): Functional and Genetic Profiling 
+  - Module 5 (6 cases): Modeling Interactions among Samples, Genes, and Compounds
+  - Module 6 (5 cases): Hierarchical and Flow-based Functional Analysis
+  - Module 7 (7 cases): Toxicological Risk Assessment and Profiling
+  - Module 8 (7 cases): Assembly of Functional Consortia
+- Each use case includes scientific rationale, analytical workflow, interpretation guidelines, and activity diagrams
 
-- **GitHub Actions Workflow for Documentation** ([#001])
-  - Automated MkDocs build validation on push/PR to `main` and `dev` branches
-  - Path-based triggering for documentation-related files
-  - Build artifact upload with 7-day retention
-  - Comprehensive error reporting and logging
-  - Dependencies installed via `pyproject.toml[docs]`
+#### Legal and Citation Pages
+- **How to Cite page**: Comprehensive citation guidelines with:
+  - Pre-DOI provisional citation formats
+  - Post-DOI citation instructions
+  - BibTeX templates for academic references
+  - Third-party resource attribution (KEGG, HADEG, toxCSM)
+  - FAIR principles and versioning best practices
+- **Terms of Use page**: Complete legal framework in documentation (`docs/about/terms-of-use.md`) covering:
+  - Scope and purpose of BioRemPP as academic research tool
+  - Permitted uses (research, education) and prohibited uses (clinical, regulatory)
+  - User responsibilities (data ownership, citation, third-party license compliance)
+  - Privacy-by-design philosophy (no accounts, no persistent storage, session-based processing)
+  - Service limitations and availability (best-effort, no SLA)
+  - Licensing details (Apache 2.0 for code, CC BY 4.0 for database)
+  - Warranty disclaimers and liability limitations
+  - Contact information for institutional support
 
-- **ReadTheDocs Multi-Version Deployment**
-  - Configured automatic deployment for `main` (stable) and `dev` (latest) branches  
-  - Webhook integration for automatic builds on push
-  - Multi-format export: HTML, PDF, EPUB
-  - Version switcher for accessing different documentation versions
-  - Documentation URLs:
-    - Development (latest): https://biorempp.readthedocs.io/en/latest/
-    - Production (stable): https://biorempp.readthedocs.io/en/stable/
+#### Documentation Site Enhancements
+- MkDocs navigation structure for 65+ documentation pages
+- ReadTheDocs integration configuration (`.readthedocs.yml`)
+- Enhanced `docs/index.md` homepage with detailed service overview
+- GLightbox integration for lightbox viewing of activity diagrams
+  - `docs/javascripts/glightbox.min.js`: Core library
+  - `docs/javascripts/lightbox-init.js`: Initialization script with timeout
+  - `docs/stylesheets/glightbox.min.css`: Styling
 
-### Fixed
-
-- **API Documentation Module References**
-  - Corrected mkdocstrings import paths for cache module classes
-  - Changed from submodule paths to package-level exports
-  - Resolved `src.infrastructure.cache` import errors in API docs
-
-- **ReadTheDocs Configuration**
-  - Fixed `.readthedocs.yml` syntax: `extra_requires` → `extra_requirements`
-  - Removed `cache/` from `.gitignore` to allow proper module documentation
-
-- **GitHub Actions Permissions**
-  - Added `.github/workflows/docs-ci.yml` to repository (was blocked by gitignore)
-  - Configured proper workflow permissions for actions execution
-
-### Technical Details
-
-- **Python Version:** 3.11
-- **CI Actions:** `checkout@v4`, `setup-python@v5`, `upload-artifact@v4`
-- **Build Command:** `mkdocs build --verbose`
-- **Dependencies:** Managed via `pyproject.toml[docs]` optional dependency group
+### Changed
+- Updated FAQ with cross-references to new citation and terms pages
+- Enhanced home page navigation to include citation and terms links
+- Improved page registration system for new pages
 
 ---
 
-## [1.0.0-beta] - 2025-12-14
-
-##### The application will remain in beta (v1.0.0-beta) until the article is officially released.
-
+## [1.0.0-beta] - 2025 (2025-12-14)
+##### The application will remain in beta until the article is officially released.
 ### Added
 
 #### Architecture & Design
@@ -202,12 +260,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## Upcoming Features
 
 ### Under Consideration
-
-- REST API for programmatic access
-- Batch processing capabilities
 - Additional visualization types
 - Performance optimizations
-- Mobile app (iOS/Android)
 - Python package (pip installable)
 - Command-line interface (CLI)
 - Integration with additional databases
@@ -228,13 +282,6 @@ For questions, bug reports, or feature requests:
 
 - **GitHub Issues:** [BioRemPP Issues](https://github.com/BioRemPP/biorempp_web/issues)
 - **Email:** biorempp@gmail.com
-
 ---
 
-**Last Updated:** 2026-01-17
-
-[unreleased]: https://github.com/BioRemPP/biorempp_web/compare/v1.0.3-beta...HEAD
-[1.0.3-beta]: https://github.com/BioRemPP/biorempp_web/compare/v1.0.1-beta...v1.0.3-beta
-[1.0.1-beta]: https://github.com/BioRemPP/biorempp_web/compare/v1.0.0-beta...v1.0.1-beta
-[1.0.0-beta]: https://github.com/BioRemPP/biorempp_web/releases/tag/v1.0.0-beta
-
+**Last Updated:** 2026 -  Migration to organization repository
