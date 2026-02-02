@@ -21,7 +21,7 @@ Notes
 import dash_bootstrap_components as dbc
 from dash import html
 
-from config.settings import APP_VERSION
+from config.settings import APP_NAME, APP_VERSION
 
 
 def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
@@ -64,7 +64,7 @@ def create_header(show_nav: bool = True, logo_size: str = "70px") -> dbc.Navbar:
                     html.Div(
                         [
                             html.H3(
-                                f"BioRemPP {APP_VERSION}",
+                                f"{APP_NAME} {APP_VERSION}",
                                 className="mb-0 text-success fw-bold",
                                 style={"lineHeight": "1.1", "fontSize": "1.5rem"},
                             ),
