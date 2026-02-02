@@ -112,9 +112,49 @@ def get_app_version() -> str:
         return "1.0.0"
 
 
+def get_app_name() -> str:
+    """
+    Read application name from pyproject.toml and convert to display format.
+
+    Returns
+    -------
+    str
+        Application display name (e.g., "BioRemPP")
+
+    Notes
+    -----
+    Converts package name "biorempp-web" to display name "BioRemPP".
+    Falls back to "BioRemPP" if pyproject.toml cannot be read.
+    """
+    try:
+        import tomllib
+    except ImportError:
+        # Python < 3.11 fallback
+        try:
+            import tomli as tomllib
+        except ImportError:
+            return "BioRemPP"
+
+    pyproject_path = Path(__file__).parent.parent / "pyproject.toml"
+
+    try:
+        with open(pyproject_path, "rb") as f:
+            pyproject_data = tomllib.load(f)
+        package_name = pyproject_data.get("project", {}).get("name", "biorempp-web")
+        
+        # Convert package name to display name
+        # "biorempp-web" -> "BioRemPP"
+        if package_name.startswith("biorempp"):
+            return "BioRemPP"
+        return package_name.replace("-", " ").title()
+    except (FileNotFoundError, KeyError, Exception):
+        return "BioRemPP"
+
+
 # =============================================================================
-# APPLICATION VERSION (read from pyproject.toml)
+# APPLICATION METADATA (read from pyproject.toml)
 # =============================================================================
+APP_NAME: str = get_app_name()
 APP_VERSION: str = get_app_version()
 
 
