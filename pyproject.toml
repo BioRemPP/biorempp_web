@@ -10,7 +10,7 @@ build-backend = "setuptools.build_meta"
 # ============================================================================
 [project]
 name = "biorempp-web"
-version = "1.0.4-beta"
+version = "1.0.5-beta"
 description = "BioRemPP Web - Bioremediation Potential Profile"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -43,6 +43,7 @@ dependencies = [
     "pandas>=2.0.0,<3.0.0",
     "numpy>=1.26.0,<2.0.0",
     "openpyxl>=3.1.0,<4.0.0",
+
     
     # Scientific Computing
     "scipy>=1.14.1,<2.0.0",
@@ -107,6 +108,7 @@ dependencies = [
 
 # Development tools
 dev = [
+    "great_expectations>=1.12,<2.0",
     "pytest>=8.2.0",
     "pytest-cov>=5.0.0,<6.0.0",
     "pytest-asyncio>=0.24.0",
