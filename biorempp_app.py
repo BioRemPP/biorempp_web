@@ -31,7 +31,7 @@ logging.getLogger("watchdog.observers").setLevel(logging.WARNING)
 logging.getLogger("watchdog.observers.inotify_buffer").setLevel(logging.WARNING)
 
 # Import unified configuration system
-from config.settings import get_settings
+from config.settings import APP_NAME, APP_VERSION, get_settings
 
 # Import Singleton PlotService
 from src.application.plot_services.singleton import get_plot_service
@@ -151,9 +151,14 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             font_awesome
         ],
         suppress_callback_exceptions=True,
-        title="BioRemPP v1.0",
+        title=f"{APP_NAME} v{APP_VERSION}",
         assets_folder='src/assets',
         background_callback_manager=long_callback_manager
+    )
+    favicon_href = f"{app.get_asset_url('favicon.ico')}?v={APP_VERSION}"
+    app.index_string = app.index_string.replace(
+        "{%favicon%}",
+        f'<link rel="icon" type="image/x-icon" href="{favicon_href}">'
     )
     logger.info("[OK] Dash app created")
     logger.info("  - Theme: Bootstrap MINTY")
@@ -346,8 +351,8 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         """
         return {
             "status": "healthy",
-            "service": "BioRemPP",
-            "version": "1.0.0",
+            "service": APP_NAME,
+            "version": APP_VERSION,
             "environment": settings.ENV
         }, 200
 

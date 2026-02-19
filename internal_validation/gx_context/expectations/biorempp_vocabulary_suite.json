@@ -1,0 +1,58 @@
+{
+  "expectations": [
+    {
+      "id": "c3c9778f-b224-45c8-9d7c-e8e69be61864",
+      "kwargs": {
+        "value": 10869
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "9cb33524-5852-4a9e-8883-5bd26fad17a1",
+      "kwargs": {
+        "column": "compoundclass"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "a531f9bc-eacc-4b44-81f6-7a8c0b113d7d",
+      "kwargs": {
+        "column": "enzyme_activity"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "02f58682-066b-4270-96b5-bb19ef4082f9",
+      "kwargs": {
+        "column": "referenceAG",
+        "value_set": [
+          "EPA",
+          "ATSDR",
+          "IARC",
+          "IARC1",
+          "IARC2A",
+          "IARC2B",
+          "WFD",
+          "PSL",
+          "EPC",
+          "CONAMA"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_distinct_values_to_be_in_set"
+    }
+  ],
+  "id": "93741695-2c63-4865-85be-19395945ba1b",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "biorempp_vocabulary_suite",
+  "notes": null
+}

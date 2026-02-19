@@ -257,6 +257,11 @@ biorempp_web.code-workspace
 profiling_biorempp
 .internal_validation
 
+# New internal validation (GX-first) transient artifacts
+internal_validation/gx_context/uncommitted/
+internal_validation/outputs_latest/
+internal_validation/outputs/*/05_example_roundtrip_regression/summary.json
+
 # ============================================================================
 # Git Versioning Message Files (Conventional Commits + Semantic Versioning)
 # ============================================================================

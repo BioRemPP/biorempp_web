@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "dcb8cf75-61fa-4962-9d9d-1a86ff232fe6",
+      "name": "toxcsm_db"
+    },
+    "batch_definition": {
+      "id": "ace95d0b-3c18-451a-ad6b-58ca5c95aff2",
+      "name": "toxcsm_db_full"
+    },
+    "datasource": {
+      "id": "dfe6e152-78bc-4a53-a014-41b0ef9d9544",
+      "name": "biorempp_databases"
+    }
+  },
+  "id": "48f08e83-4248-4456-a6fb-142b91e068a8",
+  "name": "validate_toxcsm_db_invariants",
+  "suite": {
+    "id": "32774378-8614-45e8-9675-acce86ca1c73",
+    "name": "toxcsm_invariants_suite"
+  }
+}
