@@ -15,6 +15,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structure and document Internal Validation Suite scripts for public release
 - Publish validation results as supplementary materials
 
+### Added
+
+#### Results Overview Aggregation
+
+- **Hybrid Aggregate Metrics in Top Results Panel** - Added a second compact metrics row in `/results` overview card
+  - New KPIs: `Integrated Relations`, `Databases with Matches`, `KO Match Rate`
+  - Added per-database contribution badges (BioRemPP, HADEG, ToxCSM, KEGG) with input relation totals and share percentages
+  - Added compact tooltip for aggregation semantics (sum of first relation metric per database; overlap may exist)
+
+- **Metadata Contract Extension** - Added optional aggregate payload generated during processing
+  - New key: `metadata["database_aggregate_overview"]`
+  - Fields: `total_relations_input`, `active_databases`, `total_databases`, `ko_match_rate_pct`, `matched_kos`, `total_kos`, `per_database`
+
+### Changed
+
+#### Dynamic Database Overview Cards (4 Databases)
+
+- **Database Cards Refactor** - Replaced hardcoded overview values with dynamic values from processing metadata
+  - BioRemPP: dynamic `enzyme_compound_relations`, `environmental_compounds`, `compound_classes`, `regulatory_frameworks`
+  - HADEG: dynamic `gene_pathway_relations`, `unique_ko_numbers`, `degradation_pathways`, `compound_categories`
+  - ToxCSM: dynamic `environmental_compounds`, `toxicity_endpoints`, `toxicity_categories`
+  - KEGG: dynamic `gene_pathway_associations`, `unique_ko_numbers`, `degradation_pathways`
+
+- **Input-vs-Reference Presentation Rule** - Updated KPI display behavior for readability and tidy-data consistency
+  - First metric in each database card now shows **input value only**
+  - Remaining metrics keep input value with compact reference indicator (database icon + value)
+  - Replaced explicit "Global" text with a small icon hover label (`Refrence database value`) to reduce visual noise
+
+- **ToxCSM Label Update** - Renamed first ToxCSM KPI label to `KO-Compound Relations`
+
+#### Processing Pipeline and Compatibility
+
+- **Service-Layer Aggregation Builders** - Added dedicated builders for database overview and aggregate overview in `DataProcessingService`
+- **Server-Side Rendering Integration** - Kept existing architecture (`DataProcessingService -> merged-result-store -> /results`) without introducing new callbacks
+- **Backward Compatibility Fallbacks** - Added resilient fallback logic when `database_overview` or `database_aggregate_overview` is missing (older sessions)
+
+### Fixed
+
+- **Overview Data Accuracy** - Ensured top-panel aggregate volume uses input-derived relations only, avoiding misleading comparisons with global table size for tidy datasets
+- **ToxCSM Endpoint Semantics** - Kept endpoint counting dynamic and column-driven (`value_*`) for both input and reference contexts
+- **Regression Coverage** - Added/updated unit tests for:
+  - `database_overview` and `database_aggregate_overview` metadata structure and formulas
+  - Top results panel rendering with aggregate payload
+  - Fallback rendering for sessions missing new metadata keys
+
 ---
 
 ## [1.0.4-beta] - 2026-01-30
