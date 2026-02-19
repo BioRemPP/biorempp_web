@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Structure and document Internal Validation Suite scripts for public release
 - Publish validation results as supplementary materials
 
+---
+
+## [1.0.5-beta] - 2026-02-19
+##### The application will remain in beta until the article is officially released.
+
 ### Added
 
 #### Results Overview Aggregation
