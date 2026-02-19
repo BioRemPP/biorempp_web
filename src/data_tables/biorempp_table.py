@@ -10,13 +10,61 @@ create_biorempp_section
     Create complete BioRemPP section with enhanced description and accordion
 """
 
+from typing import Any, Dict, Optional
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from src.presentation.components.composite import create_database_description
 
 
-def create_biorempp_section() -> html.Div:
+def _format_stat_value(value: Any) -> str:
+    """Format stat values with fallback placeholder."""
+    if value is None:
+        return "--"
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        return f"{int(value):,}" if value.is_integer() else f"{value:,.2f}"
+    return str(value)
+
+
+def _get_stat_value(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]],
+    metric_key: str,
+    value_key: str,
+) -> Any:
+    """Safely get nested overview stat value."""
+    if not overview_stats:
+        return None
+    metric = overview_stats.get(metric_key)
+    if not isinstance(metric, dict):
+        return None
+    return metric.get(value_key)
+
+
+def _create_reference_value_indicator(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]], metric_key: str
+) -> html.Small:
+    """Render compact database reference indicator (icon + value)."""
+    return html.Small(
+        [
+            html.I(
+                className="fas fa-database me-1",
+                title="Refrence database value",
+                style={"fontSize": "0.7rem"},
+            ),
+            _format_stat_value(_get_stat_value(overview_stats, metric_key, "global_value")),
+        ],
+        className="text-muted d-block",
+    )
+
+
+def create_biorempp_section(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> html.Div:
     """
     Create BioRemPP results table section with enhanced metadata.
 
@@ -48,7 +96,13 @@ def create_biorempp_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "10,869",
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "enzyme_compound_relations",
+                                                            "input_value",
+                                                        )
+                                                    ),
                                                     className="text-primary mb-0",
                                                 ),
                                                 html.Small(
@@ -66,8 +120,18 @@ def create_biorempp_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "384",
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "environmental_compounds",
+                                                            "input_value",
+                                                        )
+                                                    ),
                                                     className="text-success mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "environmental_compounds",
                                                 ),
                                                 html.Small(
                                                     "Environmental Compounds",
@@ -84,7 +148,18 @@ def create_biorempp_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "12", className="text-info mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "compound_classes",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-info mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "compound_classes",
                                                 ),
                                                 html.Small(
                                                     "Compound Classes",
@@ -101,7 +176,18 @@ def create_biorempp_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "9", className="text-warning mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "regulatory_frameworks",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-warning mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "regulatory_frameworks",
                                                 ),
                                                 html.Small(
                                                     "Regulatory Frameworks",
