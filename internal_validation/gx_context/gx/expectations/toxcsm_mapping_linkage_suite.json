@@ -1,0 +1,41 @@
+{
+  "expectations": [
+    {
+      "id": "588a87ab-ea8b-4ad5-b9b0-d9df538833ea",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "3498cecf-8229-4c6e-90d4-ec3283c54cfe",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d5e5c29d-23de-4c4d-84d8-30142eac2532",
+      "kwargs": {
+        "column_list": [
+          "cpd",
+          "SMILES",
+          "ChEBI"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "4b663aed-27be-4d6f-b3b9-1d7ced6fd58c",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "toxcsm_mapping_linkage_suite",
+  "notes": null
+}

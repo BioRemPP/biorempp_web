@@ -12,8 +12,75 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### To-Do
 
 - Structure and document Profiling Suite scripts for public release
-- Structure and document Internal Validation Suite scripts for public release
-- Publish validation results as supplementary materials
+
+---
+
+## [1.0.6-beta] - 2026-02-19
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Internal Validation (GX)
+
+- **Official Internal Validation Suite in Root Directory**
+  - Added complete `internal_validation/` structure with configuration, scripts, suites, context, outputs, and operational docs.
+  - Added GX orchestration scripts:
+    - `internal_validation/scripts/run_all_gx.py`
+    - `internal_validation/scripts/ci_validation.py`
+    - `internal_validation/scripts/init_gx_context.py`
+    - `internal_validation/scripts/configure_data_sources.py`
+    - `internal_validation/scripts/verify_gx_setup.py`
+  - Added hybrid task modules for provenance, overlap, roundtrip, and parity support in:
+    - `internal_validation/scripts/tasks/`
+
+- **GX Validation Definitions and Checkpoints**
+  - Added schema, mapping, invariants, and vocabulary suites with persisted GX artifacts under:
+    - `internal_validation/gx_context/expectations/`
+    - `internal_validation/gx_context/validation_definitions/`
+    - `internal_validation/gx_context/checkpoints/`
+
+- **CI Workflow for Internal Validation**
+  - Added workflow:
+    - `.github/workflows/internal_validation_gx.yml`
+
+### Changed
+
+#### Validation Strictness and Contracts
+
+- **Strict Fixed Expectations for Consolidated Snapshot**
+  - Replaced range/tolerance expectations with fixed-value constraints in GX suites.
+  - Added fixed row-count contract per asset in:
+    - `internal_validation/config/validation_config.yaml` (`expected_row_counts`)
+  - Updated suite logic to enforce strict row counts and strict non-null checks.
+  - Replaced toxCSM `value_*` range checks with fixed discrete domain checks (`0.00` to `1.00`, step `0.01`).
+
+- **Output Ignore Rule for Roundtrip Summary**
+  - Updated `.gitignore` to ignore dated roundtrip summary JSON files:
+    - `internal_validation/outputs/*/05_example_roundtrip_regression/summary.json`
+
+- **Dependency Scope**
+  - Moved `great_expectations>=1.12,<2.0` to `dev` optional dependencies in `pyproject.toml`.
+
+#### Validation Documentation
+
+- Rewrote official validation documentation pages to reflect the GX implementation and current operational flow:
+  - `docs/validation/index.md`
+  - `docs/validation/internal-validation.md`
+  - `docs/validation/validation-suite.md`
+  - `docs/validation/validation-v1.md`
+
+### Fixed
+
+#### Checksum Consistency and Validation Reporting
+
+- Updated `docs/validation/validation-v1.md` with real execution metrics from:
+  - `internal_validation/outputs/2026-02-18/`
+- Aligned checksum references in documentation with current dataset hashes.
+- Updated `data/databases/checksums.sha256` to match current CSV files:
+  - `biorempp_db.csv`: `216cf113400161d6eee8d4eefb13bab23f60f9286874fa41ae8d00f3fc4637c0`
+  - `hadeg_db.csv`: `d546c01be1cf05866b18aa25fd1edb23e4d90f9ab4e65fb5e37911c1e57ce938`
+  - `kegg_degradation_db.csv`: `f3df93d3bc5492043d2f6a9ea087b6687757e4757057ba1ab19c1a0d53fcd619`
+  - `toxcsm_db.csv`: `0d4616930b438964d9e007b20c9ffb9c414879b775a3b89d660bfc6278fe5f38`
 
 ---
 

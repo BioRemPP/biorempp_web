@@ -1,190 +1,220 @@
-# Internal Validation Suite
+﻿# Internal Validation Suite
 
-BioRemPP includes an **Internal Validation Suite** that is executed to document whether the platform’s **data integration and analytical behavior** remain structurally consistent, biologically plausible at the level of *functional potential inference*, and reproducible under a fixed data snapshot.
+BioRemPP includes an **Internal Validation Suite** that is executed to document whether the platform's **data integration and analytical behavior** remain structurally consistent, biologically plausible at the level of *functional potential inference*, and reproducible under a fixed data snapshot.
 
 This page summarizes the **scientific intent** of the validation suite and the **types of artifacts** it produces.
 
 ---
 
-## 1. Purpose of the internal validation suite
+## 1. Purpose of the Internal Validation Suite
 
 BioRemPP integrates heterogeneous, curated resources (BioRemPP database, KEGG degradation subset, HADEG, toxCSM) to support **compound-centric interpretation** of user-provided KO profiles. Multi-source integration introduces two reviewer-relevant risks:
 
-* **Integration drift:** changes in underlying data (content, schema, controlled vocabularies) can alter analytical outputs.
-* **Mapping incoherence:** inconsistent linkage patterns (e.g., KO→compound→toxicity) can generate outputs that are difficult to interpret scientifically.
+- **Integration drift:** changes in underlying data (content, schema, controlled vocabularies) can alter analytical outputs.
+- **Mapping incoherence:** inconsistent linkage patterns (e.g., KO->compound->toxicity) can generate outputs that are difficult to interpret scientifically.
 
 The Internal Validation Suite is designed to provide **auditable evidence** that:
 
-* the integrated datasets remain **traceable and structurally stable**;
-* cross-database relationships exhibit **expected concordance/complementarity** given their scopes;
-* key mapping and output properties satisfy **logical invariants** required for defensible interpretation;
-* repeated execution over an identical snapshot yields **consistent results**.
+- the integrated datasets remain **traceable and structurally stable**;
+- cross-database relationships exhibit **expected concordance/complementarity** given their scopes;
+- key mapping and output properties satisfy **logical invariants** required for defensible interpretation;
+- repeated execution over an identical snapshot yields **consistent results**.
 
-**Why internal validation (rather than competitive benchmarking)?**
-BioRemPP’s compound-centric integration of functional annotations with toxicity and regulatory context does not have a direct, like-for-like comparator. Generic KO/pathway tools (e.g., KO assignment or pathway viewers) address upstream annotation or generic metabolism visualization and do not evaluate the same integrated outputs. Consequently, BioRemPP emphasizes **internal consistency, plausibility, and reproducibility** as the appropriate validation targets.
+**Why internal validation (rather than competitive benchmarking)?**  
+BioRemPP's compound-centric integration of functional annotations with toxicity and regulatory context does not have a direct, like-for-like comparator. Generic KO/pathway tools (e.g., KO assignment or pathway viewers) address upstream annotation or generic metabolism visualization and do not evaluate the same integrated outputs. Consequently, BioRemPP emphasizes **internal consistency, plausibility, and reproducibility** as the appropriate validation targets.
 
 ---
 
-## 2. Scope of validation
+## 2. Scope of Validation
 
 The suite evaluates three domains:
 
 1. **Provenance and data stability**
 
-   * evidence that the database snapshot used by the service is identifiable and traceable.
+   - evidence that the database snapshot used by the service is identifiable and traceable.
 
 2. **Integration and mapping coherence**
 
-   * evidence that cross-database overlaps and linkage cardinalities are consistent with expected database scopes and biological realities (e.g., enzyme promiscuity; redundancy of enzymatic routes).
+   - evidence that cross-database overlaps and linkage cardinalities are consistent with expected database scopes and biological realities (e.g., enzyme promiscuity; redundancy of enzymatic routes).
 
 3. **Analytical output invariants and regression stability**
 
-   * evidence that representative outputs remain logically well-formed and stable across repeated runs given identical inputs and the same database snapshot.
+   - evidence that representative outputs remain logically well-formed and stable across repeated runs given identical inputs and the same database snapshot.
 
-### Explicit non-claims
+### Explicit Non-Claims
 
 The Internal Validation Suite does **not** claim:
 
-* experimental confirmation of degradation or biological activity;
-* predictive accuracy (sensitivity/specificity) against a gold-standard dataset;
-* regulatory compliance, endorsement, or risk assessment.
+- experimental confirmation of degradation or biological activity;
+- predictive accuracy (sensitivity/specificity) against a gold-standard dataset;
+- regulatory compliance, endorsement, or risk assessment.
 
 BioRemPP outputs should be interpreted as **hypothesis-generating functional potential** that requires experimental validation for real-world bioremediation conclusions.
 
 ---
 
-## 3. Overview of the executed suite
+## 3. Overview of the Executed Suite
 
-The validation suite is implemented as a set of **seven scripted checks** that generate:
+The validation suite is implemented through a **GX-driven execution layer** plus **hybrid analytical tasks**, generating:
 
-* a **human-readable report** for each validation component; and
-* machine-readable summaries suitable for tracking changes across versions.
+- a **human-readable report** for each validation component; and
+- machine-readable summaries suitable for tracking changes across versions.
 
-When executed, the suite produces an execution summary (pass/fail per script) with a timestamp and suite version identifier.
+When executed, the suite produces a consolidated run summary with checkpoint status, hybrid task status, timestamps, and output contracts.
 
 **Validation components (7):**
 
-| Component                    | Primary domain         | What it provides (evidence)                                  |
-| ---------------------------- | ---------------------- | ------------------------------------------------------------ |
-| Provenance snapshot          | Provenance & stability | Snapshot fingerprinting of integrated datasets               |
-| Schema integrity             | Data integrity         | Required-field presence and structural consistency           |
-| Cross-database overlap       | Integration coherence  | Expected concordance/complementarity across KO universes     |
-| Mapping consistency          | Mapping coherence      | KO–compound and compound–toxicity linkage patterns           |
-| Example roundtrip regression | Reproducibility        | Stable outputs for standardized example inputs               |
-| Use case invariants          | Output correctness     | Logical constraints preserved in representative outputs      |
-| Controlled vocabulary audit  | Semantic stability     | Drift monitoring for controlled terms used in interpretation |
+| Component | Primary domain | What it provides (evidence) |
+| --- | --- | --- |
+| Provenance snapshot | Provenance and stability | Snapshot fingerprinting of integrated datasets |
+| Schema integrity | Data integrity | Required-field presence and structural consistency |
+| Cross-database overlap | Integration coherence | Expected concordance/complementarity across KO universes |
+| Mapping consistency | Mapping coherence | KO-compound and compound-toxicity linkage patterns |
+| Example roundtrip regression | Reproducibility | Stable outputs for standardized example inputs |
+| Use case invariants | Output correctness | Logical constraints preserved in representative outputs |
+| Controlled vocabulary audit | Semantic stability | Drift monitoring for controlled terms used in interpretation |
 
 ---
 
-## 4. Description of validation components
+## 4. Execution Model and Artifacts
 
-### 4.1 Provenance snapshot
+### 4.1 Validation Engine
 
-**Scientific purpose.** Enable readers to identify the *exact data state* underlying a set of results.
+The official stack combines:
 
-**Evidence produced.** The suite records a fingerprint of each integrated database file (e.g., checksums) plus basic snapshot descriptors (e.g., file metadata and schema signatures).
+- **Great Expectations** suites and checkpoints for declarative constraints
+- **Hybrid Python tasks** for provenance, overlap, and roundtrip analyses
 
-**What it detects.** Any unintended modification, corruption, or untracked update of database content is detectable as a change in the snapshot fingerprint.
+### 4.2 Main Commands
 
-**Why it matters.** This provides a defensible mechanism for linking reported analyses to a specific database snapshot, enabling temporal traceability.
+```bash
+python internal_validation/scripts/run_all_gx.py --checkpoint biorempp_full_validation
+python internal_validation/scripts/run_all_gx.py --schema-only
+python internal_validation/scripts/run_all_gx.py --ci
+python internal_validation/scripts/ci_validation.py
+```
 
----
+### 4.3 Output Contracts
 
-### 4.2 Schema integrity
+- Versioned outputs: `internal_validation/outputs/YYYY-MM-DD/`
+- Latest outputs: `internal_validation/outputs_latest/`
+- Consolidated summary: `internal_validation/outputs_latest/index.json`
+- Human summary: `internal_validation/outputs_latest/index.md`
+- Data Docs: `internal_validation/gx_context/uncommitted/data_docs/local_site/`
 
-**Scientific purpose.** Integration and downstream analyses assume the presence of specific identifier fields and controlled columns. Schema drift can silently alter results.
+### 4.4 CI Exit Semantics
 
-**Evidence produced.** The suite verifies the availability of required columns and performs structural sanity checks (e.g., missingness patterns; duplicate pressure in fields expected to be stable).
-
-**What it detects.** Missing/renamed fields, abnormal null density, or unexpected structural changes that can invalidate joins or distort interpretation.
-
-**Why it matters.** It supports the claim that observed non-matches or coverage differences are consistent with database scope/coverage rather than malformed data.
-
----
-
-### 4.3 Cross-database overlap
-
-**Scientific purpose.** BioRemPP combines databases with different curation scopes. Interpreting partial mappings requires understanding expected overlap.
-
-**Evidence produced.** The suite computes overlap summaries for KO identifier sets across BioRemPP, KEGG subset, and HADEG (and links to compound-level coverage for toxCSM where applicable).
-
-**What it detects.** Unexpected disjointness or unexpectedly high/low overlap suggest scope drift, curation errors, or integration mistakes.
-
-**Why it matters.** Establishes baseline expectations for why an input KO may map in one source but not in another.
+- `0`: all critical checks passed
+- `1`: one or more validations failed
+- `2`: execution/runtime error
 
 ---
 
-### 4.4 Mapping consistency
+## 5. Description of Validation Components
 
-**Scientific purpose.** Compound-centric inference relies on coherent relationships across layers (KO→compound and compound→toxicity). Many-to-many mappings are biologically plausible and must be preserved consistently.
+### 5.1 Provenance Snapshot
 
-**Evidence produced.** The suite audits linkage patterns such as:
+**Scientific purpose.** Enable readers to identify the exact data state underlying a set of results.
 
-* distribution of compounds per KO (capturing expected promiscuity and redundancy);
-* coverage of compounds that have toxCSM predictions;
-* missingness patterns across toxicity endpoints.
+**Evidence produced.** File fingerprints (SHA256), metadata, schema descriptors, and missingness profile for each integrated database.
 
-**What it detects.** Broken linkages (e.g., compounds expected to connect to toxicity predictions but failing systematically) or implausible cardinality distributions that indicate integration issues.
+**What it detects.** Any unintended modification, corruption, or untracked update of database content.
 
-**Why it matters.** Supports scientifically defensible interpretation of why some compounds carry toxicity context while others do not, and why multiple compounds may be associated with a single KO.
+**Why it matters.** Links reported analyses to a specific database snapshot with audit-ready traceability.
 
 ---
 
-### 4.5 Example roundtrip regression
+### 5.2 Schema Integrity
 
-**Scientific purpose.** Demonstrate that identical inputs evaluated against the same snapshot yield consistent merged outputs.
+**Scientific purpose.** Ensure required fields and structural assumptions remain valid for deterministic joins and downstream analyses.
 
-**Evidence produced.** The suite reprocesses standardized example KO datasets and records stable fingerprints of the resulting merged tables.
+**Evidence produced.** Required-column checks, KO format checks, null-threshold checks, and suite-level expectation statistics.
 
-**What it detects.** Any unintended change in mapping behavior across releases or database snapshots that would alter merged outputs for unchanged example inputs.
+**What it detects.** Missing/renamed fields, abnormal null density, and structural drift that can invalidate interpretation.
 
-**Why it matters.** Provides an auditable regression baseline for reproducibility over time.
-
----
-
-### 4.6 Use case invariants
-
-**Scientific purpose.** Independent analytical use cases should preserve basic logical constraints required for interpretation (e.g., non-negative counts; required identifiers present where defined).
-
-**Evidence produced.** The suite evaluates invariant checks on representative merged outputs and/or derived summary tables.
-
-**What it detects.** Violations that would indicate incoherent analytical outputs (e.g., impossible ranges, invalid identifiers in output fields, empty mandatory descriptors).
-
-**Why it matters.** Adds a final scientific-sanity layer that outputs remain interpretable as structured analytical results.
+**Why it matters.** Distinguishes genuine coverage limits from malformed data artifacts.
 
 ---
 
-### 4.7 Controlled vocabulary audit
+### 5.3 Cross-Database Overlap
 
-**Scientific purpose.** BioRemPP relies on controlled terms (e.g., compound classes; regulatory framework labels) that are used downstream for filtering and interpretation. Vocabulary drift can invalidate comparisons.
+**Scientific purpose.** Characterize expected overlap/divergence among resources with different curation scopes.
 
-**Evidence produced.** The suite enumerates controlled vocabulary values and their frequencies, producing version-comparable summaries.
+**Evidence produced.** Pairwise intersections, Jaccard indices, shared cores, and exclusive KO counts.
 
-**What it detects.** Untracked additions/removals/renames that would change interpretation layers or break reproducibility across releases.
+**What it detects.** Unexpected disjointness or overlap shifts suggesting curation or integration issues.
 
-**Why it matters.** Preserves semantic stability and supports longitudinal comparisons.
-
----
-
-## 5. Determinism and reproducibility
-
-Within a fixed database snapshot, BioRemPP’s mapping and downstream analyses are designed to be **deterministic**:
-
-* identical KO inputs applied to the same snapshot yield the same merged results;
-* regression fingerprints on standardized example datasets provide an auditable stability check;
-* provenance fingerprints document the exact snapshot used to generate results.
-
-Because BioRemPP analyses are defined using **declarative YAML configuration** (parameters, transformations, visualization logic), the analytical state can be traced to explicit configuration versions rather than implicit code defaults.
+**Why it matters.** Supports interpretation when input KOs map in one resource but not in others.
 
 ---
 
-## 6. Limitations
+### 5.4 Mapping Consistency
+
+**Scientific purpose.** Verify coherent KO->compound and compound->toxicity relationships.
+
+**Evidence produced.** Cardinality distributions, linkage coverage, and mapping-level expectations.
+
+**What it detects.** Systematic linkage breaks or implausible mapping patterns.
+
+**Why it matters.** Preserves scientifically defensible interpretation of one-to-many associations.
+
+---
+
+### 5.5 Example Roundtrip Regression
+
+**Scientific purpose.** Demonstrate deterministic behavior for fixed example datasets.
+
+**Evidence produced.** Input checksums, merged output checksums, and content hashes by dataset.
+
+**What it detects.** Unintended changes in mapping behavior across runs with unchanged inputs and snapshot.
+
+**Why it matters.** Provides an auditable regression baseline.
+
+---
+
+### 5.6 Use Case Invariants
+
+**Scientific purpose.** Ensure representative merged outputs remain logically well-formed.
+
+**Evidence produced.** Invariant pass/fail checks per merged artifact.
+
+**What it detects.** Impossible ranges, missing mandatory values, invalid identifiers.
+
+**Why it matters.** Adds a final sanity layer for downstream interpretation.
+
+---
+
+### 5.7 Controlled Vocabulary Audit
+
+**Scientific purpose.** Ensure semantic stability of controlled fields used in filtering and interpretation.
+
+**Evidence produced.** Frequency distributions for controlled vocabularies and unique value counts.
+
+**What it detects.** Untracked additions/removals/renames with potential interpretability impact.
+
+**Why it matters.** Supports stable longitudinal comparisons.
+
+---
+
+## 6. Determinism and Reproducibility
+
+Within a fixed database snapshot, BioRemPP mapping and downstream analyses are deterministic:
+
+- identical KO inputs applied to the same snapshot yield the same merged results;
+- roundtrip fingerprints on standardized example datasets provide a reproducibility baseline;
+- provenance fingerprints document the exact snapshot used to generate results.
+
+Because analyses and validation parameters are defined via declarative YAML configuration, analytical state remains explicit and auditable.
+
+---
+
+## 7. Limitations
 
 The Internal Validation Suite provides evidence of **internal coherence and reproducibility**, but it does not establish external validity:
 
-* It does not confirm real-world biodegradation outcomes.
-* It does not quantify predictive accuracy due to the lack of a field-wide gold-standard dataset for compound-centric bioremediation potential.
-* It does not replace experimental validation.
-* It does not imply regulatory approval or compliance.
+- It does not confirm real-world biodegradation outcomes.
+- It does not quantify predictive accuracy due to the lack of a field-wide gold-standard dataset for compound-centric bioremediation potential.
+- It does not constitute experimental validation.
+- It does not imply regulatory approval or compliance.
 
 Accordingly, BioRemPP results should be used for **comparative profiling and hypothesis generation** with subsequent experimental validation where required.

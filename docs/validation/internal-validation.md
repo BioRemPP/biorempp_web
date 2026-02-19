@@ -1,4 +1,4 @@
-# Internal Validation
+﻿# Internal Validation
 
 This page describes the internal validation strategy employed by BioRemPP to ensure analytical coherence, structural plausibility, and reproducibility of results.
 
@@ -19,7 +19,7 @@ BioRemPP employs **internal validation**, which assesses the coherence and plaus
 
 - Cross-database consistency (identifier mappings, compound linkages, pathway associations)
 - Structural invariants (subset relationships, expected overlap/divergence patterns)
-- Deterministic reproducibility (same input + same databases → same output)
+- Deterministic reproducibility (same input + same databases -> same output)
 - Traceability of analytical transformations (transparency of mapping logic and parameters)
 
 **External competitive benchmarking**, by contrast, compares platform performance against alternative tools using shared test datasets or ground-truth references.
@@ -85,7 +85,6 @@ BioRemPP integrates four databases with distinct but complementary scopes. Under
 
 ### HADEG: Specialized Hydrocarbon Degradation
 
-
 **Scope:** HADEG provides **specialized overlap** for hydrocarbon degradation. KOs involved in hydrocarbon metabolism are expected to appear in HADEG even if they do not map to regulatory priority pollutants in BioRemPP Database.
 
 **Expected pattern:** HADEG matches represent a specialized functional subset. Overlap with BioRemPP Database is expected for aromatic hydrocarbons (e.g., benzene, naphthalene, PAHs) that appear in regulatory frameworks. Divergence is expected for hydrocarbon intermediates or aerobic oxidation pathways not classified as priority pollutants.
@@ -94,12 +93,11 @@ BioRemPP integrates four databases with distinct but complementary scopes. Under
 
 ### toxCSM: Compound-Level Toxicity Predictions
 
-
 **Join key:** Compound identifier (`cpd`), not KO identifier.
 
-**Scope:** ToxCSM integration is **compound-dependent**, not KO-dependent. Toxicity predictions are available only for compounds matched via BioRemPP Database. Empty ToxCSM results occur when KOs do not map to BioRemPP compounds..
+**Scope:** toxCSM integration is **compound-dependent**, not KO-dependent. Toxicity predictions are available only for compounds matched via BioRemPP Database. Empty toxCSM results occur when KOs do not map to BioRemPP compounds.
 
-**Expected pattern:** ToxCSM matches are a subset of BioRemPP Database matches. Coverage reflects availability of chemical structure annotations, not absence of toxicity.
+**Expected pattern:** toxCSM matches are a subset of BioRemPP Database matches. Coverage reflects availability of chemical structure annotations, not absence of toxicity.
 
 ---
 
@@ -129,7 +127,7 @@ Internal validation assesses structural plausibility of integrated data at the l
 
 **Compound-level integration:**
 
-- ToxCSM uses compound identifiers (`cpd`) derived from BioRemPP Database.
+- toxCSM uses compound identifiers (`cpd`) derived from BioRemPP Database.
 - Expected behavior: Toxicity predictions link to compounds, not KOs.
 
 **Validation check:** Cross-database joins preserve identifier uniqueness. No identifier format corruption (e.g., whitespace, case mismatches) occurs during integration.
@@ -168,7 +166,7 @@ Absence of database match does **not** imply absence of biological function. It 
 
 - **Curation scope limitation:** Databases prioritize specific compound classes or pathway types.
 - **Knowledge gaps:** Compounds or pathways not yet characterized in bioremediation literature.
-- **Structural constraints:** ToxCSM requires SMILES; inorganic compounds may lack chemical structure annotations.
+- **Structural constraints:** toxCSM requires SMILES; inorganic compounds may lack chemical structure annotations.
 
 **Validation check:** Empty results are scientifically plausible and documented as expected behavior, not errors.
 
@@ -260,7 +258,7 @@ BioRemPP Database prioritizes compounds of established regulatory significance. 
 
 **Principle:**
 
-All database integrations use **exact identifier matching** via inner joins. No probabilistic inference, fuzzy matching, or machine learning–based assignments occur during integration.
+All database integrations use **exact identifier matching** via join keys. No probabilistic inference, fuzzy matching, or machine learning-based assignments occur during integration.
 
 **Implication:**
 
@@ -272,7 +270,7 @@ Given identical KO input and unchanged database versions:
 
 **Reproducibility guarantee:**
 
-Same input + same databases → same merged data → same analytical outputs.
+Same input + same databases -> same merged data -> same analytical outputs.
 
 ---
 
@@ -285,81 +283,68 @@ All outputs are linked to specific database versions with documented checksums f
 | Database | Version | Snapshot Date | SHA256 Checksum |
 |----------|---------|---------------|-----------------|
 | **BioRemPP Database** | v1.0.0 | December 15, 2025 | `216cf113400161d6eee8d4eefb13bab23f60f9286874fa41ae8d00f3fc4637c0` |
-| **KEGG Degradation** | Release 116.0+/12-19 | December 2025 | `20fff1041ec3c0ccc9510a1c1c27d4d5e3dff2c36dcba37427ef602673af5921` |
-| **HADEG** | Commit 8f1ff8f | 2023 | `b588099bb19e123c2384a710b532dfe4fd0413ea80da9f238c0b11e433442a42` |
+| **KEGG Degradation** | Release 116.0+/12-19 | December 2025 | `f3df93d3bc5492043d2f6a9ea087b6687757e4757057ba1ab19c1a0d53fcd619` |
+| **HADEG** | Commit 8f1ff8f | 2023 | `d546c01be1cf05866b18aa25fd1edb23e4d90f9ab4e65fb5e37911c1e57ce938` |
 | **ToxCSM** | v1.0 | 2022 | `0d4616930b438964d9e007b20c9ffb9c414879b775a3b89d660bfc6278fe5f38` |
-
-**Versioning policy:**
-
-- **BioRemPP Database:** Major version changes indicate schema modifications; minor versions indicate content updates.
-- **KEGG:** Updated regularly by KEGG consortium. Users must cite **access date** and release version for reproducibility.
-- **HADEG, toxCSM:** Static snapshots. Cite original publications and commit/version identifiers.
 
 **Metadata documentation:**
 
 - Database versions documented in release notes and metadata files.
-- File checksums (SHA256) provided in `data/databases/checksums.sha256` for integrity verification.
+- File checksums (SHA256) provided for integrity verification.
 - Curation dates and external source access dates recorded.
-
-**User responsibility:**
-
-To ensure reproducibility, users must report:
-
-- BioRemPP version (e.g., v1.0.0)
-- Database snapshot date (e.g., December 2025)
-- Database checksums (if integrity verification required)
-- Analysis date
-- Annotation tool and version used upstream (e.g., eggNOG-mapper v2.1.12)
 
 ---
 
 ### 5.3 Configuration-Driven Analyses (Declarative YAML Framework)
 
-**Declarative parameter transparency**
+All BioRemPP analytical use cases and validation parameters are defined through **declarative YAML configuration files**.
 
-All BioRemPP analytical use cases are defined through **declarative YAML configuration files**.
-These files explicitly encode **all analytical parameters, data transformations, and visualization logic** used by each use case.
+Typical parameters include:
 
-**Examples of YAML-controlled parameters**
+- Ranking constraints (e.g., `top_n`)
+- Missingness thresholds
+- Controlled vocabularies for agencies and classes
+- KO regex rules and required columns
+- Datasource, asset, and checkpoint definitions
 
-Typical parameters defined in the YAML layer include:
+Because each analysis is driven by explicit YAML specifications:
 
-* Ranking constraints (e.g., `top_n: 20` samples, `top_n: 10` pathways)
-* Pathway completeness thresholds (e.g., `min_coverage: 0.5`)
-* Chemical class inclusion or exclusion filters
-* Regulatory agency scopes (e.g., EPA, IARC, ATSDR, CONAMA)
-* Database selection and weighting rules
-
-These parameters are not embedded in code, but are declared in structured configuration files that are versioned and human-readable.
-
-**Implications for reproducibility**
-
-Because each analysis is driven by an explicit YAML specification:
-
-* Every analytical output can be traced to a **precise configuration state**
-* Identical YAML files applied to identical data yield **identical results**
-* Parameter changes produce **predictable and reproducible** changes in analytical outputs
-
-This declarative design ensures full **auditability**, **transparency**, and **scientific reproducibility** of BioRemPP analyses.
+- Every analytical output can be traced to a precise configuration state.
+- Identical YAML plus identical data yields identical results.
+- Parameter updates produce predictable changes in outputs.
 
 ---
 
-### 5.4 Stability Across Sessions
+### 5.4 Validation Execution Model
+
+The official suite executes through:
+
+- **Great Expectations checkpoints** for declarative expectation evaluation
+- **Hybrid deterministic tasks** for provenance, overlap, and roundtrip analyses
+- **Unified output contracts** (`index.json`, `index.md`, Data Docs)
+
+Primary commands:
+
+```bash
+python internal_validation/scripts/run_all_gx.py --checkpoint biorempp_full_validation
+python internal_validation/scripts/run_all_gx.py --schema-only
+python internal_validation/scripts/ci_validation.py
+```
+
+---
+
+### 5.5 Stability Across Sessions
 
 **Session-based processing:**
 
-Results are not cached across users. Each upload executes the full integration pipeline independently.
-
-**Implication:**
-
-No cross-user contamination. Results are session-isolated and deterministic within session scope.
+Results are processed deterministically for each run and tied to explicit run artifacts.
 
 **Temporal stability:**
 
 Within a single database release:
 
-- Same KO input produces same output regardless of upload time.
-- Row order may vary (pandas merge does not guarantee order), but **content** (which rows, which values) is identical.
+- Same KO input produces same content-level output.
+- Row ordering may vary by runtime internals, but content remains equivalent.
 
 ---
 
@@ -384,9 +369,9 @@ For complete documentation of scope boundaries, methodological constraints, inte
 
 ## Related Pages
 
-- [Mapping Strategy](../methods/mapping-strategy.md) — Identifier normalization and deterministic join logic
-- [Data Sources](../methods/data-sources.md) — Database scope, provenance, and coverage
-- [Methods Overview](../methods/methods-overview.md) — High-level scientific methodology
-- [Limitations](../methods/limitations.md) — Comprehensive scope boundaries and usage restrictions
-- [Interpretation Guidelines](../user-guide/interpretation.md) — How to interpret results responsibly
-- [Downloads](../user-guide/downloads.md) — Reproducibility requirements for exported data
+- [Mapping Strategy](../methods/mapping-strategy.md) - Identifier normalization and deterministic join logic
+- [Data Sources](../methods/data-sources.md) - Database scope, provenance, and coverage
+- [Methods Overview](../methods/methods-overview.md) - High-level scientific methodology
+- [Limitations](../methods/limitations.md) - Comprehensive scope boundaries and usage restrictions
+- [Interpretation Guidelines](../user-guide/interpretation.md) - How to interpret results responsibly
+- [Downloads](../user-guide/downloads.md) - Reproducibility requirements for exported data

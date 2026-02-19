@@ -703,8 +703,8 @@ BioRemPP regulatory data represents a **snapshot** of classifications as of the 
 | Database | Version | Snapshot Date | SHA256 Checksum |
 |----------|---------|---------------|-----------------|
 | **BioRemPP Database** | v1.0.0 | December 15, 2025 | `216cf113400161d6eee8d4eefb13bab23f60f9286874fa41ae8d00f3fc4637c0` |
-| **KEGG Degradation** | Release 116.0+/12-19 | December 2025 | `20fff1041ec3c0ccc9510a1c1c27d4d5e3dff2c36dcba37427ef602673af5921` |
-| **HADEG** | Commit 8f1ff8f | 2023 | `b588099bb19e123c2384a710b532dfe4fd0413ea80da9f238c0b11e433442a42` |
+| **KEGG Degradation** | Release 116.0+/12-19 | December 2025 | `f3df93d3bc5492043d2f6a9ea087b6687757e4757057ba1ab19c1a0d53fcd619` |
+| **HADEG** | Commit 8f1ff8f | 2023 | `d546c01be1cf05866b18aa25fd1edb23e4d90f9ab4e65fb5e37911c1e57ce938` |
 | **ToxCSM** | v1.0 | 2022 | `0d4616930b438964d9e007b20c9ffb9c414879b775a3b89d660bfc6278fe5f38` |
 
 **Implications:**

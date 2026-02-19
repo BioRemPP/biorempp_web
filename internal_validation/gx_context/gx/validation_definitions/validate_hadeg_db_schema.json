@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "14bd923f-0497-4f26-b0a9-8dbadc761b7f",
+      "name": "hadeg_db"
+    },
+    "batch_definition": {
+      "id": "b3188614-db66-46e0-9dac-923e89ca60cd",
+      "name": "hadeg_db_full"
+    },
+    "datasource": {
+      "id": "2da621c1-84b2-4806-8170-c36cad89fb91",
+      "name": "biorempp_databases"
+    }
+  },
+  "id": "02c6adcc-3bed-4486-98e3-deabab540e44",
+  "name": "validate_hadeg_db_schema",
+  "suite": {
+    "id": "34045e8b-3de5-4a8f-b733-602fe7f16cae",
+    "name": "hadeg_db_schema_integrity_suite"
+  }
+}

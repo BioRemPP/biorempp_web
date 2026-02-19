@@ -1,0 +1,255 @@
+{
+  "expectations": [
+    {
+      "id": "d55957c5-849e-4abd-8796-aa802a9ff843",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "1cef27ef-07c5-4d3f-9284-6100c73e00a6",
+      "kwargs": {
+        "column": "ko",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "acd696fb-a045-4fc1-99ae-14fb0a890305",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "e5495145-5dbe-43e7-b803-2fea0dba72ac",
+      "kwargs": {
+        "column": "cpd",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "e63f56b2-b9d9-4f27-b01b-484a04691668",
+      "kwargs": {
+        "column": "referenceAG"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "a15c6cdc-d85d-48c4-aea5-e2f5b2b4f329",
+      "kwargs": {
+        "column": "referenceAG",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "15c18789-558a-49eb-b8c0-c151b612bfe7",
+      "kwargs": {
+        "column": "compoundclass"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "3287b413-b13b-42fb-8877-a49227102a15",
+      "kwargs": {
+        "column": "compoundclass",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "d4d7ea49-bd1e-47d0-9b5c-945d4e3c150f",
+      "kwargs": {
+        "column": "compoundname"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "235366e7-54a7-4cd8-bfa6-6f1a9cb9af1c",
+      "kwargs": {
+        "column": "compoundname",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "6d3866cc-5afd-4db1-9bc0-76e5cd579c95",
+      "kwargs": {
+        "column": "genesymbol"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "9cedcc42-fa58-4708-9eb0-a86744f80c26",
+      "kwargs": {
+        "column": "genesymbol",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "829e2849-f428-4b38-8d3e-5bffb52706f4",
+      "kwargs": {
+        "column": "genename"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "46d9ec95-c3f7-4ccf-b978-bca07d8363c1",
+      "kwargs": {
+        "column": "genename",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "0b8b68fc-6165-4557-8077-4c2ada5820c1",
+      "kwargs": {
+        "column": "enzyme_activity"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "b205fe87-58ba-4efd-9d34-1c5ed8967573",
+      "kwargs": {
+        "column": "enzyme_activity",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "c9a03f4f-1602-4351-8868-f0f0f090290b",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "d9242d07-f1c9-488c-9c05-4a286dbf4972",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "58f8a27e-2c33-4142-a5db-a5cf1ffe34c4",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "ecc075ee-9bed-41ef-9e31-a09bcd964443",
+      "kwargs": {
+        "column_list": [
+          "ko",
+          "cpd",
+          "referenceAG",
+          "compoundclass",
+          "compoundname",
+          "genesymbol",
+          "genename",
+          "enzyme_activity"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    },
+    {
+      "id": "5fce187a-5f53-455d-870a-9d07e5706e13",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "831d2ebb-730a-428d-a5d1-98f769ece86d",
+      "kwargs": {
+        "column": "compoundclass"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "e329040c-4dc2-4c6f-a602-01d48f840b4d",
+      "kwargs": {
+        "column": "referenceAG",
+        "value_set": [
+          "EPA",
+          "ATSDR",
+          "IARC",
+          "IARC1",
+          "IARC2A",
+          "IARC2B",
+          "WFD",
+          "PSL",
+          "EPC",
+          "CONAMA"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_distinct_values_to_be_in_set"
+    }
+  ],
+  "id": "66bf6b18-a5d3-4caa-b6b2-cb2d44c0ab71",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "biorempp_db_schema_integrity_suite",
+  "notes": null
+}

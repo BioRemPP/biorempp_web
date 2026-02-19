@@ -1,0 +1,38 @@
+{
+  "expectations": [
+    {
+      "id": "0f648fea-95f9-430f-ac07-40996f0b1b00",
+      "kwargs": {
+        "value": 10869
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "4ccd669c-38b4-49c9-a842-45dfbc1a4867",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "fdd2d725-3b30-4b17-b4f3-2069fd29c0f9",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    }
+  ],
+  "id": "8b129130-15be-4eb3-a0d3-37b1ab9645cb",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "biorempp_mapping_consistency_suite",
+  "notes": null
+}

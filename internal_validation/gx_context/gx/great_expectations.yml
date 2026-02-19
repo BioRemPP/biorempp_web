@@ -1,0 +1,131 @@
+# Welcome to Great Expectations! Always know what to expect from your data.
+#
+# Here you can define datasources, batch kwargs generators, integrations and
+# more. This file is intended to be committed to your repo. For help with
+# configuration please:
+#   - Read our docs: https://docs.greatexpectations.io/docs/guides/connecting_to_your_data/connect_to_data_overview/#2-configure-your-datasource
+#   - Join our slack channel: http://greatexpectations.io/slack
+
+# config_version refers to the syntactic version of this config file, and is used in maintaining backwards compatibility
+# It is auto-generated and usually does not need to be changed.
+config_version: 4.0
+
+# This config file supports variable substitution which enables: 1) keeping
+# secrets out of source control & 2) environment-based configuration changes
+# such as staging vs prod.
+#
+# When GX encounters substitution syntax (like `my_key: ${my_value}` or
+# `my_key: $my_value`) in the great_expectations.yml file, it will attempt
+# to replace the value of `my_key` with the value from an environment
+# variable `my_value` or a corresponding key read from this config file,
+# which is defined through the `config_variables_file_path`.
+# Environment variables take precedence over variables defined here.
+#
+# Substitution values defined here can be a simple (non-nested) value,
+# nested value such as a dictionary, or an environment variable (i.e. ${ENV_VAR})
+#
+#
+# https://docs.greatexpectations.io/docs/guides/setup/configuring_data_contexts/how_to_configure_credentials
+
+
+config_variables_file_path: uncommitted/config_variables.yml
+
+# The plugins_directory will be added to your python path for custom modules
+# used to override and extend Great Expectations.
+plugins_directory: plugins/
+
+stores:
+# Stores are configurable places to store things like Expectations, Validations
+# Data Docs, and more. These are for advanced users only - most users can simply
+# leave this section alone.
+  expectations_store:
+    class_name: ExpectationsStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: expectations/
+
+  validation_results_store:
+    class_name: ValidationResultsStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: uncommitted/validations/
+
+  checkpoint_store:
+    class_name: CheckpointStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      suppress_store_backend_id: true
+      base_directory: checkpoints/
+
+  validation_definition_store:
+    class_name: ValidationDefinitionStore
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: validation_definitions/
+
+expectations_store_name: expectations_store
+validation_results_store_name: validation_results_store
+checkpoint_store_name: checkpoint_store
+
+data_docs_sites:
+  # Data Docs make it simple to visualize data quality in your project. These
+  # include Expectations, Validations & Profiles. The are built for all
+  # Datasources from JSON artifacts in the local repo including validations &
+  # profiles from the uncommitted directory. Read more at https://docs.greatexpectations.io/docs/terms/data_docs
+  local_site:
+    class_name: SiteBuilder
+    show_how_to_buttons: true
+    store_backend:
+      class_name: TupleFilesystemStoreBackend
+      base_directory: uncommitted/data_docs/local_site/
+    site_index_builder:
+      class_name: DefaultSiteIndexBuilder
+fluent_datasources:
+  biorempp_databases:
+    type: pandas_filesystem
+    id: 2da621c1-84b2-4806-8170-c36cad89fb91
+    assets:
+      biorempp_db:
+        type: csv
+        id: 207fada9-570e-4f7a-9b3b-d2031b0e59f9
+        batch_definitions:
+          biorempp_db_full:
+            id: f867d21d-5448-469b-9828-d92c4c3d7fa0
+            partitioner:
+              regex: biorempp_db.csv$
+              param_names: []
+        sep: ;
+      kegg_degradation_db:
+        type: csv
+        id: ab2865b5-8cc0-4b20-8443-8dbb25eb4fa0
+        batch_definitions:
+          kegg_degradation_db_full:
+            id: 729c4de9-dc5a-4a78-a672-5e6085aa8726
+            partitioner:
+              regex: kegg_degradation_db.csv$
+              param_names: []
+        sep: ;
+      hadeg_db:
+        type: csv
+        id: 14bd923f-0497-4f26-b0a9-8dbadc761b7f
+        batch_definitions:
+          hadeg_db_full:
+            id: b3188614-db66-46e0-9dac-923e89ca60cd
+            partitioner:
+              regex: hadeg_db.csv$
+              param_names: []
+        sep: ;
+      toxcsm_db:
+        type: csv
+        id: 9532cc4b-5373-4b66-b6b1-9219d1db04f0
+        batch_definitions:
+          toxcsm_db_full:
+            id: 2bd07223-05f7-40c2-a6ba-530d831547d7
+            partitioner:
+              regex: toxcsm_db.csv$
+              param_names: []
+        sep: ;
+    base_directory: 
+      C:\Users\Douglas\Documents\biorempp_web\BioPotExA\biorempp_web\data\databases
+analytics_enabled:
+data_context_id: 07060709-0157-4935-a3ca-25a171bf3bfe

@@ -1,4 +1,4 @@
-# Validation & Quality Assurance
+﻿# Validation & Quality Assurance
 
 BioRemPP employs a **three-pillar validation framework** to ensure data integrity, computational transparency, and functional correctness. This section documents the internal validation strategies used to establish reproducibility, consistency, and reliability of the web service.
 
@@ -9,7 +9,7 @@ BioRemPP employs a **three-pillar validation framework** to ensure data integrit
 | Validation Pillar | Focus | Documentation |
 |------------------|-------|---------------|
 | **Internal Validation Suite** | Data integration coherence and analytical reproducibility | [Validation Suite](validation-suite.md), [Internal Validation](internal-validation.md) |
-| **Computational Profiling** | Performance characterization and computational transparency | [Computational Profilling](profiling-biorempp.md) |
+| **Computational Profiling** | Performance characterization and computational transparency | [Computational Profiling](profiling-biorempp.md) |
 | **Unit Test Suite** | Functional correctness and regression detection | [Unit Test Suite](test-suite.md) |
 
 ---
@@ -29,7 +29,7 @@ Each pillar provides distinct but complementary evidence of platform reliability
 
 ## Pillar 1: Internal Validation Suite
 
-**[Full Documentation →](validation-suite.md) | [Detailed Analysis →](internal-validation.md)**
+**[Full Documentation ->](validation-suite.md) | [Detailed Analysis ->](internal-validation.md)**
 
 ### Purpose
 
@@ -42,17 +42,19 @@ The Internal Validation Suite ensures that integrated data behave coherently, an
 | **Provenance Snapshot** | Data stability | Database checksums (SHA-256), version fingerprints |
 | **Schema Integrity** | Data integrity | Required-field presence, structural consistency |
 | **Cross-Database Overlap** | Integration coherence | Expected concordance/complementarity across KO universes |
-| **Mapping Consistency** | Mapping coherence | KO→compound and compound→toxicity linkage patterns |
+| **Mapping Consistency** | Mapping coherence | KO->compound and compound->toxicity linkage patterns |
 | **Example Roundtrip Regression** | Reproducibility | Stable outputs for standardized example inputs |
 | **Use Case Invariants** | Output correctness | Logical constraints preserved in representative outputs |
 | **Controlled Vocabulary Audit** | Semantic stability | Drift monitoring for controlled terms |
 
 ### Key Features
 
-- **Cross-Resource Coherence**: Validates expected overlap and divergence patterns across BioRem PP, KEGG, HADEG, and ToxCSM databases
-- **Deterministic Mapping**: Exact identifier matching (no probabilistic inference or fuzzy matching)
-- **Versioned Resources**: All databases checksummed with SHA-256 for integrity verification
-- **Declarative Configuration**: YAML-driven analyses ensure auditability and parameter transparency
+- **Cross-Resource Coherence**: Validates expected overlap and divergence patterns across BioRemPP, KEGG, HADEG, and toxCSM databases.
+- **Deterministic Mapping**: Exact identifier matching (no probabilistic inference or fuzzy matching).
+- **GX Declarative Layer**: Great Expectations suites/checkpoints encode schema, mapping, invariants, and vocabulary constraints.
+- **Hybrid Analytical Tasks**: Provenance, overlap, and roundtrip regression are executed as deterministic Python tasks integrated into the same run summary.
+- **Versioned Resources**: All databases are checksummed with SHA-256 for integrity verification.
+- **Declarative Configuration**: YAML-driven analyses ensure auditability and parameter transparency.
 
 ### What It Does NOT Validate
 
@@ -65,7 +67,7 @@ The Internal Validation Suite ensures that integrated data behave coherently, an
 
 ## Pillar 2: Computational Profiling
 
-**[Full Documentation →](profiling-biorempp.md)**
+**[Full Documentation ->](profiling-biorempp.md)**
 
 **Profiling Suite Version:** v1.0  
 **Last Run:** 2026-01-17
@@ -96,11 +98,11 @@ Computational profiling characterizes the runtime behavior of the BioRemPP web s
 
 | Target | Time (s) | Memory Delta (MB) | Peak (MB) | Function Calls | Status |
 |--------|----------|-------------------|-----------|----------------|--------|
-| database_load | 2.884 | 84.8 | 38.4 | 443,164 | ✓ |
-| biorempp_operations | 0.270 | -1.2 | 6.3 | 17,622 | ✓ |
-| io_operations | 2.313 | 9.0 | 8.1 | 669,364 | ✓ |
-| batch_export | 2.664 | 3.7 | 3.3 | 697,125 | ✓ |
-| data_transforms | 4.367 | 71.0 | 36.7 | 727,729 | ✓ |
+| database_load | 2.884 | 84.8 | 38.4 | 443,164 | PASS |
+| biorempp_operations | 0.270 | -1.2 | 6.3 | 17,622 | PASS |
+| io_operations | 2.313 | 9.0 | 8.1 | 669,364 | PASS |
+| batch_export | 2.664 | 3.7 | 3.3 | 697,125 | PASS |
+| data_transforms | 4.367 | 71.0 | 36.7 | 727,729 | PASS |
 
 **Total Execution Time:** 12.50 seconds  
 **Total Memory Allocated:** 167.3 MB  
@@ -124,7 +126,7 @@ Computational profiling characterizes the runtime behavior of the BioRemPP web s
 
 ## Pillar 3: Unit Test Suite
 
-**[Full Documentation →](test-suite.md)**
+**[Full Documentation ->](test-suite.md)**
 
 **Test Framework:** pytest  
 **Total Test Modules:** 53
@@ -135,11 +137,11 @@ The Unit Test Suite provides automated verification of component behavior, enabl
 
 ### Test Organization by Architectural Layer
 
-```
+```text
 tests/unit/
-├── application/     # 25+ modules: services, DTOs, mappers, plot services
-├── domain/          # 20+ modules: entities, value objects, strategies
-└── infrastructure/  # 8+ modules: cache, config, repositories
+|-- application/     # 25+ modules: services, DTOs, mappers, plot services
+|-- domain/          # 20+ modules: entities, value objects, strategies
+`-- infrastructure/  # 8+ modules: cache, config, repositories
 ```
 
 | Layer | Responsibility | Test Focus |
@@ -152,7 +154,7 @@ tests/unit/
 
 **Visualization Strategies (19 tests)**
 
-- Statistical:  Correlogram, PCA, Hierarchical Clustering
+- Statistical: Correlogram, PCA, Hierarchical Clustering
 - Distribution: Box-Scatter, Density, Stacked Bar
 - Relationship: Network, Chord, Sankey
 - Hierarchical: Treemap, Sunburst
@@ -188,49 +190,49 @@ tests/unit/
 
 ### What BioRemPP Validation Establishes
 
-✅ **Data Integration Coherence**: Cross-database consistency and expected overlap patterns  
-✅ **Structural Plausibility**: Mapping cardinality, identifier integrity, controlled vocabularies  
-✅ **Computational Reproducibility**: Deterministic outputs, versioned databases, parameter transparency  
-✅ **Functional Correctness**: Component behavior matches specifications, regressions detected  
-✅ **Performance Transparency**: Baseline resource consumption documented  
+- **Data Integration Coherence**: Cross-database consistency and expected overlap patterns
+- **Structural Plausibility**: Mapping cardinality, identifier integrity, controlled vocabularies
+- **Computational Reproducibility**: Deterministic outputs, versioned databases, parameter transparency
+- **Functional Correctness**: Component behavior matches specifications, regressions detected
+- **Performance Transparency**: Baseline resource consumption documented
 
 ### What BioRemPP Validation Does NOT Claim
 
-❌ **Experimental Validation**: Wet-lab confirmation of degradation predictions  
-❌ **Predictive Accuracy**: Sensitivity/specificity against gold-standard datasets (none exist)  
-❌ **Regulatory Compliance**: Certification or approval for environmental decision-making  
-❌ **Comparative Superiority**: Benchmarking against alternative tools (no comparable platforms)  
-❌ **Real-World Performance**: Gene expression, enzymatic activity, or in situ degradation  
+- **Experimental Validation**: Wet-lab confirmation of degradation predictions
+- **Predictive Accuracy**: Sensitivity/specificity against gold-standard datasets (none exist)
+- **Regulatory Compliance**: Certification or approval for environmental decision-making
+- **Comparative Superiority**: Benchmarking against alternative tools (no comparable platforms)
+- **Real-World Performance**: Gene expression, enzymatic activity, or in situ degradation
 
 ---
 
-##Reproducibility Requirements
+## Reproducibility Requirements
 
 All validation evidence is linked to specific versions and conditions:
 
 | Resource | Version | Checksum (SHA-256) |
 |----------|---------|-------------------|
 | BioRemPP Database | v1.0.0 | `216cf113...` |
-| KEGG Degradation | Release 116.0+/12-19 | `20fff104...` |
-| HADEG | Commit 8f1ff8f | `b588099b...` |
+| KEGG Degradation | Release 116.0+/12-19 | `f3df93d3...` |
+| HADEG | Commit 8f1ff8f | `d546c01b...` |
 | ToxCSM | v1.0 | `0d461693...` |
 
 **To reproduce validation results:**
 
 1. Use identical database versions (checksummed)
-2. Report profiling suite version (v1.0) and test framework (pytest)
-3. Document execution environment (Python 3.12, Windows 11)
-4. Link results to specific validation run timestamps
+2. Run the official suite command: `python internal_validation/scripts/run_all_gx.py --checkpoint biorempp_full_validation`
+3. Document execution environment (Python 3.11+)
+4. Link results to `internal_validation/outputs_latest/index.json` and run timestamp
 
 ---
 
 ## Related Documentation
 
-- **[Methods Overview](../methods/methods-overview.md)** — Scientific methodology and analytical framework
-- **[Data Sources](../methods/data-sources.md)** — Database provenance and scope
-- **[Mapping Strategy](../methods/mapping-strategy.md)** — Integration logic and join mechanisms
-- **[Limitations](../methods/limitations.md)** — Comprehensive scope boundaries
-- **[Interpretation Guidelines](../user-guide/interpretation.md)** — Responsible result interpretation
+- **[Methods Overview](../methods/methods-overview.md)** - Scientific methodology and analytical framework
+- **[Data Sources](../methods/data-sources.md)** - Database provenance and scope
+- **[Mapping Strategy](../methods/mapping-strategy.md)** - Integration logic and join mechanisms
+- **[Limitations](../methods/limitations.md)** - Comprehensive scope boundaries
+- **[Interpretation Guidelines](../user-guide/interpretation.md)** - Responsible result interpretation
 
 ---
 

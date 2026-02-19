@@ -1,0 +1,86 @@
+# BioRemPP Internal Validation (GX-First)
+
+database_paths:
+  biorempp_db_path: "data/databases/biorempp_db.csv"
+  kegg_db_path: "data/databases/kegg_degradation_db.csv"
+  hadeg_db_path: "data/databases/hadeg_db.csv"
+  toxcsm_db_path: "data/databases/toxcsm_db.csv"
+
+output_dirs:
+  outputs_versioned_dir: "internal_validation/outputs"
+  outputs_latest_dir: "internal_validation/outputs_latest"
+
+example_datasets_dir: "internal_validation/data/example_datasets"
+
+validation_parameters:
+  top_n: 20
+  min_expected_rows: 1
+  max_null_percentage: 50.0
+  mapping_cpd_non_null_mostly: 0.95
+  allowed_reference_agencies:
+    - "EPA"
+    - "ATSDR"
+    - "IARC"
+    - "IARC1"
+    - "IARC2A"
+    - "IARC2B"
+    - "WFD"
+    - "PSL"
+    - "EPC"
+    - "CONAMA"
+  allowed_ko_regex: "^K\\d{5}$"
+  required_columns:
+    BioRemPP:
+      - "ko"
+      - "cpd"
+      - "referenceAG"
+      - "compoundclass"
+      - "compoundname"
+      - "genesymbol"
+      - "genename"
+      - "enzyme_activity"
+    KEGG:
+      - "ko"
+      - "pathname"
+      - "genesymbol"
+    HADEG:
+      - "ko"
+      - "Gene"
+      - "Pathway"
+      - "compound_pathway"
+    toxCSM:
+      - "cpd"
+      - "SMILES"
+      - "ChEBI"
+      - "compoundname"
+  expected_row_counts:
+    biorempp_db: 10869
+    kegg_degradation_db: 855
+    hadeg_db: 867
+    toxcsm_db: 370
+
+gx:
+  context_root: "internal_validation/gx_context"
+  datasource_name: "biorempp_databases"
+  datasource_base_directory: "data/databases"
+  data_docs_site_name: "local_site"
+  checkpoint_names:
+    full: "biorempp_full_validation"
+    schema: "biorempp_schema_validation"
+  assets:
+    biorempp_db:
+      file: "biorempp_db.csv"
+      sep: ";"
+      required_columns_ref: "BioRemPP"
+    kegg_degradation_db:
+      file: "kegg_degradation_db.csv"
+      sep: ";"
+      required_columns_ref: "KEGG"
+    hadeg_db:
+      file: "hadeg_db.csv"
+      sep: ";"
+      required_columns_ref: "HADEG"
+    toxcsm_db:
+      file: "toxcsm_db.csv"
+      sep: ";"
+      required_columns_ref: "toxCSM"

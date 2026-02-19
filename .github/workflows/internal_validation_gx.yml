@@ -1,0 +1,57 @@
+name: Internal Validation GX
+
+on:
+  push:
+    paths:
+      - "data/databases/**"
+      - "internal_validation/**"
+      - ".github/workflows/internal_validation_gx.yml"
+  pull_request:
+    paths:
+      - "data/databases/**"
+      - "internal_validation/**"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install "great_expectations>=1.12,<2.0" "pandas>=2.0" "pyyaml>=6.0"
+
+      - name: Initialize GX context
+        run: python internal_validation/scripts/init_gx_context.py
+
+      - name: Configure datasource and suites
+        run: |
+          python internal_validation/scripts/configure_data_sources.py
+          python internal_validation/scripts/create_validation_definitions.py
+          python internal_validation/scripts/create_checkpoints.py
+
+      - name: Run CI validation
+        run: python internal_validation/scripts/ci_validation.py
+
+      - name: Build Data Docs
+        if: always()
+        run: python internal_validation/scripts/build_data_docs.py --no-open
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: internal-validation-gx
+          path: |
+            internal_validation/outputs_latest/
+            internal_validation/gx_context/uncommitted/validations/
+            internal_validation/gx_context/uncommitted/data_docs/
+          retention-days: 30
