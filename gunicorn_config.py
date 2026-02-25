@@ -14,6 +14,14 @@ Usage:
     gunicorn wsgi:server -c gunicorn_config.py
 """
 
+# Ensure project root is importable when Gunicorn loads this config file.
+import sys
+from pathlib import Path
+
+project_root = Path(__file__).resolve().parent
+if str(project_root) not in sys.path:
+    sys.path.insert(0, str(project_root))
+
 # Load settings
 from config.settings import get_settings
 

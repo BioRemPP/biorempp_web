@@ -130,6 +130,18 @@ if [ "$(id -u)" = "0" ]; then
     chown -R ${APP_USER:-biorempp}:${APP_USER:-biorempp} /app/logs /app/data /app/cache 2>/dev/null || true
 fi
 
+# Ensure cache root is writable for runtime components (Diskcache, callbacks).
+cache_root="${BIOREMPP_CACHE_DIR:-/app/cache}"
+if mkdir -p "$cache_root" 2>/dev/null && touch "$cache_root/.cache_write_test" 2>/dev/null; then
+    rm -f "$cache_root/.cache_write_test" 2>/dev/null || true
+    log_info "Cache directory writable: ${cache_root}"
+else
+    fallback_cache="/tmp/biorempp-cache"
+    mkdir -p "$fallback_cache"
+    export BIOREMPP_CACHE_DIR="$fallback_cache"
+    log_warn "Cache directory not writable (${cache_root}); fallback to ${fallback_cache}"
+fi
+
 log_info "Directories ready"
 echo ""
 

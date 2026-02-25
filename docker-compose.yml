@@ -123,7 +123,7 @@ services:
       - biorempp-network
     
     healthcheck:
-      test: ["CMD", "/app/.docker/healthcheck.sh"]
+      test: ["CMD-SHELL", "curl --fail --silent http://127.0.0.1:8050/health > /dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3
@@ -225,7 +225,7 @@ services:
       - biorempp-network
     
     healthcheck:
-      test: ["CMD", "/app/.docker/healthcheck.sh"]
+      test: ["CMD-SHELL", "curl --fail --silent http://127.0.0.1:8080/health > /dev/null || exit 1"]
       interval: 30s
       timeout: 10s
       retries: 3

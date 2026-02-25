@@ -7,8 +7,10 @@
 
 set -e
 
-# Health check endpoint (default for Dash apps)
-HEALTH_URL="http://${BIOREMPP_HOST:-0.0.0.0}:${BIOREMPP_PORT:-8080}/_dash-update-component"
+# Health check endpoint
+HEALTH_HOST=${BIOREMPP_HEALTH_HOST:-127.0.0.1}
+HEALTH_PORT=${BIOREMPP_PORT:-8080}
+HEALTH_URL="http://${HEALTH_HOST}:${HEALTH_PORT}/health"
 
 # Alternative: check if main app route is accessible
 # HEALTH_URL="http://${BIOREMPP_HOST:-0.0.0.0}:${BIOREMPP_PORT:-8080}/"
