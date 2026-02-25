@@ -277,15 +277,17 @@ def register_real_processing_callbacks(app):
                 owner_token=effective_owner_token,
                 ttl_seconds=job_resume_service.get_resume_ttl_seconds(),
             )
+            payload_size_bytes = job_resume_service.estimate_payload_size_bytes(
+                serialized_result
+            )
 
             logger.info(
                 "Resume payload persistence result",
                 extra={
                     "job_id": persisted_job_id,
                     "resume_saved": resume_saved,
-                    "payload_size_bytes": len(
-                        str(serialized_result).encode("utf-8", errors="ignore")
-                    ),
+                    "payload_size_bytes": payload_size_bytes,
+                    "resume_max_payload_mb": job_resume_service.get_resume_max_payload_mb(),
                 },
             )
 

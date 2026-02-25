@@ -43,6 +43,10 @@ All settings can be overridden with environment variables:
 - BIOREMPP_UPLOAD_ENCODING: Expected file encoding (default: utf-8)
 - BIOREMPP_KO_PATTERN: Regex pattern for KO validation
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
+- BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
+- BIOREMPP_RESUME_TTL_SECONDS: Resume payload TTL in seconds (default: 14400)
+- BIOREMPP_RESUME_CACHE_SIZE_MB: Resume cache max size in MB (default: 512)
+- BIOREMPP_RESUME_MAX_PAYLOAD_MB: Max payload size per resume job in MB
 """
 
 import logging
@@ -226,6 +230,8 @@ class Settings:
         Configuration files directory
     ASSETS_DIR : Path
         Static assets directory
+    CACHE_DIR : Path
+        Base cache directory (shared by long callbacks and resume payloads)
     UPLOAD_MAX_SIZE_MB : int
         Maximum upload file size in MB
     UPLOAD_MAX_SIZE_BYTES : int
@@ -333,6 +339,8 @@ class Settings:
     ASSETS_DIR: Path = field(
         default_factory=lambda: Path(__file__).parent.parent / "assets"
     )
+
+    CACHE_DIR: Path = field(init=False)
 
     # ========================================================================
     # UPLOAD CONFIGURATION
@@ -442,6 +450,16 @@ class Settings:
         self.LOG_DIR.mkdir(exist_ok=True)
         self.DATA_DIR.mkdir(exist_ok=True)
 
+        cache_dir_raw = os.getenv(
+            "BIOREMPP_CACHE_DIR",
+            str(self.BASE_DIR / "cache"),
+        )
+        cache_path = Path(cache_dir_raw)
+        if not cache_path.is_absolute():
+            cache_path = self.BASE_DIR / cache_path
+        self.CACHE_DIR = cache_path
+        self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
         # Auto-adjust settings based on environment
         if self.is_production:
             # Force production-safe settings
@@ -521,6 +539,7 @@ class Settings:
         logger.info(f"Port: {self.PORT}")
         logger.info(f"Log Level: {self.LOG_LEVEL}")
         logger.info(f"Log Directory: {self.LOG_DIR}")
+        logger.info(f"Cache Directory: {self.CACHE_DIR}")
 
         if self.is_production:
             logger.info(f"Workers: {self.WORKERS} ({self.WORKER_CLASS})")
@@ -607,6 +626,7 @@ class Settings:
             f"  Base: {self.BASE_DIR}",
             f"  Data: {self.DATA_DIR}",
             f"  Logs: {self.LOG_DIR}",
+            f"  Cache: {self.CACHE_DIR}",
             f"  Config: {self.CONFIG_DIR}",
             f"  Assets: {self.ASSETS_DIR}",
             "=" * 60,

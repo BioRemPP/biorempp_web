@@ -8,6 +8,7 @@ can resume results in the same browser context after closing the tab/session.
 import json
 import os
 import re
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
@@ -25,6 +26,7 @@ class JobResumeService:
     CACHE_KEY_PREFIX = "job_resume:"
     DEFAULT_TTL_SECONDS = 14400  # 4 hours
     DEFAULT_CACHE_SIZE_MB = 512
+    DEFAULT_MAX_PAYLOAD_MB = 64
     CURRENT_PAYLOAD_VERSION = 1
     SUPPORTED_PAYLOAD_VERSIONS = {1}
     JOB_ID_PATTERN = re.compile(r"^BRP-\d{8}-\d{6}-[A-F0-9]{6}$")
@@ -41,6 +43,7 @@ class JobResumeService:
         cache_dir: Optional[Path] = None,
         ttl_seconds: Optional[int] = None,
         cache_size_mb: Optional[int] = None,
+        max_payload_mb: Optional[int] = None,
     ) -> None:
         """
         Initialize resume cache backend.
@@ -48,17 +51,20 @@ class JobResumeService:
         Parameters
         ----------
         cache_dir : Optional[Path]
-            Cache directory path. Defaults to project `/.cache/job_resume`.
+            Cache directory path. Defaults to `<BIOREMPP_CACHE_DIR>/job_resume`.
         ttl_seconds : Optional[int]
             Default TTL in seconds.
         cache_size_mb : Optional[int]
             Maximum cache size in MB.
+        max_payload_mb : Optional[int]
+            Maximum size of a single resume payload in MB.
         """
         project_root = Path(__file__).resolve().parents[3]
+        base_cache_dir = self._resolve_base_cache_dir(project_root)
         self._cache_dir = (
             Path(cache_dir)
             if cache_dir is not None
-            else project_root / ".cache" / "job_resume"
+            else base_cache_dir / "job_resume"
         )
         self._cache_dir.mkdir(parents=True, exist_ok=True)
 
@@ -80,6 +86,16 @@ class JobResumeService:
                 minimum=32,
             )
         )
+        self._max_payload_mb = (
+            int(max_payload_mb)
+            if max_payload_mb is not None
+            else self._read_env_int(
+                "BIOREMPP_RESUME_MAX_PAYLOAD_MB",
+                self.DEFAULT_MAX_PAYLOAD_MB,
+                minimum=8,
+            )
+        )
+        self._max_payload_bytes = self._max_payload_mb * 1024 * 1024
 
         self._cache = diskcache.Cache(
             str(self._cache_dir),
@@ -92,6 +108,7 @@ class JobResumeService:
                 "cache_dir": str(self._cache_dir),
                 "ttl_seconds": self._ttl_seconds,
                 "cache_size_mb": self._cache_size_mb,
+                "max_payload_mb": self._max_payload_mb,
             },
         )
 
@@ -106,9 +123,29 @@ class JobResumeService:
         except ValueError:
             return max(default, minimum)
 
+    @staticmethod
+    def _resolve_base_cache_dir(project_root: Path) -> Path:
+        """Resolve standardized cache root from BIOREMPP_CACHE_DIR."""
+        raw_value = os.getenv("BIOREMPP_CACHE_DIR")
+        if not raw_value:
+            return project_root / "cache"
+        candidate = Path(raw_value)
+        if not candidate.is_absolute():
+            candidate = project_root / candidate
+        return candidate
+
     def get_resume_ttl_seconds(self) -> int:
         """Return configured default TTL used for resume payloads."""
         return self._ttl_seconds
+
+    def get_resume_max_payload_mb(self) -> int:
+        """Return configured max payload size per job (MB)."""
+        return self._max_payload_mb
+
+    @classmethod
+    def estimate_payload_size_bytes(cls, payload: dict) -> int:
+        """Estimate serialized payload size in bytes."""
+        return cls._estimate_payload_size(payload)
 
     @classmethod
     def validate_job_id(cls, job_id: str) -> bool:
@@ -179,6 +216,18 @@ class JobResumeService:
             except (TypeError, ValueError):
                 ttl = self._ttl_seconds
 
+        payload_size_bytes = self.estimate_payload_size_bytes(payload)
+        if payload_size_bytes > self._max_payload_bytes:
+            logger.warning(
+                "Refusing to save resume payload: payload too large",
+                extra={
+                    "job_id": normalized_job_id,
+                    "payload_size_bytes": payload_size_bytes,
+                    "max_payload_bytes": self._max_payload_bytes,
+                },
+            )
+            return False
+
         cache_key = self._build_cache_key(normalized_job_id)
         cache_value = {
             "job_id": normalized_job_id,
@@ -188,20 +237,29 @@ class JobResumeService:
             "merged_result_payload": payload,
         }
 
+        start_time = time.perf_counter()
         try:
             self._cache.set(cache_key, cache_value, expire=ttl)
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
             logger.info(
                 "Resume payload saved",
                 extra={
                     "job_id": normalized_job_id,
                     "ttl_seconds": ttl,
-                    "payload_size_bytes": self._estimate_payload_size(payload),
+                    "payload_size_bytes": payload_size_bytes,
+                    "save_ms": round(elapsed_ms, 2),
                 },
             )
             return True
         except Exception:
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
             logger.exception(
-                "Failed to persist resume payload", extra={"job_id": normalized_job_id}
+                "Failed to persist resume payload",
+                extra={
+                    "job_id": normalized_job_id,
+                    "payload_size_bytes": payload_size_bytes,
+                    "save_ms": round(elapsed_ms, 2),
+                },
             )
             return False
 
@@ -228,8 +286,14 @@ class JobResumeService:
             return None, self.STATUS_TOKEN_MISSING
 
         cache_key = self._build_cache_key(normalized_job_id)
+        start_time = time.perf_counter()
         cached = self._cache.get(cache_key, default=None)
         if not isinstance(cached, dict):
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
+            logger.info(
+                "Resume payload lookup miss",
+                extra={"job_id": normalized_job_id, "load_ms": round(elapsed_ms, 2)},
+            )
             return None, self.STATUS_NOT_FOUND
 
         cached_owner_token = cached.get("owner_token")
@@ -247,6 +311,16 @@ class JobResumeService:
         payload = cached.get("merged_result_payload")
         if not isinstance(payload, dict):
             return None, self.STATUS_NOT_FOUND
+
+        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        logger.info(
+            "Resume payload loaded",
+            extra={
+                "job_id": normalized_job_id,
+                "payload_size_bytes": self.estimate_payload_size_bytes(payload),
+                "load_ms": round(elapsed_ms, 2),
+            },
+        )
 
         return payload, self.STATUS_OK
 

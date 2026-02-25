@@ -238,6 +238,7 @@ logs/*.log
 # Cache
 
 *.cache
+cache/
 
 # Data directories
 data/local/

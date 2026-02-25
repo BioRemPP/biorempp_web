@@ -2,6 +2,7 @@
 Job Resume Callbacks - restore processed results by `job_id`.
 """
 
+import os
 from uuid import uuid4
 
 import dash_bootstrap_components as dbc
@@ -40,6 +41,12 @@ def initialize_resume_browser_token(existing_token: str):
     return str(uuid4())
 
 
+def _strict_resume_errors_enabled() -> bool:
+    """Enable generic resume errors to reduce job_id enumeration leaks."""
+    mode = os.getenv("BIOREMPP_RESUME_SECURITY_MODE", "").strip().lower()
+    return mode == "strict"
+
+
 def resolve_resume_request(job_id: str, owner_token: str):
     """
     Resolve resume flow outputs from job_id + owner_token.
@@ -64,6 +71,16 @@ def resolve_resume_request(job_id: str, owner_token: str):
             no_update,
             _build_status_alert(
                 "This browser context is not initialized for resume yet.",
+                "danger",
+            ),
+        )
+
+    if len(normalized_job_id) != 26:
+        return (
+            no_update,
+            no_update,
+            _build_status_alert(
+                "Invalid Job ID length. Use BRP-YYYYMMDD-HHMMSS-XXXXXX.",
                 "danger",
             ),
         )
@@ -93,6 +110,14 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if status == job_resume_service.STATUS_TOKEN_MISMATCH:
+        if _strict_resume_errors_enabled():
+            return (
+                no_update,
+                no_update,
+                _build_status_alert(
+                    "Job ID unavailable in this browser context.", "warning"
+                ),
+            )
         return (
             no_update,
             no_update,
@@ -102,6 +127,14 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if status == job_resume_service.STATUS_INCOMPATIBLE_VERSION:
+        if _strict_resume_errors_enabled():
+            return (
+                no_update,
+                no_update,
+                _build_status_alert(
+                    "Job ID unavailable in this browser context.", "warning"
+                ),
+            )
         return (
             no_update,
             no_update,
@@ -110,6 +143,13 @@ def resolve_resume_request(job_id: str, owner_token: str):
                 "Please process the file again.",
                 "danger",
             ),
+        )
+
+    if _strict_resume_errors_enabled():
+        return (
+            no_update,
+            no_update,
+            _build_status_alert("Job ID unavailable in this browser context.", "warning"),
         )
 
     return (

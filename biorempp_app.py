@@ -133,10 +133,10 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("CHILD WORKER PROCESS - CREATING FULL APP INSTANCE")
     logger.info("=" * 80)
 
-    # Configure long callback cache manager for progress tracking
-    # Always enable diskcache for background callbacks (required by Dash)
-    cache_dir = Path(__file__).parent / ".cache"
-    cache_dir.mkdir(exist_ok=True)
+    # Configure long callback cache manager for progress tracking.
+    # Cache root is standardized via BIOREMPP_CACHE_DIR (default: /app/cache in Docker).
+    cache_dir = settings.CACHE_DIR / "long_callbacks"
+    cache_dir.mkdir(parents=True, exist_ok=True)
     cache = diskcache.Cache(str(cache_dir))
     long_callback_manager = DiskcacheManager(cache)
     logger.info(f"[OK] Long callback cache configured at: {cache_dir}")

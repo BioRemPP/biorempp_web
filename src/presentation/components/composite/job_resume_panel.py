@@ -34,6 +34,10 @@ def create_job_resume_panel() -> dbc.Card:
                                     type="text",
                                     placeholder="BRP-YYYYMMDD-HHMMSS-XXXXXX",
                                     debounce=True,
+                                    maxLength=26,
+                                    pattern=r"BRP-\d{8}-\d{6}-[A-F0-9]{6}",
+                                    autoComplete="off",
+                                    inputMode="text",
                                 ),
                                 md=8,
                             ),
@@ -59,4 +63,3 @@ def create_job_resume_panel() -> dbc.Card:
         id="job-resume-panel",
         className="mb-3",
     )
-

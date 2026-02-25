@@ -53,7 +53,7 @@ def test_resolve_resume_request_rejects_invalid_job_id(isolated_resume_service):
 
     assert data_update is no_update
     assert pathname_update is no_update
-    assert "Invalid Job ID format" in _flatten_text(status_component)
+    assert "Invalid Job ID" in _flatten_text(status_component)
 
 
 def test_resolve_resume_request_returns_not_found_when_job_absent(
@@ -143,3 +143,26 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
     assert pathname_update == "/results"
     assert "loaded" in _flatten_text(status_component)
 
+
+def test_resolve_resume_request_uses_generic_error_in_strict_mode(
+    isolated_resume_service, monkeypatch
+):
+    """Strict security mode should hide token mismatch details."""
+    monkeypatch.setenv("BIOREMPP_RESUME_SECURITY_MODE", "strict")
+
+    job_id = "BRP-20260225-123004-ABC115"
+    payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        "token-owner-z",
+        ttl_seconds=30,
+    )
+
+    data_update, pathname_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, "token-owner-y")
+    )
+
+    assert data_update is no_update
+    assert pathname_update is no_update
+    assert "unavailable in this browser context" in _flatten_text(status_component)

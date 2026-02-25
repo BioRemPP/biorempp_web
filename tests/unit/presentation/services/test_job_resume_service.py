@@ -103,3 +103,25 @@ def test_load_handles_incompatible_payload_version(resume_service):
     assert loaded_payload is None
     assert status == resume_service.STATUS_INCOMPATIBLE_VERSION
 
+
+def test_save_rejects_payload_larger_than_configured_limit(tmp_path):
+    """Payloads above configured max size should not be persisted."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "limited_resume_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+        max_payload_mb=1,
+    )
+    try:
+        job_id = "BRP-20260225-120005-ABC128"
+        owner_token = "owner-e"
+        payload = {"metadata": {"job_id": job_id}, "blob": "x" * (2 * 1024 * 1024)}
+
+        saved = service.save_job_payload(job_id, payload, owner_token, ttl_seconds=30)
+        loaded_payload, status = service.load_job_payload(job_id, owner_token)
+
+        assert saved is False
+        assert loaded_payload is None
+        assert status == service.STATUS_NOT_FOUND
+    finally:
+        service.close()

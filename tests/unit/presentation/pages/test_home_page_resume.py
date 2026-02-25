@@ -27,6 +27,29 @@ def _collect_component_ids(node: Any) -> set[str]:
     return ids
 
 
+def _find_component_by_id(node: Any, target_id: str) -> Any:
+    """Find first component by ID in Dash component tree."""
+    found = None
+
+    def visit(value: Any) -> None:
+        nonlocal found
+        if found is not None or value is None:
+            return
+        if isinstance(value, (list, tuple)):
+            for item in value:
+                visit(item)
+            return
+        if getattr(value, "id", None) == target_id:
+            found = value
+            return
+        children = getattr(value, "children", None)
+        if children is not None:
+            visit(children)
+
+    visit(node)
+    return found
+
+
 def test_home_layout_includes_resume_browser_token_store():
     """Homepage should expose local store for browser ownership token."""
     layout = create_home_layout()
@@ -44,3 +67,12 @@ def test_home_layout_includes_resume_panel_components():
     assert "resume-job-btn" in component_ids
     assert "resume-job-status" in component_ids
 
+
+def test_home_layout_resume_input_has_security_constraints():
+    """Resume input should enforce length and format constraints in UI."""
+    layout = create_home_layout()
+    resume_input = _find_component_by_id(layout, "resume-job-id-input")
+
+    assert resume_input is not None
+    assert getattr(resume_input, "maxLength", None) == 26
+    assert getattr(resume_input, "pattern", None) == r"BRP-\d{8}-\d{6}-[A-F0-9]{6}"
