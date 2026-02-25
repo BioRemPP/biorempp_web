@@ -15,6 +15,8 @@ Usage:
 """
 
 # Ensure project root is importable when Gunicorn loads this config file.
+import os
+import shutil
 import sys
 from pathlib import Path
 
@@ -24,6 +26,39 @@ if str(project_root) not in sys.path:
 
 # Load settings
 from config.settings import get_settings
+
+
+def _prepare_prometheus_multiproc_dir() -> None:
+    """
+    Ensure PROMETHEUS_MULTIPROC_DIR exists and is writable before metric import.
+
+    This prevents startup failures when container volumes mount read-only or
+    root-owned cache paths.
+    """
+    raw_dir = os.getenv("PROMETHEUS_MULTIPROC_DIR", "").strip()
+    if not raw_dir:
+        return
+
+    target_dir = Path(raw_dir)
+    try:
+        target_dir.mkdir(parents=True, exist_ok=True)
+        probe_path = target_dir / ".prom_write_probe"
+        probe_path.write_text("ok", encoding="utf-8")
+        probe_path.unlink(missing_ok=True)
+    except Exception:
+        fallback_dir = Path("/tmp/biorempp-cache/prometheus_multiproc")
+        fallback_dir.mkdir(parents=True, exist_ok=True)
+        os.environ["PROMETHEUS_MULTIPROC_DIR"] = str(fallback_dir)
+
+
+_prepare_prometheus_multiproc_dir()
+
+from src.shared.metrics import WORKERS_ACTIVE, WORKER_REQUESTS_TOTAL, WORKER_RESTARTS_TOTAL
+
+try:
+    from prometheus_client import multiprocess as prom_multiprocess
+except Exception:  # pragma: no cover - defensive fallback
+    prom_multiprocess = None
 
 settings = get_settings()
 
@@ -105,6 +140,31 @@ tmp_upload_dir = None
 # ============================================================================
 
 
+def _resolve_multiproc_dir() -> Path | None:
+    """Return configured Prometheus multiprocess directory."""
+    raw = os.getenv("PROMETHEUS_MULTIPROC_DIR", "").strip()
+    if not raw:
+        return None
+    return Path(raw)
+
+
+def _cleanup_multiproc_dir(multiproc_dir: Path) -> int:
+    """Remove stale Prometheus multiprocess files before startup."""
+    if not multiproc_dir.exists():
+        multiproc_dir.mkdir(parents=True, exist_ok=True)
+        return 0
+
+    removed_entries = 0
+    for child in multiproc_dir.iterdir():
+        if child.is_dir():
+            shutil.rmtree(child, ignore_errors=True)
+            removed_entries += 1
+        else:
+            child.unlink(missing_ok=True)
+            removed_entries += 1
+    return removed_entries
+
+
 def on_starting(server):
     """
     Called just before the master process is initialized.
@@ -118,7 +178,7 @@ def on_starting(server):
     print(f"Workers: {workers} ({worker_class})")
     print(f"Timeout: {timeout}s")
     print(f"Keepalive: {keepalive}s")
-    print(f"Max Requests: {max_requests} ± {max_requests_jitter}")
+    print(f"Max Requests: {max_requests} +/- {max_requests_jitter}")
     print(
         "Security Limits: "
         f"line={limit_request_line}, "
@@ -126,6 +186,21 @@ def on_starting(server):
         f"header_field_size={limit_request_field_size}, "
         f"max_body={max_request_body_bytes}"
     )
+
+    multiproc_dir = _resolve_multiproc_dir()
+    if multiproc_dir is not None:
+        try:
+            removed_entries = _cleanup_multiproc_dir(multiproc_dir)
+            print(
+                "Prometheus multiprocess dir prepared: "
+                f"{multiproc_dir} (removed {removed_entries} stale entries)"
+            )
+        except Exception as exc:  # pragma: no cover - startup diagnostics
+            print(
+                "WARNING: failed to prepare PROMETHEUS_MULTIPROC_DIR "
+                f"({multiproc_dir}): {exc}"
+            )
+
     print("=" * 80)
 
 
@@ -177,6 +252,7 @@ def post_fork(server, worker):
 
     Post-fork hook.
     """
+    WORKERS_ACTIVE.set(1)
     print(f"Worker spawned (pid: {worker.pid})")
 
 
@@ -197,6 +273,7 @@ def pre_request(worker, req):
     """
     # Log request start time for performance monitoring
     worker.log.debug(f"{req.method} {req.path}")
+    WORKER_REQUESTS_TOTAL.labels(worker_pid=str(worker.pid)).inc()
     try:
         content_length_raw = req.headers.get("Content-Length", "0")
         content_length = int(content_length_raw)
@@ -225,6 +302,16 @@ def child_exit(server, worker):
 
     Child exit hook.
     """
+    WORKER_RESTARTS_TOTAL.labels(reason="child_exit").inc()
+    multiproc_dir = _resolve_multiproc_dir()
+    if prom_multiprocess is not None and multiproc_dir is not None:
+        try:
+            prom_multiprocess.mark_process_dead(worker.pid)
+        except Exception as exc:  # pragma: no cover - lifecycle fallback
+            print(
+                "WARNING: failed to mark worker as dead for prometheus "
+                f"(pid={worker.pid}): {exc}"
+            )
     print(f"Worker exited (pid: {worker.pid})")
 
 
@@ -234,6 +321,7 @@ def worker_abort(worker):
 
     Worker abort hook.
     """
+    WORKER_RESTARTS_TOTAL.labels(reason="worker_abort").inc()
     print(f"Worker aborted (pid: {worker.pid})")
 
 
@@ -243,7 +331,8 @@ def nworkers_changed(server, new_value, old_value):
 
     Workers changed hook.
     """
-    print(f"Workers changed: {old_value} → {new_value}")
+    WORKER_RESTARTS_TOTAL.labels(reason="scale_change").inc()
+    print(f"Workers changed: {old_value} -> {new_value}")
 
 
 # ============================================================================

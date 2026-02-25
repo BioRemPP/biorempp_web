@@ -282,6 +282,7 @@ WORKERS_ACTIVE = _metric(
     Gauge,
     "biorempp_workers_active",
     "Number of active Gunicorn worker processes",
+    multiprocess_mode="livesum",
 )
 
 WORKER_REQUESTS_TOTAL = _metric(

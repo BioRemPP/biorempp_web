@@ -140,10 +140,44 @@ else
     mkdir -p "$fallback_cache"
     export BIOREMPP_CACHE_DIR="$fallback_cache"
     log_warn "Cache directory not writable (${cache_root}); fallback to ${fallback_cache}"
+    current_prom_dir="${PROMETHEUS_MULTIPROC_DIR:-}"
+    if [ -z "$current_prom_dir" ] || [[ "$current_prom_dir" == "$cache_root"* ]]; then
+        export PROMETHEUS_MULTIPROC_DIR="${fallback_cache}/prometheus_multiproc"
+        mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
+        log_warn "PROMETHEUS_MULTIPROC_DIR remapped to ${PROMETHEUS_MULTIPROC_DIR}"
+    fi
 fi
 
 log_info "Directories ready"
 echo ""
+
+# ============================================================================
+# OBSERVABILITY MULTIPROCESS DIRECTORY (Prometheus)
+# ============================================================================
+observability_enabled=$(echo "${BIOREMPP_OBSERVABILITY_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+observability_fail_fast=$(echo "${BIOREMPP_OBSERVABILITY_FAIL_FAST:-false}" | tr '[:upper:]' '[:lower:]')
+
+if [ "$observability_enabled" = "true" ]; then
+    multiproc_dir="${PROMETHEUS_MULTIPROC_DIR:-}"
+    if [ -z "$multiproc_dir" ]; then
+        multiproc_dir="${BIOREMPP_CACHE_DIR:-/app/cache}/prometheus_multiproc"
+        export PROMETHEUS_MULTIPROC_DIR="$multiproc_dir"
+        log_warn "PROMETHEUS_MULTIPROC_DIR not set; defaulting to ${multiproc_dir}"
+    fi
+
+    if mkdir -p "$multiproc_dir" 2>/dev/null && touch "$multiproc_dir/.prom_test" 2>/dev/null; then
+        rm -f "$multiproc_dir/.prom_test" 2>/dev/null || true
+        log_info "Prometheus multiprocess directory ready: ${multiproc_dir}"
+    else
+        if [ "$observability_fail_fast" = "true" ]; then
+            log_error "Observability enabled but PROMETHEUS_MULTIPROC_DIR is not writable: ${multiproc_dir}"
+            exit 1
+        fi
+        log_warn "Disabling observability: PROMETHEUS_MULTIPROC_DIR not writable (${multiproc_dir})"
+        export BIOREMPP_OBSERVABILITY_ENABLED=False
+    fi
+    echo ""
+fi
 
 # ============================================================================
 # DATABASE MIGRATIONS (if applicable)

@@ -59,7 +59,7 @@ RUN groupadd -g ${APP_GID} ${APP_USER} && \
     useradd -m -u ${APP_UID} -g ${APP_GID} -s /bin/bash ${APP_USER}
 
 # Create application directories
-RUN mkdir -p /app /app/logs /app/data && \
+RUN mkdir -p /app /app/logs /app/data /app/cache /app/cache/prometheus_multiproc && \
     chown -R ${APP_USER}:${APP_USER} /app
 
 WORKDIR /app
@@ -212,6 +212,7 @@ ENV BIOREMPP_ENV=production \
     BIOREMPP_HOT_RELOAD=False \
     BIOREMPP_HOST=0.0.0.0 \
     BIOREMPP_PORT=8080 \
+    PROMETHEUS_MULTIPROC_DIR=/app/cache/prometheus_multiproc \
     PYTHONPATH=/app
 
 # Install wheels with BuildKit cache mount
