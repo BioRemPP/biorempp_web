@@ -18,6 +18,7 @@ from threading import Lock
 from config.settings import get_settings
 from src.presentation.services import job_resume_service
 from src.shared.logging import get_logger
+from src.shared.metrics import RESUME_CALLBACK_ATTEMPTS_TOTAL
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -217,8 +218,10 @@ def resolve_resume_request(job_id: str, owner_token: str):
     normalized_job_id = (job_id or "").strip().upper()
     ip_address = _get_request_ip()
     ip_ref = _ip_ref(ip_address)
+    RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="attempt").inc()
 
     if not normalized_job_id:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="empty_job_id").inc()
         return (
             no_update,
             no_update,
@@ -226,6 +229,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if not isinstance(owner_token, str) or not owner_token.strip():
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="token_missing").inc()
         return (
             no_update,
             no_update,
@@ -238,6 +242,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
     identity_hash = _identity_hash(owner_token, ip_address)
     allowed, retry_after_seconds = resume_rate_limiter.evaluate(identity_hash)
     if not allowed:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="rate_limited").inc()
         logger.warning(
             "Resume request blocked by rate limiter",
             extra={
@@ -257,6 +262,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if len(normalized_job_id) != 26:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="invalid_job_id").inc()
         logger.info(
             "Resume request rejected (invalid length)",
             extra={
@@ -275,6 +281,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if not job_resume_service.validate_job_id(normalized_job_id):
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="invalid_job_id").inc()
         logger.info(
             "Resume request rejected (invalid format)",
             extra={
@@ -298,6 +305,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
     job_ref = _job_id_ref(normalized_job_id)
 
     if status == job_resume_service.STATUS_OK and payload is not None:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="success").inc()
         logger.info(
             "Resume request succeeded",
             extra={
@@ -318,6 +326,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if status == job_resume_service.STATUS_TOKEN_MISMATCH:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="token_mismatch").inc()
         logger.warning(
             "Resume request denied by owner-token mismatch",
             extra={
@@ -344,6 +353,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         )
 
     if status == job_resume_service.STATUS_INCOMPATIBLE_VERSION:
+        RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="incompatible_version").inc()
         logger.warning(
             "Resume request denied by incompatible payload version",
             extra={
@@ -371,6 +381,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
             ),
         )
 
+    RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="not_found").inc()
     logger.info(
         "Resume request missed (not_found_or_expired)",
         extra={

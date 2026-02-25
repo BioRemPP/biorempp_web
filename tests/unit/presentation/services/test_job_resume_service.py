@@ -5,6 +5,28 @@ import time
 import pytest
 
 from src.presentation.services.job_resume_service import JobResumeService
+from src.shared.metrics import (
+    RESUME_LOAD_ATTEMPTS_TOTAL,
+    RESUME_OPERATION_DURATION_SECONDS,
+    RESUME_SAVE_TOTAL,
+)
+
+
+def _counter_value(counter, **labels) -> float:
+    """Read Prometheus counter value for labels."""
+    return float(counter.labels(**labels)._value.get())
+
+
+def _histogram_count(histogram, **labels) -> float:
+    """Read Prometheus histogram observation count for labels."""
+    target_name = f"{histogram._name}_count"
+    for metric_family in histogram.collect():
+        for sample in metric_family.samples:
+            if sample.name != target_name:
+                continue
+            if all(sample.labels.get(k) == v for k, v in labels.items()):
+                return float(sample.value)
+    return 0.0
 
 
 @pytest.fixture
@@ -25,12 +47,45 @@ def test_save_and_load_job_payload_success(resume_service):
     owner_token = "browser-token-1"
     payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
 
-    saved = resume_service.save_job_payload(job_id, payload, owner_token, ttl_seconds=30)
+    before_save_ok = _counter_value(RESUME_SAVE_TOTAL, outcome="ok")
+    before_load_ok = _counter_value(RESUME_LOAD_ATTEMPTS_TOTAL, outcome="ok")
+    before_save_latency = _histogram_count(
+        RESUME_OPERATION_DURATION_SECONDS,
+        backend=resume_service._store.backend_name,
+        operation="save",
+        status="ok",
+    )
+    before_load_latency = _histogram_count(
+        RESUME_OPERATION_DURATION_SECONDS,
+        backend=resume_service._store.backend_name,
+        operation="load",
+        status="ok",
+    )
+
+    saved = resume_service.save_job_payload(
+        job_id, payload, owner_token, ttl_seconds=30
+    )
     loaded_payload, status = resume_service.load_job_payload(job_id, owner_token)
 
     assert saved is True
     assert status == resume_service.STATUS_OK
     assert loaded_payload == payload
+    assert _counter_value(RESUME_SAVE_TOTAL, outcome="ok") >= (before_save_ok + 1.0)
+    assert _counter_value(RESUME_LOAD_ATTEMPTS_TOTAL, outcome="ok") >= (
+        before_load_ok + 1.0
+    )
+    assert _histogram_count(
+        RESUME_OPERATION_DURATION_SECONDS,
+        backend=resume_service._store.backend_name,
+        operation="save",
+        status="ok",
+    ) >= (before_save_latency + 1.0)
+    assert _histogram_count(
+        RESUME_OPERATION_DURATION_SECONDS,
+        backend=resume_service._store.backend_name,
+        operation="load",
+        status="ok",
+    ) >= (before_load_latency + 1.0)
 
 
 def test_save_rejects_invalid_job_id(resume_service):
@@ -64,14 +119,21 @@ def test_load_returns_token_mismatch_for_wrong_owner(resume_service):
     payload = {"metadata": {"job_id": job_id}}
 
     assert resume_service.save_job_payload(job_id, payload, "owner-a", ttl_seconds=30)
+    before_mismatch = _counter_value(
+        RESUME_LOAD_ATTEMPTS_TOTAL, outcome="token_mismatch"
+    )
     loaded_payload, status = resume_service.load_job_payload(job_id, "owner-b")
 
     assert loaded_payload is None
     assert status == resume_service.STATUS_TOKEN_MISMATCH
+    assert _counter_value(
+        RESUME_LOAD_ATTEMPTS_TOTAL, outcome="token_mismatch"
+    ) >= (before_mismatch + 1.0)
 
 
 def test_load_returns_not_found_when_payload_does_not_exist(resume_service):
     """Unknown job_id should return not_found for valid format."""
+    before_not_found = _counter_value(RESUME_LOAD_ATTEMPTS_TOTAL, outcome="not_found")
     loaded_payload, status = resume_service.load_job_payload(
         "BRP-20260225-120003-ABC126",
         "owner-c",
@@ -79,6 +141,9 @@ def test_load_returns_not_found_when_payload_does_not_exist(resume_service):
 
     assert loaded_payload is None
     assert status == resume_service.STATUS_NOT_FOUND
+    assert _counter_value(RESUME_LOAD_ATTEMPTS_TOTAL, outcome="not_found") >= (
+        before_not_found + 1.0
+    )
 
 
 def test_load_handles_incompatible_payload_version(resume_service):
@@ -117,12 +182,16 @@ def test_save_rejects_payload_larger_than_configured_limit(tmp_path):
         owner_token = "owner-e"
         payload = {"metadata": {"job_id": job_id}, "blob": "x" * (2 * 1024 * 1024)}
 
+        before_save_failed = _counter_value(RESUME_SAVE_TOTAL, outcome="save_failed")
         saved = service.save_job_payload(job_id, payload, owner_token, ttl_seconds=30)
         loaded_payload, status = service.load_job_payload(job_id, owner_token)
 
         assert saved is False
         assert loaded_payload is None
         assert status == service.STATUS_NOT_FOUND
+        assert _counter_value(RESUME_SAVE_TOTAL, outcome="save_failed") >= (
+            before_save_failed + 1.0
+        )
     finally:
         service.close()
 

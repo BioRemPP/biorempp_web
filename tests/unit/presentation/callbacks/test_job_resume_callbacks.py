@@ -8,6 +8,7 @@ from dash import no_update
 
 from src.presentation.callbacks import job_resume_callbacks
 from src.presentation.services.job_resume_service import JobResumeService
+from src.shared.metrics import RESUME_CALLBACK_ATTEMPTS_TOTAL
 
 
 def _flatten_text(node: Any) -> str:
@@ -30,6 +31,11 @@ def _flatten_text(node: Any) -> str:
 
     visit(node)
     return " ".join(fragments)
+
+
+def _counter_value(counter, **labels) -> float:
+    """Read Prometheus counter value for labels."""
+    return float(counter.labels(**labels)._value.get())
 
 
 @pytest.fixture
@@ -65,6 +71,10 @@ def test_resolve_resume_request_rejects_invalid_job_id(
     isolated_resume_service, isolated_rate_limiter
 ):
     """Invalid job id should return an error and keep stores unchanged."""
+    before_attempt = _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="attempt")
+    before_invalid = _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="invalid_job_id"
+    )
     data_update, pathname_update, status_component = (
         job_resume_callbacks.resolve_resume_request("invalid-job-id", "token-1")
     )
@@ -72,6 +82,12 @@ def test_resolve_resume_request_rejects_invalid_job_id(
     assert data_update is no_update
     assert pathname_update is no_update
     assert "Invalid Job ID" in _flatten_text(status_component)
+    assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="attempt") >= (
+        before_attempt + 1.0
+    )
+    assert _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="invalid_job_id"
+    ) >= (before_invalid + 1.0)
 
 
 def test_resolve_resume_request_returns_not_found_when_job_absent(
@@ -145,6 +161,7 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
     isolated_rate_limiter,
 ):
     """Valid job+token should restore payload and redirect to results."""
+    before_success = _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success")
     job_id = "BRP-20260225-123003-ABC114"
     owner_token = "token-4"
     payload = {
@@ -165,6 +182,9 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
     assert data_update == payload
     assert pathname_update == "/results"
     assert "loaded" in _flatten_text(status_component)
+    assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success") >= (
+        before_success + 1.0
+    )
 
 
 def test_resolve_resume_request_uses_generic_error_in_strict_mode(
@@ -195,6 +215,9 @@ def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
     isolated_resume_service, isolated_rate_limiter
 ):
     """Repeated attempts should trigger temporary rate-limit blocking."""
+    before_limited = _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
+    )
     for _ in range(3):
         _, _, status_component = job_resume_callbacks.resolve_resume_request(
             "BRP-20260225-223000-ABC119",
@@ -212,6 +235,9 @@ def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
     assert data_update is no_update
     assert pathname_update is no_update
     assert "Too many resume attempts" in _flatten_text(status_component)
+    assert _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
+    ) >= (before_limited + 1.0)
 
 
 def test_resolve_resume_request_unblocks_after_backoff_window(

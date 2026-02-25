@@ -44,6 +44,9 @@ All settings can be overridden with environment variables:
 - BIOREMPP_KO_PATTERN: Regex pattern for KO validation
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
 - BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
+- BIOREMPP_BACKGROUND_CALLBACKS_ENABLED: Enable Dash background callbacks
+- BIOREMPP_OBSERVABILITY_ENABLED: Enable Prometheus instrumentation (True/False)
+- BIOREMPP_OBSERVABILITY_METRICS_PATH: Metrics endpoint path (default: /metrics)
 - BIOREMPP_RESUME_BACKEND: Resume backend (diskcache|redis)
 - BIOREMPP_RESUME_SECURITY_MODE: Resume error mode (normal|strict)
 - BIOREMPP_RESUME_TTL_SECONDS: Resume payload TTL in seconds (default: 14400)
@@ -254,6 +257,8 @@ class Settings:
         Static assets directory
     CACHE_DIR : Path
         Base cache directory (shared by long callbacks and resume payloads)
+    BACKGROUND_CALLBACKS_ENABLED : bool
+        Enable Dash background callbacks (auto-disabled in incompatible prod setup)
     UPLOAD_MAX_SIZE_MB : int
         Maximum upload file size in MB
     UPLOAD_MAX_SIZE_BYTES : int
@@ -363,6 +368,30 @@ class Settings:
     )
 
     CACHE_DIR: Path = field(init=False)
+
+    # ========================================================================
+    # DASH CALLBACK EXECUTION
+    # ========================================================================
+    BACKGROUND_CALLBACKS_ENABLED: bool = field(
+        default_factory=lambda: _get_bool(
+            "BIOREMPP_BACKGROUND_CALLBACKS_ENABLED",
+            True,
+        )
+    )
+
+    # ========================================================================
+    # OBSERVABILITY
+    # ========================================================================
+    OBSERVABILITY_ENABLED: bool = field(
+        default_factory=lambda: _get_bool("BIOREMPP_OBSERVABILITY_ENABLED", False)
+    )
+
+    OBSERVABILITY_METRICS_PATH: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_OBSERVABILITY_METRICS_PATH",
+            "/metrics",
+        )
+    )
 
     # ========================================================================
     # RESUME / SECURITY CONFIGURATION
@@ -624,6 +653,26 @@ class Settings:
         self.CACHE_DIR = cache_path
         self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+        self.OBSERVABILITY_METRICS_PATH = (
+            self.OBSERVABILITY_METRICS_PATH or "/metrics"
+        ).strip()
+        if not self.OBSERVABILITY_METRICS_PATH:
+            self.OBSERVABILITY_METRICS_PATH = "/metrics"
+        if not self.OBSERVABILITY_METRICS_PATH.startswith("/"):
+            self.OBSERVABILITY_METRICS_PATH = (
+                f"/{self.OBSERVABILITY_METRICS_PATH}"
+            )
+        if len(self.OBSERVABILITY_METRICS_PATH) > 1:
+            self.OBSERVABILITY_METRICS_PATH = (
+                self.OBSERVABILITY_METRICS_PATH.rstrip("/")
+            )
+        if self.OBSERVABILITY_METRICS_PATH in ("/", "/health", "/ready"):
+            print(
+                "[WARNING] Invalid BIOREMPP_OBSERVABILITY_METRICS_PATH, "
+                "using '/metrics'"
+            )
+            self.OBSERVABILITY_METRICS_PATH = "/metrics"
+
         if self.RESUME_BACKEND not in ("diskcache", "redis"):
             print(
                 "[WARNING] Invalid BIOREMPP_RESUME_BACKEND, using 'diskcache'"
@@ -688,6 +737,16 @@ class Settings:
         self.GUNICORN_MAX_REQUEST_BODY_BYTES = max(
             self.GUNICORN_MAX_REQUEST_BODY_BYTES, self.UPLOAD_MAX_SIZE_BYTES
         )
+
+        worker_class_normalized = (self.WORKER_CLASS or "").strip().lower()
+        if self.is_production and self.BACKGROUND_CALLBACKS_ENABLED:
+            if self.WORKERS > 1 or worker_class_normalized in ("gevent", "eventlet"):
+                print(
+                    "[WARNING] Disabling BIOREMPP_BACKGROUND_CALLBACKS_ENABLED in "
+                    "production due to incompatible worker model "
+                    f"(workers={self.WORKERS}, worker_class={self.WORKER_CLASS})."
+                )
+                self.BACKGROUND_CALLBACKS_ENABLED = False
 
         # Auto-adjust settings based on environment
         if self.is_production:
@@ -770,6 +829,13 @@ class Settings:
         logger.info(f"Log Directory: {self.LOG_DIR}")
         logger.info(f"Cache Directory: {self.CACHE_DIR}")
         logger.info(
+            "Observability Configuration",
+            extra={
+                "observability_enabled": self.OBSERVABILITY_ENABLED,
+                "observability_metrics_path": self.OBSERVABILITY_METRICS_PATH,
+            },
+        )
+        logger.info(
             "Resume Configuration",
             extra={
                 "resume_backend": self.RESUME_BACKEND,
@@ -780,6 +846,12 @@ class Settings:
                 "gunicorn_limit_request_line": self.GUNICORN_LIMIT_REQUEST_LINE,
                 "gunicorn_limit_request_field_size": self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE,
                 "gunicorn_limit_request_fields": self.GUNICORN_LIMIT_REQUEST_FIELDS,
+            },
+        )
+        logger.info(
+            "Dash Callback Execution",
+            extra={
+                "background_callbacks_enabled": self.BACKGROUND_CALLBACKS_ENABLED,
             },
         )
 
@@ -859,6 +931,10 @@ class Settings:
             f"{self.PROCESSING_CIRCUIT_BREAKER_THRESHOLD}",
             f"  Circuit Breaker Timeout: "
             f"{self.PROCESSING_CIRCUIT_BREAKER_TIMEOUT}s",
+            "",
+            "Observability:",
+            f"  Enabled: {self.OBSERVABILITY_ENABLED}",
+            f"  Metrics Path: {self.OBSERVABILITY_METRICS_PATH}",
             "",
             "Resume Configuration:",
             f"  Backend: {self.RESUME_BACKEND}",

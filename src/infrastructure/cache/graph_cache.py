@@ -37,6 +37,7 @@ class GraphCache(MemoryCache):
     default_ttl : int
         Default TTL in seconds
     """
+    CACHE_TYPE = "graph"
 
     def __init__(
         self,

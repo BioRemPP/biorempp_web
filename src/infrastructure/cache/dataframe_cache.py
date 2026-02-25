@@ -18,6 +18,7 @@ from typing import Optional
 import pandas as pd
 
 from src.shared.logging import get_logger
+from src.shared.metrics import CACHE_ENTRY_SIZE_BYTES, CACHE_OPERATIONS_TOTAL
 
 from .memory_cache import MemoryCache
 
@@ -38,6 +39,7 @@ class DataFrameCache(MemoryCache):
     compression_level : int
         Gzip compression level (1-9)
     """
+    CACHE_TYPE = "dataframe"
 
     def __init__(
         self,
@@ -104,9 +106,19 @@ class DataFrameCache(MemoryCache):
             )
             cached_data = self._compress_dataframe(df)
             is_compressed = True
+            CACHE_OPERATIONS_TOTAL.labels(
+                cache_type=self._cache_type,
+                operation="compress",
+                outcome="applied",
+            ).inc()
         else:
             cached_data = df.copy()
             is_compressed = False
+            CACHE_OPERATIONS_TOTAL.labels(
+                cache_type=self._cache_type,
+                operation="compress",
+                outcome="skipped",
+            ).inc()
 
         # Store metadata along with data
         cache_entry = {
@@ -117,6 +129,7 @@ class DataFrameCache(MemoryCache):
         }
 
         self.set(key, cache_entry, ttl=ttl)
+        CACHE_ENTRY_SIZE_BYTES.labels(cache_type=self._cache_type).observe(float(df_size))
 
         logger.info(
             f"Cached DataFrame: {key}",
@@ -149,6 +162,11 @@ class DataFrameCache(MemoryCache):
         # Decompress if necessary
         if cache_entry['is_compressed']:
             logger.debug(f"Decompressing DataFrame: {key}")
+            CACHE_OPERATIONS_TOTAL.labels(
+                cache_type=self._cache_type,
+                operation="decompress",
+                outcome="ok",
+            ).inc()
             return self._decompress_dataframe(cache_entry['data'])
         else:
             return cache_entry['data'].copy()

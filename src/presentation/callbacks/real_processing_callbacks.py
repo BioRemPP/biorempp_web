@@ -9,9 +9,12 @@ Uses background callbacks for progress tracking with structured
 logging and comprehensive error recovery.
 """
 
+import os
+import time
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, no_update
 from dash.exceptions import PreventUpdate
+from threading import Thread
 from uuid import uuid4
 
 from src.presentation.components.composite.processing_feedback import (
@@ -31,12 +34,20 @@ from src.shared.exceptions import (
     ValidationError,
 )
 from src.shared.logging import get_logger
+from src.shared.metrics import (
+    PROCESSING_DURATION_SECONDS,
+    RESUME_PERSIST_DURATION_SECONDS,
+)
 
 # Configure logging
 logger = get_logger(__name__)
 
 # Initialize data processing service (singleton)
 _data_service = None
+_RESUME_SAVE_TIMEOUT_SECONDS = max(
+    float(os.getenv("BIOREMPP_RESUME_SAVE_TIMEOUT_SECONDS", "2.5")),
+    0.1,
+)
 
 
 def _mask_job_id(job_id: str) -> str:
@@ -54,6 +65,82 @@ def get_data_service():
         _data_service = DataProcessingService()
         logger.info("DataProcessingService initialized")
     return _data_service
+
+
+def _persist_resume_payload_with_timeout(
+    job_id: str,
+    payload: dict,
+    owner_token: str,
+    ttl_seconds: int,
+    timeout_seconds: float = _RESUME_SAVE_TIMEOUT_SECONDS,
+) -> bool:
+    """
+    Persist resume payload with bounded wait time.
+
+    Returns
+    -------
+    bool
+        True on successful persistence, False on timeout or errors.
+    """
+    outcome = {"saved": False, "error": None}
+    persist_started = time.perf_counter()
+
+    def _worker() -> None:
+        try:
+            outcome["saved"] = job_resume_service.save_job_payload(
+                job_id=job_id,
+                payload=payload,
+                owner_token=owner_token,
+                ttl_seconds=ttl_seconds,
+            )
+        except Exception as exc:  # pragma: no cover - defensive fallback
+            outcome["error"] = exc
+
+    worker = Thread(
+        target=_worker,
+        name="resume-persistence",
+        daemon=True,
+    )
+    worker.start()
+    worker.join(timeout_seconds)
+
+    if worker.is_alive():
+        RESUME_PERSIST_DURATION_SECONDS.labels(outcome="timed_out").observe(
+            max(time.perf_counter() - persist_started, 0.0)
+        )
+        logger.warning(
+            "Resume payload persistence timed out",
+            extra={
+                "job_ref": _mask_job_id(job_id),
+                "timeout_seconds": timeout_seconds,
+            },
+        )
+        return False
+
+    error = outcome["error"]
+    if error is not None:
+        RESUME_PERSIST_DURATION_SECONDS.labels(outcome="error").observe(
+            max(time.perf_counter() - persist_started, 0.0)
+        )
+        logger.error(
+            "Resume payload persistence failed with unexpected error",
+            extra={"job_ref": _mask_job_id(job_id)},
+            exc_info=(type(error), error, error.__traceback__),
+        )
+        return False
+
+    saved = bool(outcome["saved"])
+    RESUME_PERSIST_DURATION_SECONDS.labels(
+        outcome="saved" if saved else "failed"
+    ).observe(max(time.perf_counter() - persist_started, 0.0))
+    return saved
+
+
+def _observe_processing_duration(started_at: float, outcome: str) -> None:
+    """Observe processing callback duration by coarse outcome class."""
+    PROCESSING_DURATION_SECONDS.labels(outcome=outcome).observe(
+        max(time.perf_counter() - started_at, 0.0)
+    )
 
 
 def create_spinner_message(elapsed_time):
@@ -104,6 +191,11 @@ def register_real_processing_callbacks(app):
     logger.info("=" * 60)
     logger.info("Registering REAL PROCESSING callbacks with long_callback...")
     logger.info("=" * 60)
+    use_background_callbacks = bool(
+        app.server.config.get("BIOREMPP_BACKGROUND_CALLBACKS_ENABLED", True)
+    )
+    execution_mode = "background" if use_background_callbacks else "synchronous"
+    logger.info(f"Processing callback execution mode: {execution_mode}")
 
     # Background callback for data processing with simple spinner
     @app.callback(
@@ -127,7 +219,7 @@ def register_real_processing_callbacks(app):
                 False,  # Enable when complete
             )
         ],
-        background=True,
+        background=use_background_callbacks,
         prevent_initial_call=True,
     )
     def process_data_with_spinner(n_clicks, upload_data, example_data, owner_token):
@@ -160,11 +252,13 @@ def register_real_processing_callbacks(app):
         """
         if n_clicks is None:
             raise PreventUpdate
+        callback_started_at = time.perf_counter()
 
         # Determine data source
         file_data = upload_data or example_data
 
         if not file_data:
+            _observe_processing_duration(callback_started_at, "no_data")
             return (
                 dbc.Alert(
                     [
@@ -180,6 +274,7 @@ def register_real_processing_callbacks(app):
                 no_update,
             )
 
+        processing_outcome = "unknown"
         try:
             service = get_data_service()
             job_id = DataProcessingService.generate_job_id()
@@ -279,7 +374,7 @@ def register_real_processing_callbacks(app):
             # Persist serialized payload for resume-by-job-id flow (non-blocking)
             metadata = result["metadata"]
             persisted_job_id = metadata.get("job_id", job_id)
-            resume_saved = job_resume_service.save_job_payload(
+            resume_saved = _persist_resume_payload_with_timeout(
                 job_id=persisted_job_id,
                 payload=serialized_result,
                 owner_token=effective_owner_token,
@@ -331,6 +426,7 @@ def register_real_processing_callbacks(app):
                 )
 
             # Return results
+            processing_outcome = "success"
             return (
                 status_message,
                 serialized_result,
@@ -341,6 +437,7 @@ def register_real_processing_callbacks(app):
 
         # Validation errors (expected)
         except ValidationError as e:
+            processing_outcome = "validation_error"
             logger.warning(
                 f"Data validation error: {str(e)}",
                 extra={
@@ -370,6 +467,7 @@ def register_real_processing_callbacks(app):
 
         # Timeout errors
         except DataProcessingTimeoutError as e:
+            processing_outcome = "timeout"
             logger.error(
                 f"Processing timeout: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -396,6 +494,7 @@ def register_real_processing_callbacks(app):
 
         # Empty DataFrame errors
         except EmptyDataFrameError as e:
+            processing_outcome = "empty_dataframe"
             logger.error(
                 f"Empty DataFrame error: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -422,6 +521,7 @@ def register_real_processing_callbacks(app):
 
         # Circuit breaker errors
         except CircuitBreakerOpenError as e:
+            processing_outcome = "circuit_breaker"
             logger.error(
                 f"Circuit breaker open: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -447,6 +547,7 @@ def register_real_processing_callbacks(app):
 
         # Retry exhausted errors
         except RetryExhaustedError as e:
+            processing_outcome = "retry_exhausted"
             logger.error(
                 f"Retry exhausted: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -473,6 +574,7 @@ def register_real_processing_callbacks(app):
 
         # Stage processing errors
         except StageProcessingError as e:
+            processing_outcome = "stage_error"
             logger.error(
                 f"Stage processing failed: {e.stage_name}",
                 extra={
@@ -503,6 +605,7 @@ def register_real_processing_callbacks(app):
 
         # Generic processing errors
         except ProcessingError as e:
+            processing_outcome = "processing_error"
             logger.error(
                 f"Processing error: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -529,6 +632,7 @@ def register_real_processing_callbacks(app):
 
         # Unexpected errors
         except Exception as e:
+            processing_outcome = "unexpected_error"
             logger.exception(
                 "Unexpected error during data processing",
                 exc_info=True,
@@ -558,6 +662,8 @@ def register_real_processing_callbacks(app):
                 {"display": "none"},
                 no_update,
             )
+        finally:
+            _observe_processing_duration(callback_started_at, processing_outcome)
 
     # Callback to show progress panel immediately when button is clicked
 

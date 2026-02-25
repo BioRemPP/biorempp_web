@@ -18,6 +18,12 @@ from typing import Optional
 from .resume_store import ResumeStore
 from .resume_store_diskcache import DiskcacheResumeStore
 from src.shared.logging import get_logger
+from src.shared.metrics import (
+    RESUME_LOAD_ATTEMPTS_TOTAL,
+    RESUME_OPERATION_DURATION_SECONDS,
+    RESUME_PAYLOAD_SIZE_BYTES,
+    RESUME_SAVE_TOTAL,
+)
 
 logger = get_logger(__name__)
 
@@ -45,6 +51,7 @@ class JobResumeService:
     STATUS_TOKEN_MISMATCH = "token_mismatch"
     STATUS_TOKEN_MISSING = "token_missing"
     STATUS_INCOMPATIBLE_VERSION = "incompatible_version"
+    STATUS_SAVE_FAILED = "save_failed"
 
     def __init__(
         self,
@@ -309,6 +316,51 @@ class JobResumeService:
         )
 
     @staticmethod
+    def _normalize_resume_metric_status(status: str) -> str:
+        """Collapse internal statuses into stable metric buckets."""
+        if status in ("ok", "not_found", "token_mismatch", "save_failed"):
+            return status
+        if status in ("invalid_job_id", "token_missing", "incompatible_version"):
+            return "not_found"
+        return "save_failed"
+
+    def _emit_save_metrics(
+        self,
+        status: str,
+        elapsed_seconds: float,
+        payload_size_bytes: Optional[int] = None,
+    ) -> None:
+        metric_status = self._normalize_resume_metric_status(status)
+        RESUME_SAVE_TOTAL.labels(outcome=metric_status).inc()
+        RESUME_OPERATION_DURATION_SECONDS.labels(
+            backend=self._store.backend_name,
+            operation="save",
+            status=metric_status,
+        ).observe(max(float(elapsed_seconds), 0.0))
+        if payload_size_bytes is not None and payload_size_bytes >= 0:
+            RESUME_PAYLOAD_SIZE_BYTES.labels(
+                backend=self._store.backend_name
+            ).observe(float(payload_size_bytes))
+
+    def _emit_load_metrics(
+        self,
+        status: str,
+        elapsed_seconds: float,
+        payload_size_bytes: Optional[int] = None,
+    ) -> None:
+        metric_status = self._normalize_resume_metric_status(status)
+        RESUME_LOAD_ATTEMPTS_TOTAL.labels(outcome=metric_status).inc()
+        RESUME_OPERATION_DURATION_SECONDS.labels(
+            backend=self._store.backend_name,
+            operation="load",
+            status=metric_status,
+        ).observe(max(float(elapsed_seconds), 0.0))
+        if payload_size_bytes is not None and payload_size_bytes >= 0:
+            RESUME_PAYLOAD_SIZE_BYTES.labels(
+                backend=self._store.backend_name
+            ).observe(float(payload_size_bytes))
+
+    @staticmethod
     def _estimate_payload_size(payload: dict) -> int:
         """Estimate payload size in bytes for logging."""
         try:
@@ -338,19 +390,32 @@ class JobResumeService:
             Custom TTL override.
         """
         normalized_job_id = (job_id or "").strip().upper()
+        operation_started = time.perf_counter()
         if not self.validate_job_id(normalized_job_id):
             logger.warning("Refusing to save resume payload: invalid job_id format")
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                time.perf_counter() - operation_started,
+            )
             return False
         if not isinstance(payload, dict):
             logger.warning(
                 "Refusing to save resume payload: payload must be dict",
                 extra={"job_ref": self._mask_job_id(normalized_job_id)},
             )
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                time.perf_counter() - operation_started,
+            )
             return False
         if not isinstance(owner_token, str) or not owner_token.strip():
             logger.warning(
                 "Refusing to save resume payload: missing owner_token",
                 extra={"job_ref": self._mask_job_id(normalized_job_id)},
+            )
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                time.perf_counter() - operation_started,
             )
             return False
 
@@ -374,6 +439,11 @@ class JobResumeService:
                     "max_payload_bytes": self._max_payload_bytes,
                 },
             )
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                time.perf_counter() - operation_started,
+                payload_size_bytes=payload_size_bytes,
+            )
             return False
 
         try:
@@ -381,6 +451,11 @@ class JobResumeService:
         except ValueError:
             self._record_security_event("save_failed")
             logger.warning("Refusing to save resume payload: unsafe cache key")
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                time.perf_counter() - operation_started,
+                payload_size_bytes=payload_size_bytes,
+            )
             return False
 
         masked_job_id = self._mask_job_id(normalized_job_id)
@@ -398,6 +473,7 @@ class JobResumeService:
         start_time = time.perf_counter()
         saved = self._store.set(cache_key, cache_value, ttl)
         elapsed_ms = (time.perf_counter() - start_time) * 1000
+        total_elapsed_s = time.perf_counter() - operation_started
         if saved:
             logger.info(
                 "Resume payload saved",
@@ -409,6 +485,11 @@ class JobResumeService:
                     "save_ms": round(elapsed_ms, 2),
                 },
             )
+            self._emit_save_metrics(
+                self.STATUS_OK,
+                total_elapsed_s,
+                payload_size_bytes=payload_size_bytes,
+            )
         else:
             self._record_security_event("save_failed")
             logger.warning(
@@ -419,6 +500,11 @@ class JobResumeService:
                     "payload_size_bytes": payload_size_bytes,
                     "save_ms": round(elapsed_ms, 2),
                 },
+            )
+            self._emit_save_metrics(
+                self.STATUS_SAVE_FAILED,
+                total_elapsed_s,
+                payload_size_bytes=payload_size_bytes,
             )
         return saved
 
@@ -438,16 +524,29 @@ class JobResumeService:
             incompatible_version.
         """
         normalized_job_id = (job_id or "").strip().upper()
+        operation_started = time.perf_counter()
         if not self.validate_job_id(normalized_job_id):
+            self._emit_load_metrics(
+                self.STATUS_INVALID_JOB_ID,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_INVALID_JOB_ID
 
         if not isinstance(owner_token, str) or not owner_token.strip():
+            self._emit_load_metrics(
+                self.STATUS_TOKEN_MISSING,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_TOKEN_MISSING
 
         masked_job_id = self._mask_job_id(normalized_job_id)
         try:
             cache_key = self._build_cache_key(normalized_job_id)
         except ValueError:
+            self._emit_load_metrics(
+                self.STATUS_INVALID_JOB_ID,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_INVALID_JOB_ID
 
         start_time = time.perf_counter()
@@ -463,27 +562,51 @@ class JobResumeService:
                     "load_ms": round(elapsed_ms, 2),
                 },
             )
+            self._emit_load_metrics(
+                self.STATUS_NOT_FOUND,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_NOT_FOUND
 
         cached_owner_token = cached.get("owner_token")
         if cached_owner_token != owner_token.strip():
             self._record_security_event(self.STATUS_TOKEN_MISMATCH)
+            self._emit_load_metrics(
+                self.STATUS_TOKEN_MISMATCH,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_TOKEN_MISMATCH
 
         raw_payload_version = cached.get("payload_version")
         if not isinstance(raw_payload_version, int):
+            self._emit_load_metrics(
+                self.STATUS_INCOMPATIBLE_VERSION,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_INCOMPATIBLE_VERSION
         payload_version = raw_payload_version
         if payload_version not in self.SUPPORTED_PAYLOAD_VERSIONS:
+            self._emit_load_metrics(
+                self.STATUS_INCOMPATIBLE_VERSION,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_INCOMPATIBLE_VERSION
         payload_schema = cached.get("payload_schema")
         expected_schema = self._expected_payload_schema(payload_version)
         if payload_schema != expected_schema:
+            self._emit_load_metrics(
+                self.STATUS_INCOMPATIBLE_VERSION,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_INCOMPATIBLE_VERSION
 
         payload = cached.get("merged_result_payload")
         if not isinstance(payload, dict):
             self._record_security_event(self.STATUS_NOT_FOUND)
+            self._emit_load_metrics(
+                self.STATUS_NOT_FOUND,
+                time.perf_counter() - operation_started,
+            )
             return None, self.STATUS_NOT_FOUND
 
         elapsed_ms = (time.perf_counter() - start_time) * 1000
@@ -495,6 +618,11 @@ class JobResumeService:
                 "payload_size_bytes": self.estimate_payload_size_bytes(payload),
                 "load_ms": round(elapsed_ms, 2),
             },
+        )
+        self._emit_load_metrics(
+            self.STATUS_OK,
+            time.perf_counter() - operation_started,
+            payload_size_bytes=self.estimate_payload_size_bytes(payload),
         )
 
         return payload, self.STATUS_OK

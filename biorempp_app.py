@@ -133,19 +133,25 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("CHILD WORKER PROCESS - CREATING FULL APP INSTANCE")
     logger.info("=" * 80)
 
-    # Configure long callback cache manager for progress tracking.
-    # Cache root is standardized via BIOREMPP_CACHE_DIR (default: /app/cache in Docker).
-    cache_dir = settings.CACHE_DIR / "long_callbacks"
-    cache_dir.mkdir(parents=True, exist_ok=True)
-    cache = diskcache.Cache(str(cache_dir))
-    long_callback_manager = DiskcacheManager(cache)
-    logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    long_callback_manager = None
+    if settings.BACKGROUND_CALLBACKS_ENABLED:
+        # Configure long callback cache manager for progress tracking.
+        # Cache root is standardized via BIOREMPP_CACHE_DIR
+        # (default: /app/cache in Docker).
+        cache_dir = settings.CACHE_DIR / "long_callbacks"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache = diskcache.Cache(str(cache_dir))
+        long_callback_manager = DiskcacheManager(cache)
+        logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    else:
+        logger.warning(
+            "Background callbacks disabled; processing will run in request worker"
+        )
 
     # Initialize Dash app with Font Awesome
     font_awesome = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
-    app = dash.Dash(
-        __name__,
+    dash_kwargs = dict(
         external_stylesheets=[
             dbc.themes.MINTY,
             font_awesome
@@ -153,7 +159,13 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         suppress_callback_exceptions=True,
         title=f"{APP_NAME} v{APP_VERSION}",
         assets_folder='src/assets',
-        background_callback_manager=long_callback_manager
+    )
+    if long_callback_manager is not None:
+        dash_kwargs["background_callback_manager"] = long_callback_manager
+
+    app = dash.Dash(__name__, **dash_kwargs)
+    app.server.config["BIOREMPP_BACKGROUND_CALLBACKS_ENABLED"] = (
+        settings.BACKGROUND_CALLBACKS_ENABLED
     )
     favicon_href = f"{app.get_asset_url('favicon.ico')}?v={APP_VERSION}"
     app.index_string = app.index_string.replace(
@@ -163,7 +175,9 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("[OK] Dash app created")
     logger.info("  - Theme: Bootstrap MINTY")
     logger.info("  - Callback exceptions: Suppressed")
-    logger.info("  - Long callbacks: Enabled with diskcache")
+    logger.info(
+        f"  - Long callbacks: {'Enabled with diskcache' if long_callback_manager else 'Disabled'}"
+    )
     
     # Set app layout with routing
     app.layout = html.Div([
@@ -390,6 +404,27 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             }, 503
 
     logger.info("[OK] Health check endpoints registered (/health, /ready)")
+
+    if settings.OBSERVABILITY_ENABLED:
+        from src.shared.metrics import setup_observability
+
+        setup_observability(
+            app,
+            metrics_path=settings.OBSERVABILITY_METRICS_PATH,
+        )
+        logger.info(
+            "[OK] Observability enabled "
+            f"({settings.OBSERVABILITY_METRICS_PATH})"
+        )
+    else:
+        @app.server.route(settings.OBSERVABILITY_METRICS_PATH)
+        def metrics_disabled():
+            return {
+                "status": "disabled",
+                "message": "Observability is disabled",
+            }, 404
+
+        logger.info("[OK] Observability disabled")
 
     # Add static file route for example dataset download
     @app.server.route('/data/<path:filename>')
