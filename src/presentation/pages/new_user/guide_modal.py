@@ -47,15 +47,35 @@ def create_new_user_guide_button():
                             dbc.Button(
                                 [
                                     html.I(className="fas fa-map-marked-alt me-2"),
-                                    "Start Guided Tour",
+                                    "Start Quick Walkthrough",
                                 ],
-                                id="new-user-guide-btn",
+                                id="onboarding-walkthrough-open",
                                 color="primary",
                                 size="lg",
                                 className="shadow-sm",
                             )
                         ],
                         className="d-grid",
+                    ),
+                    # Always-visible fallback in case browser extensions hide the main button
+                    html.Div(
+                        [
+                            html.Small(
+                                "Button not visible? Open the full guide directly:",
+                                className="text-muted d-block mb-2",
+                            ),
+                            dbc.Button(
+                                [
+                                    html.I(className="fas fa-book-open me-2"),
+                                    "Open User Guide",
+                                ],
+                                href="/user-guide",
+                                color="secondary",
+                                outline=True,
+                                size="sm",
+                            ),
+                        ],
+                        className="text-center mt-3",
                     ),
                 ]
             )
@@ -327,14 +347,14 @@ def create_new_user_guide_modal():
                 [
                     dbc.Button(
                         "Close",
-                        id="new-user-guide-close",
+                        id="onboarding-walkthrough-close",
                         color="secondary",
                         outline=True,
                     )
                 ]
             ),
         ],
-        id="new-user-guide-modal",
+        id="onboarding-walkthrough-dialog",
         size="lg",
         centered=True,
         scrollable=True,

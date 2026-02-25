@@ -4,8 +4,7 @@ New User Callbacks.
 Handles modal interactions for new user guide and terms of use.
 """
 
-from dash import Input, Output, State, callback
-from dash.exceptions import PreventUpdate
+from dash import Input, Output, State
 
 
 def register_new_user_guide_callbacks(app):
@@ -19,12 +18,12 @@ def register_new_user_guide_callbacks(app):
     """
 
     @app.callback(
-        Output("new-user-guide-modal", "is_open"),
+        Output("onboarding-walkthrough-dialog", "is_open"),
         [
-            Input("new-user-guide-btn", "n_clicks"),
-            Input("new-user-guide-close", "n_clicks"),
+            Input("onboarding-walkthrough-open", "n_clicks"),
+            Input("onboarding-walkthrough-close", "n_clicks"),
         ],
-        [State("new-user-guide-modal", "is_open")],
+        [State("onboarding-walkthrough-dialog", "is_open")],
         prevent_initial_call=True,
     )
     def toggle_new_user_guide_modal(open_clicks, close_clicks, is_open):

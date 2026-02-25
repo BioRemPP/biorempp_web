@@ -243,7 +243,9 @@ def create_faq_page() -> html.Div:
                     ),
                     create_faq_note(
                         "Access the New User Guide from the homepage by clicking "
-                        "'Start Guided Tour' below the 'Start Your Analysis' title.",
+                        "'Start Quick Walkthrough' below the 'Start Your Analysis' title. "
+                        "If browser extensions hide this button, use the direct "
+                        "'Open User Guide' link in the same card.",
                         note_type="success",
                     ),
                 ]
