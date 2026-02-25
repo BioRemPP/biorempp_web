@@ -5,9 +5,7 @@ BioRemPP Web - Presentation Services
 Service layer for presentation logic.
 """
 
-import os
-from pathlib import Path
-
+from config.settings import get_settings
 from .data_processing_service import DataProcessingService
 from .job_resume_service import JobResumeService
 from .resume_store_diskcache import DiskcacheResumeStore
@@ -15,48 +13,37 @@ from .resume_store_redis import RedisResumeStore
 from src.shared.logging import get_logger
 
 logger = get_logger(__name__)
-
-
-def _read_env_int(name: str, default: int, minimum: int = 1) -> int:
-    raw_value = os.getenv(name)
-    if raw_value is None:
-        return max(default, minimum)
-    try:
-        return max(int(raw_value), minimum)
-    except ValueError:
-        return max(default, minimum)
-
-
-def _resolve_base_cache_dir() -> Path:
-    project_root = Path(__file__).resolve().parents[3]
-    raw_value = os.getenv("BIOREMPP_CACHE_DIR")
-    if not raw_value:
-        return project_root / "cache"
-    candidate = Path(raw_value)
-    if not candidate.is_absolute():
-        candidate = project_root / candidate
-    return candidate
+settings = get_settings()
 
 
 def _build_diskcache_store() -> DiskcacheResumeStore:
-    cache_size_mb = _read_env_int(
-        "BIOREMPP_RESUME_CACHE_SIZE_MB",
-        JobResumeService.DEFAULT_CACHE_SIZE_MB,
-        minimum=32,
+    return DiskcacheResumeStore(
+        cache_dir=settings.CACHE_DIR / "job_resume",
+        cache_size_mb=settings.RESUME_CACHE_SIZE_MB,
     )
-    cache_dir = _resolve_base_cache_dir() / "job_resume"
-    return DiskcacheResumeStore(cache_dir=cache_dir, cache_size_mb=cache_size_mb)
+
+
+def _build_redis_store() -> RedisResumeStore:
+    return RedisResumeStore(
+        host=settings.RESUME_REDIS_HOST,
+        port=settings.RESUME_REDIS_PORT,
+        db=settings.RESUME_REDIS_DB,
+        password=settings.RESUME_REDIS_PASSWORD or None,
+        key_prefix=settings.RESUME_REDIS_KEY_PREFIX,
+        socket_timeout_seconds=float(settings.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS),
+        compression_level=settings.RESUME_REDIS_COMPRESSION_LEVEL,
+    )
 
 
 def _build_resume_store():
-    backend = os.getenv("BIOREMPP_RESUME_BACKEND", "diskcache").strip().lower()
+    backend = settings.RESUME_BACKEND
     if backend == "redis":
-        store = RedisResumeStore.from_env()
+        store = _build_redis_store()
         logger.info("Resume backend selected", extra={"backend": "redis"})
         return store
-    if backend and backend != "diskcache":
+    if backend != "diskcache":
         logger.warning(
-            "Unknown BIOREMPP_RESUME_BACKEND. Falling back to diskcache.",
+            "Unknown RESUME_BACKEND. Falling back to diskcache.",
             extra={"backend_value": backend},
         )
     store = _build_diskcache_store()
@@ -64,7 +51,16 @@ def _build_resume_store():
     return store
 
 
-job_resume_service = JobResumeService(store=_build_resume_store())
+job_resume_service = JobResumeService(
+    store=_build_resume_store(),
+    ttl_seconds=settings.RESUME_TTL_SECONDS,
+    cache_size_mb=settings.RESUME_CACHE_SIZE_MB,
+    max_payload_mb=settings.RESUME_MAX_PAYLOAD_MB,
+    alert_window_seconds=settings.RESUME_ALERT_WINDOW_SECONDS,
+    alert_not_found_threshold=settings.RESUME_ALERT_NOT_FOUND_THRESHOLD,
+    alert_token_mismatch_threshold=settings.RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD,
+    alert_save_failed_threshold=settings.RESUME_ALERT_SAVE_FAILED_THRESHOLD,
+)
 
 __all__ = [
     "DataProcessingService",

@@ -125,3 +125,129 @@ def test_save_rejects_payload_larger_than_configured_limit(tmp_path):
         assert status == service.STATUS_NOT_FOUND
     finally:
         service.close()
+
+
+def test_build_cache_key_uses_isolated_prefix_and_rejects_unsafe_value(resume_service):
+    """Cache keys should be isolated by prefix and reject unsafe values."""
+    cache_key = resume_service._build_cache_key("BRP-20260225-120006-ABC129")
+
+    assert cache_key.startswith(resume_service.CACHE_KEY_PREFIX)
+
+    with pytest.raises(ValueError):
+        resume_service._build_cache_key("BRP-20260225-120006-ABC12/")
+
+
+def test_load_rejects_payload_without_schema_marker(resume_service):
+    """Payloads missing schema marker are incompatible in strict current version."""
+    job_id = "BRP-20260225-120007-ABC130"
+    owner_token = "owner-no-schema"
+    payload = {"metadata": {"job_id": job_id}}
+
+    resume_service._cache.set(
+        resume_service._build_cache_key(job_id),
+        {
+            "job_id": job_id,
+            "owner_token": owner_token,
+            "created_at": "2026-02-25T12:00:07+00:00",
+            "payload_version": resume_service.CURRENT_PAYLOAD_VERSION,
+            "merged_result_payload": payload,
+        },
+        expire=30,
+    )
+
+    loaded_payload, status = resume_service.load_job_payload(job_id, owner_token)
+
+    assert status == resume_service.STATUS_INCOMPATIBLE_VERSION
+    assert loaded_payload is None
+
+
+def test_alert_is_emitted_when_not_found_threshold_is_exceeded(tmp_path, caplog):
+    """Service should emit operational alert for not_found spikes."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "alert_not_found_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+        alert_window_seconds=60,
+        alert_not_found_threshold=1,
+        alert_token_mismatch_threshold=999,
+        alert_save_failed_threshold=999,
+    )
+    try:
+        with caplog.at_level("WARNING"):
+            _, status = service.load_job_payload(
+                "BRP-20260225-120008-ABC131",
+                "owner-alert",
+            )
+        assert status == service.STATUS_NOT_FOUND
+        assert any(
+            rec.message == "Resume security alert threshold exceeded"
+            and getattr(rec, "event", None) == service.STATUS_NOT_FOUND
+            for rec in caplog.records
+        )
+    finally:
+        service.close()
+
+
+def test_alert_is_emitted_when_token_mismatch_threshold_is_exceeded(tmp_path, caplog):
+    """Service should emit operational alert for token_mismatch spikes."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "alert_token_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+        alert_window_seconds=60,
+        alert_not_found_threshold=999,
+        alert_token_mismatch_threshold=1,
+        alert_save_failed_threshold=999,
+    )
+    try:
+        job_id = "BRP-20260225-120009-ABC132"
+        assert service.save_job_payload(
+            job_id,
+            {"metadata": {"job_id": job_id}},
+            "owner-correct",
+            ttl_seconds=30,
+        )
+        with caplog.at_level("WARNING"):
+            _, status = service.load_job_payload(job_id, "owner-wrong")
+        assert status == service.STATUS_TOKEN_MISMATCH
+        assert any(
+            rec.message == "Resume security alert threshold exceeded"
+            and getattr(rec, "event", None) == service.STATUS_TOKEN_MISMATCH
+            for rec in caplog.records
+        )
+    finally:
+        service.close()
+
+
+def test_alert_is_emitted_when_save_failed_threshold_is_exceeded(tmp_path, caplog):
+    """Service should emit operational alert for save_failed spikes."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "alert_save_failed_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+        max_payload_mb=1,
+        alert_window_seconds=60,
+        alert_not_found_threshold=999,
+        alert_token_mismatch_threshold=999,
+        alert_save_failed_threshold=1,
+    )
+    try:
+        oversized_payload = {
+            "metadata": {"job_id": "BRP-20260225-120010-ABC133"},
+            "blob": "x" * (2 * 1024 * 1024),
+        }
+        with caplog.at_level("WARNING"):
+            saved = service.save_job_payload(
+                "BRP-20260225-120010-ABC133",
+                oversized_payload,
+                "owner-save-failed",
+                ttl_seconds=30,
+            )
+        assert saved is False
+        assert any(
+            rec.message == "Resume security alert threshold exceeded"
+            and getattr(rec, "event", None) == "save_failed"
+            for rec in caplog.records
+        )
+    finally:
+        service.close()

@@ -4,6 +4,7 @@ Redis adapter for resume payload persistence.
 
 import json
 import os
+import re
 import zlib
 from typing import Any, Optional
 
@@ -24,6 +25,8 @@ class RedisResumeStore(ResumeStore):
     """
 
     DEFAULT_KEY_PREFIX = "biorempp:resume:"
+    KEY_SAFE_PATTERN = re.compile(r"^[A-Za-z0-9:_-]{1,128}$")
+    PREFIX_SAFE_PATTERN = re.compile(r"^[A-Za-z0-9:_-]{1,64}:$")
 
     def __init__(
         self,
@@ -53,7 +56,12 @@ class RedisResumeStore(ResumeStore):
             )
 
         self._client = client
-        self._key_prefix = (key_prefix or self.DEFAULT_KEY_PREFIX).strip()
+        normalized_prefix = (key_prefix or self.DEFAULT_KEY_PREFIX).strip()
+        if normalized_prefix and not normalized_prefix.endswith(":"):
+            normalized_prefix = f"{normalized_prefix}:"
+        if not self.PREFIX_SAFE_PATTERN.fullmatch(normalized_prefix):
+            raise ValueError("Invalid redis resume key prefix")
+        self._key_prefix = normalized_prefix
         self._compression_level = min(max(int(compression_level), 1), 9)
 
     @property
@@ -131,7 +139,10 @@ class RedisResumeStore(ResumeStore):
             return False
 
     def _full_key(self, key: str) -> str:
-        return f"{self._key_prefix}{key}"
+        normalized_key = (key or "").strip()
+        if not self.KEY_SAFE_PATTERN.fullmatch(normalized_key):
+            raise ValueError("Invalid redis resume key")
+        return f"{self._key_prefix}{normalized_key}"
 
     def _serialize(self, value: dict) -> bytes:
         payload_bytes = json.dumps(

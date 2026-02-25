@@ -45,14 +45,30 @@ All settings can be overridden with environment variables:
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
 - BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
 - BIOREMPP_RESUME_BACKEND: Resume backend (diskcache|redis)
+- BIOREMPP_RESUME_SECURITY_MODE: Resume error mode (normal|strict)
 - BIOREMPP_RESUME_TTL_SECONDS: Resume payload TTL in seconds (default: 14400)
 - BIOREMPP_RESUME_CACHE_SIZE_MB: Resume cache max size in MB (default: 512)
 - BIOREMPP_RESUME_MAX_PAYLOAD_MB: Max payload size per resume job in MB
+- BIOREMPP_RESUME_RATE_LIMIT_ATTEMPTS: Max resume attempts per window
+- BIOREMPP_RESUME_RATE_LIMIT_WINDOW_SECONDS: Rate-limit window in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS: Base backoff in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS: Max backoff in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB: Cache size for limiter state
+- BIOREMPP_RESUME_ALERT_WINDOW_SECONDS: Security alert window in seconds
+- BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD: Alert threshold for not_found
+- BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD: Alert threshold for token_mismatch
+- BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD: Alert threshold for save_failed
 - BIOREMPP_RESUME_REDIS_HOST: Resume Redis host
 - BIOREMPP_RESUME_REDIS_PORT: Resume Redis port
 - BIOREMPP_RESUME_REDIS_DB: Resume Redis database index
 - BIOREMPP_RESUME_REDIS_PASSWORD: Resume Redis password
 - BIOREMPP_RESUME_REDIS_KEY_PREFIX: Resume Redis key prefix
+- BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: Resume Redis compression level (1-9)
+- BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: Resume Redis socket timeout
+- BIOREMPP_LIMIT_REQUEST_LINE: Gunicorn max request line length
+- BIOREMPP_LIMIT_REQUEST_FIELD_SIZE: Gunicorn max header field size
+- BIOREMPP_LIMIT_REQUEST_FIELDS: Gunicorn max header field count
+- BIOREMPP_MAX_REQUEST_BODY_BYTES: Observability threshold for request body size
 """
 
 import logging
@@ -349,6 +365,148 @@ class Settings:
     CACHE_DIR: Path = field(init=False)
 
     # ========================================================================
+    # RESUME / SECURITY CONFIGURATION
+    # ========================================================================
+    RESUME_BACKEND: Literal["diskcache", "redis"] = field(
+        default_factory=lambda: os.getenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+        .strip()
+        .lower()
+    )
+
+    RESUME_SECURITY_MODE: Literal["normal", "strict"] = field(
+        default_factory=lambda: os.getenv("BIOREMPP_RESUME_SECURITY_MODE", "normal")
+        .strip()
+        .lower()
+    )
+
+    RESUME_TTL_SECONDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_TTL_SECONDS", 14400)
+    )
+
+    RESUME_CACHE_SIZE_MB: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_CACHE_SIZE_MB", 512)
+    )
+
+    RESUME_MAX_PAYLOAD_MB: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_MAX_PAYLOAD_MB", 64)
+    )
+
+    RESUME_RATE_LIMIT_ATTEMPTS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_RATE_LIMIT_ATTEMPTS", 10)
+    )
+
+    RESUME_RATE_LIMIT_WINDOW_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_WINDOW_SECONDS", 60
+        )
+    )
+
+    RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS", 5
+        )
+    )
+
+    RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS", 300
+        )
+    )
+
+    RESUME_RATE_LIMIT_CACHE_SIZE_MB: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB", 64
+        )
+    )
+
+    RESUME_ALERT_WINDOW_SECONDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_ALERT_WINDOW_SECONDS", 300)
+    )
+
+    RESUME_ALERT_NOT_FOUND_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD", 30
+        )
+    )
+
+    RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD", 10
+        )
+    )
+
+    RESUME_ALERT_SAVE_FAILED_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD", 5
+        )
+    )
+
+    RESUME_REDIS_HOST: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_REDIS_HOST",
+            os.getenv("REDIS_HOST", "redis"),
+        )
+    )
+
+    RESUME_REDIS_PORT: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_PORT",
+            _get_int("REDIS_PORT", 6379),
+        )
+    )
+
+    RESUME_REDIS_DB: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_DB",
+            _get_int("REDIS_DB", 0),
+        )
+    )
+
+    RESUME_REDIS_PASSWORD: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_REDIS_PASSWORD",
+            os.getenv("REDIS_PASSWORD", ""),
+        )
+    )
+
+    RESUME_REDIS_KEY_PREFIX: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_REDIS_KEY_PREFIX", "biorempp:resume:"
+        )
+    )
+
+    RESUME_REDIS_COMPRESSION_LEVEL: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL", 6
+        )
+    )
+
+    RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS", 3
+        )
+    )
+
+    GUNICORN_LIMIT_REQUEST_LINE: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_LINE", 4096)
+    )
+
+    GUNICORN_LIMIT_REQUEST_FIELD_SIZE: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_FIELD_SIZE", 8190)
+    )
+
+    GUNICORN_LIMIT_REQUEST_FIELDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_FIELDS", 100)
+    )
+
+    GUNICORN_MAX_REQUEST_BODY_BYTES: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_MAX_REQUEST_BODY_BYTES",
+            5 * 1024 * 1024,
+        )
+    )
+
+    # ========================================================================
     # UPLOAD CONFIGURATION
     # ========================================================================
     UPLOAD_MAX_SIZE_MB: int = field(
@@ -466,6 +624,71 @@ class Settings:
         self.CACHE_DIR = cache_path
         self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
+        if self.RESUME_BACKEND not in ("diskcache", "redis"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_BACKEND, using 'diskcache'"
+            )
+            self.RESUME_BACKEND = "diskcache"
+
+        if self.RESUME_SECURITY_MODE not in ("normal", "strict"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_SECURITY_MODE, using 'normal'"
+            )
+            self.RESUME_SECURITY_MODE = "normal"
+
+        self.RESUME_TTL_SECONDS = max(self.RESUME_TTL_SECONDS, 60)
+        self.RESUME_CACHE_SIZE_MB = max(self.RESUME_CACHE_SIZE_MB, 32)
+        self.RESUME_MAX_PAYLOAD_MB = max(self.RESUME_MAX_PAYLOAD_MB, 8)
+
+        self.RESUME_RATE_LIMIT_ATTEMPTS = max(self.RESUME_RATE_LIMIT_ATTEMPTS, 1)
+        self.RESUME_RATE_LIMIT_WINDOW_SECONDS = max(
+            self.RESUME_RATE_LIMIT_WINDOW_SECONDS, 10
+        )
+        self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS = max(
+            self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS, 1
+        )
+        self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS = max(
+            self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS,
+            self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS,
+        )
+        self.RESUME_RATE_LIMIT_CACHE_SIZE_MB = max(
+            self.RESUME_RATE_LIMIT_CACHE_SIZE_MB, 16
+        )
+
+        self.RESUME_ALERT_WINDOW_SECONDS = max(self.RESUME_ALERT_WINDOW_SECONDS, 60)
+        self.RESUME_ALERT_NOT_FOUND_THRESHOLD = max(
+            self.RESUME_ALERT_NOT_FOUND_THRESHOLD, 1
+        )
+        self.RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD = max(
+            self.RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD, 1
+        )
+        self.RESUME_ALERT_SAVE_FAILED_THRESHOLD = max(
+            self.RESUME_ALERT_SAVE_FAILED_THRESHOLD, 1
+        )
+
+        self.RESUME_REDIS_PORT = max(self.RESUME_REDIS_PORT, 1)
+        self.RESUME_REDIS_DB = max(self.RESUME_REDIS_DB, 0)
+        self.RESUME_REDIS_COMPRESSION_LEVEL = min(
+            max(self.RESUME_REDIS_COMPRESSION_LEVEL, 1), 9
+        )
+        self.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS = max(
+            self.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS, 1
+        )
+        self.RESUME_REDIS_KEY_PREFIX = (
+            self.RESUME_REDIS_KEY_PREFIX.strip() or "biorempp:resume:"
+        )
+
+        self.GUNICORN_LIMIT_REQUEST_LINE = max(self.GUNICORN_LIMIT_REQUEST_LINE, 512)
+        self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE = max(
+            self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE, 512
+        )
+        self.GUNICORN_LIMIT_REQUEST_FIELDS = max(
+            self.GUNICORN_LIMIT_REQUEST_FIELDS, 10
+        )
+        self.GUNICORN_MAX_REQUEST_BODY_BYTES = max(
+            self.GUNICORN_MAX_REQUEST_BODY_BYTES, self.UPLOAD_MAX_SIZE_BYTES
+        )
+
         # Auto-adjust settings based on environment
         if self.is_production:
             # Force production-safe settings
@@ -546,6 +769,19 @@ class Settings:
         logger.info(f"Log Level: {self.LOG_LEVEL}")
         logger.info(f"Log Directory: {self.LOG_DIR}")
         logger.info(f"Cache Directory: {self.CACHE_DIR}")
+        logger.info(
+            "Resume Configuration",
+            extra={
+                "resume_backend": self.RESUME_BACKEND,
+                "resume_security_mode": self.RESUME_SECURITY_MODE,
+                "resume_ttl_seconds": self.RESUME_TTL_SECONDS,
+                "resume_rate_limit_attempts": self.RESUME_RATE_LIMIT_ATTEMPTS,
+                "resume_rate_limit_window_seconds": self.RESUME_RATE_LIMIT_WINDOW_SECONDS,
+                "gunicorn_limit_request_line": self.GUNICORN_LIMIT_REQUEST_LINE,
+                "gunicorn_limit_request_field_size": self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE,
+                "gunicorn_limit_request_fields": self.GUNICORN_LIMIT_REQUEST_FIELDS,
+            },
+        )
 
         if self.is_production:
             logger.info(f"Workers: {self.WORKERS} ({self.WORKER_CLASS})")
@@ -623,6 +859,22 @@ class Settings:
             f"{self.PROCESSING_CIRCUIT_BREAKER_THRESHOLD}",
             f"  Circuit Breaker Timeout: "
             f"{self.PROCESSING_CIRCUIT_BREAKER_TIMEOUT}s",
+            "",
+            "Resume Configuration:",
+            f"  Backend: {self.RESUME_BACKEND}",
+            f"  Security Mode: {self.RESUME_SECURITY_MODE}",
+            f"  TTL: {self.RESUME_TTL_SECONDS}s",
+            f"  Cache Size: {self.RESUME_CACHE_SIZE_MB} MB",
+            f"  Max Payload: {self.RESUME_MAX_PAYLOAD_MB} MB",
+            f"  Rate Limit: {self.RESUME_RATE_LIMIT_ATTEMPTS} attempts / "
+            f"{self.RESUME_RATE_LIMIT_WINDOW_SECONDS}s",
+            f"  Backoff: base {self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS}s, "
+            f"max {self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS}s",
+            f"  Alert Window: {self.RESUME_ALERT_WINDOW_SECONDS}s",
+            f"  Gunicorn Line Limit: {self.GUNICORN_LIMIT_REQUEST_LINE}",
+            f"  Gunicorn Header Size: {self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE}",
+            f"  Gunicorn Header Count: {self.GUNICORN_LIMIT_REQUEST_FIELDS}",
+            f"  Max Request Body: {self.GUNICORN_MAX_REQUEST_BODY_BYTES} bytes",
             "",
             "Validation Patterns:",
             f"  KO Pattern: {self.KO_PATTERN}",

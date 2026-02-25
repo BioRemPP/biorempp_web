@@ -39,6 +39,14 @@ logger = get_logger(__name__)
 _data_service = None
 
 
+def _mask_job_id(job_id: str) -> str:
+    """Return redacted job identifier for logs."""
+    normalized = (job_id or "").strip().upper()
+    if len(normalized) < 6:
+        return "***"
+    return f"{normalized[:20]}******"
+
+
 def get_data_service():
     """Get or create data processing service instance."""
     global _data_service
@@ -284,7 +292,7 @@ def register_real_processing_callbacks(app):
             logger.info(
                 "Resume payload persistence result",
                 extra={
-                    "job_id": persisted_job_id,
+                    "job_ref": _mask_job_id(persisted_job_id),
                     "resume_saved": resume_saved,
                     "payload_size_bytes": payload_size_bytes,
                     "resume_max_payload_mb": job_resume_service.get_resume_max_payload_mb(),

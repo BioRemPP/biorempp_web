@@ -9,8 +9,10 @@ import json
 import os
 import re
 import time
+from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
+from threading import Lock
 from typing import Optional
 
 from .resume_store import ResumeStore
@@ -23,12 +25,18 @@ logger = get_logger(__name__)
 class JobResumeService:
     """Service for saving and loading processed payloads by `job_id`."""
 
-    CACHE_KEY_PREFIX = "job_resume:"
+    CACHE_KEY_PREFIX = "resume:v1:job:"
+    CACHE_KEY_SAFE_PATTERN = re.compile(r"^[A-Za-z0-9:_-]{1,128}$")
     DEFAULT_TTL_SECONDS = 14400  # 4 hours
     DEFAULT_CACHE_SIZE_MB = 512
     DEFAULT_MAX_PAYLOAD_MB = 64
+    DEFAULT_ALERT_WINDOW_SECONDS = 300
+    DEFAULT_ALERT_NOT_FOUND_THRESHOLD = 30
+    DEFAULT_ALERT_TOKEN_MISMATCH_THRESHOLD = 10
+    DEFAULT_ALERT_SAVE_FAILED_THRESHOLD = 5
     CURRENT_PAYLOAD_VERSION = 1
     SUPPORTED_PAYLOAD_VERSIONS = {1}
+    PAYLOAD_SCHEMA_PREFIX = "resume-payload-v"
     JOB_ID_PATTERN = re.compile(r"^BRP-\d{8}-\d{6}-[A-F0-9]{6}$")
 
     STATUS_OK = "ok"
@@ -45,6 +53,10 @@ class JobResumeService:
         ttl_seconds: Optional[int] = None,
         cache_size_mb: Optional[int] = None,
         max_payload_mb: Optional[int] = None,
+        alert_window_seconds: Optional[int] = None,
+        alert_not_found_threshold: Optional[int] = None,
+        alert_token_mismatch_threshold: Optional[int] = None,
+        alert_save_failed_threshold: Optional[int] = None,
     ) -> None:
         """
         Initialize service orchestration and persistence backend.
@@ -61,6 +73,14 @@ class JobResumeService:
             Maximum cache size in MB (diskcache backend only).
         max_payload_mb : Optional[int]
             Maximum size of a single resume payload in MB.
+        alert_window_seconds : Optional[int]
+            Rolling window (seconds) for anomaly alerts.
+        alert_not_found_threshold : Optional[int]
+            Alert threshold for not_found events inside alert window.
+        alert_token_mismatch_threshold : Optional[int]
+            Alert threshold for token_mismatch events inside alert window.
+        alert_save_failed_threshold : Optional[int]
+            Alert threshold for save_failed events inside alert window.
         """
         project_root = Path(__file__).resolve().parents[3]
         base_cache_dir = self._resolve_base_cache_dir(project_root)
@@ -96,6 +116,49 @@ class JobResumeService:
             )
         )
         self._max_payload_bytes = self._max_payload_mb * 1024 * 1024
+        self._alert_window_seconds = (
+            int(alert_window_seconds)
+            if alert_window_seconds is not None
+            else self._read_env_int(
+                "BIOREMPP_RESUME_ALERT_WINDOW_SECONDS",
+                self.DEFAULT_ALERT_WINDOW_SECONDS,
+                minimum=60,
+            )
+        )
+        self._alert_thresholds = {
+            self.STATUS_NOT_FOUND: (
+                int(alert_not_found_threshold)
+                if alert_not_found_threshold is not None
+                else self._read_env_int(
+                    "BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD",
+                    self.DEFAULT_ALERT_NOT_FOUND_THRESHOLD,
+                    minimum=1,
+                )
+            ),
+            self.STATUS_TOKEN_MISMATCH: (
+                int(alert_token_mismatch_threshold)
+                if alert_token_mismatch_threshold is not None
+                else self._read_env_int(
+                    "BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD",
+                    self.DEFAULT_ALERT_TOKEN_MISMATCH_THRESHOLD,
+                    minimum=1,
+                )
+            ),
+            "save_failed": (
+                int(alert_save_failed_threshold)
+                if alert_save_failed_threshold is not None
+                else self._read_env_int(
+                    "BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD",
+                    self.DEFAULT_ALERT_SAVE_FAILED_THRESHOLD,
+                    minimum=1,
+                )
+            ),
+        }
+        self._event_history: dict[str, deque[float]] = {
+            event: deque() for event in self._alert_thresholds
+        }
+        self._last_alert_ts: dict[str, float] = {event: 0.0 for event in self._alert_thresholds}
+        self._event_lock = Lock()
 
         self._store = (
             store
@@ -106,7 +169,7 @@ class JobResumeService:
             )
         )
 
-        # Backward compatibility for tests that inspect diskcache internals.
+        # Exposed for tests using diskcache adapter internals.
         self._cache = getattr(self._store, "_cache", None)
 
         logger.info(
@@ -117,6 +180,7 @@ class JobResumeService:
                 "ttl_seconds": self._ttl_seconds,
                 "cache_size_mb": self._cache_size_mb,
                 "max_payload_mb": self._max_payload_mb,
+                "alert_window_seconds": self._alert_window_seconds,
             },
         )
 
@@ -166,9 +230,83 @@ class JobResumeService:
             return False
         return bool(cls.JOB_ID_PATTERN.match(job_id.strip().upper()))
 
+    @staticmethod
+    def _mask_job_id(job_id: str) -> str:
+        """Return a redacted job identifier for logs."""
+        normalized = (job_id or "").strip().upper()
+        if len(normalized) < 6:
+            return "***"
+        return f"{normalized[:20]}******"
+
+    @classmethod
+    def _expected_payload_schema(cls, payload_version: int) -> str:
+        return f"{cls.PAYLOAD_SCHEMA_PREFIX}{payload_version}"
+
+    @classmethod
+    def _sanitize_cache_key(cls, key: str, required_prefix: str) -> str:
+        """
+        Validate store key shape and prefix isolation.
+
+        Raises
+        ------
+        ValueError
+            If key format is unsafe or outside expected namespace.
+        """
+        if not isinstance(key, str):
+            raise ValueError("Cache key must be string")
+        if not key.startswith(required_prefix):
+            raise ValueError("Cache key prefix mismatch")
+        if ".." in key or "\\" in key or "//" in key:
+            raise ValueError("Cache key contains traversal sequence")
+        if not cls.CACHE_KEY_SAFE_PATTERN.fullmatch(key):
+            raise ValueError("Cache key contains unsafe characters")
+        return key
+
     def _build_cache_key(self, job_id: str) -> str:
-        """Build logical cache key from job identifier."""
-        return f"{self.CACHE_KEY_PREFIX}{job_id}"
+        """Build isolated cache key from validated job identifier."""
+        normalized_job_id = (job_id or "").strip().upper()
+        if not self.validate_job_id(normalized_job_id):
+            raise ValueError("Invalid job id for cache key")
+        return self._sanitize_cache_key(
+            f"{self.CACHE_KEY_PREFIX}{normalized_job_id}",
+            required_prefix=self.CACHE_KEY_PREFIX,
+        )
+
+    def _record_security_event(self, event_name: str) -> None:
+        """Track events and emit operational alerts when threshold is exceeded."""
+        threshold = self._alert_thresholds.get(event_name)
+        if threshold is None:
+            return
+
+        now = time.time()
+        with self._event_lock:
+            events = self._event_history[event_name]
+            events.append(now)
+            cutoff = now - self._alert_window_seconds
+            while events and events[0] < cutoff:
+                events.popleft()
+
+            current_count = len(events)
+            if current_count < threshold:
+                return
+
+            # Avoid repeated identical alerts at high traffic.
+            cooldown = max(self._alert_window_seconds // 2, 30)
+            last_alert = self._last_alert_ts.get(event_name, 0.0)
+            if now - last_alert < cooldown:
+                return
+            self._last_alert_ts[event_name] = now
+
+        logger.warning(
+            "Resume security alert threshold exceeded",
+            extra={
+                "event": event_name,
+                "count": current_count,
+                "window_seconds": self._alert_window_seconds,
+                "threshold": threshold,
+                "backend": self._store.backend_name,
+            },
+        )
 
     @staticmethod
     def _estimate_payload_size(payload: dict) -> int:
@@ -206,13 +344,13 @@ class JobResumeService:
         if not isinstance(payload, dict):
             logger.warning(
                 "Refusing to save resume payload: payload must be dict",
-                extra={"job_id": normalized_job_id},
+                extra={"job_ref": self._mask_job_id(normalized_job_id)},
             )
             return False
         if not isinstance(owner_token, str) or not owner_token.strip():
             logger.warning(
                 "Refusing to save resume payload: missing owner_token",
-                extra={"job_id": normalized_job_id},
+                extra={"job_ref": self._mask_job_id(normalized_job_id)},
             )
             return False
 
@@ -226,22 +364,34 @@ class JobResumeService:
 
         payload_size_bytes = self.estimate_payload_size_bytes(payload)
         if payload_size_bytes > self._max_payload_bytes:
+            masked_job_id = self._mask_job_id(normalized_job_id)
+            self._record_security_event("save_failed")
             logger.warning(
                 "Refusing to save resume payload: payload too large",
                 extra={
-                    "job_id": normalized_job_id,
+                    "job_ref": masked_job_id,
                     "payload_size_bytes": payload_size_bytes,
                     "max_payload_bytes": self._max_payload_bytes,
                 },
             )
             return False
 
-        cache_key = self._build_cache_key(normalized_job_id)
+        try:
+            cache_key = self._build_cache_key(normalized_job_id)
+        except ValueError:
+            self._record_security_event("save_failed")
+            logger.warning("Refusing to save resume payload: unsafe cache key")
+            return False
+
+        masked_job_id = self._mask_job_id(normalized_job_id)
         cache_value = {
             "job_id": normalized_job_id,
             "owner_token": owner_token.strip(),
             "created_at": datetime.now(timezone.utc).isoformat(),
             "payload_version": self.CURRENT_PAYLOAD_VERSION,
+            "payload_schema": self._expected_payload_schema(
+                self.CURRENT_PAYLOAD_VERSION
+            ),
             "merged_result_payload": payload,
         }
 
@@ -252,7 +402,7 @@ class JobResumeService:
             logger.info(
                 "Resume payload saved",
                 extra={
-                    "job_id": normalized_job_id,
+                    "job_ref": masked_job_id,
                     "backend": self._store.backend_name,
                     "ttl_seconds": ttl,
                     "payload_size_bytes": payload_size_bytes,
@@ -260,10 +410,11 @@ class JobResumeService:
                 },
             )
         else:
+            self._record_security_event("save_failed")
             logger.warning(
                 "Failed to persist resume payload",
                 extra={
-                    "job_id": normalized_job_id,
+                    "job_ref": masked_job_id,
                     "backend": self._store.backend_name,
                     "payload_size_bytes": payload_size_bytes,
                     "save_ms": round(elapsed_ms, 2),
@@ -293,15 +444,21 @@ class JobResumeService:
         if not isinstance(owner_token, str) or not owner_token.strip():
             return None, self.STATUS_TOKEN_MISSING
 
-        cache_key = self._build_cache_key(normalized_job_id)
+        masked_job_id = self._mask_job_id(normalized_job_id)
+        try:
+            cache_key = self._build_cache_key(normalized_job_id)
+        except ValueError:
+            return None, self.STATUS_INVALID_JOB_ID
+
         start_time = time.perf_counter()
         cached = self._store.get(cache_key)
         if not isinstance(cached, dict):
             elapsed_ms = (time.perf_counter() - start_time) * 1000
+            self._record_security_event(self.STATUS_NOT_FOUND)
             logger.info(
                 "Resume payload lookup miss",
                 extra={
-                    "job_id": normalized_job_id,
+                    "job_ref": masked_job_id,
                     "backend": self._store.backend_name,
                     "load_ms": round(elapsed_ms, 2),
                 },
@@ -310,25 +467,30 @@ class JobResumeService:
 
         cached_owner_token = cached.get("owner_token")
         if cached_owner_token != owner_token.strip():
+            self._record_security_event(self.STATUS_TOKEN_MISMATCH)
             return None, self.STATUS_TOKEN_MISMATCH
 
-        raw_payload_version = cached.get("payload_version", self.CURRENT_PAYLOAD_VERSION)
-        try:
-            payload_version = int(raw_payload_version)
-        except (TypeError, ValueError):
+        raw_payload_version = cached.get("payload_version")
+        if not isinstance(raw_payload_version, int):
             return None, self.STATUS_INCOMPATIBLE_VERSION
+        payload_version = raw_payload_version
         if payload_version not in self.SUPPORTED_PAYLOAD_VERSIONS:
+            return None, self.STATUS_INCOMPATIBLE_VERSION
+        payload_schema = cached.get("payload_schema")
+        expected_schema = self._expected_payload_schema(payload_version)
+        if payload_schema != expected_schema:
             return None, self.STATUS_INCOMPATIBLE_VERSION
 
         payload = cached.get("merged_result_payload")
         if not isinstance(payload, dict):
+            self._record_security_event(self.STATUS_NOT_FOUND)
             return None, self.STATUS_NOT_FOUND
 
         elapsed_ms = (time.perf_counter() - start_time) * 1000
         logger.info(
             "Resume payload loaded",
             extra={
-                "job_id": normalized_job_id,
+                "job_ref": masked_job_id,
                 "backend": self._store.backend_name,
                 "payload_size_bytes": self.estimate_payload_size_bytes(payload),
                 "load_ms": round(elapsed_ms, 2),

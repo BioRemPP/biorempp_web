@@ -5,6 +5,8 @@ import time
 from threading import Lock
 from typing import Optional
 
+import pytest
+
 from src.presentation.services.job_resume_service import JobResumeService
 from src.presentation.services.resume_store_redis import RedisResumeStore
 
@@ -127,7 +129,7 @@ def test_redis_store_uses_prefix_and_compact_compressed_serialization():
         compression_level=6,
     )
 
-    logical_key = "job_resume:BRP-20260225-140002-ABC203"
+    logical_key = "resume:v1:job:BRP-20260225-140002-ABC203"
     value = {"payload": "A" * 12000, "metadata": {"k": "v"}}
 
     assert store.set(logical_key, value, ttl_seconds=30)
@@ -145,3 +147,28 @@ def test_redis_store_uses_prefix_and_compact_compressed_serialization():
 
     store.close()
 
+
+def test_redis_store_rejects_invalid_key_prefix():
+    """Redis adapter should reject unsafe key prefixes."""
+    backend = _FakeRedisBackend()
+    with pytest.raises(ValueError):
+        RedisResumeStore(
+            client=_FakeRedisClient(backend),
+            key_prefix="../unsafe",
+            compression_level=6,
+        )
+
+
+def test_redis_store_rejects_invalid_logical_key():
+    """Redis adapter should reject unsafe logical keys."""
+    backend = _FakeRedisBackend()
+    store = RedisResumeStore(
+        client=_FakeRedisClient(backend),
+        key_prefix="biorempp:resume:test:",
+        compression_level=6,
+    )
+
+    with pytest.raises(ValueError):
+        store.set("../bad-key", {"payload": "x"}, ttl_seconds=30)
+
+    store.close()

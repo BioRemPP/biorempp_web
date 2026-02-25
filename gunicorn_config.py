@@ -14,10 +14,6 @@ Usage:
     gunicorn wsgi:server -c gunicorn_config.py
 """
 
-import multiprocessing
-import os
-from pathlib import Path
-
 # Load settings
 from config.settings import get_settings
 
@@ -115,6 +111,13 @@ def on_starting(server):
     print(f"Timeout: {timeout}s")
     print(f"Keepalive: {keepalive}s")
     print(f"Max Requests: {max_requests} ± {max_requests_jitter}")
+    print(
+        "Security Limits: "
+        f"line={limit_request_line}, "
+        f"header_fields={limit_request_fields}, "
+        f"header_field_size={limit_request_field_size}, "
+        f"max_body={max_request_body_bytes}"
+    )
     print("=" * 80)
 
 
@@ -186,6 +189,17 @@ def pre_request(worker, req):
     """
     # Log request start time for performance monitoring
     worker.log.debug(f"{req.method} {req.path}")
+    try:
+        content_length_raw = req.headers.get("Content-Length", "0")
+        content_length = int(content_length_raw)
+    except Exception:
+        content_length = 0
+    if content_length > max_request_body_bytes:
+        worker.log.warning(
+            "request_body_limit_exceeded "
+            f"path={req.path} method={req.method} "
+            f"content_length={content_length} limit={max_request_body_bytes}"
+        )
 
 
 def post_request(worker, req, environ, resp):
@@ -227,12 +241,14 @@ def nworkers_changed(server, new_value, old_value):
 # ============================================================================
 # SECURITY
 # ============================================================================
+# Request body limit (enforced at app level; logged here for observability)
+max_request_body_bytes = settings.GUNICORN_MAX_REQUEST_BODY_BYTES
 # Limit request line size
-limit_request_line = 4096  # 4KB
+limit_request_line = settings.GUNICORN_LIMIT_REQUEST_LINE
 # Limit request header field size
-limit_request_field_size = 8190  # 8KB
+limit_request_field_size = settings.GUNICORN_LIMIT_REQUEST_FIELD_SIZE
 # Limit number of request header fields
-limit_request_fields = 100
+limit_request_fields = settings.GUNICORN_LIMIT_REQUEST_FIELDS
 
 # ============================================================================
 # PERFORMANCE TUNING

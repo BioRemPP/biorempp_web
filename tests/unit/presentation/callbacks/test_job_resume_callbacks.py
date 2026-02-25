@@ -45,7 +45,25 @@ def isolated_resume_service(tmp_path, monkeypatch):
     service.close()
 
 
-def test_resolve_resume_request_rejects_invalid_job_id(isolated_resume_service):
+@pytest.fixture
+def isolated_rate_limiter(tmp_path, monkeypatch):
+    """Use isolated limiter state and low thresholds for deterministic tests."""
+    limiter = job_resume_callbacks.ResumeRateLimiter(
+        cache_dir=tmp_path / "resume_rate_limit_cache",
+        cache_size_mb=16,
+        attempts=3,
+        window_seconds=60,
+        backoff_base_seconds=1,
+        backoff_max_seconds=4,
+    )
+    monkeypatch.setattr(job_resume_callbacks, "resume_rate_limiter", limiter)
+    yield limiter
+    limiter.close()
+
+
+def test_resolve_resume_request_rejects_invalid_job_id(
+    isolated_resume_service, isolated_rate_limiter
+):
     """Invalid job id should return an error and keep stores unchanged."""
     data_update, pathname_update, status_component = (
         job_resume_callbacks.resolve_resume_request("invalid-job-id", "token-1")
@@ -58,6 +76,7 @@ def test_resolve_resume_request_rejects_invalid_job_id(isolated_resume_service):
 
 def test_resolve_resume_request_returns_not_found_when_job_absent(
     isolated_resume_service,
+    isolated_rate_limiter,
 ):
     """Missing job id should surface not found/expired guidance."""
     data_update, pathname_update, status_component = (
@@ -74,6 +93,7 @@ def test_resolve_resume_request_returns_not_found_when_job_absent(
 
 def test_resolve_resume_request_returns_not_found_when_job_expired(
     isolated_resume_service,
+    isolated_rate_limiter,
 ):
     """Expired cache entries should behave as not found."""
     job_id = "BRP-20260225-123001-ABC112"
@@ -97,7 +117,9 @@ def test_resolve_resume_request_returns_not_found_when_job_expired(
     assert "not found or expired" in _flatten_text(status_component)
 
 
-def test_resolve_resume_request_rejects_token_mismatch(isolated_resume_service):
+def test_resolve_resume_request_rejects_token_mismatch(
+    isolated_resume_service, isolated_rate_limiter
+):
     """Owner token mismatch must be blocked."""
     job_id = "BRP-20260225-123002-ABC113"
     payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
@@ -120,6 +142,7 @@ def test_resolve_resume_request_rejects_token_mismatch(isolated_resume_service):
 
 def test_resolve_resume_request_success_returns_payload_and_redirect(
     isolated_resume_service,
+    isolated_rate_limiter,
 ):
     """Valid job+token should restore payload and redirect to results."""
     job_id = "BRP-20260225-123003-ABC114"
@@ -145,7 +168,7 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
 
 
 def test_resolve_resume_request_uses_generic_error_in_strict_mode(
-    isolated_resume_service, monkeypatch
+    isolated_resume_service, isolated_rate_limiter, monkeypatch
 ):
     """Strict security mode should hide token mismatch details."""
     monkeypatch.setenv("BIOREMPP_RESUME_SECURITY_MODE", "strict")
@@ -166,3 +189,55 @@ def test_resolve_resume_request_uses_generic_error_in_strict_mode(
     assert data_update is no_update
     assert pathname_update is no_update
     assert "unavailable in this browser context" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Repeated attempts should trigger temporary rate-limit blocking."""
+    for _ in range(3):
+        _, _, status_component = job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223000-ABC119",
+            "token-bruteforce",
+        )
+        assert "not found or expired" in _flatten_text(status_component)
+
+    data_update, pathname_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223000-ABC119",
+            "token-bruteforce",
+        )
+    )
+
+    assert data_update is no_update
+    assert pathname_update is no_update
+    assert "Too many resume attempts" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_unblocks_after_backoff_window(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Blocked clients should be allowed again after backoff interval."""
+    for _ in range(4):
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223001-ABC120",
+            "token-backoff",
+        )
+
+    _, _, blocked_component = job_resume_callbacks.resolve_resume_request(
+        "BRP-20260225-223001-ABC120",
+        "token-backoff",
+    )
+    assert "Too many resume attempts" in _flatten_text(blocked_component)
+
+    time.sleep(1.1)
+    data_update, pathname_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223001-ABC120",
+            "token-backoff",
+        )
+    )
+
+    assert data_update is no_update
+    assert pathname_update is no_update
+    assert "not found or expired" in _flatten_text(status_component)
