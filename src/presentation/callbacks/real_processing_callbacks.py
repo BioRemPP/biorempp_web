@@ -159,10 +159,12 @@ def register_real_processing_callbacks(app):
 
         try:
             service = get_data_service()
+            job_id = DataProcessingService.generate_job_id()
 
             logger.info(
                 "Starting data processing",
                 extra={
+                    "job_id": job_id,
                     "file_name": file_data.get("filename", "unknown"),
                     "sample_count": file_data.get("sample_count"),
                     "ko_count": file_data.get("ko_count"),
@@ -171,7 +173,9 @@ def register_real_processing_callbacks(app):
 
             # Process data (all merges happen here)
             result = service.process_upload(
-                content=file_data["content"], filename=file_data["filename"]
+                content=file_data["content"],
+                filename=file_data["filename"],
+                job_id=job_id,
             )
 
             logger.info(
@@ -248,6 +252,7 @@ def register_real_processing_callbacks(app):
                 "success",
                 "Processing completed successfully!",
                 details={
+                    "Job ID": metadata.get("job_id", "--"),
                     "Samples": metadata["sample_count"],
                     "KO IDs": metadata["ko_count"],
                     "Matched KOs": f"{metadata['matched_kos']}/{metadata['total_kos']}",

@@ -302,6 +302,9 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         }
 
     metadata = merged_data.get("metadata", {})
+    job_id = metadata.get("job_id")
+    if not isinstance(job_id, str) or not job_id.strip():
+        job_id = "--"
     database_overview = metadata.get("database_overview", {})
     if not isinstance(database_overview, dict):
         database_overview = {}
@@ -459,6 +462,32 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
                             ),
                         ],
                         className="mt-2",
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-fingerprint text-secondary me-2"
+                                                ),
+                                                "Job ID",
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.Code(
+                                            job_id,
+                                            className="text-dark",
+                                            style={"fontSize": "0.9rem"},
+                                        ),
+                                    ],
+                                    className="text-center mt-3",
+                                ),
+                                width=12,
+                            )
+                        ]
                     ),
                     dbc.Row(
                         [

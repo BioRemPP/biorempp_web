@@ -116,6 +116,7 @@ def test_results_page_renders_global_values_from_database_overview():
         "sample_count": 2,
         "ko_count": 3,
         "processing_time": 0.25,
+        "job_id": "BRP-20260225-101010-ABCDEF",
         "database_overview": _build_overview_payload(),
         "database_aggregate_overview": _build_aggregate_payload(),
     }
@@ -125,6 +126,8 @@ def test_results_page_renders_global_values_from_database_overview():
     titles = _collect_titles(layout)
 
     assert "KO-Compound Relations" in text
+    assert "Job ID" in text
+    assert "BRP-20260225-101010-ABCDEF" in text
     assert "Integrated Relations" in text
     assert "Databases with Matches" in text
     assert "KO Match Rate" in text
@@ -184,3 +187,19 @@ def test_results_page_fallback_builds_aggregate_from_database_overview():
     assert "HADEG: 5 (18.5%)" in text
     assert "ToxCSM: 9 (33.3%)" in text
     assert "KEGG: 12 (44.4%)" in text
+
+
+def test_results_page_shows_job_id_placeholder_when_missing():
+    """Results page should render Job ID placeholder for legacy sessions."""
+    metadata = {
+        "sample_count": 2,
+        "ko_count": 3,
+        "processing_time": 0.25,
+        "database_overview": _build_overview_payload(),
+        "database_aggregate_overview": _build_aggregate_payload(),
+    }
+    layout = create_results_layout(merged_data=_build_merged_data(metadata))
+    text = _flatten_text(layout)
+
+    assert "Job ID" in text
+    assert "--" in text
