@@ -145,17 +145,67 @@ echo ""
 # fi
 
 # ============================================================================
-# WAIT FOR DEPENDENCIES (if applicable)
+# RESUME BACKEND HEALTH GATE (optional fail-fast for Redis)
 # ============================================================================
-# Uncomment if need to wait for external services
-# if [ -n "$REDIS_HOST" ]; then
-#     log_step "Waiting for Redis at ${REDIS_HOST}:${REDIS_PORT}..."
-#     while ! nc -z $REDIS_HOST $REDIS_PORT; do
-#         sleep 1
-#     done
-#     log_info "Redis is available"
-#     echo ""
-# fi
+resume_backend=$(echo "${BIOREMPP_RESUME_BACKEND:-diskcache}" | tr '[:upper:]' '[:lower:]')
+resume_redis_healthcheck=$(echo "${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-false}" | tr '[:upper:]' '[:lower:]')
+
+if [ "$resume_backend" = "redis" ] && [ "$resume_redis_healthcheck" = "true" ]; then
+    log_step "Checking Redis resume backend availability..."
+
+    resume_redis_host=${BIOREMPP_RESUME_REDIS_HOST:-${REDIS_HOST:-redis}}
+    resume_redis_port=${BIOREMPP_RESUME_REDIS_PORT:-${REDIS_PORT:-6379}}
+    resume_redis_db=${BIOREMPP_RESUME_REDIS_DB:-${REDIS_DB:-0}}
+    resume_redis_password=${BIOREMPP_RESUME_REDIS_PASSWORD:-${REDIS_PASSWORD:-}}
+    resume_redis_timeout=${BIOREMPP_RESUME_REDIS_HEALTHCHECK_TIMEOUT_SECONDS:-20}
+
+    python - "$resume_redis_host" "$resume_redis_port" "$resume_redis_db" "$resume_redis_password" "$resume_redis_timeout" <<'PY'
+import sys
+import time
+
+host = sys.argv[1]
+port = int(sys.argv[2])
+db = int(sys.argv[3])
+password = sys.argv[4] or None
+timeout_seconds = float(sys.argv[5])
+
+try:
+    import redis
+except Exception as exc:  # pragma: no cover
+    print(f"redis dependency unavailable: {exc}", file=sys.stderr)
+    sys.exit(1)
+
+deadline = time.time() + timeout_seconds
+last_error = None
+while time.time() < deadline:
+    try:
+        client = redis.Redis(
+            host=host,
+            port=port,
+            db=db,
+            password=password,
+            socket_connect_timeout=2,
+            socket_timeout=2,
+            decode_responses=False,
+        )
+        if client.ping():
+            sys.exit(0)
+    except Exception as exc:  # pragma: no cover
+        last_error = exc
+        time.sleep(1)
+
+print(f"resume redis unavailable: {last_error}", file=sys.stderr)
+sys.exit(1)
+PY
+
+    if [ $? -ne 0 ]; then
+        log_error "Redis resume backend unavailable; aborting startup"
+        exit 1
+    fi
+
+    log_info "Redis resume backend is available"
+    echo ""
+fi
 
 # ============================================================================
 # SSL CERTIFICATE CHECK (for HTTPS)
@@ -183,6 +233,7 @@ echo -e "  ${BLUE}Host:${NC}           ${BIOREMPP_HOST}:${BIOREMPP_PORT}"
 echo -e "  ${BLUE}Debug Mode:${NC}     ${BIOREMPP_DEBUG}"
 echo -e "  ${BLUE}Hot Reload:${NC}     ${BIOREMPP_HOT_RELOAD}"
 echo -e "  ${BLUE}Log Level:${NC}      ${BIOREMPP_LOG_LEVEL}"
+echo -e "  ${BLUE}Resume Backend:${NC} ${BIOREMPP_RESUME_BACKEND:-diskcache}"
 if [ -n "$BIOREMPP_WORKERS" ]; then
     echo -e "  ${BLUE}Workers:${NC}        ${BIOREMPP_WORKERS}"
     echo -e "  ${BLUE}Worker Class:${NC}   ${BIOREMPP_WORKER_CLASS:-gevent}"

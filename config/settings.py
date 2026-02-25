@@ -44,9 +44,15 @@ All settings can be overridden with environment variables:
 - BIOREMPP_KO_PATTERN: Regex pattern for KO validation
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
 - BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
+- BIOREMPP_RESUME_BACKEND: Resume backend (diskcache|redis)
 - BIOREMPP_RESUME_TTL_SECONDS: Resume payload TTL in seconds (default: 14400)
 - BIOREMPP_RESUME_CACHE_SIZE_MB: Resume cache max size in MB (default: 512)
 - BIOREMPP_RESUME_MAX_PAYLOAD_MB: Max payload size per resume job in MB
+- BIOREMPP_RESUME_REDIS_HOST: Resume Redis host
+- BIOREMPP_RESUME_REDIS_PORT: Resume Redis port
+- BIOREMPP_RESUME_REDIS_DB: Resume Redis database index
+- BIOREMPP_RESUME_REDIS_PASSWORD: Resume Redis password
+- BIOREMPP_RESUME_REDIS_KEY_PREFIX: Resume Redis key prefix
 """
 
 import logging

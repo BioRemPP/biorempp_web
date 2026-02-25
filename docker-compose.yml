@@ -70,10 +70,18 @@ services:
       BIOREMPP_HOT_RELOAD: ${BIOREMPP_HOT_RELOAD:-False}
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-INFO}
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
+      BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-diskcache}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-512}
       BIOREMPP_RESUME_MAX_PAYLOAD_MB: ${BIOREMPP_RESUME_MAX_PAYLOAD_MB:-64}
       BIOREMPP_RESUME_SECURITY_MODE: ${BIOREMPP_RESUME_SECURITY_MODE:-normal}
+      BIOREMPP_RESUME_REDIS_HOST: ${BIOREMPP_RESUME_REDIS_HOST:-redis}
+      BIOREMPP_RESUME_REDIS_PORT: ${BIOREMPP_RESUME_REDIS_PORT:-6379}
+      BIOREMPP_RESUME_REDIS_DB: ${BIOREMPP_RESUME_REDIS_DB:-0}
+      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-change-this-redis-password}
+      BIOREMPP_RESUME_REDIS_KEY_PREFIX: ${BIOREMPP_RESUME_REDIS_KEY_PREFIX:-biorempp:resume:}
+      BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: ${BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL:-6}
+      BIOREMPP_RESUME_REDIS_HEALTHCHECK: ${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-false}
       
       # Python
       PYTHONUNBUFFERED: 1
@@ -85,6 +93,7 @@ services:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_DB: ${REDIS_DB:-0}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-change-this-redis-password}
     
     ports:
       - "${DEV_PORT:-8050}:8050"
@@ -138,10 +147,18 @@ services:
       BIOREMPP_HOT_RELOAD: False
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-WARNING}
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
+      BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-redis}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-1024}
       BIOREMPP_RESUME_MAX_PAYLOAD_MB: ${BIOREMPP_RESUME_MAX_PAYLOAD_MB:-64}
       BIOREMPP_RESUME_SECURITY_MODE: ${BIOREMPP_RESUME_SECURITY_MODE:-strict}
+      BIOREMPP_RESUME_REDIS_HOST: ${BIOREMPP_RESUME_REDIS_HOST:-redis}
+      BIOREMPP_RESUME_REDIS_PORT: ${BIOREMPP_RESUME_REDIS_PORT:-6379}
+      BIOREMPP_RESUME_REDIS_DB: ${BIOREMPP_RESUME_REDIS_DB:-0}
+      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-change-this-redis-password}
+      BIOREMPP_RESUME_REDIS_KEY_PREFIX: ${BIOREMPP_RESUME_REDIS_KEY_PREFIX:-biorempp:resume:}
+      BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: ${BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL:-6}
+      BIOREMPP_RESUME_REDIS_HEALTHCHECK: ${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-true}
       
       # Gunicorn
       BIOREMPP_WORKERS: ${BIOREMPP_WORKERS:-4}
@@ -164,6 +181,7 @@ services:
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_DB: ${REDIS_DB:-0}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-change-this-redis-password}
       
       # SSL/HTTPS
       ENABLE_HTTPS: ${ENABLE_HTTPS:-False}
@@ -267,15 +285,18 @@ services:
     image: redis:7-alpine
     container_name: biorempp-redis
     profiles: ["cache"]
+    environment:
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-change-this-redis-password}
     
     command: >
-      redis-server
+      sh -c "redis-server
       --appendonly yes
-      --maxmemory 512mb
-      --maxmemory-policy allkeys-lru
+      --requirepass $${REDIS_PASSWORD}
+      --maxmemory ${REDIS_MAXMEMORY:-512mb}
+      --maxmemory-policy allkeys-lru"
     
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
+    expose:
+      - "6379"
     
     volumes:
       - redis-data:/data
@@ -284,7 +305,7 @@ services:
       - biorempp-network
     
     healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
+      test: ["CMD-SHELL", "redis-cli -a \"$${REDIS_PASSWORD}\" ping | grep PONG"]
       interval: 30s
       timeout: 10s
       retries: 3
