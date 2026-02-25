@@ -1,0 +1,98 @@
+groups:
+  - name: biorempp_app_alerts
+    rules:
+      - alert: BioRemPPAppDown
+        expr: up{job="biorempp-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "BioRemPP target is down"
+          description: "Prometheus cannot scrape the biorempp-app target."
+
+      - alert: BioRemPPHighHttpErrorRatio
+        expr: job:biorempp_http_error_ratio:rate5m > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "HTTP error ratio above 5%"
+          description: "Error ratio stayed above 5% for 5 minutes."
+
+      - alert: BioRemPPHighHttpLatencyP95
+        expr: endpoint:biorempp_http_latency_p95:rate5m > 2
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "P95 latency above 2s on {{ $labels.endpoint }}"
+          description: "Endpoint P95 latency has remained above 2 seconds."
+
+  - name: biorempp_resume_alerts
+    rules:
+      - alert: BioRemPPResumeNotFoundSpike
+        expr: increase(biorempp_resume_load_attempts_total{outcome="not_found"}[5m]) > 50
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume not_found spike"
+          description: "More than 50 not_found resume loads were observed in 5 minutes."
+
+      - alert: BioRemPPResumeTokenMismatchSpike
+        expr: increase(biorempp_resume_load_attempts_total{outcome="token_mismatch"}[5m]) > 20
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume token mismatch spike"
+          description: "More than 20 token_mismatch events were observed in 5 minutes."
+
+      - alert: BioRemPPResumeSaveFailedSpike
+        expr: increase(biorempp_resume_save_total{outcome="save_failed"}[5m]) > 5
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume save_failed spike"
+          description: "More than 5 save_failed resume events were observed in 5 minutes."
+
+  - name: biorempp_worker_alerts
+    rules:
+      - alert: BioRemPPLowWorkerCount
+        expr: biorempp_workers_active < 2
+        for: 2m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "Active worker count below expected minimum"
+          description: "biorempp_workers_active is below 2."
+
+      - alert: BioRemPPFrequentWorkerRestarts
+        expr: sum(rate(biorempp_worker_restarts_total[10m])) > 0.1
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Frequent worker restarts"
+          description: "Worker restart rate is above 0.1/s in the last 10 minutes."
+
+  - name: biorempp_cache_alerts
+    rules:
+      - alert: BioRemPPLowCacheHitRatio
+        expr: cache_type:biorempp_cache_get_hit_ratio:rate5m < 0.2
+        for: 10m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Low cache hit ratio for {{ $labels.cache_type }}"
+          description: "Cache hit ratio stayed below 20% for 10 minutes."

@@ -70,6 +70,8 @@ services:
       BIOREMPP_HOT_RELOAD: ${BIOREMPP_HOT_RELOAD:-False}
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-INFO}
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
+      BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-false}
+      BIOREMPP_OBSERVABILITY_METRICS_PATH: ${BIOREMPP_OBSERVABILITY_METRICS_PATH:-/metrics}
       BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-diskcache}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-512}
@@ -157,6 +159,10 @@ services:
       BIOREMPP_HOT_RELOAD: False
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-WARNING}
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
+      BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-true}
+      BIOREMPP_OBSERVABILITY_METRICS_PATH: ${BIOREMPP_OBSERVABILITY_METRICS_PATH:-/metrics}
+      BIOREMPP_OBSERVABILITY_FAIL_FAST: ${BIOREMPP_OBSERVABILITY_FAIL_FAST:-true}
+      PROMETHEUS_MULTIPROC_DIR: ${PROMETHEUS_MULTIPROC_DIR:-/tmp/prometheus_multiproc}
       BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-redis}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-1024}
@@ -220,6 +226,9 @@ services:
       - biorempp-logs:/app/logs
       - biorempp-data:/app/data
       - biorempp-cache:/app/cache
+
+    tmpfs:
+      - /tmp/prometheus_multiproc:size=${BIOREMPP_OBSERVABILITY_MULTIPROC_TMPFS_SIZE_BYTES:-67108864}
     
     networks:
       - biorempp-network
@@ -250,6 +259,9 @@ services:
     image: nginx:1.25-alpine
     container_name: biorempp-nginx
     profiles: ["nginx"]
+
+    environment:
+      DOMAIN: ${DOMAIN:-localhost}
     
     ports:
       - "${HTTP_PORT:-80}:80"
@@ -257,7 +269,7 @@ services:
     
     volumes:
       # Configuration
-      - ./.docker/nginx/${NGINX_CONFIG:-nginx.prod.conf}:/etc/nginx/conf.d/default.conf:ro
+      - ./.docker/nginx/${NGINX_CONFIG:-nginx.prod.conf}:/etc/nginx/templates/default.conf.template:ro
       
       # SSL certificates (Let's Encrypt)
       - letsencrypt-certs:/etc/letsencrypt:ro
@@ -337,6 +349,86 @@ services:
     
     restart: unless-stopped
 
+  # ==========================================================================
+  # Prometheus (Observability)
+  # ==========================================================================
+  prometheus:
+    image: prom/prometheus:v2.55.1
+    container_name: biorempp-prometheus
+    profiles: ["observability"]
+
+    command:
+      - --config.file=/etc/prometheus/prometheus.yml
+      - --storage.tsdb.path=/prometheus
+      - --storage.tsdb.retention.time=${PROMETHEUS_RETENTION_TIME:-15d}
+      - --storage.tsdb.retention.size=${PROMETHEUS_RETENTION_SIZE:-5GB}
+      - --web.enable-lifecycle
+
+    ports:
+      - "${PROMETHEUS_PORT_BIND:-127.0.0.1:9090}:9090"
+
+    volumes:
+      - ./observability/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - ./observability/prometheus/rules:/etc/prometheus/rules:ro
+      - prometheus-data:/prometheus
+
+    networks:
+      - biorempp-network
+
+    depends_on:
+      biorempp:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:9090/-/healthy"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    restart: unless-stopped
+
+  # ==========================================================================
+  # Grafana (Observability)
+  # ==========================================================================
+  grafana:
+    image: grafana/grafana:11.3.2
+    container_name: biorempp-grafana
+    profiles: ["observability"]
+
+    ports:
+      - "${GRAFANA_PORT_BIND:-127.0.0.1:3000}:3000"
+
+    environment:
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-this-grafana-password}
+      GF_USERS_ALLOW_SIGN_UP: ${GRAFANA_ALLOW_SIGN_UP:-false}
+      GF_ANALYTICS_REPORTING_ENABLED: ${GRAFANA_ANALYTICS_REPORTING_ENABLED:-false}
+      GF_ANALYTICS_CHECK_FOR_UPDATES: ${GRAFANA_ANALYTICS_CHECK_FOR_UPDATES:-false}
+      GF_SERVER_ROOT_URL: ${GRAFANA_SERVER_ROOT_URL:-http://localhost:3000}
+
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./observability/grafana/provisioning/datasources:/etc/grafana/provisioning/datasources:ro
+      - ./observability/grafana/provisioning/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./observability/grafana/dashboards:/var/lib/grafana/dashboards:ro
+
+    networks:
+      - biorempp-network
+
+    depends_on:
+      prometheus:
+        condition: service_healthy
+
+    healthcheck:
+      test: ["CMD-SHELL", "wget --quiet --tries=1 --spider http://localhost:3000/api/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    restart: unless-stopped
+
 # ============================================================================
 # NETWORKS
 # ============================================================================
@@ -376,3 +468,9 @@ volumes:
   # Redis
   redis-data:
     name: redis-data
+
+  # Observability
+  prometheus-data:
+    name: biorempp-prometheus-data
+  grafana-data:
+    name: biorempp-grafana-data

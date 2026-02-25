@@ -1,0 +1,72 @@
+groups:
+  - name: biorempp_http_recording
+    interval: 15s
+    rules:
+      - record: job:biorempp_http_requests:rate5m
+        expr: sum by (job) (rate(biorempp_http_requests_total[5m]))
+
+      - record: job:biorempp_http_errors:rate5m
+        expr: sum by (job) (rate(biorempp_http_errors_total[5m]))
+
+      - record: job:biorempp_http_error_ratio:rate5m
+        expr: |
+          job:biorempp_http_errors:rate5m
+          /
+          clamp_min(job:biorempp_http_requests:rate5m, 0.001)
+
+      - record: endpoint:biorempp_http_latency_p95:rate5m
+        expr: |
+          histogram_quantile(
+            0.95,
+            sum by (le, endpoint) (
+              rate(biorempp_http_request_duration_seconds_bucket[5m])
+            )
+          )
+
+  - name: biorempp_cache_recording
+    interval: 30s
+    rules:
+      - record: cache_type:biorempp_cache_get_hit_ratio:rate5m
+        expr: |
+          sum by (cache_type) (
+            rate(biorempp_cache_operations_total{operation="get", outcome="hit"}[5m])
+          )
+          /
+          clamp_min(
+            sum by (cache_type) (
+              rate(
+                biorempp_cache_operations_total{
+                  operation="get",
+                  outcome=~"hit|miss|expired"
+                }[5m]
+              )
+            ),
+            0.001
+          )
+
+      - record: cache_type:biorempp_cache_evictions:rate1m
+        expr: |
+          sum by (cache_type) (
+            rate(biorempp_cache_operations_total{operation="evict"}[1m])
+          )
+
+  - name: biorempp_resume_recording
+    interval: 30s
+    rules:
+      - record: outcome:biorempp_resume_load_attempts:rate5m
+        expr: sum by (outcome) (rate(biorempp_resume_load_attempts_total[5m]))
+
+      - record: outcome:biorempp_resume_callback_attempts:rate5m
+        expr: sum by (outcome) (rate(biorempp_resume_callback_attempts_total[5m]))
+
+      - record: outcome:biorempp_resume_save:rate5m
+        expr: sum by (outcome) (rate(biorempp_resume_save_total[5m]))
+
+  - name: biorempp_worker_recording
+    interval: 30s
+    rules:
+      - record: reason:biorempp_worker_restarts:rate10m
+        expr: sum by (reason) (rate(biorempp_worker_restarts_total[10m]))
+
+      - record: worker:biorempp_requests:rate1m
+        expr: sum by (worker_pid) (rate(biorempp_worker_requests_total[1m]))
