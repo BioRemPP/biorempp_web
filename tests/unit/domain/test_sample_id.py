@@ -15,7 +15,7 @@ Test Coverage:
 
 import pytest
 
-from biorempp_web.src.domain.value_objects.sample_id import SampleId
+from src.domain.value_objects.sample_id import SampleId
 
 
 class TestSampleId:

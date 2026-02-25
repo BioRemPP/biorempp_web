@@ -16,10 +16,10 @@ Test Coverage:
 
 import pytest
 
-from biorempp_web.src.domain.entities.dataset import Dataset
-from biorempp_web.src.domain.entities.sample import Sample
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
-from biorempp_web.src.domain.value_objects.sample_id import SampleId
+from src.domain.entities.dataset import Dataset
+from src.domain.entities.sample import Sample
+from src.domain.value_objects.kegg_orthology import KO
+from src.domain.value_objects.sample_id import SampleId
 
 
 class TestDataset:

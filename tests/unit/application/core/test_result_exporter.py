@@ -12,7 +12,10 @@ Tests cover:
 
 import pytest
 import pandas as pd
-from biorempp_web.src.application.core.result_exporter import (
+import json
+from io import BytesIO, StringIO
+
+from src.application.core.result_exporter import (
     ResultExporter,
     ExportFormat,
     ExportResultDTO
@@ -116,6 +119,8 @@ class TestResultExporterCSV:
         assert result.size_bytes > 0
         assert result.error is None
         assert "3 rows" in result.message
+        parsed = pd.read_csv(StringIO(result.data.decode("utf-8")))
+        pd.testing.assert_frame_equal(parsed, sample_df)
     
     def test_export_csv_adds_extension(self, exporter, sample_df):
         """Test that .csv extension is added if missing."""
@@ -176,6 +181,8 @@ class TestResultExporterExcel:
         assert result.filename == "test.xlsx"
         assert result.size_bytes > 0
         assert result.error is None
+        exported_df = pd.read_excel(BytesIO(result.data), sheet_name="Results")
+        pd.testing.assert_frame_equal(exported_df, sample_df)
     
     def test_export_excel_adds_extension(self, exporter, sample_df):
         """Test that .xlsx extension is added if missing."""
@@ -192,8 +199,10 @@ class TestResultExporterExcel:
         )
         
         assert result.success
-        # Note: We can't easily verify sheet name without reading back
-        # but at least we test it doesn't crash
+        workbook = pd.ExcelFile(BytesIO(result.data))
+        assert "CustomSheet" in workbook.sheet_names
+        exported_df = pd.read_excel(BytesIO(result.data), sheet_name="CustomSheet")
+        pd.testing.assert_frame_equal(exported_df, sample_df)
     
     def test_export_excel_empty_dataframe(self, exporter):
         """Test Excel export with empty DataFrame."""
@@ -238,6 +247,8 @@ class TestResultExporterJSON:
         assert result.filename == "test.json"
         assert result.size_bytes > 0
         assert result.error is None
+        parsed = json.loads(result.data.decode("utf-8"))
+        assert parsed == sample_df.to_dict(orient="records")
     
     def test_export_json_adds_extension(self, exporter, sample_df):
         """Test that .json extension is added if missing."""
@@ -250,8 +261,9 @@ class TestResultExporterJSON:
         result = exporter.export_to_json(sample_df, "test.json", orient="records")
         
         assert result.success
-        json_str = result.data.decode('utf-8')
-        assert json_str.startswith('[')  # Records orient creates array
+        parsed = json.loads(result.data.decode("utf-8"))
+        assert isinstance(parsed, list)
+        assert parsed[0]["Sample"] == "S1"
     
     def test_export_json_empty_dataframe(self, exporter):
         """Test JSON export with empty DataFrame."""
@@ -314,5 +326,14 @@ class TestResultExporterGeneric:
         )
         
         assert result.success
-        csv_content = result.data.decode('utf-8')
-        assert csv_content.startswith(',')  # Index included
+        csv_df = pd.read_csv(StringIO(result.data.decode("utf-8")))
+        assert "Unnamed: 0" in csv_df.columns
+        assert list(csv_df["Unnamed: 0"]) == [0, 1, 2]
+
+    def test_export_unsupported_format_returns_error(self, exporter, sample_df):
+        """Test generic export handles unsupported format values."""
+        result = exporter.export(sample_df, "xml", "test.xml")
+
+        assert not result.success
+        assert result.data is None
+        assert "Unsupported export format" in result.error

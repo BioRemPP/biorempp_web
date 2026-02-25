@@ -18,9 +18,10 @@ Test Coverage:
 
 import pytest
 import pandas as pd
-from unittest.mock import Mock, MagicMock, patch, call
+from unittest.mock import Mock, patch
 import time
 
+import src.application.core.data_processor as data_processor_module
 from src.application.core.data_processor import DataProcessor
 from src.application.dto.merged_data_dto import MergedDataDTO
 from src.application.services.cache_service import CacheService
@@ -30,6 +31,12 @@ from src.domain.entities.sample import Sample
 from src.domain.value_objects.kegg_orthology import KO
 from src.domain.value_objects.sample_id import SampleId
 from src.domain.services.merge_service import MergeService
+from src.shared.exceptions import (
+    CircuitBreakerOpenError,
+    EmptyDataFrameError,
+    RetryExhaustedError,
+    StageProcessingError,
+)
 
 
 class TestDataProcessorInitialization:
@@ -58,16 +65,20 @@ class TestDataProcessorInitialization:
         assert processor._tracker is progress_tracker
         assert processor._merge_service is MergeService
 
-    def test_initialization_stores_dependencies(self):
-        """Test that dependencies are stored correctly."""
+    def test_initialization_configures_timeout_and_circuit_breakers(self):
+        """Test that processor initializes timeout and all circuit breakers."""
         cache = Mock()
         tracker = Mock()
 
         processor = DataProcessor(cache, tracker)
 
-        assert hasattr(processor, '_cache')
-        assert hasattr(processor, '_tracker')
-        assert hasattr(processor, '_merge_service')
+        assert processor._timeout_seconds == data_processor_module.DEFAULT_TIMEOUT_SECONDS
+        assert set(processor._circuit_breakers.keys()) == {
+            "biorempp",
+            "kegg",
+            "hadeg",
+            "toxcsm",
+        }
 
 
 class TestDataProcessorProcess:
@@ -114,9 +125,9 @@ class TestDataProcessorProcess:
         assert result is cached_dto
         # Should complete tracking
         tracker.complete.assert_called_once()
-        # Should not perform merges
-        assert not hasattr(merge_service, 'merge_with_biorempp') or \
-               not merge_service.merge_with_biorempp.called
+        # Should not execute processing stages or recache data
+        tracker.start_stage.assert_not_called()
+        cache.set.assert_not_called()
 
     def test_process_cache_miss_performs_full_pipeline(self, mock_dependencies, sample_dataset):
         """Test process performs full pipeline when cache misses."""
@@ -141,10 +152,10 @@ class TestDataProcessorProcess:
         result = processor.process(sample_dataset, "session_1")
 
         # Verify all merges were called
-        assert merge_service.merge_with_biorempp.called
-        assert merge_service.merge_with_kegg.called
-        assert merge_service.merge_with_hadeg.called
-        assert merge_service.merge_with_toxcsm.called
+        merge_service.merge_with_biorempp.assert_called_once()
+        merge_service.merge_with_kegg.assert_called_once()
+        merge_service.merge_with_hadeg.assert_called_once()
+        merge_service.merge_with_toxcsm.assert_called_once()
 
         # Verify result is MergedDataDTO
         assert isinstance(result, MergedDataDTO)
@@ -172,10 +183,11 @@ class TestDataProcessorProcess:
         processor = DataProcessor(cache, tracker, merge_service)
         processor.process(sample_dataset, "session_1")
 
-        # Verify stages were started
-        assert tracker.start_stage.call_count >= 4  # Stages 3, 4, 5, 6, 7, 8
-        # Verify progress updates
-        assert tracker.update_progress.called
+        # Verify exact stage sequence
+        stage_numbers = [call.args[0] for call in tracker.start_stage.call_args_list]
+        assert stage_numbers == [3, 4, 5, 6, 7, 8]
+        # Verify progress updates occurred
+        assert tracker.update_progress.call_count >= 6
 
     def test_process_caches_result_with_ttl(self, mock_dependencies, sample_dataset):
         """Test that process caches result with correct TTL."""
@@ -214,93 +226,9 @@ class TestDataProcessorProcess:
         result = processor.process(sample_dataset, "session_1")
         end = time.time()
 
-        # Verify processing time is reasonable
+        # Verify processing time is non-negative and bounded by wall-clock runtime
         assert result.processing_time_seconds >= 0
-        assert result.processing_time_seconds <= (end - start) + 1  # Allow 1s tolerance
-
-
-class TestDataProcessorMergeWithDatabases:
-    """Test the merge_with_databases() method."""
-
-    @pytest.fixture
-    def mock_dependencies(self):
-        """Create mock dependencies."""
-        cache = Mock(spec=CacheService)
-        tracker = Mock(spec=ProgressTracker)
-        merge_service = Mock(spec=MergeService)
-        return cache, tracker, merge_service
-
-    @pytest.fixture
-    def sample_dataset(self):
-        """Create sample dataset."""
-        sample = Sample(id=SampleId("S1"), ko_list=[KO("K00001")])
-        dataset = Dataset()
-        dataset.add_sample(sample)
-        return dataset
-
-    @pytest.mark.skip(reason="merge_with_databases method no longer exists in DataProcessor")
-    def test_merge_with_databases_calls_all_merges(self, mock_dependencies, sample_dataset):
-        """Test that all database merges are called."""
-        cache, tracker, merge_service = mock_dependencies
-
-        biorempp_df = pd.DataFrame({"KO": ["K00001"]})
-        kegg_df = pd.DataFrame({"KO": ["K00001"]})
-        hadeg_df = pd.DataFrame({"KO": ["K00001"]})
-        toxcsm_df = pd.DataFrame({"KO": ["K00001"]})
-
-        merge_service.merge_with_biorempp = Mock(return_value=biorempp_df)
-        merge_service.merge_with_kegg = Mock(return_value=kegg_df)
-        merge_service.merge_with_hadeg = Mock(return_value=hadeg_df)
-        merge_service.merge_with_toxcsm = Mock(return_value=toxcsm_df)
-
-        processor = DataProcessor(cache, tracker, merge_service)
-        results = processor.merge_with_databases(sample_dataset)
-
-        # Verify all merges called
-        merge_service.merge_with_biorempp.assert_called_once()
-        merge_service.merge_with_kegg.assert_called_once()
-        merge_service.merge_with_hadeg.assert_called_once()
-        merge_service.merge_with_toxcsm.assert_called_once()
-
-        # Verify results structure
-        assert "biorempp_df" in results
-        assert "kegg_df" in results
-        assert "hadeg_df" in results
-        assert "toxcsm_df" in results
-
-    @pytest.mark.skip(reason="merge_with_databases method no longer exists in DataProcessor")
-    def test_merge_with_databases_returns_dict_with_dataframes(self, mock_dependencies, sample_dataset):
-        """Test that merge_with_databases returns dict with DataFrames."""
-        cache, tracker, merge_service = mock_dependencies
-
-        biorempp_df = pd.DataFrame({"KO": ["K00001"]})
-        merge_service.merge_with_biorempp = Mock(return_value=biorempp_df)
-        merge_service.merge_with_kegg = Mock(return_value=pd.DataFrame())
-        merge_service.merge_with_hadeg = Mock(return_value=pd.DataFrame())
-        merge_service.merge_with_toxcsm = Mock(return_value=pd.DataFrame())
-
-        processor = DataProcessor(cache, tracker, merge_service)
-        results = processor.merge_with_databases(sample_dataset)
-
-        assert isinstance(results, dict)
-        assert isinstance(results["biorempp_df"], pd.DataFrame)
-        assert results["biorempp_df"] is biorempp_df
-
-    @pytest.mark.skip(reason="merge_with_databases method no longer exists in DataProcessor")
-    def test_merge_with_databases_updates_progress(self, mock_dependencies, sample_dataset):
-        """Test that merge_with_databases updates progress for each stage."""
-        cache, tracker, merge_service = mock_dependencies
-
-        merge_service.merge_with_biorempp = Mock(return_value=pd.DataFrame())
-        merge_service.merge_with_kegg = Mock(return_value=pd.DataFrame())
-        merge_service.merge_with_hadeg = Mock(return_value=pd.DataFrame())
-        merge_service.merge_with_toxcsm = Mock(return_value=pd.DataFrame())
-
-        processor = DataProcessor(cache, tracker, merge_service)
-        processor.merge_with_databases(sample_dataset)
-
-        # Should update progress multiple times
-        assert tracker.update_progress.call_count >= 8  # At least 2 per merge stage
+        assert result.processing_time_seconds <= (end - start) + 1
 
 
 class TestDataProcessorPrepareResult:
@@ -313,7 +241,6 @@ class TestDataProcessorPrepareResult:
         tracker = Mock(spec=ProgressTracker)
         return cache, tracker
 
-    @pytest.mark.skip(reason="prepare_result method signature or behavior changed")
     def test_prepare_result_creates_dto(self, mock_dependencies):
         """Test that prepare_result creates MergedDataDTO."""
         cache, tracker = mock_dependencies
@@ -374,6 +301,78 @@ class TestDataProcessorPrepareResult:
 
         assert result.match_count == 0
         assert result.total_records == 0
+
+
+class TestDataProcessorInternalErrorHandling:
+    """Test DataProcessor private helpers for error handling."""
+
+    @pytest.fixture
+    def processor(self):
+        """Create processor with mocked dependencies."""
+        cache = Mock(spec=CacheService)
+        tracker = Mock(spec=ProgressTracker)
+        merge_service = Mock(spec=MergeService)
+        return DataProcessor(cache, tracker, merge_service)
+
+    def test_validate_dataframe_rejects_none(self, processor):
+        """_validate_dataframe should reject None results."""
+        with pytest.raises(EmptyDataFrameError, match="DataFrame is None"):
+            processor._validate_dataframe(None, "StageX")
+
+    def test_validate_dataframe_rejects_non_dataframe(self, processor):
+        """_validate_dataframe should reject non-DataFrame values."""
+        with pytest.raises(EmptyDataFrameError, match="not a DataFrame"):
+            processor._validate_dataframe(["not", "a", "df"], "StageY")
+
+    def test_validate_dataframe_rejects_empty_dataframe(self, processor):
+        """_validate_dataframe should reject empty DataFrames."""
+        with pytest.raises(EmptyDataFrameError, match="No data in result"):
+            processor._validate_dataframe(pd.DataFrame(), "StageZ")
+
+    def test_merge_with_retry_raises_after_exhausting_attempts(self, processor):
+        """_merge_with_retry should raise RetryExhaustedError after all retries."""
+        failing_merge = Mock(side_effect=ValueError("temporary failure"))
+
+        with patch("src.application.core.data_processor.time.sleep", return_value=None):
+            with pytest.raises(RetryExhaustedError, match="Failed after"):
+                processor._merge_with_retry(failing_merge, dataset=Mock())
+
+        assert failing_merge.call_count == data_processor_module.MAX_RETRIES + 1
+
+    def test_process_stage_wraps_errors_as_stage_processing_error(self, processor):
+        """_process_stage should wrap internal errors in StageProcessingError."""
+        failing_merge = Mock(side_effect=ValueError("database unavailable"))
+
+        with pytest.raises(StageProcessingError, match="BioRemPP"):
+            processor._process_stage(
+                stage_num=3,
+                stage_name="BioRemPP Database Merge",
+                stage_desc="Merging with main database",
+                merge_func=failing_merge,
+                breaker_key="biorempp",
+                dataset=Mock(),
+            )
+
+        assert processor._circuit_breakers["biorempp"].failures == 1
+
+    def test_process_stage_blocks_when_circuit_is_open(self, processor):
+        """_process_stage should fail fast when circuit breaker is open."""
+        breaker = processor._circuit_breakers["kegg"]
+        breaker._is_open = True
+        breaker.last_failure_time = time.time()
+        merge_func = Mock()
+
+        with pytest.raises(CircuitBreakerOpenError):
+            processor._process_stage(
+                stage_num=4,
+                stage_name="KEGG Database Merge",
+                stage_desc="Merging with KEGG pathways",
+                merge_func=merge_func,
+                breaker_key="kegg",
+                biorempp_df=pd.DataFrame({"KO": ["K00001"]}),
+            )
+
+        merge_func.assert_not_called()
 
 
 class TestDataProcessorDatasetToDataFrame:

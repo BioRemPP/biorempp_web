@@ -15,7 +15,7 @@ Test Coverage:
 
 import pytest
 
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
+from src.domain.value_objects.kegg_orthology import KO
 
 
 class TestKO:

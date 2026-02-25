@@ -18,18 +18,16 @@ import pytest
 from src.application.core.sample_parser import SampleParser, ParsingMetrics
 from src.domain.entities.dataset import Dataset
 from src.domain.entities.sample import Sample
-from src.domain.value_objects.kegg_orthology import KO
-from src.domain.value_objects.sample_id import SampleId
 from src.shared.exceptions import InvalidFormatError
 
 
 class TestSampleParserInitialization:
     """Test SampleParser initialization."""
 
-    def test_initialization(self):
-        """Test that SampleParser initializes correctly."""
+    def test_initialization_starts_with_empty_seen_sample_names(self):
+        """Test parser starts with clean duplicate-tracking state."""
         parser = SampleParser()
-        assert parser is not None
+        assert parser._seen_sample_names == set()
 
 
 class TestSampleParserParse:
@@ -150,6 +148,18 @@ class TestSampleParserParse:
         assert dataset.samples[0].ko_count == 3
         ko_ids = [ko.id for ko in dataset.samples[0].ko_list]
         assert ko_ids == ["K00001", "K00002", "K00003"]
+        assert metrics.ignored_kos == 2
+
+    def test_parse_duplicate_sample_names_tracks_metrics(self):
+        """Test parser tracks duplicate sample names in metrics."""
+        parser = SampleParser()
+        content = ">Sample1\nK00001\n>Sample1\nK00002"
+
+        dataset, metrics = parser.parse(content)
+
+        assert dataset.total_samples == 2
+        assert metrics.duplicate_samples == 1
+        assert any("Duplicate sample name" in warning for warning in metrics.warnings)
 
     def test_parse_sample_id_with_spaces(self):
         """Test that sample IDs with spaces are rejected by sanitization."""
