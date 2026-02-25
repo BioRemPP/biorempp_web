@@ -11,7 +11,7 @@ create_home_layout
 Notes
 -----
 - 5 sections: Header, Intro, Upload Workflow, Help, Footer
-- State managed via 4 dcc.Stores
+- State managed via 5 dcc.Stores
 - Clean separation from results page
 """
 
@@ -24,6 +24,7 @@ from ..components.base import create_footer, create_header, create_help_links
 from ..components.composite import (
     create_completion_panel,
     create_intro_card,
+    create_job_resume_panel,
     create_progress_panel,
     create_upload_panel,
     create_validation_panel,
@@ -69,11 +70,12 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     - Section 4: Help & Guidance
     - Section 5: Footer
 
-    State Management (4 dcc.Stores):
+    State Management (5 dcc.Stores):
     - upload-result: UploadResultDTO
     - processing-progress: ProcessingProgressDTO
     - processing-complete: bool flag
     - merged-result: MergedDataDTO
+    - resume-browser-token: local browser ownership token for job resume
 
     Workflow:
     1. User uploads file → upload-result populated
@@ -115,6 +117,16 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                     )
                 ]
             ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [create_job_resume_panel()],
+                        md=10,
+                        lg=8,
+                        className="mx-auto mb-2",
+                    )
+                ]
+            ),
             # Step 1: Upload
             create_upload_panel(),
             # Validation feedback (appears after upload)
@@ -146,6 +158,8 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             ),
             # Session ID
             dcc.Store(id="session-id-store", storage_type="session", data=session_id),
+            # Resume ownership token (persists in same browser across sessions)
+            dcc.Store(id="resume-browser-token-store", storage_type="local"),
         ]
     )
 

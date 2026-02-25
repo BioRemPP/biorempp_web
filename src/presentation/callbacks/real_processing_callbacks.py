@@ -12,6 +12,7 @@ logging and comprehensive error recovery.
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, no_update
 from dash.exceptions import PreventUpdate
+from uuid import uuid4
 
 from src.presentation.components.composite.processing_feedback import (
     create_merge_statistics_card,
@@ -19,7 +20,7 @@ from src.presentation.components.composite.processing_feedback import (
     create_processing_error_alert,
     create_validation_summary,
 )
-from src.presentation.services import DataProcessingService
+from src.presentation.services import DataProcessingService, job_resume_service
 from src.shared.exceptions import (
     CircuitBreakerOpenError,
     DataProcessingTimeoutError,
@@ -103,9 +104,14 @@ def register_real_processing_callbacks(app):
             Output("merged-result-store", "data"),
             Output("completion-panel", "style"),
             Output("processing-progress", "style"),
+            Output("resume-browser-token-store", "data", allow_duplicate=True),
         ],
         inputs=Input("process-data-btn", "n_clicks"),
-        state=[State("upload-data-store", "data"), State("example-data-store", "data")],
+        state=[
+            State("upload-data-store", "data"),
+            State("example-data-store", "data"),
+            State("resume-browser-token-store", "data"),
+        ],
         running=[
             (
                 Output("process-data-btn", "disabled"),
@@ -116,7 +122,7 @@ def register_real_processing_callbacks(app):
         background=True,
         prevent_initial_call=True,
     )
-    def process_data_with_spinner(n_clicks, upload_data, example_data):
+    def process_data_with_spinner(n_clicks, upload_data, example_data, owner_token):
         """
         Process uploaded or example data with real-time progress tracking.
 
@@ -130,11 +136,19 @@ def register_real_processing_callbacks(app):
             Uploaded file data
         example_data : dict
             Example file data
+        owner_token : str
+            Browser ownership token used for resume-by-job-id binding
 
         Returns
         -------
         tuple
-            (status_message, merged_data, completion_panel_style)
+            (
+                status_message,
+                merged_data,
+                completion_panel_style,
+                progress_panel_style,
+                owner_token_store_update,
+            )
         """
         if n_clicks is None:
             raise PreventUpdate
@@ -155,11 +169,14 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},  # Keep progress hidden
+                no_update,
             )
 
         try:
             service = get_data_service()
             job_id = DataProcessingService.generate_job_id()
+            effective_owner_token = owner_token or str(uuid4())
+            generated_owner_token = not bool(owner_token)
 
             logger.info(
                 "Starting data processing",
@@ -170,6 +187,11 @@ def register_real_processing_callbacks(app):
                     "ko_count": file_data.get("ko_count"),
                 },
             )
+            if generated_owner_token:
+                logger.info(
+                    "Resume owner token was missing and has been generated for this run",
+                    extra={"job_id": job_id},
+                )
 
             # Process data (all merges happen here)
             result = service.process_upload(
@@ -246,19 +268,57 @@ def register_real_processing_callbacks(app):
 
             logger.info("DataFrames serialized successfully")
 
-            # Success message with metadata
+            # Persist serialized payload for resume-by-job-id flow (non-blocking)
             metadata = result["metadata"]
-            status_message = create_processing_alert(
-                "success",
-                "Processing completed successfully!",
-                details={
-                    "Job ID": metadata.get("job_id", "--"),
-                    "Samples": metadata["sample_count"],
-                    "KO IDs": metadata["ko_count"],
-                    "Matched KOs": f"{metadata['matched_kos']}/{metadata['total_kos']}",
-                    "Processing Time": f"{metadata['processing_time']:.2f}s",
+            persisted_job_id = metadata.get("job_id", job_id)
+            resume_saved = job_resume_service.save_job_payload(
+                job_id=persisted_job_id,
+                payload=serialized_result,
+                owner_token=effective_owner_token,
+                ttl_seconds=job_resume_service.get_resume_ttl_seconds(),
+            )
+
+            logger.info(
+                "Resume payload persistence result",
+                extra={
+                    "job_id": persisted_job_id,
+                    "resume_saved": resume_saved,
+                    "payload_size_bytes": len(
+                        str(serialized_result).encode("utf-8", errors="ignore")
+                    ),
                 },
             )
+
+            status_details = {
+                "Job ID": persisted_job_id,
+                "Samples": metadata["sample_count"],
+                "KO IDs": metadata["ko_count"],
+                "Matched KOs": f"{metadata['matched_kos']}/{metadata['total_kos']}",
+                "Processing Time": f"{metadata['processing_time']:.2f}s",
+            }
+
+            if resume_saved:
+                status_details["Resume Cache"] = "Available"
+                status_message = create_processing_alert(
+                    "success",
+                    "Processing completed successfully!",
+                    details=status_details,
+                )
+            else:
+                status_details["Resume Cache"] = "Unavailable"
+                status_message = html.Div(
+                    [
+                        create_processing_alert(
+                            "success",
+                            "Processing completed successfully!",
+                            details=status_details,
+                        ),
+                        create_processing_alert(
+                            "warning",
+                            "Warning: resume by Job ID is unavailable for this run.",
+                        ),
+                    ]
+                )
 
             # Return results
             return (
@@ -266,6 +326,7 @@ def register_real_processing_callbacks(app):
                 serialized_result,
                 {"display": "block"},  # Show completion panel
                 {"display": "none"},  # Hide progress panel
+                effective_owner_token,
             )
 
         # Validation errors (expected)
@@ -294,6 +355,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Timeout errors
@@ -319,6 +381,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Empty DataFrame errors
@@ -344,6 +407,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Circuit breaker errors
@@ -368,6 +432,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Retry exhausted errors
@@ -393,6 +458,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Stage processing errors
@@ -422,6 +488,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Generic processing errors
@@ -447,6 +514,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
         # Unexpected errors
@@ -478,6 +546,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
             )
 
     # Callback to show progress panel immediately when button is clicked
