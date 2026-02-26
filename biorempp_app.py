@@ -22,7 +22,6 @@ from pathlib import Path
 import dash
 import dash_bootstrap_components as dbc
 import diskcache
-import pandas as pd
 from dash import DiskcacheManager, Input, Output, State, callback, dcc, html
 
 # Silence watchdog debug logs (used by Dash hot-reload)
@@ -258,9 +257,6 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         elif pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
-                import dash_bootstrap_components as dbc
-                from dash import html
-                
                 return dbc.Container([
                     dbc.Alert(
                         [
@@ -289,22 +285,8 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                         className="mt-5"
                     )
                 ], className="mt-5")
-            
-            # Convert dict back to DataFrames for results page
-            # Callback returns keys with '_d' suffix, convert to '_df' for compatibility
-            results_data = {
-                'biorempp_df': pd.DataFrame(merged_data['biorempp_df']),
-                'biorempp_raw_df': pd.DataFrame(merged_data['biorempp_raw_df']),
-                'hadeg_df': pd.DataFrame(merged_data['hadeg_df']),
-                'hadeg_raw_df': pd.DataFrame(merged_data['hadeg_raw_df']),
-                'toxcsm_df': pd.DataFrame(merged_data['toxcsm_df']),
-                'toxcsm_raw_df': pd.DataFrame(merged_data['toxcsm_raw_df']),
-                'kegg_df': pd.DataFrame(merged_data['kegg_df']),
-                'kegg_raw_df': pd.DataFrame(merged_data['kegg_raw_df']),
-                'metadata': merged_data['metadata']
-            }
-            
-            return get_results_layout(merged_data=results_data)
+
+            return get_results_layout(merged_data=merged_data)
         else:
             # Default to homepage
             return get_home_layout()

@@ -712,9 +712,33 @@ def register_real_processing_callbacks(app):
         """
         return not (upload_data or example_data)
 
+    @app.callback(
+        Output("url", "pathname", allow_duplicate=True),
+        Input("view-results-btn", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def navigate_to_results(n_clicks):
+        """
+        Navigate to results page when completion button is clicked.
+
+        Parameters
+        ----------
+        n_clicks : int
+            Button click count
+
+        Returns
+        -------
+        str
+            URL pathname for results route
+        """
+        if not n_clicks:
+            raise PreventUpdate
+        return "/results"
+
     logger.info("[OK] Real processing callbacks registered successfully")
     logger.info(
         "  - process_data_with_spinner: Background callback with simple spinner"
     )
     logger.info("  - show_progress_on_click: Show panel immediately on click")
     logger.info("  - enable_process_button: Button enable/disable")
+    logger.info("  - navigate_to_results: Redirect to /results from completion panel")
