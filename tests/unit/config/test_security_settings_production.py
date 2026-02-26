@@ -58,3 +58,51 @@ def test_development_allows_placeholder_values(monkeypatch, tmp_path):
     settings = Settings()
     assert settings.is_development is True
 
+
+def test_production_rejects_proxy_trust_without_explicit_cidrs(monkeypatch, tmp_path):
+    """Production must fail when trusting proxy headers without explicit CIDRs."""
+    _set_base_env(monkeypatch, tmp_path, env="production")
+    monkeypatch.setenv("SECRET_KEY", "a" * 64)
+    monkeypatch.setenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+    monkeypatch.setenv("BIOREMPP_TRUST_PROXY_HEADERS", "true")
+    monkeypatch.delenv("BIOREMPP_TRUSTED_PROXY_CIDRS", raising=False)
+
+    with pytest.raises(ValueError, match="BIOREMPP_TRUSTED_PROXY_CIDRS"):
+        Settings()
+
+
+def test_production_rejects_proxy_trust_with_invalid_cidr(monkeypatch, tmp_path):
+    """Invalid trusted CIDR entries must abort production startup."""
+    _set_base_env(monkeypatch, tmp_path, env="production")
+    monkeypatch.setenv("SECRET_KEY", "a" * 64)
+    monkeypatch.setenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+    monkeypatch.setenv("BIOREMPP_TRUST_PROXY_HEADERS", "true")
+    monkeypatch.setenv("BIOREMPP_TRUSTED_PROXY_CIDRS", "10.20.0.0/16,not-a-cidr")
+
+    with pytest.raises(ValueError, match="invalid CIDR entries"):
+        Settings()
+
+
+def test_production_rejects_loopback_only_proxy_cidrs(monkeypatch, tmp_path):
+    """Loopback-only trusted proxies are not allowed in production trust mode."""
+    _set_base_env(monkeypatch, tmp_path, env="production")
+    monkeypatch.setenv("SECRET_KEY", "a" * 64)
+    monkeypatch.setenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+    monkeypatch.setenv("BIOREMPP_TRUST_PROXY_HEADERS", "true")
+    monkeypatch.setenv("BIOREMPP_TRUSTED_PROXY_CIDRS", "127.0.0.1/32,::1/128")
+
+    with pytest.raises(ValueError, match="loopback-only trusted CIDRs"):
+        Settings()
+
+
+def test_production_allows_proxy_trust_with_valid_cidrs(monkeypatch, tmp_path):
+    """Valid institutional CIDRs should pass production proxy trust checks."""
+    _set_base_env(monkeypatch, tmp_path, env="production")
+    monkeypatch.setenv("SECRET_KEY", "a" * 64)
+    monkeypatch.setenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+    monkeypatch.setenv("BIOREMPP_TRUST_PROXY_HEADERS", "true")
+    monkeypatch.setenv("BIOREMPP_TRUSTED_PROXY_CIDRS", "10.20.0.0/16,10.21.0.0/16")
+
+    settings = Settings()
+    assert settings.TRUST_PROXY_HEADERS is True
+    assert settings.TRUSTED_PROXY_CIDRS == ("10.20.0.0/16", "10.21.0.0/16")

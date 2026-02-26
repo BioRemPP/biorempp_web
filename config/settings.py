@@ -483,6 +483,16 @@ class Settings:
         repr=False,
         default_factory=tuple,
     )
+    _trusted_proxy_cidrs_explicit: bool = field(
+        init=False,
+        repr=False,
+        default=False,
+    )
+    _invalid_trusted_proxy_cidrs: tuple[str, ...] = field(
+        init=False,
+        repr=False,
+        default_factory=tuple,
+    )
     _log_ref_salt_source: str = field(
         init=False,
         repr=False,
@@ -770,8 +780,14 @@ class Settings:
             )
             self.OBSERVABILITY_METRICS_PATH = "/metrics"
 
+        raw_proxy_cidrs_env = os.getenv("BIOREMPP_TRUSTED_PROXY_CIDRS")
+        self._trusted_proxy_cidrs_explicit = bool(
+            raw_proxy_cidrs_env and raw_proxy_cidrs_env.strip()
+        )
+
         normalized_proxy_cidrs: list[str] = []
         trusted_networks: list[object] = []
+        invalid_proxy_cidrs: list[str] = []
         for cidr in self.TRUSTED_PROXY_CIDRS:
             cidr_candidate = (cidr or "").strip()
             if not cidr_candidate:
@@ -779,6 +795,7 @@ class Settings:
             try:
                 network = ipaddress.ip_network(cidr_candidate, strict=False)
             except ValueError:
+                invalid_proxy_cidrs.append(cidr_candidate)
                 print(
                     "[WARNING] Ignoring invalid BIOREMPP_TRUSTED_PROXY_CIDRS "
                     f"entry: {cidr_candidate}"
@@ -795,6 +812,7 @@ class Settings:
             ]
         self.TRUSTED_PROXY_CIDRS = tuple(normalized_proxy_cidrs)
         self._trusted_proxy_networks = tuple(trusted_networks)
+        self._invalid_trusted_proxy_cidrs = tuple(invalid_proxy_cidrs)
 
         allowed_public_files: list[str] = []
         seen_public_files: set[str] = set()
@@ -956,6 +974,29 @@ class Settings:
                 "Invalid production Redis password for resume backend: set "
                 "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
             )
+
+        if self.TRUST_PROXY_HEADERS:
+            if not self._trusted_proxy_cidrs_explicit:
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "BIOREMPP_TRUSTED_PROXY_CIDRS must be explicitly set when "
+                    "BIOREMPP_TRUST_PROXY_HEADERS=true."
+                )
+            if self._invalid_trusted_proxy_cidrs:
+                invalid_entries = ", ".join(self._invalid_trusted_proxy_cidrs)
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "BIOREMPP_TRUSTED_PROXY_CIDRS contains invalid CIDR entries "
+                    f"({invalid_entries})."
+                )
+            default_proxy_cidrs = set(_DEFAULT_TRUSTED_PROXY_CIDRS)
+            configured_proxy_cidrs = set(self.TRUSTED_PROXY_CIDRS)
+            if configured_proxy_cidrs.issubset(default_proxy_cidrs):
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "replace loopback-only trusted CIDRs with institutional "
+                    "ingress/proxy CIDRs."
+                )
 
     def is_trusted_proxy_ip(self, ip: str) -> bool:
         """Return True when IP address belongs to configured trusted proxy CIDRs."""

@@ -170,6 +170,14 @@ ENV/
 env.bak/
 venv.bak/
 
+# Keep versioned environment templates
+!.env/
+!.env/env.example
+!.env/env.production
+.env/env.development
+.env/ENV_CONFIG_GUIDE.md
+.env/*.local
+
 # Environment files (never commit these!)
 biorempp_web/.env
 biorempp_web/.env.local
