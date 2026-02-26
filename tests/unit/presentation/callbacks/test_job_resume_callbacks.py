@@ -188,6 +188,35 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
     )
 
 
+def test_resolve_resume_request_success_respects_url_base_path(
+    isolated_resume_service,
+    isolated_rate_limiter,
+    monkeypatch,
+):
+    """Redirect should honor configured URL_BASE_PATH."""
+    monkeypatch.setattr(job_resume_callbacks.settings, "URL_BASE_PATH", "/biorempp/")
+    job_id = "BRP-20260225-123005-ABC116"
+    owner_token = "token-5"
+    payload = {
+        "metadata": {"job_id": job_id},
+        "biorempp_df": [{"Sample": "S1", "KO": "K00001"}],
+    }
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        owner_token,
+        ttl_seconds=30,
+    )
+
+    data_update, pathname_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, owner_token)
+    )
+
+    assert data_update == payload
+    assert pathname_update == "/biorempp/results"
+    assert "loaded" in _flatten_text(status_component)
+
+
 def test_resolve_resume_request_uses_generic_error_in_strict_mode(
     isolated_resume_service, isolated_rate_limiter, monkeypatch
 ):

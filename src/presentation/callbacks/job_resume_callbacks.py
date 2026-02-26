@@ -17,6 +17,7 @@ from flask import has_request_context, request as flask_request
 from threading import Lock
 
 from config.settings import get_settings
+from src.presentation.routing import app_path
 from src.presentation.services import job_resume_service
 from src.shared.logging import get_logger
 from src.shared.metrics import RESUME_CALLBACK_ATTEMPTS_TOTAL
@@ -331,7 +332,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
         resume_rate_limiter.register_success(identity_hash)
         return (
             payload,
-            "/results",
+            app_path("/results"),
             _build_status_alert(
                 f"Job {normalized_job_id} loaded. Redirecting to results...",
                 "success",

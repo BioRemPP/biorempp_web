@@ -46,6 +46,32 @@
 # ============================================================================
 services:
   # ==========================================================================
+  # Volume Permission Init (Production)
+  # ==========================================================================
+  biorempp-volume-init:
+    image: alpine:3.20
+    container_name: biorempp-volume-init
+    profiles: ["prod"]
+
+    environment:
+      APP_UID: ${UID:-1000}
+      APP_GID: ${GID:-1000}
+
+    command: >
+      sh -c "set -eu;
+             mkdir -p /app/logs /app/data /app/cache;
+             chown -R $${APP_UID}:$${APP_GID} /app/logs /app/data /app/cache;
+             chmod -R u+rwX,g+rwX /app/logs /app/data /app/cache;
+             echo '[INFO] Volume ownership and permissions initialized';"
+
+    volumes:
+      - biorempp-logs:/app/logs
+      - biorempp-data:/app/data
+      - biorempp-cache:/app/cache
+
+    restart: "no"
+
+  # ==========================================================================
   # BioRemPP Application (Development)
   # ==========================================================================
   biorempp-dev:
@@ -67,6 +93,7 @@ services:
       BIOREMPP_ENV: development
       BIOREMPP_HOST: ${BIOREMPP_HOST:-0.0.0.0}
       BIOREMPP_PORT: ${BIOREMPP_PORT:-8050}
+      BIOREMPP_URL_BASE_PATH: ${BIOREMPP_URL_BASE_PATH:-/}
       BIOREMPP_DEBUG: ${BIOREMPP_DEBUG:-True}
       BIOREMPP_HOT_RELOAD: ${BIOREMPP_HOT_RELOAD:-False}
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-INFO}
@@ -161,6 +188,7 @@ services:
       BIOREMPP_ENV: production
       BIOREMPP_HOST: ${BIOREMPP_HOST:-0.0.0.0}
       BIOREMPP_PORT: ${BIOREMPP_PORT:-8080}
+      BIOREMPP_URL_BASE_PATH: ${BIOREMPP_URL_BASE_PATH:-/}
       BIOREMPP_DEBUG: False
       BIOREMPP_HOT_RELOAD: False
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-WARNING}
@@ -242,6 +270,10 @@ services:
     
     networks:
       - biorempp-network
+
+    depends_on:
+      biorempp-volume-init:
+        condition: service_completed_successfully
     
     healthcheck:
       test: ["CMD-SHELL", "curl --fail --silent http://127.0.0.1:8080/health > /dev/null || exit 1"]

@@ -22,6 +22,7 @@ import yaml
 from dash import html
 
 from config.settings import DATABASE_VERSIONS
+from ...routing import app_path
 
 # Path to schema configuration files
 CONFIGS_PATH = (
@@ -455,7 +456,7 @@ def _render_breadcrumb(config: dict) -> html.Div:
         nav_buttons.append(
             dbc.Button(
                 db["name"],
-                href=f"/schemas/{db['id']}",
+                href=app_path(f"/schemas/{db['id']}"),
                 color=db["color"] if is_active else "secondary",
                 outline=not is_active,
                 size="sm",

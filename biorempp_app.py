@@ -42,6 +42,7 @@ from src.presentation.callbacks.download_callbacks import register_download_call
 from src.presentation.callbacks.navigation_callbacks import (
     register_navigation_callbacks,
 )
+from src.presentation.routing import app_path, strip_base_path
 from src.presentation.components.composite.analysis_suggestions import (
     register_suggestions_callbacks,
 )
@@ -158,6 +159,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         suppress_callback_exceptions=True,
         title=f"{APP_NAME} v{APP_VERSION}",
         assets_folder='src/assets',
+        url_base_pathname=settings.URL_BASE_PATH,
     )
     if long_callback_manager is not None:
         dash_kwargs["background_callback_manager"] = long_callback_manager
@@ -215,46 +217,48 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         Component
             Page layout component
         """
-        if pathname == '/faq':
+        normalized_pathname = strip_base_path(pathname)
+
+        if normalized_pathname == '/faq':
             # FAQ page
             return create_faq_page()
-        elif pathname == '/regulatory':
+        elif normalized_pathname == '/regulatory':
             # Regulatory reference page
             return create_regulatory_page()
-        elif pathname == '/help/contact' or pathname == '/contact':
+        elif normalized_pathname == '/help/contact' or normalized_pathname == '/contact':
             # Contact/Help page
             return create_contact_page()
-        elif pathname == '/help/user-guide' or pathname == '/user-guide':
+        elif normalized_pathname == '/help/user-guide' or normalized_pathname == '/user-guide':
             # User Guide page
             return create_user_guide_page()
-        elif pathname == '/methods/overview':
+        elif normalized_pathname == '/methods/overview':
             # Scientific Methods Overview page
             return create_scientific_methods_page()
-        elif pathname == '/methods':
+        elif normalized_pathname == '/methods':
             # Methods page
             return create_methods_page()
-        elif pathname == '/documentation':
+        elif normalized_pathname == '/documentation':
             # Documentation page
             return create_documentation_page()
-        elif pathname == '/how-to-cite':
+        elif normalized_pathname == '/how-to-cite':
             # How to Cite page
             return create_how_to_cite_page()
-        elif pathname == '/schemas':
+        elif normalized_pathname == '/schemas':
             # Database Schemas index page
             return create_schemas_index_page()
-        elif pathname == '/schemas/biorempp':
+        elif normalized_pathname == '/schemas/biorempp':
             # BioRemPP schema page
             return create_biorempp_schema_page()
-        elif pathname == '/schemas/hadeg':
+        elif normalized_pathname == '/schemas/hadeg':
             # HADEG schema page
             return create_hadeg_schema_page()
-        elif pathname == '/schemas/kegg':
+        elif normalized_pathname == '/schemas/kegg':
             # KEGG schema page
             return create_kegg_schema_page()
-        elif pathname == '/schemas/toxcsm':
+        elif normalized_pathname == '/schemas/toxcsm':
             # ToxCSM schema page
             return create_toxcsm_schema_page()
-        elif pathname == '/results':
+        elif normalized_pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
                 return dbc.Container([
@@ -276,7 +280,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                                         html.I(className="fas fa-home me-2"),
                                         "Go to Homepage"
                                     ],
-                                    href="/",
+                                    href=app_path("/"),
                                     color="primary"
                                 )
                             ])
@@ -409,7 +413,6 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         logger.info("[OK] Observability disabled")
 
     # Add static file route for example dataset download
-    @app.server.route('/data/<filename>')
     def serve_data_files(filename):
         """
         Serve static data files (e.g., example datasets) for download.
@@ -435,7 +438,26 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             logger.warning("Allowlisted public data file not found on disk")
             return {"error": "File not found"}, 404
 
-    logger.info("[OK] Static data file route registered (/data/<filename>)")
+    root_data_route = "/data/<filename>"
+    app.server.add_url_rule(
+        root_data_route,
+        endpoint="serve_public_data_root",
+        view_func=serve_data_files,
+    )
+
+    prefixed_data_route = app_path("/data/<filename>")
+    if prefixed_data_route != root_data_route:
+        app.server.add_url_rule(
+            prefixed_data_route,
+            endpoint="serve_public_data_prefixed",
+            view_func=serve_data_files,
+        )
+        logger.info(
+            "[OK] Static data file routes registered "
+            f"({root_data_route}, {prefixed_data_route})"
+        )
+    else:
+        logger.info(f"[OK] Static data file route registered ({root_data_route})")
 
     logger.info("\n" + "=" * 80)
     logger.info("[OK] APPLICATION INITIALIZED SUCCESSFULLY")

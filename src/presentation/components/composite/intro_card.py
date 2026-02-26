@@ -2,6 +2,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from .info_modal import create_info_modal
+from src.presentation.routing import app_path
 
 
 def _create_reviewer_disclaimer_button_inline():
@@ -83,7 +84,7 @@ def create_intro_card() -> html.Div:
                                 html.I(className="fas fa-quote-right me-2"),
                                 "How to Cite",
                             ],
-                            href="/how-to-cite",
+                            href=app_path("/how-to-cite"),
                             color="success",
                             outline=True,
                             size="sm",
@@ -109,7 +110,7 @@ def create_intro_card() -> html.Div:
                 [
                     dbc.Col(
                         html.Img(
-                            src="/assets/BIOREMPP_LOGO.png",
+                            src=app_path("/assets/BIOREMPP_LOGO.png"),
                             style={"maxWidth": "100%", "height": "auto"},
                             alt="BioRemPP Logo",
                         ),

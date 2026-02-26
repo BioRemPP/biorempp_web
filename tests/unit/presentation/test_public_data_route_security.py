@@ -45,3 +45,14 @@ def test_public_data_route_blocks_suspicious_filename(monkeypatch):
 
     assert response.status_code == 404
     assert response.get_json() == {"error": "File not found"}
+
+
+def test_public_data_route_supports_prefixed_base_path(monkeypatch):
+    """Prefixed base path should expose the same allowlisted download route."""
+    monkeypatch.setattr(biorempp_app.settings, "URL_BASE_PATH", "/biorempp/")
+    client = _build_test_client(monkeypatch, ("exemple_dataset.txt",))
+
+    response = client.get("/biorempp/data/exemple_dataset.txt")
+
+    assert response.status_code == 200
+    assert "attachment" in response.headers.get("Content-Disposition", "").lower()

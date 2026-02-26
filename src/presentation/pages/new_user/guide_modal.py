@@ -7,6 +7,8 @@ Provides a guided walkthrough for first-time users, following the header navigat
 import dash_bootstrap_components as dbc
 from dash import html
 
+from ...routing import app_path
+
 
 def create_new_user_guide_button():
     """
@@ -69,7 +71,7 @@ def create_new_user_guide_button():
                                     html.I(className="fas fa-book-open me-2"),
                                     "Open User Guide",
                                 ],
-                                href="/user-guide",
+                                href=app_path("/user-guide"),
                                 color="secondary",
                                 outline=True,
                                 size="sm",
@@ -140,7 +142,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Explore Regulatory Frameworks",
                                 ],
-                                href="/regulatory",
+                                href=app_path("/regulatory"),
                                 color="primary",
                                 outline=True,
                                 size="sm",
@@ -185,7 +187,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Read User Guide",
                                 ],
-                                href="/user-guide",
+                                href=app_path("/user-guide"),
                                 color="success",
                                 outline=True,
                                 size="sm",
@@ -219,7 +221,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Explore Methods",
                                 ],
-                                href="/methods",
+                                href=app_path("/methods"),
                                 color="info",
                                 outline=True,
                                 size="sm",
@@ -288,7 +290,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Browse FAQ",
                                 ],
-                                href="/faq",
+                                href=app_path("/faq"),
                                 color="secondary",
                                 outline=True,
                                 size="sm",
@@ -322,7 +324,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-paper-plane me-2"),
                                     "Contact Us",
                                 ],
-                                href="/contact",
+                                href=app_path("/contact"),
                                 color="dark",
                                 outline=True,
                                 size="sm",

@@ -32,6 +32,7 @@ All settings can be overridden with environment variables:
 - BIOREMPP_HOT_RELOAD: Enable hot reload (True/False)
 - BIOREMPP_HOST: Server host (default: 127.0.0.1)
 - BIOREMPP_PORT: Server port (default: 8050)
+- BIOREMPP_URL_BASE_PATH: Base URL path prefix (default: /)
 - BIOREMPP_LOG_LEVEL: Logging level (DEBUG/INFO/WARNING/ERROR)
 - BIOREMPP_LOG_FILE: Log file path (optional)
 - BIOREMPP_WORKERS: Number of Gunicorn workers (production)
@@ -348,6 +349,10 @@ class Settings:
 
     PORT: int = field(
         default_factory=lambda: _get_int("BIOREMPP_PORT", 8050)
+    )
+
+    URL_BASE_PATH: str = field(
+        default_factory=lambda: os.getenv("BIOREMPP_URL_BASE_PATH", "/")
     )
 
     # ========================================================================
@@ -726,6 +731,7 @@ class Settings:
         """Post-initialization validation and setup."""
         # Normalize environment
         self.ENV = self.ENV.lower()
+        self.URL_BASE_PATH = self._normalize_url_base_path(self.URL_BASE_PATH)
 
         # Calculate byte size for upload limit
         self.UPLOAD_MAX_SIZE_BYTES = self.UPLOAD_MAX_SIZE_MB * 1024 * 1024
@@ -974,6 +980,63 @@ class Settings:
             return False
         return normalized_name in self.PUBLIC_DATA_ALLOWED_FILES
 
+    @staticmethod
+    def _normalize_url_base_path(path: str) -> str:
+        """Normalize URL base path to '/' or '/prefix/' format."""
+        candidate = (path or "/").strip()
+        if not candidate:
+            return "/"
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate == "/":
+            return "/"
+        return f"/{candidate.strip('/')}/"
+
+    def build_app_path(self, path: str = "/") -> str:
+        """Build an application-internal path honoring URL_BASE_PATH."""
+        candidate = (path or "").strip()
+        if not candidate:
+            return self.URL_BASE_PATH
+        if candidate.startswith(("http://", "https://", "mailto:", "tel:", "#")):
+            return candidate
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate != "/" and candidate.endswith("/"):
+            candidate = candidate.rstrip("/")
+
+        base = self.URL_BASE_PATH
+        if base == "/":
+            return candidate
+
+        base_without_trailing = base.rstrip("/")
+        if candidate == base_without_trailing or candidate.startswith(base):
+            return candidate
+        if candidate == "/":
+            return base
+        return f"{base_without_trailing}{candidate}"
+
+    def strip_base_path(self, pathname: Optional[str]) -> str:
+        """Strip URL_BASE_PATH prefix from pathname for internal route matching."""
+        candidate = (pathname or "").strip()
+        if not candidate:
+            return "/"
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate != "/" and candidate.endswith("/"):
+            candidate = candidate.rstrip("/")
+
+        base = self.URL_BASE_PATH
+        if base == "/":
+            return candidate or "/"
+
+        base_without_trailing = base.rstrip("/")
+        if candidate == base_without_trailing or candidate == base:
+            return "/"
+        if candidate.startswith(base):
+            stripped = candidate[len(base) - 1 :]
+            return stripped or "/"
+        return candidate
+
     # ========================================================================
     # PROPERTIES
     # ========================================================================
@@ -1040,6 +1103,7 @@ class Settings:
             extra={
                 "observability_enabled": self.OBSERVABILITY_ENABLED,
                 "observability_metrics_path": self.OBSERVABILITY_METRICS_PATH,
+                "url_base_path": self.URL_BASE_PATH,
                 "trust_proxy_headers": self.TRUST_PROXY_HEADERS,
                 "trusted_proxy_cidrs": ",".join(self.TRUSTED_PROXY_CIDRS),
                 "public_data_allowed_files": ",".join(self.PUBLIC_DATA_ALLOWED_FILES),
@@ -1147,6 +1211,7 @@ class Settings:
             "Observability:",
             f"  Enabled: {self.OBSERVABILITY_ENABLED}",
             f"  Metrics Path: {self.OBSERVABILITY_METRICS_PATH}",
+            f"  URL Base Path: {self.URL_BASE_PATH}",
             f"  Trust Proxy Headers: {self.TRUST_PROXY_HEADERS}",
             f"  Trusted Proxy CIDRs: {', '.join(self.TRUSTED_PROXY_CIDRS)}",
             f"  Public Data Allowlist: {', '.join(self.PUBLIC_DATA_ALLOWED_FILES)}",

@@ -21,6 +21,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from ..components.base import create_footer, create_header
+from ..routing import app_path
 
 
 def create_why_cite_section() -> html.Div:
@@ -610,7 +611,7 @@ def create_contact_section() -> html.Div:
                     html.Strong("Citation Questions? "),
                     "For clarification regarding citation practices or attribution requirements, "
                     "please contact the BioRemPP team via the institutional email listed on the ",
-                    html.A("Contact page", href="/contact", className="alert-link"),
+                    html.A("Contact page", href=app_path("/contact"), className="alert-link"),
                     ".",
                 ],
                 color="info",

@@ -1,11 +1,12 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+from src.presentation.routing import app_path
 from ..base import create_button, create_upload
 
 
 def create_upload_panel() -> dbc.Card:
-    example_download_href = "/data/exemple_dataset.txt"
+    example_download_href = app_path("/data/exemple_dataset.txt")
 
     instructions = html.Div(
         [

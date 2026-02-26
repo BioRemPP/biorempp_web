@@ -20,6 +20,8 @@ from typing import Any, Dict, List
 import dash_bootstrap_components as dbc
 from dash import html
 
+from src.presentation.routing import app_path
+
 
 def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
     """
@@ -68,19 +70,19 @@ def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
             "title": "Exemple Dataset",
             "description": "Download and explore our example dataset",
             "icon": "fas fa-database",
-            "url": "/help/samples",
+            "url": app_path("/help/samples"),
         },
         {
             "title": "Contact Support",
             "description": "Get help from our team",
             "icon": "fas fa-envelope",
-            "url": "/help/contact",
+            "url": app_path("/help/contact"),
         },
         {
             "title": "Publications and Awards",
             "description": "Scientific publications and recognitions",
             "icon": "fas fa-trophy",
-            "url": "/help/publications",
+            "url": app_path("/help/publications"),
         },
     ]
 

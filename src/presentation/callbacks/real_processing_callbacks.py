@@ -23,6 +23,7 @@ from src.presentation.components.composite.processing_feedback import (
     create_processing_error_alert,
     create_validation_summary,
 )
+from src.presentation.routing import app_path
 from src.presentation.services import DataProcessingService, job_resume_service
 from src.shared.exceptions import (
     CircuitBreakerOpenError,
@@ -733,7 +734,7 @@ def register_real_processing_callbacks(app):
         """
         if not n_clicks:
             raise PreventUpdate
-        return "/results"
+        return app_path("/results")
 
     logger.info("[OK] Real processing callbacks registered successfully")
     logger.info(

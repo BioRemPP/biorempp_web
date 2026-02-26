@@ -1,6 +1,8 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+from src.presentation.routing import app_path
+
 
 def create_info_modal() -> dbc.Modal:
     """
@@ -422,7 +424,7 @@ def create_info_modal() -> dbc.Modal:
                 ],
                 color="primary",
                 outline=True,
-                href="/methods",  # Link to methods page
+                href=app_path("/methods"),  # Link to methods page
                 className="mb-2",
             ),
             html.P(
