@@ -33,7 +33,7 @@ from src.shared.exceptions import (
     StageProcessingError,
     ValidationError,
 )
-from src.shared.logging import get_logger
+from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
     PROCESSING_DURATION_SECONDS,
     RESUME_PERSIST_DURATION_SECONDS,
@@ -50,12 +50,9 @@ _RESUME_SAVE_TIMEOUT_SECONDS = max(
 )
 
 
-def _mask_job_id(job_id: str) -> str:
-    """Return redacted job identifier for logs."""
-    normalized = (job_id or "").strip().upper()
-    if len(normalized) < 6:
-        return "***"
-    return f"{normalized[:20]}******"
+def _job_ref(job_id: str) -> str:
+    """Return deterministic, redacted job reference for logs."""
+    return build_log_ref(job_id, namespace="job")
 
 
 def get_data_service():
@@ -111,7 +108,7 @@ def _persist_resume_payload_with_timeout(
         logger.warning(
             "Resume payload persistence timed out",
             extra={
-                "job_ref": _mask_job_id(job_id),
+                "job_ref": _job_ref(job_id),
                 "timeout_seconds": timeout_seconds,
             },
         )
@@ -124,7 +121,7 @@ def _persist_resume_payload_with_timeout(
         )
         logger.error(
             "Resume payload persistence failed with unexpected error",
-            extra={"job_ref": _mask_job_id(job_id)},
+            extra={"job_ref": _job_ref(job_id)},
             exc_info=(type(error), error, error.__traceback__),
         )
         return False
@@ -284,7 +281,7 @@ def register_real_processing_callbacks(app):
             logger.info(
                 "Starting data processing",
                 extra={
-                    "job_id": job_id,
+                    "job_ref": _job_ref(job_id),
                     "file_name": file_data.get("filename", "unknown"),
                     "sample_count": file_data.get("sample_count"),
                     "ko_count": file_data.get("ko_count"),
@@ -293,7 +290,7 @@ def register_real_processing_callbacks(app):
             if generated_owner_token:
                 logger.info(
                     "Resume owner token was missing and has been generated for this run",
-                    extra={"job_id": job_id},
+                    extra={"job_ref": _job_ref(job_id)},
                 )
 
             # Process data (all merges happen here)
@@ -387,7 +384,7 @@ def register_real_processing_callbacks(app):
             logger.info(
                 "Resume payload persistence result",
                 extra={
-                    "job_ref": _mask_job_id(persisted_job_id),
+                    "job_ref": _job_ref(persisted_job_id),
                     "resume_saved": resume_saved,
                     "payload_size_bytes": payload_size_bytes,
                     "resume_max_payload_mb": job_resume_service.get_resume_max_payload_mb(),

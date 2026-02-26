@@ -30,6 +30,7 @@ from .handlers import (
     create_console_handler,
     create_rotating_handler,
 )
+from .redaction import build_log_ref
 
 __all__ = [
     # Configuration
@@ -50,4 +51,5 @@ __all__ = [
     "ContextFilter",
     "create_rotating_handler",
     "create_console_handler",
+    "build_log_ref",
 ]

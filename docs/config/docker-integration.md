@@ -23,7 +23,7 @@ BioRemPP uses **Docker Compose profiles** to manage multiple deployment scenario
 |---------|----------|----------|
 | `dev` | biorempp-dev | Local development with hot reload |
 | `prod` | biorempp | Production application server |
-| `nginx` | nginx, certbot | HTTPS reverse proxy with Let's Encrypt |
+| `nginx` | nginx | HTTP reverse proxy (TLS terminated upstream) |
 | `cache` | redis | Caching layer |
 
 ---
@@ -110,7 +110,7 @@ docker compose --profile dev up
 - Multi-worker Gunicorn server
 - No source code mounts (immutable)
 - Resource limits enforced
-- Port 8080 exposed
+- Internal service port `8080` (ingress via nginx)
 
 **Environment variables:**
 ```yaml
@@ -152,7 +152,7 @@ docker compose --profile prod up -d
 
 **Key features:**
 
-- HTTPS termination with Let's Encrypt
+- HTTP reverse proxy (TLS terminated by external institutional ingress)
 - Static file serving
 - WebSocket support for Dash
 - Health check proxying
@@ -161,14 +161,12 @@ docker compose --profile prod up -d
 ```yaml
 DOMAIN: biorempp.example.com
 HTTP_PORT: 80
-HTTPS_PORT: 443
 NGINX_CONFIG: nginx.prod.conf
 ```
 
 **Volumes:**
 
 - `.docker/nginx/${NGINX_CONFIG}:/etc/nginx/conf.d/default.conf:ro` — Configuration
-- `letsencrypt-certs:/etc/letsencrypt:ro` — SSL certificates
 - `./src/assets:/app/src/assets:ro` — Static files
 
 **Start command:**
@@ -220,8 +218,8 @@ docker compose --profile prod --profile cache up -d
 | Service | Internal Port | External Port (Variable) |
 |---------|---------------|--------------------------|
 | biorempp-dev | 8050 | `${DEV_PORT:-8050}` |
-| biorempp | 8080 | `${PROD_PORT:-8080}` |
-| nginx | 80, 443 | `${HTTP_PORT:-80}`, `${HTTPS_PORT:-443}` |
+| biorempp | 8080 | Internal-only (`expose`) |
+| nginx | 80 | `${HTTP_PORT:-80}` |
 | redis | 6379 | `${REDIS_PORT:-6379}` |
 
 ---
@@ -249,7 +247,7 @@ docker compose --profile prod --profile cache up -d
 
 **Checked endpoint:**
 ```bash
-http://${BIOREMPP_HOST}:${BIOREMPP_PORT}/_dash-update-component
+http://${BIOREMPP_HOST}:${BIOREMPP_PORT}/health
 ```
 
 **Health check configuration:**
@@ -279,7 +277,6 @@ healthcheck:
 | `biorempp-logs` | Application logs | Named volume |
 | `biorempp-data` | User uploads, outputs | Named volume |
 | `biorempp-cache` | Diskcache storage | Named volume |
-| `letsencrypt-certs` | SSL certificates | Named volume |
 | `nginx-logs` | Nginx logs | Named volume |
 | `redis-data` | Redis persistence | Named volume |
 

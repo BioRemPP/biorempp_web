@@ -9,7 +9,7 @@ import zlib
 from typing import Any, Optional
 
 from .resume_store import ResumeStore
-from src.shared.logging import get_logger
+from src.shared.logging import build_log_ref, get_logger
 
 logger = get_logger(__name__)
 
@@ -165,6 +165,7 @@ class RedisResumeStore(ResumeStore):
         return payload if isinstance(payload, dict) else None
 
     def set(self, key: str, value: dict, ttl_seconds: int) -> bool:
+        cache_ref = build_log_ref(key, namespace="cache")
         full_key = self._full_key(key)
         try:
             compressed_payload = self._serialize(value)
@@ -177,18 +178,19 @@ class RedisResumeStore(ResumeStore):
         except Exception:
             logger.exception(
                 "Redis resume set failed",
-                extra={"cache_key": full_key},
+                extra={"cache_ref": cache_ref},
             )
             return False
 
     def get(self, key: str) -> Optional[dict]:
+        cache_ref = build_log_ref(key, namespace="cache")
         full_key = self._full_key(key)
         try:
             raw_value = self._client.get(full_key)
         except Exception:
             logger.exception(
                 "Redis resume get failed",
-                extra={"cache_key": full_key},
+                extra={"cache_ref": cache_ref},
             )
             return None
         return self._deserialize(raw_value)

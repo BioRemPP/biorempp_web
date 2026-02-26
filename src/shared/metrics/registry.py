@@ -288,8 +288,14 @@ WORKERS_ACTIVE = _metric(
 WORKER_REQUESTS_TOTAL = _metric(
     Counter,
     "biorempp_worker_requests_total",
-    "Total requests handled by worker process",
-    ["worker_pid"],
+    "Total requests handled by worker processes",
+)
+
+WORKER_MEMORY_BYTES = _metric(
+    Gauge,
+    "biorempp_worker_memory_bytes",
+    "Resident memory size in bytes for live worker processes",
+    multiprocess_mode="liveall",
 )
 
 WORKER_RESTARTS_TOTAL = _metric(
@@ -323,5 +329,6 @@ __all__ = [
     "RESUME_PERSIST_DURATION_SECONDS",
     "WORKERS_ACTIVE",
     "WORKER_REQUESTS_TOTAL",
+    "WORKER_MEMORY_BYTES",
     "WORKER_RESTARTS_TOTAL",
 ]

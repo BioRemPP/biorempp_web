@@ -20,6 +20,11 @@ import shutil
 import sys
 from pathlib import Path
 
+try:  # Unix-like systems only
+    import resource
+except Exception:  # pragma: no cover - Windows compatibility
+    resource = None
+
 project_root = Path(__file__).resolve().parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
@@ -53,7 +58,12 @@ def _prepare_prometheus_multiproc_dir() -> None:
 
 _prepare_prometheus_multiproc_dir()
 
-from src.shared.metrics import WORKERS_ACTIVE, WORKER_REQUESTS_TOTAL, WORKER_RESTARTS_TOTAL
+from src.shared.metrics import (
+    WORKERS_ACTIVE,
+    WORKER_MEMORY_BYTES,
+    WORKER_REQUESTS_TOTAL,
+    WORKER_RESTARTS_TOTAL,
+)
 
 try:
     from prometheus_client import multiprocess as prom_multiprocess
@@ -165,6 +175,27 @@ def _cleanup_multiproc_dir(multiproc_dir: Path) -> int:
     return removed_entries
 
 
+def _read_worker_memory_bytes() -> float | None:
+    """
+    Read current worker resident memory size in bytes.
+
+    On Linux ru_maxrss is reported in KiB.
+    On macOS ru_maxrss is reported in bytes.
+    """
+    if resource is None:
+        return None
+    try:
+        usage = resource.getrusage(resource.RUSAGE_SELF)
+        rss = float(usage.ru_maxrss)
+        if rss <= 0:
+            return None
+        if sys.platform == "darwin":
+            return rss
+        return rss * 1024.0
+    except Exception:
+        return None
+
+
 def on_starting(server):
     """
     Called just before the master process is initialized.
@@ -253,6 +284,9 @@ def post_fork(server, worker):
     Post-fork hook.
     """
     WORKERS_ACTIVE.set(1)
+    memory_bytes = _read_worker_memory_bytes()
+    if memory_bytes is not None:
+        WORKER_MEMORY_BYTES.set(memory_bytes)
     print(f"Worker spawned (pid: {worker.pid})")
 
 
@@ -273,7 +307,10 @@ def pre_request(worker, req):
     """
     # Log request start time for performance monitoring
     worker.log.debug(f"{req.method} {req.path}")
-    WORKER_REQUESTS_TOTAL.labels(worker_pid=str(worker.pid)).inc()
+    WORKER_REQUESTS_TOTAL.inc()
+    memory_bytes = _read_worker_memory_bytes()
+    if memory_bytes is not None:
+        WORKER_MEMORY_BYTES.set(memory_bytes)
     try:
         content_length_raw = req.headers.get("Content-Length", "0")
         content_length = int(content_length_raw)

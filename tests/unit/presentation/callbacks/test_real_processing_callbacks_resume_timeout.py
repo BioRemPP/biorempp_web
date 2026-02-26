@@ -82,3 +82,36 @@ def test_persist_resume_payload_with_timeout_returns_false_on_error(monkeypatch)
     )
 
     assert saved is False
+
+
+def test_persist_resume_payload_logs_redacted_job_ref_on_error(monkeypatch):
+    """Error logs should include only redacted job_ref, not raw job_id."""
+    monkeypatch.setattr(
+        real_processing_callbacks,
+        "job_resume_service",
+        _ErrorResumeService(),
+    )
+    job_id = "BRP-20260225-123459-ABCDEF"
+    captured_errors = []
+
+    def _fake_error(message, *args, **kwargs):
+        captured_errors.append({"message": message, "kwargs": kwargs})
+
+    monkeypatch.setattr(real_processing_callbacks.logger, "error", _fake_error)
+
+    saved = real_processing_callbacks._persist_resume_payload_with_timeout(
+        job_id=job_id,
+        payload={"metadata": {}},
+        owner_token="token-d",
+        ttl_seconds=60,
+        timeout_seconds=0.1,
+    )
+
+    assert saved is False
+    assert captured_errors
+    log_entry = captured_errors[0]
+    extra = log_entry["kwargs"].get("extra", {})
+    assert log_entry["message"] == "Resume payload persistence failed with unexpected error"
+    assert extra.get("job_ref", "").startswith("job_")
+    assert "job_id" not in extra
+    assert job_id not in str(extra)

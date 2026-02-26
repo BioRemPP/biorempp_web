@@ -5,6 +5,7 @@ from typing import Any
 
 import pytest
 from dash import no_update
+from flask import Flask
 
 from src.presentation.callbacks import job_resume_callbacks
 from src.presentation.services.job_resume_service import JobResumeService
@@ -267,3 +268,75 @@ def test_resolve_resume_request_unblocks_after_backoff_window(
     assert data_update is no_update
     assert pathname_update is no_update
     assert "not found or expired" in _flatten_text(status_component)
+
+
+def test_get_request_ip_ignores_xff_when_proxy_trust_disabled(monkeypatch):
+    """When proxy trust is disabled, callback must use REMOTE_ADDR only."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", False)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: True,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "172.18.0.5"
+
+
+def test_get_request_ip_uses_xff_from_trusted_proxy(monkeypatch):
+    """Use first valid XFF address only when sender proxy is trusted."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda ip: ip == "172.18.0.5",
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10, 10.0.0.2"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "203.0.113.10"
+
+
+def test_get_request_ip_ignores_xff_from_untrusted_proxy(monkeypatch):
+    """If REMOTE_ADDR is not trusted, XFF must be ignored."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: False,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_base={"REMOTE_ADDR": "198.51.100.4"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "198.51.100.4"
+
+
+def test_get_request_ip_falls_back_for_malformed_xff(monkeypatch):
+    """Malformed XFF content must fall back to REMOTE_ADDR."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: True,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "not-an-ip, ???"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "172.18.0.5"

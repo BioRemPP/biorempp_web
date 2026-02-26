@@ -34,34 +34,34 @@ groups:
   - name: biorempp_resume_alerts
     rules:
       - alert: BioRemPPResumeNotFoundSpike
-        expr: increase(biorempp_resume_load_attempts_total{outcome="not_found"}[5m]) > 50
-        for: 2m
+        expr: increase(biorempp_resume_load_attempts_total{outcome="not_found"}[5m]) > 10
+        for: 1m
         labels:
           severity: warning
           service: biorempp
         annotations:
           summary: "Resume not_found spike"
-          description: "More than 50 not_found resume loads were observed in 5 minutes."
+          description: "More than 10 not_found resume loads were observed in 5 minutes."
 
       - alert: BioRemPPResumeTokenMismatchSpike
-        expr: increase(biorempp_resume_load_attempts_total{outcome="token_mismatch"}[5m]) > 20
-        for: 2m
+        expr: increase(biorempp_resume_load_attempts_total{outcome="token_mismatch"}[5m]) > 5
+        for: 1m
         labels:
           severity: warning
           service: biorempp
         annotations:
           summary: "Resume token mismatch spike"
-          description: "More than 20 token_mismatch events were observed in 5 minutes."
+          description: "More than 5 token_mismatch events were observed in 5 minutes."
 
       - alert: BioRemPPResumeSaveFailedSpike
-        expr: increase(biorempp_resume_save_total{outcome="save_failed"}[5m]) > 5
-        for: 2m
+        expr: increase(biorempp_resume_save_total{outcome="save_failed"}[5m]) > 2
+        for: 1m
         labels:
-          severity: warning
+          severity: critical
           service: biorempp
         annotations:
           summary: "Resume save_failed spike"
-          description: "More than 5 save_failed resume events were observed in 5 minutes."
+          description: "More than 2 save_failed resume events were observed in 5 minutes."
 
   - name: biorempp_worker_alerts
     rules:

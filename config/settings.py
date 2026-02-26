@@ -68,14 +68,22 @@ All settings can be overridden with environment variables:
 - BIOREMPP_RESUME_REDIS_KEY_PREFIX: Resume Redis key prefix
 - BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: Resume Redis compression level (1-9)
 - BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: Resume Redis socket timeout
+- BIOREMPP_TRUST_PROXY_HEADERS: Trust X-Forwarded-For only from trusted proxies
+- BIOREMPP_TRUSTED_PROXY_CIDRS: CSV of trusted reverse-proxy CIDRs
+- BIOREMPP_PUBLIC_DATA_ALLOWED_FILES: CSV allowlist for /data/<filename>
+- BIOREMPP_LOG_REF_SALT: Optional dedicated salt for log identifier redaction
+- BIOREMPP_LOG_REF_LENGTH: Length of redacted log references (default: 12)
 - BIOREMPP_LIMIT_REQUEST_LINE: Gunicorn max request line length
 - BIOREMPP_LIMIT_REQUEST_FIELD_SIZE: Gunicorn max header field size
 - BIOREMPP_LIMIT_REQUEST_FIELDS: Gunicorn max header field count
 - BIOREMPP_MAX_REQUEST_BODY_BYTES: Observability threshold for request body size
+- SECRET_KEY: Secret key for cryptographic/session operations (required in production)
 """
 
+import ipaddress
 import logging
 import os
+import secrets
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal, Optional
@@ -185,6 +193,38 @@ def get_app_name() -> str:
 # =============================================================================
 APP_NAME: str = get_app_name()
 APP_VERSION: str = get_app_version()
+
+_INSECURE_SECRET_PLACEHOLDERS = frozenset(
+    {
+        "DEV-SECRET-KEY-NOT-SECURE",
+        "DEV-SECRET-KEY-NOT-SECURE-FOR-DEVELOPMENT-ONLY",
+        "CHANGE-ME-IN-PRODUCTION-USE-SECRETS-TOKEN-HEX",
+        "REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS",
+        "REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX",
+        "CHANGE-THIS-REDIS-PASSWORD",
+        "CHANGE-THIS-GRAFANA-PASSWORD",
+        "__SET_IN_PROD__",
+    }
+)
+
+_DEFAULT_TRUSTED_PROXY_CIDRS = ("127.0.0.1/32", "::1/128")
+_DEFAULT_PUBLIC_DATA_ALLOWED_FILES = ("exemple_dataset.txt",)
+_DEFAULT_LOG_REF_LENGTH = 12
+_MIN_LOG_REF_LENGTH = 8
+_MAX_LOG_REF_LENGTH = 24
+
+
+def _is_insecure_secret(value: Optional[str], min_length: int = 1) -> bool:
+    """Return True when secret value is empty, too short, or placeholder-like."""
+    normalized = (value or "").strip()
+    if len(normalized) < min_length:
+        return True
+    normalized_upper = normalized.upper()
+    if normalized_upper in _INSECURE_SECRET_PLACEHOLDERS:
+        return True
+    if normalized_upper.startswith("CHANGE-THIS-"):
+        return True
+    return False
 
 
 # =============================================================================
@@ -344,6 +384,20 @@ class Settings:
         default_factory=lambda: os.getenv("BIOREMPP_LOG_FILE")
     )
 
+    SECRET_KEY: str = field(
+        default_factory=lambda: os.getenv("SECRET_KEY", "").strip()
+    )
+
+    LOG_REF_SALT: str = field(
+        default_factory=lambda: os.getenv("BIOREMPP_LOG_REF_SALT", "").strip()
+    )
+
+    LOG_REF_LENGTH: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_LOG_REF_LENGTH", _DEFAULT_LOG_REF_LENGTH
+        )
+    )
+
     # ========================================================================
     # PATHS
     # ========================================================================
@@ -391,6 +445,43 @@ class Settings:
             "BIOREMPP_OBSERVABILITY_METRICS_PATH",
             "/metrics",
         )
+    )
+
+    TRUST_PROXY_HEADERS: bool = field(
+        default_factory=lambda: _get_bool("BIOREMPP_TRUST_PROXY_HEADERS", False)
+    )
+
+    TRUSTED_PROXY_CIDRS: tuple[str, ...] = field(
+        default_factory=lambda: tuple(
+            part.strip()
+            for part in os.getenv(
+                "BIOREMPP_TRUSTED_PROXY_CIDRS",
+                ",".join(_DEFAULT_TRUSTED_PROXY_CIDRS),
+            ).split(",")
+            if part.strip()
+        )
+    )
+
+    PUBLIC_DATA_ALLOWED_FILES: tuple[str, ...] = field(
+        default_factory=lambda: tuple(
+            part.strip()
+            for part in os.getenv(
+                "BIOREMPP_PUBLIC_DATA_ALLOWED_FILES",
+                ",".join(_DEFAULT_PUBLIC_DATA_ALLOWED_FILES),
+            ).split(",")
+            if part.strip()
+        )
+    )
+
+    _trusted_proxy_networks: tuple[object, ...] = field(
+        init=False,
+        repr=False,
+        default_factory=tuple,
+    )
+    _log_ref_salt_source: str = field(
+        init=False,
+        repr=False,
+        default="unset",
     )
 
     # ========================================================================
@@ -492,10 +583,10 @@ class Settings:
     )
 
     RESUME_REDIS_PASSWORD: str = field(
-        default_factory=lambda: os.getenv(
-            "BIOREMPP_RESUME_REDIS_PASSWORD",
-            os.getenv("REDIS_PASSWORD", ""),
-        )
+        default_factory=lambda: (
+            os.getenv("BIOREMPP_RESUME_REDIS_PASSWORD")
+            or os.getenv("REDIS_PASSWORD", "")
+        ).strip()
     )
 
     RESUME_REDIS_KEY_PREFIX: str = field(
@@ -673,6 +764,60 @@ class Settings:
             )
             self.OBSERVABILITY_METRICS_PATH = "/metrics"
 
+        normalized_proxy_cidrs: list[str] = []
+        trusted_networks: list[object] = []
+        for cidr in self.TRUSTED_PROXY_CIDRS:
+            cidr_candidate = (cidr or "").strip()
+            if not cidr_candidate:
+                continue
+            try:
+                network = ipaddress.ip_network(cidr_candidate, strict=False)
+            except ValueError:
+                print(
+                    "[WARNING] Ignoring invalid BIOREMPP_TRUSTED_PROXY_CIDRS "
+                    f"entry: {cidr_candidate}"
+                )
+                continue
+            normalized_proxy_cidrs.append(str(network))
+            trusted_networks.append(network)
+
+        if not trusted_networks:
+            normalized_proxy_cidrs = list(_DEFAULT_TRUSTED_PROXY_CIDRS)
+            trusted_networks = [
+                ipaddress.ip_network(cidr, strict=False)
+                for cidr in _DEFAULT_TRUSTED_PROXY_CIDRS
+            ]
+        self.TRUSTED_PROXY_CIDRS = tuple(normalized_proxy_cidrs)
+        self._trusted_proxy_networks = tuple(trusted_networks)
+
+        allowed_public_files: list[str] = []
+        seen_public_files: set[str] = set()
+        for raw_name in self.PUBLIC_DATA_ALLOWED_FILES:
+            candidate = (raw_name or "").strip()
+            if not candidate:
+                continue
+            if "/" in candidate or "\\" in candidate or ".." in candidate:
+                print(
+                    "[WARNING] Ignoring unsafe BIOREMPP_PUBLIC_DATA_ALLOWED_FILES "
+                    f"entry: {candidate}"
+                )
+                continue
+            normalized_name = Path(candidate).name
+            if normalized_name != candidate:
+                print(
+                    "[WARNING] Ignoring non-basename PUBLIC_DATA_ALLOWED_FILES "
+                    f"entry: {candidate}"
+                )
+                continue
+            if normalized_name in seen_public_files:
+                continue
+            seen_public_files.add(normalized_name)
+            allowed_public_files.append(normalized_name)
+
+        if not allowed_public_files:
+            allowed_public_files = list(_DEFAULT_PUBLIC_DATA_ALLOWED_FILES)
+        self.PUBLIC_DATA_ALLOWED_FILES = tuple(allowed_public_files)
+
         if self.RESUME_BACKEND not in ("diskcache", "redis"):
             print(
                 "[WARNING] Invalid BIOREMPP_RESUME_BACKEND, using 'diskcache'"
@@ -727,6 +872,29 @@ class Settings:
             self.RESUME_REDIS_KEY_PREFIX.strip() or "biorempp:resume:"
         )
 
+        self.LOG_REF_LENGTH = min(
+            max(int(self.LOG_REF_LENGTH), _MIN_LOG_REF_LENGTH),
+            _MAX_LOG_REF_LENGTH,
+        )
+
+        configured_log_ref_salt = self.LOG_REF_SALT.strip()
+        if not _is_insecure_secret(configured_log_ref_salt, min_length=16):
+            self.LOG_REF_SALT = configured_log_ref_salt
+            self._log_ref_salt_source = "env"
+        elif not _is_insecure_secret(self.SECRET_KEY, min_length=16):
+            self.LOG_REF_SALT = self.SECRET_KEY.strip()
+            self._log_ref_salt_source = "secret_key"
+        elif self.is_development:
+            self.LOG_REF_SALT = secrets.token_hex(32)
+            self._log_ref_salt_source = "ephemeral_dev"
+        else:
+            # Production validation will fail when SECRET_KEY is insecure.
+            self.LOG_REF_SALT = self.SECRET_KEY.strip()
+            self._log_ref_salt_source = "secret_key"
+
+        if self.is_production:
+            self._validate_production_security()
+
         self.GUNICORN_LIMIT_REQUEST_LINE = max(self.GUNICORN_LIMIT_REQUEST_LINE, 512)
         self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE = max(
             self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE, 512
@@ -766,6 +934,45 @@ class Settings:
             if self.LOG_LEVEL == "DEBUG":
                 print("[WARNING] LOG_LEVEL changed to WARNING for production")
                 self.LOG_LEVEL = "WARNING"
+
+    def _validate_production_security(self) -> None:
+        """Fail fast on insecure secret configuration in production."""
+        if _is_insecure_secret(self.SECRET_KEY, min_length=32):
+            raise ValueError(
+                "Invalid production SECRET_KEY: missing, placeholder, or too short "
+                "(minimum 32 chars)."
+            )
+
+        if self.RESUME_BACKEND == "redis" and _is_insecure_secret(
+            self.RESUME_REDIS_PASSWORD, min_length=12
+        ):
+            raise ValueError(
+                "Invalid production Redis password for resume backend: set "
+                "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
+            )
+
+    def is_trusted_proxy_ip(self, ip: str) -> bool:
+        """Return True when IP address belongs to configured trusted proxy CIDRs."""
+        candidate = (ip or "").strip()
+        if not candidate:
+            return False
+        try:
+            ip_obj = ipaddress.ip_address(candidate)
+        except ValueError:
+            return False
+        return any(ip_obj in network for network in self._trusted_proxy_networks)
+
+    def is_public_data_file_allowed(self, filename: str) -> bool:
+        """Return True when filename is in public allowlist and path-safe."""
+        candidate = (filename or "").strip()
+        if not candidate:
+            return False
+        if "/" in candidate or "\\" in candidate or ".." in candidate:
+            return False
+        normalized_name = Path(candidate).name
+        if normalized_name != candidate:
+            return False
+        return normalized_name in self.PUBLIC_DATA_ALLOWED_FILES
 
     # ========================================================================
     # PROPERTIES
@@ -833,6 +1040,11 @@ class Settings:
             extra={
                 "observability_enabled": self.OBSERVABILITY_ENABLED,
                 "observability_metrics_path": self.OBSERVABILITY_METRICS_PATH,
+                "trust_proxy_headers": self.TRUST_PROXY_HEADERS,
+                "trusted_proxy_cidrs": ",".join(self.TRUSTED_PROXY_CIDRS),
+                "public_data_allowed_files": ",".join(self.PUBLIC_DATA_ALLOWED_FILES),
+                "log_ref_length": self.LOG_REF_LENGTH,
+                "log_ref_salt_source": self._log_ref_salt_source,
             },
         )
         logger.info(
@@ -935,6 +1147,11 @@ class Settings:
             "Observability:",
             f"  Enabled: {self.OBSERVABILITY_ENABLED}",
             f"  Metrics Path: {self.OBSERVABILITY_METRICS_PATH}",
+            f"  Trust Proxy Headers: {self.TRUST_PROXY_HEADERS}",
+            f"  Trusted Proxy CIDRs: {', '.join(self.TRUSTED_PROXY_CIDRS)}",
+            f"  Public Data Allowlist: {', '.join(self.PUBLIC_DATA_ALLOWED_FILES)}",
+            f"  Log Ref Length: {self.LOG_REF_LENGTH}",
+            f"  Log Ref Salt Source: {self._log_ref_salt_source}",
             "",
             "Resume Configuration:",
             f"  Backend: {self.RESUME_BACKEND}",

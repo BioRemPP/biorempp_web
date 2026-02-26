@@ -8,7 +8,7 @@ from typing import Optional
 import diskcache
 
 from .resume_store import ResumeStore
-from src.shared.logging import get_logger
+from src.shared.logging import build_log_ref, get_logger
 
 logger = get_logger(__name__)
 
@@ -29,23 +29,25 @@ class DiskcacheResumeStore(ResumeStore):
         return "diskcache"
 
     def set(self, key: str, value: dict, ttl_seconds: int) -> bool:
+        cache_ref = build_log_ref(key, namespace="cache")
         try:
             self._cache.set(key, value, expire=max(int(ttl_seconds), 1))
             return True
         except Exception:
             logger.exception(
                 "Diskcache resume set failed",
-                extra={"cache_key": key},
+                extra={"cache_ref": cache_ref},
             )
             return False
 
     def get(self, key: str) -> Optional[dict]:
+        cache_ref = build_log_ref(key, namespace="cache")
         try:
             value = self._cache.get(key, default=None)
         except Exception:
             logger.exception(
                 "Diskcache resume get failed",
-                extra={"cache_key": key},
+                extra={"cache_ref": cache_ref},
             )
             return None
         return value if isinstance(value, dict) else None

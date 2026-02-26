@@ -32,7 +32,9 @@ class _DummyRequest:
 
 
 def _counter_value(counter, **labels) -> float:
-    return float(counter.labels(**labels)._value.get())
+    if labels:
+        return float(counter.labels(**labels)._value.get())
+    return float(counter._value.get())
 
 
 def test_on_starting_cleans_prometheus_multiproc_dir(monkeypatch, tmp_path) -> None:
@@ -75,12 +77,10 @@ def test_child_exit_marks_process_dead_when_multiproc_enabled(
 
 def test_worker_hooks_emit_request_and_active_metrics() -> None:
     worker = _DummyWorker(pid=777)
-    before_requests = _counter_value(WORKER_REQUESTS_TOTAL, worker_pid="777")
+    before_requests = _counter_value(WORKER_REQUESTS_TOTAL)
 
     gunicorn_config.post_fork(SimpleNamespace(), worker)
     gunicorn_config.pre_request(worker, _DummyRequest())
 
     assert float(WORKERS_ACTIVE._value.get()) >= 1.0
-    assert _counter_value(WORKER_REQUESTS_TOTAL, worker_pid="777") >= (
-        before_requests + 1.0
-    )
+    assert _counter_value(WORKER_REQUESTS_TOTAL) >= (before_requests + 1.0)

@@ -320,3 +320,34 @@ def test_alert_is_emitted_when_save_failed_threshold_is_exceeded(tmp_path, caplo
         )
     finally:
         service.close()
+
+
+def test_resume_service_logs_redacted_job_ref_only(tmp_path, caplog):
+    """Save/load logs should expose job_ref, never raw job_id fields."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "job_ref_logs_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+    )
+    job_id = "BRP-20260225-120011-ABC134"
+    owner_token = "owner-job-ref"
+    payload = {"metadata": {"job_id": job_id}}
+
+    try:
+        with caplog.at_level("INFO"):
+            assert service.save_job_payload(job_id, payload, owner_token, ttl_seconds=30)
+            loaded_payload, status = service.load_job_payload(job_id, owner_token)
+            assert status == service.STATUS_OK
+            assert loaded_payload == payload
+
+        relevant_records = [
+            rec
+            for rec in caplog.records
+            if rec.message in {"Resume payload saved", "Resume payload loaded"}
+        ]
+        assert relevant_records
+        assert all(getattr(rec, "job_ref", "").startswith("job_") for rec in relevant_records)
+        assert all(not hasattr(rec, "job_id") for rec in relevant_records)
+        assert all(job_id not in str(rec.__dict__) for rec in relevant_records)
+    finally:
+        service.close()

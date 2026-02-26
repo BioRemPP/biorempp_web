@@ -267,3 +267,8 @@ internal_validation/outputs/*/05_example_roundtrip_regression/summary.json
 # They should not be committed to avoid cluttering the repository
 .git_commit_message.txt
 .git_tag_message.txt
+
+# ============================================================================
+# Observability local helper scripts (keep local only)
+# ============================================================================
+observability/docs/local/*.ps1

@@ -72,6 +72,11 @@ services:
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
       BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-false}
       BIOREMPP_OBSERVABILITY_METRICS_PATH: ${BIOREMPP_OBSERVABILITY_METRICS_PATH:-/metrics}
+      BIOREMPP_TRUST_PROXY_HEADERS: ${BIOREMPP_TRUST_PROXY_HEADERS:-false}
+      BIOREMPP_TRUSTED_PROXY_CIDRS: ${BIOREMPP_TRUSTED_PROXY_CIDRS:-127.0.0.1/32,::1/128}
+      BIOREMPP_PUBLIC_DATA_ALLOWED_FILES: ${BIOREMPP_PUBLIC_DATA_ALLOWED_FILES:-exemple_dataset.txt}
+      BIOREMPP_LOG_REF_SALT: ${BIOREMPP_LOG_REF_SALT:-}
+      BIOREMPP_LOG_REF_LENGTH: ${BIOREMPP_LOG_REF_LENGTH:-12}
       BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-diskcache}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-512}
@@ -89,7 +94,7 @@ services:
       BIOREMPP_RESUME_REDIS_HOST: ${BIOREMPP_RESUME_REDIS_HOST:-redis}
       BIOREMPP_RESUME_REDIS_PORT: ${BIOREMPP_RESUME_REDIS_PORT:-6379}
       BIOREMPP_RESUME_REDIS_DB: ${BIOREMPP_RESUME_REDIS_DB:-0}
-      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-change-this-redis-password}
+      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-}
       BIOREMPP_RESUME_REDIS_KEY_PREFIX: ${BIOREMPP_RESUME_REDIS_KEY_PREFIX:-biorempp:resume:}
       BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: ${BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL:-6}
       BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: ${BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS:-3}
@@ -162,6 +167,11 @@ services:
       BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-true}
       BIOREMPP_OBSERVABILITY_METRICS_PATH: ${BIOREMPP_OBSERVABILITY_METRICS_PATH:-/metrics}
       BIOREMPP_OBSERVABILITY_FAIL_FAST: ${BIOREMPP_OBSERVABILITY_FAIL_FAST:-true}
+      BIOREMPP_TRUST_PROXY_HEADERS: ${BIOREMPP_TRUST_PROXY_HEADERS:-true}
+      BIOREMPP_TRUSTED_PROXY_CIDRS: ${BIOREMPP_TRUSTED_PROXY_CIDRS:-127.0.0.1/32,::1/128,172.16.0.0/12}
+      BIOREMPP_PUBLIC_DATA_ALLOWED_FILES: ${BIOREMPP_PUBLIC_DATA_ALLOWED_FILES:-exemple_dataset.txt}
+      BIOREMPP_LOG_REF_SALT: ${BIOREMPP_LOG_REF_SALT:-}
+      BIOREMPP_LOG_REF_LENGTH: ${BIOREMPP_LOG_REF_LENGTH:-12}
       PROMETHEUS_MULTIPROC_DIR: ${PROMETHEUS_MULTIPROC_DIR:-/tmp/prometheus_multiproc}
       BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-redis}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
@@ -180,7 +190,7 @@ services:
       BIOREMPP_RESUME_REDIS_HOST: ${BIOREMPP_RESUME_REDIS_HOST:-redis}
       BIOREMPP_RESUME_REDIS_PORT: ${BIOREMPP_RESUME_REDIS_PORT:-6379}
       BIOREMPP_RESUME_REDIS_DB: ${BIOREMPP_RESUME_REDIS_DB:-0}
-      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-change-this-redis-password}
+      BIOREMPP_RESUME_REDIS_PASSWORD: ${BIOREMPP_RESUME_REDIS_PASSWORD:-}
       BIOREMPP_RESUME_REDIS_KEY_PREFIX: ${BIOREMPP_RESUME_REDIS_KEY_PREFIX:-biorempp:resume:}
       BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: ${BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL:-6}
       BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: ${BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS:-3}
@@ -204,22 +214,21 @@ services:
       PYTHONDONTWRITEBYTECODE: 1
       
       # Security
-      SECRET_KEY: ${SECRET_KEY:-REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS}
+      SECRET_KEY: ${SECRET_KEY:-}
       
       # Cache (optional)
       ENABLE_CACHE: ${ENABLE_CACHE:-False}
       REDIS_HOST: ${REDIS_HOST:-redis}
       REDIS_PORT: ${REDIS_PORT:-6379}
       REDIS_DB: ${REDIS_DB:-0}
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-change-this-redis-password}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
       
-      # SSL/HTTPS
-      ENABLE_HTTPS: ${ENABLE_HTTPS:-False}
+      # Reverse proxy domain (TLS is terminated upstream/institutional ingress)
       DOMAIN: ${DOMAIN:-localhost}
     
-    # Expose port for direct access (comment out when using nginx)
-    ports:
-      - "${PROD_PORT:-8080}:8080"
+    # Production hardening: app is internal-only, ingress via nginx service.
+    expose:
+      - "8080"
     
     volumes:
       # Data persistence only (no source code mounting)
@@ -265,15 +274,10 @@ services:
     
     ports:
       - "${HTTP_PORT:-80}:80"
-      - "${HTTPS_PORT:-443}:443"
     
     volumes:
       # Configuration
       - ./.docker/nginx/${NGINX_CONFIG:-nginx.prod.conf}:/etc/nginx/templates/default.conf.template:ro
-      
-      # SSL certificates (Let's Encrypt)
-      - letsencrypt-certs:/etc/letsencrypt:ro
-      - letsencrypt-www:/var/www/certbot:ro
       
       # Static files (optional - serve directly from nginx)
       - ./src/assets:/app/src/assets:ro
@@ -298,23 +302,6 @@ services:
     restart: unless-stopped
 
   # ==========================================================================
-  # Certbot for Let's Encrypt SSL (Production)
-  # ==========================================================================
-  certbot:
-    image: certbot/certbot:latest
-    container_name: biorempp-certbot
-    profiles: ["nginx"]
-    
-    volumes:
-      - letsencrypt-certs:/etc/letsencrypt
-      - letsencrypt-www:/var/www/certbot
-    
-    # Run certbot renew daily at 3am
-    entrypoint: "/bin/sh -c 'trap exit TERM; while :; do certbot renew --webroot --webroot-path=/var/www/certbot --quiet; sleep 12h & wait $${!}; done;'"
-    
-    restart: unless-stopped
-
-  # ==========================================================================
   # Redis Cache (Optional)
   # ==========================================================================
   redis:
@@ -322,14 +309,17 @@ services:
     container_name: biorempp-redis
     profiles: ["prod", "cache"]
     environment:
-      REDIS_PASSWORD: ${REDIS_PASSWORD:-change-this-redis-password}
+      REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     
     command: >
-      sh -c "redis-server
-      --appendonly yes
-      --requirepass $${REDIS_PASSWORD}
-      --maxmemory ${REDIS_MAXMEMORY:-512mb}
-      --maxmemory-policy allkeys-lru"
+      sh -c "if [ -z \"$${REDIS_PASSWORD}\" ] ||
+             [ \"$${REDIS_PASSWORD}\" = \"change-this-redis-password\" ] ||
+             [ \"$${REDIS_PASSWORD}\" = \"__SET_IN_PROD__\" ] ||
+             [ \"$${REDIS_PASSWORD}\" = \"REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS\" ]; then
+               echo '[ERROR] REDIS_PASSWORD is required and must be secure in production';
+               exit 1;
+             fi;
+             exec redis-server --appendonly yes --requirepass \"$${REDIS_PASSWORD}\" --maxmemory ${REDIS_MAXMEMORY:-512mb} --maxmemory-policy allkeys-lru"
     
     expose:
       - "6379"
@@ -401,11 +391,23 @@ services:
 
     environment:
       GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER:-admin}
-      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-change-this-grafana-password}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD:-}
       GF_USERS_ALLOW_SIGN_UP: ${GRAFANA_ALLOW_SIGN_UP:-false}
       GF_ANALYTICS_REPORTING_ENABLED: ${GRAFANA_ANALYTICS_REPORTING_ENABLED:-false}
       GF_ANALYTICS_CHECK_FOR_UPDATES: ${GRAFANA_ANALYTICS_CHECK_FOR_UPDATES:-false}
       GF_SERVER_ROOT_URL: ${GRAFANA_SERVER_ROOT_URL:-http://localhost:3000}
+
+    entrypoint:
+      - /bin/sh
+      - -c
+      - >
+        if [ -z "$${GF_SECURITY_ADMIN_PASSWORD}" ] ||
+           [ "$${GF_SECURITY_ADMIN_PASSWORD}" = "change-this-grafana-password" ] ||
+           [ "$${GF_SECURITY_ADMIN_PASSWORD}" = "__SET_IN_PROD__" ]; then
+          echo '[ERROR] GRAFANA_ADMIN_PASSWORD is required and must be secure in production';
+          exit 1;
+        fi;
+        exec /run.sh
 
     volumes:
       - grafana-data:/var/lib/grafana
@@ -458,12 +460,6 @@ volumes:
   # Nginx
   nginx-logs:
     name: nginx-logs
-  
-  # Let's Encrypt
-  letsencrypt-certs:
-    name: letsencrypt-certs
-  letsencrypt-www:
-    name: letsencrypt-www
   
   # Redis
   redis-data:

@@ -427,7 +427,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         logger.info("[OK] Observability disabled")
 
     # Add static file route for example dataset download
-    @app.server.route('/data/<path:filename>')
+    @app.server.route('/data/<filename>')
     def serve_data_files(filename):
         """
         Serve static data files (e.g., example datasets) for download.
@@ -444,10 +444,13 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         """
         from flask import send_from_directory
         data_dir = Path(__file__).parent / "data"
+        if not settings.is_public_data_file_allowed(filename):
+            logger.warning("Blocked non-allowlisted public data file request")
+            return {"error": "File not found"}, 404
         try:
             return send_from_directory(data_dir, filename, as_attachment=True)
         except FileNotFoundError:
-            logger.warning(f"File not found: {filename} in {data_dir}")
+            logger.warning("Allowlisted public data file not found on disk")
             return {"error": "File not found"}, 404
 
     logger.info("[OK] Static data file route registered (/data/<filename>)")

@@ -62,6 +62,26 @@ class _FakeRedisClient:
         return None
 
 
+class _FailingRedisClient:
+    """Redis client stub that raises on read/write to test redacted logging."""
+
+    @staticmethod
+    def set(name: str, value: bytes, ex: Optional[int] = None) -> bool:
+        raise RuntimeError("redis down")
+
+    @staticmethod
+    def get(name: str) -> Optional[bytes]:
+        raise RuntimeError("redis down")
+
+    @staticmethod
+    def ping() -> bool:
+        return False
+
+    @staticmethod
+    def close() -> None:
+        return None
+
+
 def _build_service(backend: _FakeRedisBackend, key_prefix: str) -> JobResumeService:
     store = RedisResumeStore(
         client=_FakeRedisClient(backend),
@@ -170,5 +190,32 @@ def test_redis_store_rejects_invalid_logical_key():
 
     with pytest.raises(ValueError):
         store.set("../bad-key", {"payload": "x"}, ttl_seconds=30)
+
+    store.close()
+
+
+def test_redis_store_logs_redacted_cache_ref_on_backend_error(caplog):
+    """Backend failures should log cache_ref only (never full key)."""
+    store = RedisResumeStore(
+        client=_FailingRedisClient(),
+        key_prefix="biorempp:resume:test:",
+        compression_level=6,
+    )
+    logical_key = "resume:v1:job:BRP-20260225-140003-ABC204"
+    full_key = f"biorempp:resume:test:{logical_key}"
+
+    with caplog.at_level("ERROR"):
+        assert store.set(logical_key, {"payload": "x"}, ttl_seconds=30) is False
+        assert store.get(logical_key) is None
+
+    relevant_records = [
+        rec
+        for rec in caplog.records
+        if rec.message in {"Redis resume set failed", "Redis resume get failed"}
+    ]
+    assert len(relevant_records) == 2
+    assert all(getattr(rec, "cache_ref", "").startswith("cache_") for rec in relevant_records)
+    assert all(not hasattr(rec, "cache_key") for rec in relevant_records)
+    assert all(full_key not in rec.getMessage() for rec in relevant_records)
 
     store.close()

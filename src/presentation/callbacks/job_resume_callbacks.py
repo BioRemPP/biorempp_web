@@ -3,6 +3,7 @@ Job Resume Callbacks - restore processed results by `job_id`.
 """
 
 import hashlib
+import ipaddress
 import math
 import os
 import time
@@ -61,11 +62,23 @@ def _get_request_ip() -> str:
     """Extract client IP from request context with proxy-aware fallback."""
     if not has_request_context():
         return "unknown"
+
+    remote_addr = (flask_request.remote_addr or "unknown").strip() or "unknown"
+    if not settings.TRUST_PROXY_HEADERS:
+        return remote_addr[:64]
+
+    if not settings.is_trusted_proxy_ip(remote_addr):
+        return remote_addr[:64]
+
     forwarded = flask_request.headers.get("X-Forwarded-For", "")
-    if forwarded:
-        first = forwarded.split(",")[0].strip()
-        return first[:64] if first else "unknown"
-    remote_addr = flask_request.remote_addr or "unknown"
+    for candidate in (item.strip() for item in forwarded.split(",")):
+        if not candidate:
+            continue
+        try:
+            ipaddress.ip_address(candidate)
+        except ValueError:
+            continue
+        return candidate[:64]
     return remote_addr[:64]
 
 

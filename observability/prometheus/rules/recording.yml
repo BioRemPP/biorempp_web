@@ -69,4 +69,4 @@ groups:
         expr: sum by (reason) (rate(biorempp_worker_restarts_total[10m]))
 
       - record: worker:biorempp_requests:rate1m
-        expr: sum by (worker_pid) (rate(biorempp_worker_requests_total[1m]))
+        expr: sum(rate(biorempp_worker_requests_total[1m]))

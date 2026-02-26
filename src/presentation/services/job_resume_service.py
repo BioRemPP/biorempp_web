@@ -17,7 +17,7 @@ from typing import Optional
 
 from .resume_store import ResumeStore
 from .resume_store_diskcache import DiskcacheResumeStore
-from src.shared.logging import get_logger
+from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
     RESUME_LOAD_ATTEMPTS_TOTAL,
     RESUME_OPERATION_DURATION_SECONDS,
@@ -239,11 +239,8 @@ class JobResumeService:
 
     @staticmethod
     def _mask_job_id(job_id: str) -> str:
-        """Return a redacted job identifier for logs."""
-        normalized = (job_id or "").strip().upper()
-        if len(normalized) < 6:
-            return "***"
-        return f"{normalized[:20]}******"
+        """Return deterministic, redacted job reference for logs."""
+        return build_log_ref(job_id, namespace="job")
 
     @classmethod
     def _expected_payload_schema(cls, payload_version: int) -> str:

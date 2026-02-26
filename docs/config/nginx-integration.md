@@ -18,12 +18,12 @@ BioRemPP Web Service is designed to run behind **Nginx as a reverse proxy**. Thi
 ## Architecture
 
 ```
-[ Client ] → [ Nginx :80/:443 ] → [ Gunicorn :8080 ] → [ BioRemPP App ]
+[ Client ] → [ Institutional TLS/Ingress ] → [ Nginx :80 ] → [ Gunicorn :8080 ] → [ BioRemPP App ]
 ```
 
 | Component | Responsibility |
 |-----------|----------------|
-| **Nginx** | TLS termination, static file serving, request buffering, load balancing (if multi-instance) |
+| **Nginx** | Internal HTTP reverse proxy, static file serving, request buffering |
 | **Gunicorn** | WSGI application server |
 | **BioRemPP** | Application logic |
 
@@ -36,7 +36,7 @@ Nginx configuration is environment-specific:
 | Environment | Config File | Purpose |
 |-------------|-------------|---------|
 | Development | `.docker/nginx/nginx.dev.conf` | HTTP-only reverse proxy |
-| Production | `.docker/nginx/nginx.prod.conf` | HTTPS with Let's Encrypt SSL |
+| Production | `.docker/nginx/nginx.prod.conf` | HTTP reverse proxy (TLS terminated upstream) |
 
 ---
 
@@ -46,7 +46,7 @@ Nginx configuration is environment-specific:
 
 | Variable | Purpose | Typical Values |
 |----------|---------|----------------|
-| `DOMAIN` | Server name for SSL certificates | `biorempp.example.com` |
+| `DOMAIN` | Server name for virtual host matching | `biorempp.example.com` |
 | `BIOREMPP_PORT` | Upstream application port | `8050` (dev), `8080` (prod) |
 
 ### Optional Variables
@@ -54,7 +54,6 @@ Nginx configuration is environment-specific:
 | Variable | Purpose | Default |
 |----------|---------|---------|
 | `HTTP_PORT` | Nginx HTTP listen port | `80` |
-| `HTTPS_PORT` | Nginx HTTPS listen port | `443` |
 
 ---
 
@@ -107,43 +106,23 @@ server {
 
 ### Characteristics
 
-- **HTTPS only:** TLS 1.2/1.3 with Let's Encrypt certificates
-- **HTTP → HTTPS redirect:** Port 80 redirects to 443
+- **HTTP reverse proxy:** TLS is handled by institutional ingress
 - **Upstream:** `biorempp:8080`
 - **Static files:** Cached for 30 days
 - **WebSocket support:** Enabled for Dash
 - **Timeouts:** 300 seconds
 - **Logging:** Warn level
-- **Security headers:** HSTS, CSP, X-Frame-Options
+- **Security headers:** CSP, X-Frame-Options
 - **Gzip compression:** Enabled
 
 ### Key Directives
 
 ```nginx
-# HTTP → HTTPS redirect
 server {
     listen 80;
     server_name ${DOMAIN};
 
-    location /.well-known/acme-challenge/ {
-        root /var/www/certbot;
-    }
-
-    location / {
-        return 301 https://$server_name$request_uri;
-    }
-}
-
-# HTTPS server
-server {
-    listen 443 ssl http2;
-    server_name ${DOMAIN};
-
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
-
     # Security headers
-    add_header Strict-Transport-Security "max-age=63072000" always;
     add_header X-Frame-Options "SAMEORIGIN" always;
     add_header X-Content-Type-Options "nosniff" always;
 
@@ -179,8 +158,6 @@ DOMAIN=localhost
 BIOREMPP_HOST=0.0.0.0
 BIOREMPP_PORT=8080
 DOMAIN=biorempp.example.com
-ENABLE_HTTPS=true
-LETSENCRYPT_EMAIL=admin@example.com
 ```
 
 ---
@@ -193,7 +170,7 @@ LETSENCRYPT_EMAIL=admin@example.com
 
 3. **Timeout too short:** If `proxy_read_timeout` < `BIOREMPP_TIMEOUT`, Nginx terminates requests prematurely
 
-4. **SSL certificate path errors:** `${DOMAIN}` substitution requires the variable to be set during Nginx config generation
+4. **Template variable not set:** `${DOMAIN}` must be provided for Nginx config generation
 
 5. **Upload size mismatch:** If `client_max_body_size` < actual upload, Nginx returns 413 Request Entity Too Large before BioRemPP sees the request
 

@@ -64,6 +64,34 @@ validate_env() {
     fi
 }
 
+is_insecure_secret_value() {
+    local value="$1"
+    local min_length=${2:-1}
+
+    if [ -z "$value" ]; then
+        return 0
+    fi
+
+    if [ "${#value}" -lt "${min_length}" ]; then
+        return 0
+    fi
+
+    case "$value" in
+        dev-secret-key-not-secure|\
+        dev-secret-key-not-secure-for-development-only|\
+        change-me-in-production-use-secrets-token-hex|\
+        REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS|\
+        REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX|\
+        change-this-redis-password|\
+        change-this-grafana-password|\
+        __SET_IN_PROD__)
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
 # Required variables
 validate_env "BIOREMPP_ENV" true
 validate_env "BIOREMPP_HOST" true
@@ -101,16 +129,20 @@ if [ "$BIOREMPP_ENV" = "production" ]; then
         export BIOREMPP_LOG_LEVEL=WARNING
     fi
     
-    # Check for default/insecure secret keys
-    if [ -n "$SECRET_KEY" ]; then
-        if [ "$SECRET_KEY" = "dev-secret-key-not-secure" ] || \
-           [ "$SECRET_KEY" = "dev-secret-key-not-secure-for-development-only" ] || \
-           [ "$SECRET_KEY" = "change-me-in-production-use-secrets-token-hex" ] || \
-           [ "$SECRET_KEY" = "REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS" ] || \
-           [ "$SECRET_KEY" = "REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX" ]; then
-            log_error "Insecure SECRET_KEY detected in production!"
-            log_error "Generate a secure key with: python -c \"import secrets; print(secrets.token_hex(32))\""
-            log_warn "Continuing anyway for testing purposes - DO NOT USE IN REAL PRODUCTION!"
+    if is_insecure_secret_value "${SECRET_KEY:-}" 32; then
+        log_error "Invalid SECRET_KEY for production (missing, placeholder, or too short)."
+        log_error "Set a secure value, e.g.: python -c \"import secrets; print(secrets.token_hex(32))\""
+        exit 1
+    fi
+
+    resume_backend_mode=$(echo "${BIOREMPP_RESUME_BACKEND:-diskcache}" | tr '[:upper:]' '[:lower:]')
+    cache_enabled_mode=$(echo "${ENABLE_CACHE:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$resume_backend_mode" = "redis" ] || [ "$cache_enabled_mode" = "true" ]; then
+        effective_redis_password="${BIOREMPP_RESUME_REDIS_PASSWORD:-${REDIS_PASSWORD:-}}"
+        if is_insecure_secret_value "${effective_redis_password}" 12; then
+            log_error "Redis password is required and must be secure in production."
+            log_error "Set REDIS_PASSWORD (and optionally BIOREMPP_RESUME_REDIS_PASSWORD)."
+            exit 1
         fi
     fi
     
@@ -250,21 +282,6 @@ PY
     fi
 
     log_info "Redis resume backend is available"
-    echo ""
-fi
-
-# ============================================================================
-# SSL CERTIFICATE CHECK (for HTTPS)
-# ============================================================================
-if [ "$BIOREMPP_ENV" = "production" ] && [ "$ENABLE_HTTPS" = "true" ]; then
-    log_step "Checking SSL certificates..."
-    
-    if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
-        log_info "SSL certificates found for ${DOMAIN}"
-    else
-        log_warn "SSL certificates not found. HTTPS will not be available."
-        log_warn "Run SSL setup: .scripts/docker/ssl-setup.sh ${DOMAIN}"
-    fi
     echo ""
 fi
 
