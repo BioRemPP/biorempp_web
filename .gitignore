@@ -177,6 +177,7 @@ venv.bak/
 .env/env.development
 .env/ENV_CONFIG_GUIDE.md
 .env/*.local
+.env/env.production.biome
 
 # Environment files (never commit these!)
 biorempp_web/.env
