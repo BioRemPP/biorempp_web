@@ -28,9 +28,10 @@
 # ============================================================================
 #   Development:  docker compose --env-file .env/env.development --profile dev up
 #   Production:   docker compose --env-file .env/env.production --profile prod up -d
-#   With nginx:   docker compose --env-file .env/env.production --profile prod --profile nginx up -d
+#   Prod + Nginx: docker compose --env-file .env/env.production --profile prod up -d
 #   With nginx mock TLS: docker compose --env-file .env/env.production --profile prod --profile nginx-mock up -d
 #   With cache:   docker compose --env-file .env/env.production --profile prod --profile cache up -d
+#   Full stack:   docker compose --env-file .env/env.production --env-file .env/env.production.stack --profile prod --profile cache --profile observability up -d
 #
 # ============================================================================
 # ENVIRONMENT CONFIGURATION
@@ -193,16 +194,16 @@ services:
       BIOREMPP_HOT_RELOAD: False
       BIOREMPP_LOG_LEVEL: ${BIOREMPP_LOG_LEVEL:-WARNING}
       BIOREMPP_CACHE_DIR: ${BIOREMPP_CACHE_DIR:-/app/cache}
-      BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-true}
+      BIOREMPP_OBSERVABILITY_ENABLED: ${BIOREMPP_OBSERVABILITY_ENABLED:-false}
       BIOREMPP_OBSERVABILITY_METRICS_PATH: ${BIOREMPP_OBSERVABILITY_METRICS_PATH:-/metrics}
-      BIOREMPP_OBSERVABILITY_FAIL_FAST: ${BIOREMPP_OBSERVABILITY_FAIL_FAST:-true}
+      BIOREMPP_OBSERVABILITY_FAIL_FAST: ${BIOREMPP_OBSERVABILITY_FAIL_FAST:-false}
       BIOREMPP_TRUST_PROXY_HEADERS: ${BIOREMPP_TRUST_PROXY_HEADERS:-true}
       BIOREMPP_TRUSTED_PROXY_CIDRS: ${BIOREMPP_TRUSTED_PROXY_CIDRS:-127.0.0.1/32,::1/128,172.16.0.0/12}
       BIOREMPP_PUBLIC_DATA_ALLOWED_FILES: ${BIOREMPP_PUBLIC_DATA_ALLOWED_FILES:-exemple_dataset.txt}
       BIOREMPP_LOG_REF_SALT: ${BIOREMPP_LOG_REF_SALT:-}
       BIOREMPP_LOG_REF_LENGTH: ${BIOREMPP_LOG_REF_LENGTH:-12}
       PROMETHEUS_MULTIPROC_DIR: ${PROMETHEUS_MULTIPROC_DIR:-/tmp/prometheus_multiproc}
-      BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-redis}
+      BIOREMPP_RESUME_BACKEND: ${BIOREMPP_RESUME_BACKEND:-diskcache}
       BIOREMPP_RESUME_TTL_SECONDS: ${BIOREMPP_RESUME_TTL_SECONDS:-14400}
       BIOREMPP_RESUME_CACHE_SIZE_MB: ${BIOREMPP_RESUME_CACHE_SIZE_MB:-1024}
       BIOREMPP_RESUME_MAX_PAYLOAD_MB: ${BIOREMPP_RESUME_MAX_PAYLOAD_MB:-64}
@@ -223,7 +224,7 @@ services:
       BIOREMPP_RESUME_REDIS_KEY_PREFIX: ${BIOREMPP_RESUME_REDIS_KEY_PREFIX:-biorempp:resume:}
       BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: ${BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL:-6}
       BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: ${BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS:-3}
-      BIOREMPP_RESUME_REDIS_HEALTHCHECK: ${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-true}
+      BIOREMPP_RESUME_REDIS_HEALTHCHECK: ${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-false}
       
       # Gunicorn
       BIOREMPP_WORKERS: ${BIOREMPP_WORKERS:-4}
@@ -300,7 +301,7 @@ services:
   nginx:
     image: nginx:1.25-alpine
     container_name: biorempp-nginx
-    profiles: ["nginx"]
+    profiles: ["prod", "nginx"]
 
     environment:
       DOMAIN: ${DOMAIN:-localhost}
@@ -414,7 +415,7 @@ services:
   redis:
     image: redis:7-alpine
     container_name: biorempp-redis
-    profiles: ["prod", "cache"]
+    profiles: ["cache"]
     environment:
       REDIS_PASSWORD: ${REDIS_PASSWORD:-}
     

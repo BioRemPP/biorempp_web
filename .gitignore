@@ -178,6 +178,8 @@ venv.bak/
 .env/ENV_CONFIG_GUIDE.md
 .env/*.local
 .env/env.production.biome
+.env/env.production.stack
+.env/env.production.stack.*
 
 # Environment files (never commit these!)
 biorempp_web/.env
