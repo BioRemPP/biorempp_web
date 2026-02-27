@@ -62,6 +62,12 @@ groups:
       - record: outcome:biorempp_resume_save:rate5m
         expr: sum by (outcome) (rate(biorempp_resume_save_total[5m]))
 
+      - record: outcome:biorempp_resume_persist:rate5m
+        expr: sum by (outcome) (rate(biorempp_resume_persist_duration_seconds_count[5m]))
+
+      - record: operation:biorempp_resume_rate_limit_errors:rate5m
+        expr: sum by (operation) (rate(biorempp_resume_rate_limit_errors_total[5m]))
+
   - name: biorempp_worker_recording
     interval: 30s
     rules:

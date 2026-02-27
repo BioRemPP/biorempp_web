@@ -6,6 +6,7 @@ import hashlib
 import ipaddress
 import math
 import os
+import re
 import time
 from uuid import uuid4
 
@@ -19,8 +20,14 @@ from threading import Lock
 from config.settings import get_settings
 from src.presentation.routing import app_path
 from src.presentation.services import job_resume_service
-from src.shared.logging import get_logger
-from src.shared.metrics import RESUME_CALLBACK_ATTEMPTS_TOTAL
+from src.presentation.services.resume_store_redis import redis as redis_client_module
+from src.shared.logging import build_log_ref, get_logger
+from src.shared.metrics import (
+    RESUME_CALLBACK_ATTEMPTS_TOTAL,
+    RESUME_RATE_LIMIT_BACKEND_INFO,
+    RESUME_RATE_LIMIT_ERRORS_TOTAL,
+    instrument_callback,
+)
 
 logger = get_logger(__name__)
 settings = get_settings()
@@ -84,10 +91,16 @@ def _get_request_ip() -> str:
 
 
 def _job_id_ref(job_id: str) -> str:
-    normalized = (job_id or "").strip().upper()
-    if len(normalized) < 6:
-        return "***"
-    return f"{normalized[:20]}******"
+    """Return deterministic, non-reversible job reference for logs."""
+    return build_log_ref(job_id, namespace="job")
+
+
+def _set_rate_limit_backend_info(selected_backend: str) -> None:
+    """Expose selected rate-limit backend as low-cardinality gauge."""
+    for backend_name in ("diskcache", "redis"):
+        RESUME_RATE_LIMIT_BACKEND_INFO.labels(backend=backend_name).set(
+            1.0 if backend_name == selected_backend else 0.0
+        )
 
 
 class ResumeRateLimiter:
@@ -200,13 +213,223 @@ class ResumeRateLimiter:
         self._cache.close()
 
 
-resume_rate_limiter = ResumeRateLimiter(
-    cache_size_mb=settings.RESUME_RATE_LIMIT_CACHE_SIZE_MB,
-    attempts=settings.RESUME_RATE_LIMIT_ATTEMPTS,
-    window_seconds=settings.RESUME_RATE_LIMIT_WINDOW_SECONDS,
-    backoff_base_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS,
-    backoff_max_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS,
-)
+class RedisResumeRateLimiter:
+    """Shared Redis-backed rate limiter for multi-worker/multi-host setups."""
+
+    PREFIX_SAFE_PATTERN = re.compile(r"^[A-Za-z0-9:_-]{1,64}:$")
+    _EVALUATE_SCRIPT = """
+local now = tonumber(ARGV[1])
+local attempts_limit = tonumber(ARGV[2])
+local window_seconds = tonumber(ARGV[3])
+local backoff_base = tonumber(ARGV[4])
+local backoff_max = tonumber(ARGV[5])
+local ttl_for_state = tonumber(ARGV[6])
+
+local blocked_until = tonumber(redis.call('HGET', KEYS[2], 'blocked_until') or '0')
+local strike_count = tonumber(redis.call('HGET', KEYS[2], 'strike_count') or '0')
+
+if blocked_until > now then
+    local retry_after = math.ceil(blocked_until - now)
+    return {0, retry_after, strike_count}
+end
+
+local attempt_count = tonumber(redis.call('INCR', KEYS[1]))
+if attempt_count == 1 then
+    redis.call('EXPIRE', KEYS[1], window_seconds)
+end
+
+if attempt_count > attempts_limit then
+    strike_count = strike_count + 1
+    local backoff = backoff_base * (2 ^ (strike_count - 1))
+    if backoff > backoff_max then
+        backoff = backoff_max
+    end
+    if backoff < 1 then
+        backoff = 1
+    end
+    blocked_until = now + backoff
+
+    redis.call('HSET', KEYS[2], 'blocked_until', blocked_until, 'strike_count', strike_count)
+    redis.call('EXPIRE', KEYS[2], ttl_for_state)
+    redis.call('DEL', KEYS[1])
+    return {0, math.ceil(backoff), strike_count}
+end
+
+redis.call('HSET', KEYS[2], 'blocked_until', 0, 'strike_count', strike_count)
+redis.call('EXPIRE', KEYS[2], ttl_for_state)
+return {1, 0, strike_count}
+"""
+
+    def __init__(
+        self,
+        host: str,
+        port: int,
+        db: int,
+        password: str,
+        key_prefix: str,
+        attempts: int = 10,
+        window_seconds: int = 60,
+        backoff_base_seconds: int = 5,
+        backoff_max_seconds: int = 300,
+        socket_timeout_seconds: float = 3.0,
+        client=None,
+    ) -> None:
+        if client is None:
+            if redis_client_module is None:
+                raise RuntimeError(
+                    "Redis client is unavailable for rate limiter backend."
+                )
+            client = redis_client_module.Redis(
+                host=host,
+                port=int(port),
+                db=int(db),
+                password=(password or None),
+                decode_responses=False,
+                socket_timeout=float(socket_timeout_seconds),
+                socket_connect_timeout=float(socket_timeout_seconds),
+                health_check_interval=30,
+            )
+
+        normalized_prefix = (key_prefix or "biorempp:resume:ratelimit:").strip()
+        if normalized_prefix and not normalized_prefix.endswith(":"):
+            normalized_prefix = f"{normalized_prefix}:"
+        if not self.PREFIX_SAFE_PATTERN.fullmatch(normalized_prefix):
+            raise ValueError("Invalid redis rate-limit key prefix")
+
+        self._client = client
+        self._key_prefix = normalized_prefix
+        self._attempts = max(int(attempts), 1)
+        self._window_seconds = max(int(window_seconds), 10)
+        self._backoff_base_seconds = max(int(backoff_base_seconds), 1)
+        self._backoff_max_seconds = max(
+            int(backoff_max_seconds), self._backoff_base_seconds
+        )
+
+    @staticmethod
+    def _now() -> float:
+        return time.time()
+
+    def _attempts_key(self, identity_hash: str) -> str:
+        return f"{self._key_prefix}attempts:{identity_hash}"
+
+    def _block_key(self, identity_hash: str) -> str:
+        return f"{self._key_prefix}block:{identity_hash}"
+
+    def evaluate(self, identity_hash: str) -> tuple[bool, int]:
+        """Record one attempt atomically in Redis and return allow/retry."""
+        now = self._now()
+        ttl_for_state = max(self._window_seconds, self._backoff_max_seconds) * 3
+        identity_ref = identity_hash[:12]
+        try:
+            raw = self._client.eval(
+                self._EVALUATE_SCRIPT,
+                2,
+                self._attempts_key(identity_hash),
+                self._block_key(identity_hash),
+                now,
+                self._attempts,
+                self._window_seconds,
+                self._backoff_base_seconds,
+                self._backoff_max_seconds,
+                ttl_for_state,
+            )
+            allowed = bool(int(raw[0]))
+            retry_after_seconds = max(int(raw[1]), 0)
+            return allowed, retry_after_seconds
+        except Exception:
+            RESUME_RATE_LIMIT_ERRORS_TOTAL.labels(
+                backend="redis",
+                operation="evaluate",
+            ).inc()
+            logger.exception(
+                "Redis resume rate limiter evaluate failed; allowing request",
+                extra={"identity_ref": identity_ref},
+            )
+            # Fail-open keeps resume flow available if Redis limiter is temporarily down.
+            return True, 0
+
+    def register_success(self, identity_hash: str) -> None:
+        """Reset limiter state after successful resume retrieval."""
+        identity_ref = identity_hash[:12]
+        try:
+            self._client.delete(
+                self._attempts_key(identity_hash),
+                self._block_key(identity_hash),
+            )
+        except Exception:
+            RESUME_RATE_LIMIT_ERRORS_TOTAL.labels(
+                backend="redis",
+                operation="reset",
+            ).inc()
+            logger.exception(
+                "Redis resume rate limiter reset failed",
+                extra={"identity_ref": identity_ref},
+            )
+
+    def close(self) -> None:
+        close_fn = getattr(self._client, "close", None)
+        if callable(close_fn):
+            close_fn()
+
+
+def _resolve_resume_rate_limit_backend() -> str:
+    """Resolve resume rate-limit backend (auto follows resume backend)."""
+    backend = (settings.RESUME_RATE_LIMIT_BACKEND or "auto").strip().lower()
+    if backend not in {"auto", "diskcache", "redis"}:
+        backend = "auto"
+    if backend == "auto":
+        return "redis" if settings.RESUME_BACKEND == "redis" else "diskcache"
+    return backend
+
+
+def _build_resume_rate_limiter():
+    """Build rate limiter backend with safe fallback behavior."""
+    backend = _resolve_resume_rate_limit_backend()
+    if backend == "redis":
+        try:
+            limiter = RedisResumeRateLimiter(
+                host=settings.RESUME_REDIS_HOST,
+                port=settings.RESUME_REDIS_PORT,
+                db=settings.RESUME_REDIS_DB,
+                password=settings.RESUME_REDIS_PASSWORD,
+                key_prefix=settings.RESUME_RATE_LIMIT_REDIS_KEY_PREFIX,
+                attempts=settings.RESUME_RATE_LIMIT_ATTEMPTS,
+                window_seconds=settings.RESUME_RATE_LIMIT_WINDOW_SECONDS,
+                backoff_base_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS,
+                backoff_max_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS,
+                socket_timeout_seconds=settings.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS,
+            )
+            logger.info(
+                "Resume rate limiter backend selected",
+                extra={"backend": "redis"},
+            )
+            _set_rate_limit_backend_info("redis")
+            return limiter
+        except Exception:
+            RESUME_RATE_LIMIT_ERRORS_TOTAL.labels(
+                backend="redis",
+                operation="init",
+            ).inc()
+            logger.exception(
+                "Failed to initialize Redis resume rate limiter; using diskcache fallback"
+            )
+
+    limiter = ResumeRateLimiter(
+        cache_size_mb=settings.RESUME_RATE_LIMIT_CACHE_SIZE_MB,
+        attempts=settings.RESUME_RATE_LIMIT_ATTEMPTS,
+        window_seconds=settings.RESUME_RATE_LIMIT_WINDOW_SECONDS,
+        backoff_base_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS,
+        backoff_max_seconds=settings.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS,
+    )
+    logger.info(
+        "Resume rate limiter backend selected",
+        extra={"backend": "diskcache"},
+    )
+    _set_rate_limit_backend_info("diskcache")
+    return limiter
+
+
+resume_rate_limiter = _build_resume_rate_limiter()
 
 
 def _identity_hash(owner_token: str, ip_address: str) -> str:
@@ -433,6 +656,7 @@ def register_job_resume_callbacks(app):
         Input("resume-browser-token-store", "modified_timestamp"),
         State("resume-browser-token-store", "data"),
     )
+    @instrument_callback("resume.ensure_browser_token")
     def ensure_resume_browser_token(_, existing_token):
         token = initialize_resume_browser_token(existing_token)
         if token is no_update:
@@ -453,6 +677,7 @@ def register_job_resume_callbacks(app):
         ],
         prevent_initial_call=True,
     )
+    @instrument_callback("resume.resume_job_by_id")
     def resume_job_by_id(n_clicks, job_id, owner_token):
         if n_clicks is None:
             raise PreventUpdate

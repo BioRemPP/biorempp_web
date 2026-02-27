@@ -19,7 +19,11 @@ from src.presentation.components.composite.upload_feedback import (
     create_file_info_card,
 )
 from src.shared.logging import get_logger
-from src.shared.metrics import UPLOAD_OPERATIONS_TOTAL, UPLOAD_SIZE_BYTES
+from src.shared.metrics import (
+    UPLOAD_OPERATIONS_TOTAL,
+    UPLOAD_SIZE_BYTES,
+    instrument_callback,
+)
 
 # Get application settings
 settings = get_settings()
@@ -62,6 +66,7 @@ def register_real_upload_callbacks(app):
         State("upload-component", "filename"),
         prevent_initial_call=True,
     )
+    @instrument_callback("upload.handle_upload")
     def handle_upload(contents, filename):
         """
         Handle file upload with comprehensive validation.
@@ -368,6 +373,7 @@ def register_real_upload_callbacks(app):
         Input("load-example-btn", "n_clicks"),
         prevent_initial_call=True,
     )
+    @instrument_callback("upload.load_example_data")
     def load_example_data(n_clicks):
         """
         Load example dataset from file.

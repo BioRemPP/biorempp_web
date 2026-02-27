@@ -9,7 +9,11 @@ from flask import Flask
 
 from src.presentation.callbacks import job_resume_callbacks
 from src.presentation.services.job_resume_service import JobResumeService
-from src.shared.metrics import RESUME_CALLBACK_ATTEMPTS_TOTAL
+from src.shared.metrics import (
+    RESUME_CALLBACK_ATTEMPTS_TOTAL,
+    RESUME_RATE_LIMIT_BACKEND_INFO,
+    RESUME_RATE_LIMIT_ERRORS_TOTAL,
+)
 
 
 def _flatten_text(node: Any) -> str:
@@ -37,6 +41,11 @@ def _flatten_text(node: Any) -> str:
 def _counter_value(counter, **labels) -> float:
     """Read Prometheus counter value for labels."""
     return float(counter.labels(**labels)._value.get())
+
+
+def _gauge_value(gauge, **labels) -> float:
+    """Read Prometheus gauge value for labels."""
+    return float(gauge.labels(**labels)._value.get())
 
 
 @pytest.fixture
@@ -369,3 +378,111 @@ def test_get_request_ip_falls_back_for_malformed_xff(monkeypatch):
         environ_base={"REMOTE_ADDR": "172.18.0.5"},
     ):
         assert job_resume_callbacks._get_request_ip() == "172.18.0.5"
+
+
+def test_job_id_ref_uses_hmac_redaction():
+    """job_ref helper should not expose raw job_id in logs."""
+    raw_job_id = "BRP-20260227-101500-ABCDEF"
+    ref = job_resume_callbacks._job_id_ref(raw_job_id)
+
+    assert ref.startswith("job_")
+    assert raw_job_id not in ref
+
+
+def test_resolve_rate_limit_backend_auto_follows_resume_backend(monkeypatch):
+    """AUTO backend should follow configured resume backend."""
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "RESUME_RATE_LIMIT_BACKEND",
+        "auto",
+    )
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "diskcache")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "diskcache"
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "redis"
+
+
+def test_resolve_rate_limit_backend_explicit(monkeypatch):
+    """Explicit backend values should take precedence over AUTO."""
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "RESUME_RATE_LIMIT_BACKEND",
+        "diskcache",
+    )
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "diskcache"
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_RATE_LIMIT_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "redis"
+
+
+def test_build_rate_limiter_falls_back_to_diskcache_when_redis_unavailable(
+    monkeypatch,
+):
+    """Factory should fallback to diskcache if Redis limiter init fails."""
+
+    def _raise_redis_init(*args, **kwargs):
+        raise RuntimeError("redis unavailable")
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_RATE_LIMIT_BACKEND", "redis")
+    monkeypatch.setattr(
+        job_resume_callbacks,
+        "RedisResumeRateLimiter",
+        _raise_redis_init,
+    )
+
+    before_init_errors = _counter_value(
+        RESUME_RATE_LIMIT_ERRORS_TOTAL,
+        backend="redis",
+        operation="init",
+    )
+    limiter = job_resume_callbacks._build_resume_rate_limiter()
+    try:
+        assert isinstance(limiter, job_resume_callbacks.ResumeRateLimiter)
+        assert _gauge_value(RESUME_RATE_LIMIT_BACKEND_INFO, backend="diskcache") == 1.0
+        assert _counter_value(
+            RESUME_RATE_LIMIT_ERRORS_TOTAL,
+            backend="redis",
+            operation="init",
+        ) >= (before_init_errors + 1.0)
+    finally:
+        limiter.close()
+
+
+def test_redis_rate_limiter_evaluate_error_increments_metric():
+    """Redis limiter should emit backend error metric and fail-open on eval error."""
+
+    class _FailingEvalClient:
+        @staticmethod
+        def eval(*args, **kwargs):
+            raise RuntimeError("redis down")
+
+        @staticmethod
+        def close():
+            return None
+
+    before_errors = _counter_value(
+        RESUME_RATE_LIMIT_ERRORS_TOTAL,
+        backend="redis",
+        operation="evaluate",
+    )
+    limiter = job_resume_callbacks.RedisResumeRateLimiter(
+        host="redis",
+        port=6379,
+        db=0,
+        password="",
+        key_prefix="biorempp:resume:ratelimit:test:",
+        client=_FailingEvalClient(),
+    )
+    try:
+        allowed, retry_after = limiter.evaluate("identity-hash-test")
+        assert allowed is True
+        assert retry_after == 0
+        assert _counter_value(
+            RESUME_RATE_LIMIT_ERRORS_TOTAL,
+            backend="redis",
+            operation="evaluate",
+        ) >= (before_errors + 1.0)
+    finally:
+        limiter.close()

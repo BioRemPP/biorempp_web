@@ -26,9 +26,17 @@ from .decorators import log_exceptions, log_execution, log_method_calls, log_per
 from .formatters import ColoredFormatter, DetailedFormatter, JSONFormatter
 from .handlers import (
     ContextFilter,
+    RequestContextFilter,
     SafeRotatingFileHandler,
     create_console_handler,
     create_rotating_handler,
+)
+from .request_context import (
+    clear_request_id,
+    generate_request_id,
+    get_request_id,
+    sanitize_incoming_request_id,
+    set_request_id,
 )
 from .redaction import build_log_ref
 
@@ -49,7 +57,13 @@ __all__ = [
     # Handlers
     "SafeRotatingFileHandler",
     "ContextFilter",
+    "RequestContextFilter",
     "create_rotating_handler",
     "create_console_handler",
     "build_log_ref",
+    "get_request_id",
+    "set_request_id",
+    "clear_request_id",
+    "generate_request_id",
+    "sanitize_incoming_request_id",
 ]

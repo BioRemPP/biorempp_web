@@ -9,6 +9,8 @@ import logging.handlers
 from pathlib import Path
 from typing import Optional
 
+from .request_context import get_request_id
+
 
 class ContextFilter(logging.Filter):
     """
@@ -69,6 +71,15 @@ class ContextFilter(logging.Filter):
         for key, value in self.context.items():
             setattr(record, key, value)
 
+        return True
+
+
+class RequestContextFilter(logging.Filter):
+    """Inject current request_id into every record."""
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        if not hasattr(record, "request_id"):
+            record.request_id = get_request_id()
         return True
 
 

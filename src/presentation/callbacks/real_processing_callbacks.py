@@ -38,6 +38,7 @@ from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
     PROCESSING_DURATION_SECONDS,
     RESUME_PERSIST_DURATION_SECONDS,
+    instrument_callback,
 )
 
 # Configure logging
@@ -220,6 +221,7 @@ def register_real_processing_callbacks(app):
         background=use_background_callbacks,
         prevent_initial_call=True,
     )
+    @instrument_callback("processing.process_data_with_spinner")
     def process_data_with_spinner(n_clicks, upload_data, example_data, owner_token):
         """
         Process uploaded or example data with real-time progress tracking.

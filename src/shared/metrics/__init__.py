@@ -10,6 +10,7 @@ from typing import Any
 from flask import Flask, Response
 from prometheus_client import CONTENT_TYPE_LATEST, REGISTRY, generate_latest
 
+from .callbacks import instrument_callback
 from .middleware import register_metrics_middleware
 from .registry import *  # noqa: F401,F403
 from .registry import __all__ as _registry_exports
@@ -100,4 +101,5 @@ __all__ = [
     "register_metrics_endpoint",
     "register_metrics_middleware",
     "setup_observability",
+    "instrument_callback",
 ] + _registry_exports

@@ -8,6 +8,13 @@ import time
 
 from flask import Flask, Response, g, request
 
+from src.shared.logging import (
+    clear_request_id,
+    generate_request_id,
+    sanitize_incoming_request_id,
+    set_request_id,
+)
+
 from .registry import (
     HTTP_ERRORS_TOTAL,
     HTTP_REQUEST_DURATION_SECONDS,
@@ -74,6 +81,13 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
 
     @flask_app.before_request
     def _before_request_metrics() -> None:
+        incoming_request_id = sanitize_incoming_request_id(
+            request.headers.get("X-Request-ID", "")
+        )
+        request_id = incoming_request_id or generate_request_id()
+        g._biorempp_request_id = request_id
+        set_request_id(request_id)
+
         request_path = _canonical_path(request.path)
         if _is_excluded_endpoint(request_path, canonical_metrics_path):
             g._biorempp_track_metrics = False
@@ -92,12 +106,18 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
 
     @flask_app.after_request
     def _after_request_metrics(response: Response) -> Response:
+        request_id = getattr(g, "_biorempp_request_id", None)
+        if request_id:
+            response.headers["X-Request-ID"] = request_id
+
         if not getattr(g, "_biorempp_track_metrics", False):
+            clear_request_id()
             return response
 
         start = getattr(g, "_biorempp_metrics_start", None)
         endpoint = getattr(g, "_biorempp_metrics_endpoint", _normalize_endpoint(request.path))
         if start is None:
+            clear_request_id()
             return response
 
         method = request.method
@@ -131,7 +151,12 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
                 endpoint=endpoint,
             ).observe(float(response_size))
 
+        clear_request_id()
         return response
+
+    @flask_app.teardown_request
+    def _teardown_request_metrics(_exc) -> None:
+        clear_request_id()
 
     state[_MIDDLEWARE_FLAG] = True
 

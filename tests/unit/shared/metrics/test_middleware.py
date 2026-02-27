@@ -1,5 +1,7 @@
 """Unit tests for HTTP observability middleware."""
 
+import re
+
 from flask import Flask, jsonify
 
 from src.shared.metrics.middleware import (
@@ -137,3 +139,29 @@ def test_middleware_skips_health_endpoint() -> None:
     total_after = _http_requests_total_sum()
 
     assert total_after == total_before
+
+
+def test_middleware_sets_request_id_response_header() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    response = client.get("/schemas/biorempp")
+    request_id = response.headers.get("X-Request-ID")
+
+    assert response.status_code == 200
+    assert isinstance(request_id, str)
+    assert bool(re.fullmatch(r"[a-f0-9]{32}", request_id))
+
+
+def test_middleware_preserves_valid_incoming_request_id() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    incoming_request_id = "req-abc12345"
+    response = client.get(
+        "/schemas/biorempp",
+        headers={"X-Request-ID": incoming_request_id},
+    )
+
+    assert response.status_code == 200
+    assert response.headers.get("X-Request-ID") == incoming_request_id

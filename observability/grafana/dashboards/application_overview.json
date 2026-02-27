@@ -313,7 +313,7 @@
     },
     {
       "type": "timeseries",
-      "title": "Resume Outcomes (callback/load)",
+      "title": "Resume Pipeline Outcomes",
       "id": 8,
       "gridPos": {
         "h": 8,
@@ -335,6 +335,21 @@
           "expr": "sum by (outcome) (rate(biorempp_resume_load_attempts_total[5m]))",
           "legendFormat": "load {{outcome}}",
           "refId": "B"
+        },
+        {
+          "expr": "sum by (outcome) (rate(biorempp_resume_save_total[5m]))",
+          "legendFormat": "save {{outcome}}",
+          "refId": "C"
+        },
+        {
+          "expr": "sum by (outcome) (rate(biorempp_resume_persist_duration_seconds_count[5m]))",
+          "legendFormat": "persist {{outcome}}",
+          "refId": "D"
+        },
+        {
+          "expr": "sum by (operation) (rate(biorempp_resume_rate_limit_errors_total[5m]))",
+          "legendFormat": "rate-limit backend {{operation}}",
+          "refId": "E"
         }
       ],
       "fieldConfig": {

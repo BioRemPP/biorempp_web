@@ -63,6 +63,26 @@ groups:
           summary: "Resume save_failed spike"
           description: "More than 2 save_failed resume events were observed in 5 minutes."
 
+      - alert: BioRemPPResumeRateLimitedSpike
+        expr: increase(biorempp_resume_callback_attempts_total{outcome="rate_limited"}[5m]) > 20
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume rate-limited spike"
+          description: "More than 20 resume requests were rate-limited in 5 minutes."
+
+      - alert: BioRemPPResumeRateLimitBackendErrors
+        expr: increase(biorempp_resume_rate_limit_errors_total[5m]) > 0
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume rate-limit backend errors detected"
+          description: "Rate-limit backend emitted errors during init/evaluate/reset."
+
   - name: biorempp_worker_alerts
     rules:
       - alert: BioRemPPLowWorkerCount
