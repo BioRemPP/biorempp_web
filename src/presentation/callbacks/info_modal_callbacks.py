@@ -19,8 +19,9 @@ Notes
 
 import logging
 import uuid
+from pathlib import Path
 
-from dash import Input, Output, State, ctx, no_update
+from dash import Input, Output, State, ctx, dcc, no_update
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs from parent loggers
@@ -240,6 +241,28 @@ def register_info_modal_callbacks(app):
         return new_state
 
     # ========================================
+    # Callback: Trigger sample data download
+    # ========================================
+    @app.callback(
+        Output("sample-data-download", "data"),
+        Input("sample-data-download-btn", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    def download_sample_data(n_clicks):
+        """Download sample dataset file without URL navigation."""
+        if not n_clicks:
+            return no_update
+
+        dataset_path = (
+            Path(__file__).resolve().parents[3] / "data" / "exemple_dataset.txt"
+        )
+        if not dataset_path.exists():
+            logger.error("[SAMPLE_DATA_MODAL] Sample dataset file not found")
+            return no_update
+
+        return dcc.send_file(str(dataset_path), "exemple_dataset.txt")
+
+    # ========================================
     # Callback: Toggle Publications Modal Open/Close
     # ========================================
     @app.callback(
@@ -338,6 +361,9 @@ def register_info_modal_callbacks(app):
     )
     logger.info(
         f"[INFO_MODAL]     - toggle_sample_data_modal: Inputs=['sample-data-card', 'sample-data-modal-close-button'], Output='sample-data-modal.is_open'"
+    )
+    logger.info(
+        "[INFO_MODAL]     - download_sample_data: Input='sample-data-download-btn', Output='sample-data-download.data'"
     )
     logger.info(
         f"[INFO_MODAL]     - toggle_publications_modal: Inputs=['publications-card', 'publications-modal-close-button'], Output='publications-modal.is_open'"

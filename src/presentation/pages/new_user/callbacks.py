@@ -74,3 +74,32 @@ def register_new_user_guide_callbacks(app):
             New modal state
         """
         return not is_open
+
+    @app.callback(
+        Output("how-to-cite-modal", "is_open"),
+        [
+            Input("how-to-cite-btn", "n_clicks"),
+            Input("how-to-cite-close", "n_clicks"),
+        ],
+        [State("how-to-cite-modal", "is_open")],
+        prevent_initial_call=True,
+    )
+    def toggle_how_to_cite_modal(open_clicks, close_clicks, is_open):
+        """
+        Toggle how-to-cite modal open/close.
+
+        Parameters
+        ----------
+        open_clicks : int
+            Number of clicks on open button
+        close_clicks : int
+            Number of clicks on close button
+        is_open : bool
+            Current modal state
+
+        Returns
+        -------
+        bool
+            New modal state
+        """
+        return not is_open

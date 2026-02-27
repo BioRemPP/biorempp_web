@@ -392,36 +392,17 @@ def register_real_processing_callbacks(app):
                 },
             )
 
-            status_details = {
-                "Job ID": persisted_job_id,
-                "Samples": metadata["sample_count"],
-                "KO IDs": metadata["ko_count"],
-                "Matched KOs": f"{metadata['matched_kos']}/{metadata['total_kos']}",
-                "Processing Time": f"{metadata['processing_time']:.2f}s",
-            }
+            if not resume_saved:
+                logger.warning(
+                    "Resume payload unavailable for this run",
+                    extra={"job_ref": _job_ref(persisted_job_id)},
+                )
 
-            if resume_saved:
-                status_details["Resume Cache"] = "Available"
-                status_message = create_processing_alert(
-                    "success",
-                    "Processing completed successfully!",
-                    details=status_details,
-                )
-            else:
-                status_details["Resume Cache"] = "Unavailable"
-                status_message = html.Div(
-                    [
-                        create_processing_alert(
-                            "success",
-                            "Processing completed successfully!",
-                            details=status_details,
-                        ),
-                        create_processing_alert(
-                            "warning",
-                            "Warning: resume by Job ID is unavailable for this run.",
-                        ),
-                    ]
-                )
+            status_message = create_processing_alert(
+                "success",
+                "Processing completed successfully!",
+                details={"Job ID": persisted_job_id},
+            )
 
             # Return results
             processing_outcome = "success"

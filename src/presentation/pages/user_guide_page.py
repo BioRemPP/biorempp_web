@@ -353,7 +353,7 @@ def create_workflow_section() -> html.Div:
                     "Data merging: Combines all databases into unified dataset",
                 ],
                 alert_message=(
-                    "Processing time varies based on file size (typically 30 seconds to 3 minutes). "
+                    "Processing time varies based on file size (typically < 30 seconds). "
                     "Do not close your browser during processing."
                 ),
                 alert_type="info",

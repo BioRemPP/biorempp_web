@@ -465,13 +465,6 @@ def create_contact_page() -> html.Div:
     # Contact Section
     contact_section = html.Div(
         [
-            html.H2(
-                [
-                    html.I(className="fas fa-paper-plane me-2 text-success"),
-                    "Contact Information",
-                ],
-                className="mb-4",
-            ),
             create_contact_methods(),
         ],
         className="mb-5",

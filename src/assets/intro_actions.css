@@ -1,0 +1,8 @@
+.intro-action-btn {
+  transition: filter 0.18s ease-in-out, transform 0.18s ease-in-out;
+}
+
+.intro-action-btn:hover,
+.intro-action-btn:focus {
+  filter: brightness(0.92);
+}

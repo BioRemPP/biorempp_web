@@ -174,135 +174,21 @@ def create_citation_overview_section() -> html.Div:
     )
 
 
-def create_pre_doi_section() -> html.Div:
-    """
-    Create section with pre-DOI citation templates.
-
-    Returns
-    -------
-    html.Div
-        Pre-DOI citation templates section
-    """
-    return html.Div(
-        [
-            html.H2(
-                [
-                    html.I(className="fas fa-exclamation-triangle me-2 text-warning"),
-                    "Citation Before DOI Assignment",
-                ],
-                className="mb-4",
-            ),
-            dbc.Alert(
-                [
-                    html.I(className="fas fa-hourglass-half me-2"),
-                    html.Strong("Pending Publication: "),
-                    "The BioRemPP manuscript is currently under review. "
-                    "DOIs will be assigned upon formal publication via ",
-                    html.A(
-                        "Zenodo",
-                        href="https://zenodo.org",
-                        target="_blank",
-                        className="alert-link",
-                    ),
-                    ". Until then, please use the provisional citation formats below.",
-                ],
-                color="warning",
-                className="mb-4 text-dark",
-            ),
-            # Web Service pre-DOI
-            html.H4("BioRemPP Web Service (Provisional Citation)", className="mb-3"),
-            dbc.Card(
-                [
-                    dbc.CardHeader(
-                        "Recommended Format",
-                        className="bg-light",
-                    ),
-                    dbc.CardBody(
-                        [
-                            html.Pre(
-                                "[Author Names]. BioRemPP Web Service: an interactive platform for "
-                                "bioremediation potential profiling. [Year]. Available at: "
-                                "[https://biorempp.org] (accessed [DD Month YYYY]).",
-                                style={
-                                    "backgroundColor": "#f8f9fa",
-                                    "padding": "1rem",
-                                    "borderRadius": "0.25rem",
-                                    "border": "1px solid #dee2e6",
-                                    "fontFamily": "monospace",
-                                    "fontSize": "0.9rem",
-                                },
-                            ),
-                            html.Small(
-                                [
-                                    html.I(className="fas fa-lightbulb me-1"),
-                                    "Replace placeholders with your access information",
-                                ],
-                                className="text-muted",
-                            ),
-                        ]
-                    ),
-                ],
-                className="shadow-sm mb-4",
-            ),
-            # Database pre-DOI
-            html.H4("BioRemPP Database (Provisional Citation)", className="mb-3"),
-            dbc.Card(
-                [
-                    dbc.CardHeader(
-                        "Recommended Format",
-                        className="bg-light",
-                    ),
-                    dbc.CardBody(
-                        [
-                            html.Pre(
-                                "[Author Names / Consortium]. BioRemPP Database (version [X.Y.Z]): "
-                                "curated enzyme-compound associations for bioremediation research. "
-                                "[Year]. License: CC BY 4.0. Available at: [https://biorempp.org/database] "
-                                "(accessed [DD Month YYYY]).",
-                                style={
-                                    "backgroundColor": "#f8f9fa",
-                                    "padding": "1rem",
-                                    "borderRadius": "0.25rem",
-                                    "border": "1px solid #dee2e6",
-                                    "fontFamily": "monospace",
-                                    "fontSize": "0.9rem",
-                                },
-                            ),
-                            dbc.Alert(
-                                [
-                                    html.I(className="fas fa-code-branch me-2"),
-                                    html.Strong("Version Tracking: "),
-                                    "Always cite the specific database version used in your analysis "
-                                    "(check footer or /version endpoint)",
-                                ],
-                                color="info",
-                                className="mb-0 mt-3 text-dark",
-                            ),
-                        ]
-                    ),
-                ],
-                className="shadow-sm mb-4",
-            ),
-        ],
-        className="mb-5",
-    )
-
-
 def create_post_doi_section() -> html.Div:
     """
-    Create section explaining post-DOI citation.
+    Create section with citation instructions and key points.
 
     Returns
     -------
     html.Div
-        Post-DOI citation explanation section
+        Citation instruction section
     """
     return html.Div(
         [
             html.H2(
                 [
-                    html.I(className="fas fa-link me-2 text-success"),
-                    "Citation After DOI Assignment",
+                    html.I(className="fas fa-clipboard-check me-2 text-success"),
+                    "Citation Instructions",
                 ],
                 className="mb-4",
             ),
@@ -312,12 +198,10 @@ def create_post_doi_section() -> html.Div:
                         [
                             html.P(
                                 [
-                                    "Upon formal publication, both the BioRemPP Web Service and Database "
-                                    "will be archived on ",
-                                    html.Strong("Zenodo"),
-                                    " with persistent ",
-                                    html.Strong("DOIs"),
-                                    ".",
+                                    "Use the citation records below as the baseline for manuscripts, reports, "
+                                    "and supplementary materials. The entries are intentionally provided as ",
+                                    html.Strong("mock placeholders"),
+                                    " and must be replaced with your final metadata.",
                                 ],
                                 className="mb-3",
                             ),
@@ -325,19 +209,20 @@ def create_post_doi_section() -> html.Div:
                             html.Ul(
                                 [
                                     html.Li([
-                                        "Software and database will have ",
-                                        html.Strong("separate DOIs"),
+                                        "Keep ",
+                                        html.Strong("separate records"),
+                                        " for the web service and the database",
                                     ]),
                                     html.Li([
-                                        "Cite the ",
+                                        "Always include the ",
                                         html.Strong("specific version"),
                                         " used in your analysis",
                                     ]),
                                     html.Li([
-                                        "Update your manuscript references once DOIs are available",
+                                        "Replace placeholders for authors, year, access date, and version before submission",
                                     ]),
                                     html.Li([
-                                        "DOI-based citations supersede provisional formats",
+                                        "When DOI is assigned, update the records and keep DOI + version together",
                                     ]),
                                 ],
                                 className="mb-0",
@@ -354,24 +239,24 @@ def create_post_doi_section() -> html.Div:
 
 def create_bibtex_section() -> html.Div:
     """
-    Create BibTeX templates section.
+    Create BibTeX citation section.
 
     Returns
     -------
     html.Div
-        BibTeX citation templates section
+        BibTeX citation section
     """
     return html.Div(
         [
             html.H2(
                 [
                     html.I(className="fas fa-code me-2 text-success"),
-                    "BibTeX Templates",
+                    "BibTeX Records",
                 ],
                 className="mb-4",
             ),
             # Web service BibTeX
-            html.H4("Web Service BibTeX (Provisional)", className="mb-3"),
+            html.H4("Web Service BibTeX", className="mb-3"),
             dbc.Card(
                 [
                     dbc.CardBody(
@@ -400,7 +285,7 @@ def create_bibtex_section() -> html.Div:
                 className="shadow-sm mb-4",
             ),
             # Database BibTeX
-            html.H4("Database BibTeX (Provisional)", className="mb-3"),
+            html.H4("Database BibTeX", className="mb-3"),
             dbc.Card(
                 [
                     dbc.CardBody(
@@ -641,12 +526,11 @@ def create_how_to_cite_page() -> html.Div:
     1. Page header and title
     2. Why cite BioRemPP
     3. Citation overview (distinct artifacts)
-    4. Pre-DOI citation templates
-    5. Post-DOI explanation
-    6. BibTeX templates
-    7. Third-party resource citation
-    8. Versioning and reproducibility
-    9. Contact information
+    4. Citation instructions and key points
+    5. BibTeX records
+    6. Third-party resource citation
+    7. Versioning and reproducibility
+    8. Contact information
     """
     # Header
     header = create_header(show_nav=True, logo_size="60px")
@@ -682,7 +566,6 @@ def create_how_to_cite_page() -> html.Div:
                     page_intro,
                     create_why_cite_section(),
                     create_citation_overview_section(),
-                    create_pre_doi_section(),
                     create_post_doi_section(),
                     create_bibtex_section(),
                     create_third_party_section(),

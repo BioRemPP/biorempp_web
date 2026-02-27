@@ -5,10 +5,10 @@ from typing import Any
 from src.presentation.components.composite.intro_card import create_intro_card
 
 
-NEW_CLAIM_TEXT = (
-    "This web service is free and open to all users and does not require login. "
-    "It is not usable for commercial product claims without experimental confirmation. "
-    "See the license page for detailed terms of use."
+CLAIM_LINES = (
+    "This web service is free and open to all users and does not require login.",
+    "It is not usable for commercial product claims without experimental confirmation.",
+    "See detailed terms of use",
 )
 
 
@@ -57,11 +57,12 @@ def _collect_text(node: Any) -> str:
 
 
 def test_intro_card_has_updated_claim():
-    """Intro card should display the updated public claim text."""
+    """Intro card should display the updated public claim split by sentence."""
     intro_card = create_intro_card()
     content = _collect_text(intro_card)
 
-    assert NEW_CLAIM_TEXT in content
+    for claim_line in CLAIM_LINES:
+        assert claim_line in content
 
 
 def test_intro_card_does_not_include_reviewer_disclaimer_button():

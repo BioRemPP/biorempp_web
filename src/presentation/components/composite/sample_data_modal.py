@@ -17,6 +17,50 @@ def create_sample_data_modal() -> dbc.Modal:
     - Body is scrollable for long content
     - Can be closed via X button or clicking outside (backdrop=True)
     """
+    # Input format rules (moved from hover popover to modal for better discoverability)
+    input_data_format = html.Div(
+        [
+            html.H4("Input data format", className="text-success mb-3"),
+            dbc.Card(
+                [
+                    dbc.CardBody(
+                        [
+                            html.P(
+                                "Input file rules:",
+                                className="mb-2 text-dark",
+                                style={"fontWeight": "600"},
+                            ),
+                            html.Ul(
+                                [
+                                    html.Li(
+                                        "Plain text file (.txt); UTF-8 or Latin-1 encoding."
+                                    ),
+                                    html.Li(
+                                        "Each sample starts with '>' followed by the sample name, without spaces."
+                                    ),
+                                    html.Li(
+                                        "Following lines: KO IDs in the format K00001 (K + 5 digits)."
+                                    ),
+                                    html.Li("Do not leave blank lines between samples."),
+                                    html.Li(
+                                        "Limits: up to 100 samples; 500,000 KOs total."
+                                    ),
+                                ],
+                                className="mb-0 text-dark",
+                                style={
+                                    "fontSize": "0.95rem",
+                                    "lineHeight": "1.5rem",
+                                },
+                            ),
+                        ]
+                    )
+                ],
+                className="mb-4",
+                style={"backgroundColor": "#ffffff", "border": "1px solid #dee2e6"},
+            ),
+        ]
+    )
+
     # Example Dataset Section
     example_dataset = html.Div(
         [
@@ -301,6 +345,8 @@ def create_sample_data_modal() -> dbc.Modal:
             ),
             dbc.ModalBody(
                 [
+                    input_data_format,
+                    html.Hr(),
                     example_dataset,
                     html.Hr(),
                     selected_organisms,

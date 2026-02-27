@@ -118,3 +118,23 @@ def test_home_layout_resume_panel_mentions_same_browser_and_ttl():
 
     assert "same browser profile" in content
     assert "available for up to" in content
+
+
+def test_home_layout_includes_example_dataset_quick_actions():
+    """Homepage should expose quick actions for sample data info and download."""
+    layout = create_home_layout()
+    component_ids = _collect_component_ids(layout)
+
+    assert "sample-data-card" in component_ids
+    assert "sample-data-download-btn" in component_ids
+    assert "sample-data-modal" in component_ids
+
+
+def test_home_layout_other_links_keeps_contact_and_publications_only():
+    """Other Links section should no longer render the old example dataset tile."""
+    layout = create_home_layout()
+    content = _collect_text(layout)
+
+    assert "Contact Support" in content
+    assert "Publications and Awards" in content
+    assert "Exemple Dataset" not in content

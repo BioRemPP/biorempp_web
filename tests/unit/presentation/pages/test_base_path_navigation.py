@@ -48,12 +48,14 @@ def test_header_links_include_base_path_when_configured(monkeypatch):
     assert "/biorempp/help/contact" in hrefs
 
 
-def test_upload_panel_example_link_includes_base_path(monkeypatch):
-    """Public example download link should include base path."""
+def test_upload_panel_no_longer_exposes_direct_example_download_link(monkeypatch):
+    """Upload panel should no longer expose direct dataset download href."""
     settings = get_settings()
     monkeypatch.setattr(settings, "URL_BASE_PATH", "/biorempp/")
 
     panel = create_upload_panel()
     hrefs = set(_collect_component_prop(panel, "href"))
+    ids = set(_collect_component_prop(panel, "id"))
 
-    assert "/biorempp/data/exemple_dataset.txt" in hrefs
+    assert "/biorempp/data/exemple_dataset.txt" not in hrefs
+    assert "load-example-btn" in ids
