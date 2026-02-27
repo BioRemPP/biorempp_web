@@ -24,6 +24,7 @@ from src.presentation.services.resume_store_redis import redis as redis_client_m
 from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
     RESUME_CALLBACK_ATTEMPTS_TOTAL,
+    RESUME_REQUEST_IP_SOURCE_TOTAL,
     RESUME_RATE_LIMIT_BACKEND_INFO,
     RESUME_RATE_LIMIT_ERRORS_TOTAL,
     instrument_callback,
@@ -31,6 +32,7 @@ from src.shared.metrics import (
 
 logger = get_logger(__name__)
 settings = get_settings()
+_ACTIVE_RATE_LIMIT_BACKEND = "diskcache"
 
 
 def _build_status_alert(message: str, color: str = "info") -> dbc.Alert:
@@ -69,13 +71,16 @@ def _strict_resume_errors_enabled() -> bool:
 def _get_request_ip() -> str:
     """Extract client IP from request context with proxy-aware fallback."""
     if not has_request_context():
+        RESUME_REQUEST_IP_SOURCE_TOTAL.labels(source="no_context").inc()
         return "unknown"
 
     remote_addr = (flask_request.remote_addr or "unknown").strip() or "unknown"
     if not settings.TRUST_PROXY_HEADERS:
+        RESUME_REQUEST_IP_SOURCE_TOTAL.labels(source="remote_addr").inc()
         return remote_addr[:64]
 
     if not settings.is_trusted_proxy_ip(remote_addr):
+        RESUME_REQUEST_IP_SOURCE_TOTAL.labels(source="untrusted_proxy_remote_addr").inc()
         return remote_addr[:64]
 
     forwarded = flask_request.headers.get("X-Forwarded-For", "")
@@ -86,7 +91,9 @@ def _get_request_ip() -> str:
             ipaddress.ip_address(candidate)
         except ValueError:
             continue
+        RESUME_REQUEST_IP_SOURCE_TOTAL.labels(source="xff").inc()
         return candidate[:64]
+    RESUME_REQUEST_IP_SOURCE_TOTAL.labels(source="trusted_proxy_remote_addr").inc()
     return remote_addr[:64]
 
 
@@ -384,6 +391,7 @@ def _resolve_resume_rate_limit_backend() -> str:
 
 def _build_resume_rate_limiter():
     """Build rate limiter backend with safe fallback behavior."""
+    global _ACTIVE_RATE_LIMIT_BACKEND
     backend = _resolve_resume_rate_limit_backend()
     if backend == "redis":
         try:
@@ -404,6 +412,7 @@ def _build_resume_rate_limiter():
                 extra={"backend": "redis"},
             )
             _set_rate_limit_backend_info("redis")
+            _ACTIVE_RATE_LIMIT_BACKEND = "redis"
             return limiter
         except Exception:
             RESUME_RATE_LIMIT_ERRORS_TOTAL.labels(
@@ -426,6 +435,7 @@ def _build_resume_rate_limiter():
         extra={"backend": "diskcache"},
     )
     _set_rate_limit_backend_info("diskcache")
+    _ACTIVE_RATE_LIMIT_BACKEND = "diskcache"
     return limiter
 
 
@@ -452,6 +462,7 @@ def resolve_resume_request(job_id: str, owner_token: str):
     tuple
         (merged_result_store_update, pathname_update, status_component)
     """
+    _set_rate_limit_backend_info(_ACTIVE_RATE_LIMIT_BACKEND)
     normalized_job_id = (job_id or "").strip().upper()
     ip_address = _get_request_ip()
     ip_ref = _ip_ref(ip_address)

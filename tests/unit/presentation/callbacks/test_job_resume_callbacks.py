@@ -11,6 +11,7 @@ from src.presentation.callbacks import job_resume_callbacks
 from src.presentation.services.job_resume_service import JobResumeService
 from src.shared.metrics import (
     RESUME_CALLBACK_ATTEMPTS_TOTAL,
+    RESUME_REQUEST_IP_SOURCE_TOTAL,
     RESUME_RATE_LIMIT_BACKEND_INFO,
     RESUME_RATE_LIMIT_ERRORS_TOTAL,
 )
@@ -342,6 +343,29 @@ def test_get_request_ip_uses_xff_from_trusted_proxy(monkeypatch):
         environ_base={"REMOTE_ADDR": "172.18.0.5"},
     ):
         assert job_resume_callbacks._get_request_ip() == "203.0.113.10"
+
+
+def test_get_request_ip_source_metric_for_trusted_xff(monkeypatch):
+    """Trusted proxy + valid XFF should increment xff source metric."""
+    before_xff = _counter_value(RESUME_REQUEST_IP_SOURCE_TOTAL, source="xff")
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda ip: ip == "172.18.0.5",
+    )
+
+    with app.test_request_context(
+        "/resume",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_overrides={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "203.0.113.10"
+
+    assert _counter_value(RESUME_REQUEST_IP_SOURCE_TOTAL, source="xff") >= (
+        before_xff + 1.0
+    )
 
 
 def test_get_request_ip_ignores_xff_from_untrusted_proxy(monkeypatch):

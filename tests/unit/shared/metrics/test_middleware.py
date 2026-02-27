@@ -165,3 +165,30 @@ def test_middleware_preserves_valid_incoming_request_id() -> None:
 
     assert response.status_code == 200
     assert response.headers.get("X-Request-ID") == incoming_request_id
+
+
+def test_middleware_sets_trace_id_when_missing() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    response = client.get("/schemas/biorempp")
+    trace_id = response.headers.get("X-Trace-ID")
+
+    assert response.status_code == 200
+    assert isinstance(trace_id, str)
+    assert bool(re.fullmatch(r"[a-f0-9]{32}", trace_id))
+
+
+def test_middleware_extracts_trace_id_from_traceparent() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    trace_id = "4bf92f3577b34da6a3ce929d0e0e4736"
+    traceparent = f"00-{trace_id}-00f067aa0ba902b7-01"
+    response = client.get(
+        "/schemas/biorempp",
+        headers={"traceparent": traceparent},
+    )
+
+    assert response.status_code == 200
+    assert response.headers.get("X-Trace-ID") == trace_id

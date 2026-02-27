@@ -120,11 +120,15 @@ class LogConfig:
         # Determine log level based on environment
         if self.environment.lower() in ["production", "prod"]:
             level = logging.INFO
-            format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            format_str = (
+                "%(asctime)s - %(name)s - %(levelname)s - "
+                "[req:%(request_id)s] - [trace:%(trace_id)s] - %(message)s"
+            )
         else:
             level = logging.DEBUG
             format_str = (
                 "%(asctime)s - %(name)s - %(levelname)s - "
+                "[req:%(request_id)s] - [trace:%(trace_id)s] - "
                 "[%(filename)s:%(lineno)d] - %(message)s"
             )
 

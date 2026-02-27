@@ -58,6 +58,8 @@ class JSONFormatter(logging.Formatter):
             log_data["user_id"] = record.user_id
         if hasattr(record, "request_id"):
             log_data["request_id"] = record.request_id
+        if hasattr(record, "trace_id"):
+            log_data["trace_id"] = record.trace_id
         if hasattr(record, "duration_ms"):
             log_data["duration_ms"] = record.duration_ms
         if hasattr(record, "sample_id"):

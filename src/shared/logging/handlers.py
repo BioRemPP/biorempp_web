@@ -9,7 +9,7 @@ import logging.handlers
 from pathlib import Path
 from typing import Optional
 
-from .request_context import get_request_id
+from .request_context import get_request_id, get_trace_id
 
 
 class ContextFilter(logging.Filter):
@@ -80,6 +80,8 @@ class RequestContextFilter(logging.Filter):
     def filter(self, record: logging.LogRecord) -> bool:
         if not hasattr(record, "request_id"):
             record.request_id = get_request_id()
+        if not hasattr(record, "trace_id"):
+            record.trace_id = get_trace_id()
         return True
 
 

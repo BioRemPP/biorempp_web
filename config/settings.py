@@ -58,6 +58,8 @@ All settings can be overridden with environment variables:
 - BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS: Base backoff in seconds
 - BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS: Max backoff in seconds
 - BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB: Cache size for limiter state
+- BIOREMPP_RESUME_RATE_LIMIT_BACKEND: Rate-limit backend (auto|diskcache|redis)
+- BIOREMPP_RESUME_RATE_LIMIT_REDIS_KEY_PREFIX: Redis key prefix for rate-limit state
 - BIOREMPP_RESUME_ALERT_WINDOW_SECONDS: Security alert window in seconds
 - BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD: Alert threshold for not_found
 - BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD: Alert threshold for token_mismatch
@@ -554,6 +556,22 @@ class Settings:
         )
     )
 
+    RESUME_RATE_LIMIT_BACKEND: Literal["auto", "diskcache", "redis"] = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKEND",
+            "auto",
+        )
+        .strip()
+        .lower()
+    )
+
+    RESUME_RATE_LIMIT_REDIS_KEY_PREFIX: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_RATE_LIMIT_REDIS_KEY_PREFIX",
+            "biorempp:resume:ratelimit:",
+        )
+    )
+
     RESUME_ALERT_WINDOW_SECONDS: int = field(
         default_factory=lambda: _get_int("BIOREMPP_RESUME_ALERT_WINDOW_SECONDS", 300)
     )
@@ -872,6 +890,15 @@ class Settings:
         self.RESUME_RATE_LIMIT_CACHE_SIZE_MB = max(
             self.RESUME_RATE_LIMIT_CACHE_SIZE_MB, 16
         )
+        if self.RESUME_RATE_LIMIT_BACKEND not in ("auto", "diskcache", "redis"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_RATE_LIMIT_BACKEND, using 'auto'"
+            )
+            self.RESUME_RATE_LIMIT_BACKEND = "auto"
+        self.RESUME_RATE_LIMIT_REDIS_KEY_PREFIX = (
+            self.RESUME_RATE_LIMIT_REDIS_KEY_PREFIX.strip()
+            or "biorempp:resume:ratelimit:"
+        )
 
         self.RESUME_ALERT_WINDOW_SECONDS = max(self.RESUME_ALERT_WINDOW_SECONDS, 60)
         self.RESUME_ALERT_NOT_FOUND_THRESHOLD = max(
@@ -972,6 +999,19 @@ class Settings:
         ):
             raise ValueError(
                 "Invalid production Redis password for resume backend: set "
+                "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
+            )
+
+        effective_rate_limit_backend = self.RESUME_RATE_LIMIT_BACKEND
+        if effective_rate_limit_backend == "auto":
+            effective_rate_limit_backend = (
+                "redis" if self.RESUME_BACKEND == "redis" else "diskcache"
+            )
+        if effective_rate_limit_backend == "redis" and _is_insecure_secret(
+            self.RESUME_REDIS_PASSWORD, min_length=12
+        ):
+            raise ValueError(
+                "Invalid production Redis password for resume rate-limit backend: set "
                 "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
             )
 
@@ -1160,6 +1200,7 @@ class Settings:
                 "resume_ttl_seconds": self.RESUME_TTL_SECONDS,
                 "resume_rate_limit_attempts": self.RESUME_RATE_LIMIT_ATTEMPTS,
                 "resume_rate_limit_window_seconds": self.RESUME_RATE_LIMIT_WINDOW_SECONDS,
+                "resume_rate_limit_backend": self.RESUME_RATE_LIMIT_BACKEND,
                 "gunicorn_limit_request_line": self.GUNICORN_LIMIT_REQUEST_LINE,
                 "gunicorn_limit_request_field_size": self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE,
                 "gunicorn_limit_request_fields": self.GUNICORN_LIMIT_REQUEST_FIELDS,
@@ -1267,6 +1308,7 @@ class Settings:
             f"  Max Payload: {self.RESUME_MAX_PAYLOAD_MB} MB",
             f"  Rate Limit: {self.RESUME_RATE_LIMIT_ATTEMPTS} attempts / "
             f"{self.RESUME_RATE_LIMIT_WINDOW_SECONDS}s",
+            f"  Rate Limit Backend: {self.RESUME_RATE_LIMIT_BACKEND}",
             f"  Backoff: base {self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS}s, "
             f"max {self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS}s",
             f"  Alert Window: {self.RESUME_ALERT_WINDOW_SECONDS}s",

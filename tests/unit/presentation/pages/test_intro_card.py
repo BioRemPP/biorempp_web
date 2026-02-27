@@ -8,7 +8,7 @@ from src.presentation.components.composite.intro_card import create_intro_card
 CLAIM_LINES = (
     "This web service is free and open to all users and does not require login.",
     "It is not usable for commercial product claims without experimental confirmation.",
-    "See detailed terms of use",
+    "See the license page for detailed terms of use.",
 )
 
 

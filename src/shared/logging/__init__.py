@@ -32,6 +32,12 @@ from .handlers import (
     create_rotating_handler,
 )
 from .request_context import (
+    clear_trace_id,
+    extract_trace_id_from_traceparent,
+    generate_trace_id,
+    get_trace_id,
+    sanitize_trace_id,
+    set_trace_id,
     clear_request_id,
     generate_request_id,
     get_request_id,
@@ -66,4 +72,10 @@ __all__ = [
     "clear_request_id",
     "generate_request_id",
     "sanitize_incoming_request_id",
+    "get_trace_id",
+    "set_trace_id",
+    "clear_trace_id",
+    "generate_trace_id",
+    "sanitize_trace_id",
+    "extract_trace_id_from_traceparent",
 ]

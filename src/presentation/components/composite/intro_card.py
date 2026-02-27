@@ -156,12 +156,12 @@ def create_intro_card() -> html.Div:
             dbc.Alert(
                 [
                     html.Div(
-                        "This web service is free and open to all users and does not require login"
+                        "This web service is free and open to all users and does not require login."
                     ),
                     html.Div(
-                        "It is not usable for commercial product claims without experimental confirmation"
+                        "It is not usable for commercial product claims without experimental confirmation."
                     ),
-                    html.Div("See detailed terms of use"),
+                    html.Div("See the license page for detailed terms of use."),
                 ],
                 color="success",
                 className="mt-2 mb-3 text-center",

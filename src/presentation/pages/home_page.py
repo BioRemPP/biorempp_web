@@ -93,7 +93,7 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     upload_workflow = dbc.Container(
         [
             html.H1(
-                "Start Your Analysis", className="text-center text-success mb-4 mt-4"
+                "Understand BioRemPP", className="text-center text-success mb-4 mt-4"
             ),
             # New User Guide Card
             dbc.Row(
@@ -113,6 +113,9 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                 ],
                 className="g-3 align-items-stretch mb-2",
             ),
+            html.H1(
+                "Start Your Analysis", className="text-center text-success mb-4 mt-4"
+            ),            
             # Step 1: Upload
             create_upload_panel(),
             # Validation feedback (appears after upload)

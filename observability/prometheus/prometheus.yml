@@ -7,7 +7,7 @@ global:
     environment: production
 
 rule_files:
-  - /etc/prometheus/rules/alerts.yml
+  - /tmp/alerts.active.yml
   - /etc/prometheus/rules/recording.yml
 
 scrape_configs:

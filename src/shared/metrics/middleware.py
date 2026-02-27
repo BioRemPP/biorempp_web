@@ -10,9 +10,14 @@ from flask import Flask, Response, g, request
 
 from src.shared.logging import (
     clear_request_id,
+    clear_trace_id,
+    extract_trace_id_from_traceparent,
     generate_request_id,
+    generate_trace_id,
+    sanitize_trace_id,
     sanitize_incoming_request_id,
     set_request_id,
+    set_trace_id,
 )
 
 from .registry import (
@@ -88,6 +93,15 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
         g._biorempp_request_id = request_id
         set_request_id(request_id)
 
+        trace_id = (
+            extract_trace_id_from_traceparent(request.headers.get("traceparent", ""))
+            or sanitize_trace_id(request.headers.get("X-B3-TraceId", ""))
+            or sanitize_trace_id(request.headers.get("X-Trace-ID", ""))
+            or generate_trace_id()
+        )
+        g._biorempp_trace_id = trace_id
+        set_trace_id(trace_id)
+
         request_path = _canonical_path(request.path)
         if _is_excluded_endpoint(request_path, canonical_metrics_path):
             g._biorempp_track_metrics = False
@@ -109,15 +123,20 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
         request_id = getattr(g, "_biorempp_request_id", None)
         if request_id:
             response.headers["X-Request-ID"] = request_id
+        trace_id = getattr(g, "_biorempp_trace_id", None)
+        if trace_id:
+            response.headers["X-Trace-ID"] = trace_id
 
         if not getattr(g, "_biorempp_track_metrics", False):
             clear_request_id()
+            clear_trace_id()
             return response
 
         start = getattr(g, "_biorempp_metrics_start", None)
         endpoint = getattr(g, "_biorempp_metrics_endpoint", _normalize_endpoint(request.path))
         if start is None:
             clear_request_id()
+            clear_trace_id()
             return response
 
         method = request.method
@@ -152,11 +171,13 @@ def register_metrics_middleware(flask_app: Flask, metrics_path: str = "/metrics"
             ).observe(float(response_size))
 
         clear_request_id()
+        clear_trace_id()
         return response
 
     @flask_app.teardown_request
     def _teardown_request_metrics(_exc) -> None:
         clear_request_id()
+        clear_trace_id()
 
     state[_MIDDLEWARE_FLAG] = True
 

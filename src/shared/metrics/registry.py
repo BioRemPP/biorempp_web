@@ -239,7 +239,7 @@ RESUME_RATE_LIMIT_BACKEND_INFO = _metric(
     "biorempp_resume_rate_limit_backend_info",
     "Selected resume rate-limit backend (1 active, 0 inactive)",
     ["backend"],
-    multiprocess_mode="livesum",
+    multiprocess_mode="livemax",
 )
 
 RESUME_RATE_LIMIT_ERRORS_TOTAL = _metric(
@@ -247,6 +247,13 @@ RESUME_RATE_LIMIT_ERRORS_TOTAL = _metric(
     "biorempp_resume_rate_limit_errors_total",
     "Total resume rate-limit backend errors by backend and operation",
     ["backend", "operation"],
+)
+
+RESUME_REQUEST_IP_SOURCE_TOTAL = _metric(
+    Counter,
+    "biorempp_resume_request_ip_source_total",
+    "Total resume requests by resolved client IP source",
+    ["source"],
 )
 
 UPLOAD_OPERATIONS_TOTAL = _metric(
@@ -340,6 +347,7 @@ __all__ = [
     "RESUME_CALLBACK_ATTEMPTS_TOTAL",
     "RESUME_RATE_LIMIT_BACKEND_INFO",
     "RESUME_RATE_LIMIT_ERRORS_TOTAL",
+    "RESUME_REQUEST_IP_SOURCE_TOTAL",
     "UPLOAD_OPERATIONS_TOTAL",
     "UPLOAD_SIZE_BYTES",
     "PROCESSING_DURATION_SECONDS",
