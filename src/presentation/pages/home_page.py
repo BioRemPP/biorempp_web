@@ -33,8 +33,6 @@ from ..pages.new_user import (
     create_new_user_guide_button,
     create_new_user_guide_modal,
 )
-
-from ..pages.review_disclaimer import create_reviewer_disclaimer_modal
 from ..pages.terms_of_use import create_terms_button, create_terms_modal
 
 
@@ -67,7 +65,7 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
       - Validation Panel (Step 1 results)
       - Progress Panel (Step 2)
       - Completion Panel (Step 3)
-    - Section 4: Help & Guidance
+    - Section 4: Resume by Job ID + Help & Guidance
     - Section 5: Footer
 
     State Management (5 dcc.Stores):
@@ -78,10 +76,10 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     - resume-browser-token: local browser ownership token for job resume
 
     Workflow:
-    1. User uploads file → upload-result populated
-    2. User clicks Process → processing-progress updates
-    3. Processing completes → processing-complete = True
-    4. User clicks View Results → navigate to /results
+    1. User uploads file -> upload-result populated
+    2. User clicks Process -> processing-progress updates
+    3. Processing completes -> processing-complete = True
+    4. User clicks View Results -> navigate to /results
     """
     # Section 1: Header
     header = create_header(show_nav=True, logo_size="80px")
@@ -117,16 +115,6 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                     )
                 ]
             ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        [create_job_resume_panel()],
-                        md=10,
-                        lg=8,
-                        className="mx-auto mb-2",
-                    )
-                ]
-            ),
             # Step 1: Upload
             create_upload_panel(),
             # Validation feedback (appears after upload)
@@ -139,8 +127,22 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
         className="mb-5",
     )
 
-    # Section 4: Help & Guidance
-    help_section = dbc.Container([create_help_links()], className="mb-5")
+    # Section 4: Resume by Job ID + Help & Guidance
+    help_section = dbc.Container(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [create_job_resume_panel()],
+                        md=12,
+                        className="mb-3",
+                    )
+                ]
+            ),
+            create_help_links(),
+        ],
+        className="mb-5",
+    )
 
     # Section 5: Footer
     footer = create_footer()
@@ -174,7 +176,6 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             footer,
             create_new_user_guide_modal(),  # Guided tour modal
             create_terms_modal(),  # Terms of use modal
-            create_reviewer_disclaimer_modal(),  # Reviewer disclaimer modal (temporary)
         ]
     )
 

@@ -71,9 +71,6 @@ from src.presentation.pages.methods.callbacks import (
     register_callbacks as register_methods_callbacks,
 )
 from src.presentation.pages.new_user import register_new_user_guide_callbacks
-from src.presentation.pages.review_disclaimer import (
-    register_reviewer_disclaimer_callbacks,
-)
 from src.presentation.pages.uc_user_guide import register_demo_callbacks
 
 # Initialize application settings and logging
@@ -335,10 +332,6 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     # Register New User Guide callbacks
     logger.info("Registering New User Guide callbacks...")
     register_new_user_guide_callbacks(app)
-
-    # Register Reviewer Disclaimer callbacks (temporary for initial submission)
-    logger.info("Registering Reviewer Disclaimer callbacks...")
-    register_reviewer_disclaimer_callbacks(app)
 
     # Add health check endpoints
     @app.server.route('/health')

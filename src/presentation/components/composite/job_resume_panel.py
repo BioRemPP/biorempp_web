@@ -7,9 +7,25 @@ Provides a simple `job_id` input + action button to restore cached results.
 import dash_bootstrap_components as dbc
 from dash import html
 
+from config.settings import get_settings
+
+
+def _format_resume_ttl(ttl_seconds: int) -> str:
+    """Convert TTL seconds into a short, user-facing duration string."""
+    ttl = max(int(ttl_seconds), 60)
+    if ttl % 3600 == 0:
+        hours = ttl // 3600
+        return f"{hours} hour{'s' if hours != 1 else ''}"
+    if ttl % 60 == 0:
+        minutes = ttl // 60
+        return f"{minutes} minute{'s' if minutes != 1 else ''}"
+    return f"{ttl} seconds"
+
 
 def create_job_resume_panel() -> dbc.Card:
     """Create resume-by-job-id panel for homepage workflow."""
+    ttl_label = _format_resume_ttl(get_settings().RESUME_TTL_SECONDS)
+
     return dbc.Card(
         [
             dbc.CardHeader(
@@ -24,7 +40,15 @@ def create_job_resume_panel() -> dbc.Card:
                     html.P(
                         "Already processed a file? Enter your Job ID to restore results "
                         "without reprocessing.",
+                        className="text-muted mb-2",
+                    ),
+                    html.P(
+                        [
+                            "Resume works only in the same browser profile and remains "
+                            f"available for up to {ttl_label} after processing.",
+                        ],
                         className="text-muted mb-3",
+                        style={"fontSize": "0.9rem"},
                     ),
                     dbc.Row(
                         [

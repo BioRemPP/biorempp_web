@@ -50,6 +50,28 @@ def _find_component_by_id(node: Any, target_id: str) -> Any:
     return found
 
 
+def _collect_text(node: Any) -> str:
+    """Collect textual children recursively into a single string."""
+    chunks: list[str] = []
+
+    def visit(value: Any) -> None:
+        if value is None:
+            return
+        if isinstance(value, str):
+            chunks.append(value)
+            return
+        if isinstance(value, (list, tuple)):
+            for item in value:
+                visit(item)
+            return
+        children = getattr(value, "children", None)
+        if children is not None:
+            visit(children)
+
+    visit(node)
+    return " ".join(chunks)
+
+
 def test_home_layout_includes_resume_browser_token_store():
     """Homepage should expose local store for browser ownership token."""
     layout = create_home_layout()
@@ -76,3 +98,23 @@ def test_home_layout_resume_input_has_security_constraints():
     assert resume_input is not None
     assert getattr(resume_input, "maxLength", None) == 26
     assert getattr(resume_input, "pattern", None) == r"BRP-\d{8}-\d{6}-[A-F0-9]{6}"
+
+
+def test_home_layout_does_not_include_reviewer_disclaimer_components():
+    """Homepage should not expose deprecated reviewer disclaimer UI IDs."""
+    layout = create_home_layout()
+    component_ids = _collect_component_ids(layout)
+    removed_prefix = "reviewer"
+
+    assert f"{removed_prefix}-disclaimer-btn" not in component_ids
+    assert f"{removed_prefix}-disclaimer-modal" not in component_ids
+    assert f"{removed_prefix}-disclaimer-close" not in component_ids
+
+
+def test_home_layout_resume_panel_mentions_same_browser_and_ttl():
+    """Resume panel should communicate same-browser and TTL constraints."""
+    layout = create_home_layout()
+    content = _collect_text(layout)
+
+    assert "same browser profile" in content
+    assert "available for up to" in content
