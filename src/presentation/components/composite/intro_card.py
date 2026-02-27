@@ -98,7 +98,12 @@ def create_intro_card() -> html.Div:
                                         [
                                             dbc.Col(
                                                 dbc.Button(
-                                                    "More Info",
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-exclamation-circle me-2"
+                                                        ),
+                                                        "More Info",
+                                                    ],
                                                     id="info-modal-open-button",
                                                     color="primary",
                                                     size="md",
@@ -140,7 +145,7 @@ def create_intro_card() -> html.Div:
                                                 width="auto",
                                             ),
                                         ],
-                                        className="g-2 justify-content-center",
+                                        className="g-3 justify-content-center intro-actions-row",
                                     ),
                                     className="text-center mt-1",
                                 ),

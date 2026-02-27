@@ -31,9 +31,12 @@ def create_job_resume_panel() -> dbc.Card:
             dbc.CardHeader(
                 [
                     html.I(className="fas fa-rotate-left me-2"),
-                    html.Span("Resume Analysis by Job ID", className="font-weight-bold"),
+                    html.Span(
+                        "Resume Analysis by Job ID",
+                        className="font-weight-bold",
+                    ),
                 ],
-                className="bg-light",
+                className="bg-success text-white",
             ),
             dbc.CardBody(
                 [
@@ -79,6 +82,15 @@ def create_job_resume_panel() -> dbc.Card:
                             ),
                         ],
                         className="g-2",
+                    ),
+                    html.P(
+                        [
+                            "This identifier lets you return to analysis without reprocessing.",
+                            html.Br(),
+                            "In the results page, you can copy it for later use.",
+                        ],
+                        className="text-muted mt-2 mb-0",
+                        style={"fontSize": "0.85rem"},
                     ),
                     html.Div(id="resume-job-status", className="mt-3"),
                 ]

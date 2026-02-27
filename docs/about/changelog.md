@@ -15,6 +15,43 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.7-beta] - 2026-02-27
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Resume by Job ID + Production Observability
+
+- **Resume Analysis by Job ID (same-browser)** with temporary payload persistence and recovery flow from homepage to `/results`.
+- **Dual backend support for resume persistence** (`diskcache` baseline and `redis` for multi-worker scale), including backend resolution by environment.
+- **Prometheus/Grafana observability stack** with instrumentation for processing, resume flow, cache behavior, and callback execution.
+- **Operational telemetry and alerting** for resume outcomes (`not_found`, `token_mismatch`, `save_failed`, `rate_limited`) and worker health.
+
+### Changed
+
+#### Security, Deployment, and Routing
+
+- **Production hardening policy** with fail-fast validation for required secrets and safer production defaults.
+- **Nginx-first production topology** with internal app exposure, metrics protection, and institutional edge-TLS alignment.
+- **Configurable base path support** via `BIOREMPP_URL_BASE_PATH`, preserving root compatibility while enabling subpath deployments.
+- **Incremental deployment model** using environment overlays for baseline (`prod`) and full stack (`prod + cache + observability`) activation.
+
+#### UI and Editorial Alignment
+
+- **Homepage workflow refinement** based on editorial feedback (input onboarding flow, resume panel positioning, and cleaner action hierarchy).
+- **Deprecated reviewer disclaimer removed** (UI, callback registration, and related page module).
+- **Job ID UX improvements** in processing/results flow, with clearer recovery messaging and copy-oriented interaction.
+
+### Fixed
+
+#### Reliability and Runtime Consistency
+
+- **Results navigation stability** under production proxy/base-path scenarios.
+- **Nginx and app integration issues** affecting request routing, health behavior, and payload handling.
+- **UpSet rendering consistency** by centralizing dimension behavior in the shared strategy path.
+
+---
+
 ## [1.0.6-beta] - 2026-02-19
 ##### The application will remain in beta until the article is officially released.
 

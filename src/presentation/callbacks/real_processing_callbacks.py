@@ -404,6 +404,10 @@ def register_real_processing_callbacks(app):
                 "success",
                 "Processing completed successfully!",
                 details={"Job ID": persisted_job_id},
+                notes=[
+                    "This identifier lets you resume analysis without reprocessing.",
+                    "On the results page, you can copy it for later use.",
+                ],
             )
 
             # Return results

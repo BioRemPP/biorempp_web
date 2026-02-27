@@ -1,8 +1,14 @@
 .intro-action-btn {
   transition: filter 0.18s ease-in-out, transform 0.18s ease-in-out;
+  min-width: 170px;
 }
 
 .intro-action-btn:hover,
 .intro-action-btn:focus {
   filter: brightness(0.92);
+}
+
+.intro-actions-row .col-auto {
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
 }

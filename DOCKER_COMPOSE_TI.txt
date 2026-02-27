@@ -1,0 +1,84 @@
+Docker Compose
+
+Guia  para subir o projeto em fases
+- Base: .env/env.production.biome
+- Overlay full stack: .env/env.production.stack
+
+Pré configuracao (antes de subir):
+- BIOREMPP_URL_BASE_PATH:
+  - "/" quando a aplicacao estiver na raiz do dominio.
+  - "/app/biorempp/" (ou prefixo definido pelo TI) quando houver subpath institucional.
+- Nginx e SSL:
+  -LS no edge/ingress e Nginx interno em HTTP (porta 80).
+
+0) Papel de cada arquivo .env
+
+Os dois arquivos abaixo ja estao configurados
+
+- .env/env.production.biome (base institucional)
+  Arquivo base para subida inicial de producao com app + nginx, sem dependencias auxiliares.
+
+- .env/env.production.stack (overlay cache + observability)
+  Arquivo complementar com overrides para habilitar redis + prometheus + grafana sobre a base.
+
+1) Fase 1 - Subir somente app + nginx (baseline)
+
+docker compose --env-file .env/env.production.biome --profile prod down --remove-orphans
+docker compose --env-file .env/env.production.biome --profile prod up -d --build
+docker compose --env-file .env/env.production.biome --profile prod ps
+curl -f http://localhost/health
+
+Esperado:
+- Servicos: biorempp-volume-init, biorempp, nginx
+- biorempp e biorempp-nginx em healthy
+
+2) Fase 2 - Adicionar Redis (cache/resume)
+
+Usar base + overlay, habilitando perfil cache.
+
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache up -d --build
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache ps
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache logs --since 10m biorempp redis
+
+Esperado:
+- biorempp-redis em healthy
+- Sem erro recorrente de conexao Redis nos logs do biorempp
+
+3) Fase 3 - Adicionar observability (Prometheus + Grafana)
+
+Mantendo os dois .env:
+
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache --profile observability up -d --build
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache --profile observability ps
+curl -f http://localhost:9090/-/healthy
+curl -f http://localhost:3300/api/health
+
+Esperado:
+- biorempp-prometheus e biorempp-grafana em healthy
+- Prometheus e Grafana respondendo localmente
+
+4) Comandos de validacao de composicao
+
+Checar servicos esperados por fase:
+
+docker compose --env-file .env/env.production.biome --profile prod config --services
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache --profile observability config --services
+
+Esperado:
+- Baseline: biorempp-volume-init, biorempp, nginx
+- Full stack: baseline + redis, prometheus, grafana
+
+5) Checagem de estabilidade (sem loop)
+
+docker inspect biorempp --format '{{.RestartCount}}'
+docker inspect biorempp-nginx --format '{{.RestartCount}}'
+docker inspect biorempp-redis --format '{{.RestartCount}}'
+docker inspect biorempp-prometheus --format '{{.RestartCount}}'
+docker inspect biorempp-grafana --format '{{.RestartCount}}'
+
+Esperado:
+- RestartCount sem crescimento continuo.
+
+6) Parar ambiente quando necessario
+
+docker compose --env-file .env/env.production.biome --env-file .env/env.production.stack --profile prod --profile cache --profile observability down --remove-orphans

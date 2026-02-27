@@ -477,10 +477,35 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
                                             ],
                                             className="text-muted d-block",
                                         ),
-                                        html.Code(
-                                            job_id,
-                                            className="text-dark",
-                                            style={"fontSize": "0.9rem"},
+                                        html.Div(
+                                            [
+                                                html.Code(
+                                                    job_id,
+                                                    id="results-job-id-copy-target",
+                                                    className="text-dark",
+                                                    style={
+                                                        "fontSize": "0.9rem",
+                                                        "cursor": "pointer",
+                                                    },
+                                                ),
+                                                (
+                                                    dcc.Clipboard(
+                                                        target_id="results-job-id-copy-target",
+                                                        title="Copy Job ID",
+                                                        className="ms-2",
+                                                        style={
+                                                            "display": "inline-flex",
+                                                            "alignItems": "center",
+                                                            "cursor": "pointer",
+                                                            "color": "#6c757d",
+                                                            "fontSize": "1rem",
+                                                        },
+                                                    )
+                                                    if job_id != "--"
+                                                    else html.Span()
+                                                ),
+                                            ],
+                                            className="d-inline-flex align-items-center justify-content-center",
                                         ),
                                     ],
                                     className="text-center mt-3",
