@@ -7,7 +7,7 @@ description: Open-access scientific web service for integrative functional analy
 
 *Open-Access Scientific Platform for Bioremediation Functional Analysis*
 
-**Version:** 1.0.3-beta | **Last Updated:** 2025-01-21
+**Version:** 1.0.7-beta | **Last Updated:** 2026-02-28
 
 ---
 
@@ -55,7 +55,7 @@ description: Open-access scientific web service for integrative functional analy
 
 | Resource | Description |
 |----------|-------------|
-| [Validation & Limitations](validation/limitations.md) | Understanding scope and constraints |
+| [Validation & Limitations](methods/limitations.md) | Understanding scope and constraints |
 | [How to Cite](about/how-to-cite.md) | Citation guidelines for publications |
 | [Terms of Use](about/terms-of-use.md) | Usage policies and licensing |
 | [Contact](about/contact.md) | Support and institutional contact |
@@ -77,7 +77,7 @@ The platform integrates four curated databases with seven international regulato
 - :material-chart-box: **56 analytical use cases** across 8 specialized modules
 - :material-shield-check: **7 regulatory frameworks** — IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA
 - :material-download: **Exportable results** — CSV, Excel, JSON formats
-- :material-lock-open: **No registration required** — session-based, privacy-first design
+- :material-lock-open: **No registration required** — temporary cache with Job ID resume workflow
 
 !!! warning "Research Tool Disclaimer"
     BioRemPP is designed for **exploratory research** and hypothesis generation. It is **not** validated for clinical diagnostics, regulatory compliance, or direct remediation decisions without independent experimental validation.
@@ -188,7 +188,7 @@ flowchart LR
 | Policy | Implementation |
 |--------|----------------|
 | :material-account-off: **No accounts** | No registration, authentication, or profiles |
-| :material-timer-sand: **Session-based** | Data discarded after 4 hours of inactivity |
+| :material-timer-sand: **Temporary retention** | Data removed after limited retention window (default 4 hours) |
 | :material-shield-lock: **No persistent storage** | Files processed in-memory only |
 | :material-share-off: **No data sharing** | Uploaded content never shared externally |
 | :material-https: **Secure transport** | HTTPS/TLS encryption on production |
@@ -226,8 +226,8 @@ flowchart LR
 ### Web Service
 
 ```text
-BioRemPP Development Team (2025). BioRemPP: Bioremediation Potential Profile 
-Web Service (v1.0.3-beta). Available at: https://biorempp.cloud
+BioRemPP Development Team (2026). BioRemPP: Bioremediation Potential Profile 
+Web Service (v1.0.7-beta). Available at: https://biorempp.cloud
 ```
 
 ??? note "BibTeX Format"
@@ -237,7 +237,7 @@ Web Service (v1.0.3-beta). Available at: https://biorempp.cloud
       author={BioRemPP Development Team},
       year={2025},
       url={https://biorempp.cloud},
-      note={Version 1.0.3-beta}
+      note={Version 1.0.7-beta}
     }
     ```
 

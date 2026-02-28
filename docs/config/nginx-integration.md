@@ -1,11 +1,17 @@
 # Nginx Integration
 
+<<<<<<< HEAD
 BioRemPP Web Service is designed to run behind **Nginx as a reverse proxy**. This page describes how environment variables and configuration files integrate with Nginx—it is not a complete Nginx deployment guide.
+=======
+BioRemPP is designed for institutional deployment with TLS termination at the edge.
+The in-project Nginx container is HTTP-only and proxies to Gunicorn.
+>>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)
 
 ---
 
 ## Scope
 
+<<<<<<< HEAD
 **This page covers:**
 
 - How configuration variables map to Nginx
@@ -14,9 +20,25 @@ BioRemPP Web Service is designed to run behind **Nginx as a reverse proxy**. Thi
 - Integration points between BioRemPP and Nginx
 
 ---
+=======
+## Required Ingress Contract
+
+Ingress must preserve/forward:
+
+- `Host` (final public host)
+- `X-Forwarded-For` (client IP chain)
+- `X-Forwarded-Proto` (`https` at edge)
+- `X-Forwarded-Host` (public host)
+
+Base path must match app configuration in `.env/env.production`:
+
+- root deployment: `BIOREMPP_URL_BASE_PATH=/`
+- subpath deployment: `BIOREMPP_URL_BASE_PATH=/biorempp/` or `/app/biorempp/`
+>>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)
 
 ## Architecture
 
+<<<<<<< HEAD
 ```
 [ Client ] → [ Nginx :80/:443 ] → [ Gunicorn :8080 ] → [ BioRemPP App ]
 ```
@@ -37,13 +59,35 @@ Nginx configuration is environment-specific:
 |-------------|-------------|---------|
 | Development | `.docker/nginx/nginx.dev.conf` | HTTP-only reverse proxy |
 | Production | `.docker/nginx/nginx.prod.conf` | HTTPS with Let's Encrypt SSL |
+=======
+Production fail-fast rules:
+
+- if `BIOREMPP_TRUST_PROXY_HEADERS=true`, `BIOREMPP_TRUSTED_PROXY_CIDRS` is mandatory;
+- invalid CIDRs abort startup;
+- loopback-only CIDRs are rejected in trusted mode.
+
+## Upload Contract
+
+- Current Nginx proxy body limit in runtime: `32 MB` (`client_max_body_size 32M`).
+- Application parser limit is independent (`BIOREMPP_UPLOAD_MAX_SIZE_MB`, default `5 MB`).
+- Effective user upload limit remains `5 MB` unless app parser limit is intentionally raised.
+
+If institutional operation needs >5 MB processing, increase app limits intentionally and run capacity tests.
+>>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)
 
 ---
 
+<<<<<<< HEAD
 ## Environment Variables Used by Nginx
+=======
+- `/metrics` must remain internal-only.
+- Nginx `/metrics` location must use allowlist + `deny all`.
+- External internet access to `/metrics` must be blocked.
+>>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)
 
 ### Required Variables
 
+<<<<<<< HEAD
 | Variable | Purpose | Typical Values |
 |----------|---------|----------------|
 | `DOMAIN` | Server name for SSL certificates | `biorempp.example.com` |
@@ -206,3 +250,22 @@ LETSENCRYPT_EMAIL=admin@example.com
 - [Logging Configuration](logging.md) — Nginx and application logging
 - [Health Endpoints](health-endpoints.md) — Health check endpoints for load balancing
 - [Docker Integration](docker-integration.md) — Container deployment with Nginx
+=======
+```bash
+curl -f http://<nginx-host>/health
+curl -i http://<nginx-host>/metrics
+docker exec biorempp curl -fsS http://127.0.0.1:8080/metrics
+```
+
+Expected:
+
+- `/health` returns `200`.
+- external `/metrics` is denied (`403` or equivalent).
+- internal metrics call succeeds.
+
+## See Also
+
+- [Docker Integration](docker-integration.md)
+- [Institutional Ingress Handoff](institutional_ingress_handoff.md)
+- [Environment Variables](environment-variables.md)
+>>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)

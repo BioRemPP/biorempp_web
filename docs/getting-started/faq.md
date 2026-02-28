@@ -1,269 +1,192 @@
 # Frequently Asked Questions
 
-Common questions about using BioRemPP for bioremediation analysis.
+Common questions about BioRemPP usage, results, and operations.
 
 ---
 
-## General Questions
+## General
 
 ### What is BioRemPP?
 
-BioRemPP (Bioremediation Potential Profile) is a web service for **functional inference** of bioremediation potential based on KEGG Orthology (KO) annotations. It integrates multiple databases (BioRemPP, KEGG, HADEG, toxCSM) to assess genetic potential for pollutant degradation.
+BioRemPP is a web service for functional inference of bioremediation potential from KEGG Orthology (KO) identifiers.
 
-### What is BioRemPP NOT designed for?
+### Do I need an account?
 
-BioRemPP is **not**:
+No. BioRemPP is open and does not require login.
 
-- A genome annotation tool (does not convert sequences to KO identifiers)
-- An expression analysis platform (does not quantify gene activity)
-- An experimental validation tool (does not measure degradation rates)
-- A clinical or regulatory decision-support system
+### Is BioRemPP free?
 
-For details on scope and limitations, see [Limitations](../methods/limitations.md).
+Yes. The service is free for scientific and educational use.
 
-### Do I need to create an account?
-
-No. BioRemPP operates with session-based storage. Data is processed in real-time and automatically deleted after 4 hours of inactivity or when the browser is closed.
+It is not usable for commercial product claims without experimental confirmation.
 
 ---
 
-## Input and Data Scope
+## Input and Validation
 
-### What type of data does BioRemPP accept?
+### What input format is accepted?
 
-**Accepted:** Plain text files (`.txt`) containing KO identifiers organized by sample.
+A plain text (`.txt`) file:
 
-**Not accepted:**
+```text
+>Sample1
+K00001
+K00002
+```
 
-- Raw sequencing reads
-- FASTA sequences (protein or nucleotide)
-- Assembled genomes
-- Gene expression matrices
-- Abundance tables
+Rules:
 
-### How do I obtain KO identifiers?
+- sample header starts with `>`
+- KO format must be `K#####`
+- no blank lines between sample blocks
 
-Use external annotation tools:
+### What are the default limits?
 
-| Tool | Input | Output | URL |
-|------|-------|--------|-----|
-| **KAAS** | Nucleotide sequences (FASTA) | KO assignments | [https://www.genome.jp/kaas-bin/kaas_main](https://www.genome.jp/kaas-bin/kaas_main) |
-| **eggNOG-mapper** | Protein/nucleotide sequences | KO + COG + GO | [http://eggnog-mapper.embl.de/](http://eggnog-mapper.embl.de/) |
-| **DIAMOND** | Protein sequences + KEGG DB | BLAST-style hits → KO | [https://github.com/bbuchfink/diamond](https://github.com/bbuchfink/diamond) |
-| **GhostKOALA** | Nucleotide sequences | KO assignments | [https://www.kegg.jp/ghostkoala/](https://www.kegg.jp/ghostkoala/) |
+- max samples: 100
+- max KO identifiers: 500,000
+- max upload size: 5 MB
 
-BioRemPP does not perform de novo annotation.
+These limits can be tuned per deployment.
 
-### Are quantitative data (e.g., gene counts, TPM) accepted?
+### Can I use an example file?
 
-No. BioRemPP performs **qualitative** analysis based on gene presence/absence. Quantitative data (expression levels, abundance) are not used.
+Yes.
 
-### What are the input size limits?
-
-- **Maximum samples:** 100
-- **Maximum KO identifiers:** 500,000 (total across all samples)
-- **Maximum file size:** 5 MB
+- Homepage card **Need a KO Input Example? -> Download Example**
+- or **Use Example Data** in the upload section
 
 ---
 
-## Analysis and Results
+## Processing and Job ID
+
+### What is the Job ID generated after processing?
+
+A unique identifier for each processing execution in the format:
+
+`BRP-YYYYMMDD-HHMMSS-XXXXXX`
+
+It lets you restore the same processed result without reprocessing.
+
+### Where can I find and copy my Job ID?
+
+- After processing success (Step 2 feedback)
+- In `/results` overview card, with copy action/icon
+
+### How long is a Job ID resumable?
+
+By default, up to 4 hours after processing (TTL-based, configurable by deployment).
+
+---
+
+## Resume by Job ID
+
+### How does Resume Analysis by Job ID work?
+
+From the homepage panel:
+
+1. enter your Job ID
+2. click **Resume**
+3. app restores payload and redirects to `/results`
+
+### Why does resume require the same browser profile?
+
+For security isolation, resume ownership is bound to the browser context that created the job.
+
+### Why does Resume by Job ID fail?
+
+Common causes:
+
+- invalid Job ID format
+- expired TTL window
+- different browser profile/context
+- temporary block after many failed attempts (rate limit)
+
+If resume is unavailable, reprocess the file to generate a new Job ID.
+
+---
+
+## Results and Interpretation
 
 ### What do BioRemPP results represent?
 
-Results indicate **genetic potential** (presence of genes encoding bioremediation functions). They do **not** represent:
+They represent genetic potential inferred from KO presence.
 
-- Actual degradation activity
-- Gene expression levels
-- Enzyme activity or metabolic flux
-- In situ bioremediation performance
+They do not directly prove:
 
-For details, see [Limitations](../methods/limitations.md).
+- gene expression
+- enzyme activity
+- in situ degradation performance
 
-### How should results be interpreted?
+### Are empty database results an error?
 
-Results are **computational inferences** for:
-
-- Hypothesis generation
-- Prioritization of candidates for experimental validation
-- Comparative functional profiling
-
-All predictions require wet-lab or field validation. See [Interpretation Guidelines](../user-guide/interpretation.md) for detailed guidance.
-
-### What does "pathway completeness" mean?
-
-Pathway completeness = (KOs present / Total KOs required) × 100%
-
-**Important caveats:**
-
-- Based on KEGG pathway definitions (may not reflect all biological variants)
-- Binary logic (presence/absence, not expression)
-- All KOs weighted equally (no distinction of critical vs. optional steps)
-
+Not necessarily. Empty sections can happen when uploaded KOs do not map to that specific database scope.
 
 ---
 
-## Databases and Annotations
+## Data Retention and Privacy
 
-### Which databases are integrated?
+### Is data stored permanently?
 
-1. **BioRemPP Database:** Curated bioremediation-specific mappings (KO → compounds, regulatory classifications)
-2. **KEGG:** Metabolic pathways, reactions, enzymes
-3. **HADEG:** Hydrocarbon degradation pathways
-4. **toxCSM:** Machine learning-based toxicity predictions (66 endpoints)
+No. BioRemPP uses temporary server-side cache for processing and resume.
 
-### Are databases updated?
+### What is retained and for how long?
 
-- **BioRemPP Database:** Versioned with the web service (deposited on Zenodo)
-- **KEGG:** Updated regularly by KEGG; cite access date
-- **HADEG, toxCSM:** Cite original publications
+Processed payloads are retained temporarily (default 4h) and purged automatically after expiration.
 
-Check the "How to Cite" page for version-specific information.
+### Is data shared between users?
 
-### What is the coverage of the BioRemPP Database?
-
-The database focuses on **bioremediation-relevant** compounds and enzymes. Not all KEGG pathways or compounds are included. Coverage prioritizes:
-
-- Priority pollutants (IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA)
-- Hydrocarbon degradation
-- Xenobiotic metabolism
+No. Resume access is isolated by browser-bound ownership token and validation checks.
 
 ---
 
-### What regulatory frameworks are referenced?
+## Technical Stack and Reliability
 
-BioRemPP integrates seven frameworks:
+### Is resume always backed by Redis?
 
-- **IARC** (International Agency for Research on Cancer)
-- **EPA** (U.S. Environmental Protection Agency)
-- **ATSDR** (Agency for Toxic Substances and Disease Registry)
-- **WFD** (Water Framework Directive, EU)
-- **PSL** (Priority Substances List, Canada)
-- **EPC** (Environmental Priority Chemicals)
-- **CONAMA** (National Environment Council, Brazil)
+Not necessarily. Deployments can use different cache backends while keeping the same user-facing behavior.
 
-These classifications are for **contextual reference**, not regulatory compliance.
+### What if I close the tab/browser?
 
----
+You may still recover the run within TTL using Job ID in the same browser profile.
 
-## Technical and Performance Questions
+### What browsers are supported?
 
-### How long does analysis take?
-
-**Typical processing times:**
-
--  10-30 seconds
-
-
-Time varies with server load and dataset complexity.
-
-### How long are results stored?
-
-**Session timeout:** 4 hours of inactivity
-
-After timeout or browser closure, all data is **permanently deleted**. Download results before closing the browser.
-
-### Which browsers are supported?
-
-**Recommended:**
-
-- Chrome 90+ (best performance)
-- Firefox 88+
-- Edge 90+
-- Safari 14+ (minor limitations)
-
-**Not supported:** Internet Explorer
+Recent versions of Chrome, Firefox, Edge, and Safari are recommended.
 
 ---
 
-## Reproducibility and Availability
+## Citation and Licensing
 
 ### How do I cite BioRemPP?
 
-**Temporary citation (until DOI assignment):**
+Use the current citation templates in [How to Cite](../about/how-to-cite.md).
 
-```
-BioRemPP: Bioremediation Potential Profile Analysis Tool.
-Version 1.0.0-beta (2025).
-Available at: https://biorempp.cloud
-Accessed: [DATE]
-```
+### Can I use BioRemPP commercially?
 
-**In Methods sections, report:**
+Software and data licenses define permitted reuse, but commercial product claims require independent experimental confirmation.
 
-- BioRemPP version
-- Annotation tool and version used
-- Modules/use cases applied
-- Analysis date
-- Non-default parameters (if any)
-
-### Is the source code available?
-
-Yes. BioRemPP is open-source:
-
-- **Web service code:** Apache License 2.0
-- **BioRemPP Database:** Creative Commons Attribution 4.0 (CC BY 4.0)
-
-Repository: https://github.com/BioRemPP
-
-### Can BioRemPP be used for commercial purposes?
-
-**Software:** Permitted under Apache 2.0
-
-**Database:** Permitted under CC BY 4.0
-
-**Third-party constraints:** Users must comply with KEGG licensing for commercial use. Contact KEGG directly: https://www.kegg.jp/kegg/legal.html
+See [Terms of Use](../about/terms-of-use.md) and [License](../about/license.md).
 
 ---
 
-## Common Issues
+## Downloads
 
-### Why was my file rejected?
+### What can I export?
 
-**Common causes:**
+- integrated database tables (CSV, Excel, JSON)
+- use-case-level tables
+- chart images (PNG, SVG, JPEG)
 
-- Invalid KO format (must be `K#####`)
-- Missing `>` prefix for sample names
-- Blank lines in file
-- Empty samples (sample with no KO identifiers)
-- File exceeds size/sample/KO limits
+### Does export filename include Job ID?
 
-See [Input Format](input-format.md) for complete validation rules. For step-by-step error resolution, consult the [Troubleshooting Guide](../user-guide/troubleshooting.md#common-processing-errors).
-
-### Why are some database results empty?
-
-Empty results occur when:
-
-- No KO identifiers match the database
-- Compounds from KEGG are not in toxCSM
-- No bioremediation-relevant enzymes detected
-
-This is **expected behavior** for samples without relevant annotations.
-
-### How do I download results?
-
-**Database downloads:**
-
-- Navigate to database section (BioRemPP, HADEG, KEGG, ToxCSM)
-- Click "Download Data" button
-- Choose format: CSV, Excel, or JSON
-
-**Plotly charts:**
-
-- Hover over chart → toolbar appears (top-right)
-- Click camera icon
-
-For detailed export options and reproducibility requirements, see the [Downloads Guide](../user-guide/downloads.md).
+Current naming is timestamp-based. Job ID is shown in the UI for tracking/resume.
 
 ---
 
-## Related Pages
+## Help and Troubleshooting
 
-- [Quickstart](quickstart.md) — Get started with your first analysis
-- [Input Format](input-format.md) — Complete format specification
-- [Example Datasets](example-datasets.md) — Ready-to-use test files
-- [Results Page](../user-guide/results-page.md) — Understanding the analytical interface
-- [Interpretation](../user-guide/interpretation.md) — How to interpret results
-- [Troubleshooting](../user-guide/troubleshooting.md) — Resolve common issues
-- [Downloads](../user-guide/downloads.md) — Export and reproducibility guide
-- [Contact](../about/contact.md) — Get help and support
-
+- [Quickstart](quickstart.md)
+- [Input Format](input-format.md)
+- [Results Page](../user-guide/results-page.md)
+- [Troubleshooting](../user-guide/troubleshooting.md)
+- [Contact](../about/contact.md)

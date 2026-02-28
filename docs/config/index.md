@@ -1,200 +1,145 @@
 # Configuration Guide
 
-BioRemPP Web Service uses a layered configuration approach that separates runtime settings, analytical behavior, and deployment infrastructure. This guide provides an overview of configuration options and directs you to detailed documentation for each area.
+BioRemPP uses a layered configuration model covering runtime, deployment, and observability.
 
 ---
 
-## Configuration Architecture
+## Configuration Layers
 
-BioRemPP configuration is organized into three layers:
+| Layer | Purpose | Main Artifacts |
+|---|---|---|
+| Deployment | Container topology and proxy integration | `docker-compose.yml`, `.docker/nginx/*` |
+| Runtime | Server behavior, security, resume, limits | `config/settings.py`, `.env/env.production` |
+| Observability | Metrics, alerts, dashboards | `src/shared/metrics/*`, `observability/*` |
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                    Deployment Layer                         │
-│         Docker, Nginx, Container Orchestration              │
-├─────────────────────────────────────────────────────────────┤
-│                    Runtime Layer                            │
-│      Environment Variables, Gunicorn, Logging               │
-├─────────────────────────────────────────────────────────────┤
-│                   Application Layer                         │
-│           YAML Use Cases, Plot Configs, Panels              │
-└─────────────────────────────────────────────────────────────┘
-```
+---
 
-| Layer | Purpose | Configuration Method |
-|-------|---------|---------------------|
-| **Deployment** | Infrastructure and container setup | Docker Compose, Nginx configs |
-| **Runtime** | Server behavior and operational settings | Environment variables, `.env` files |
-| **Application** | Analytical use cases and visualization | YAML configuration files |
+## Official Environment Files
+
+Use only tracked templates as source of truth:
+
+- `.env/env.example` (starting template)
+- `.env/env.production` (production baseline)
 
 ---
 
 ## Quick Reference
 
-### Runtime Configuration
-
-| Page | Purpose | Key Settings |
-|------|---------|--------------|
-| [Environment Variables](environment-variables.md) | Runtime behavior control | `BIOREMPP_ENV`, `BIOREMPP_PORT`, `BIOREMPP_DEBUG` |
-| [Gunicorn](gunicorn.md) | Production WSGI server | Workers, timeouts, worker class |
-| [Logging](logging.md) | Log profiles and verbosity | Log levels, file rotation, handlers |
-| [Health Endpoints](health-endpoints.md) | Monitoring and health checks | `/health`, `/ready` endpoints |
-
-### Application Configuration
-
-| Page | Purpose | Key Settings |
-|------|---------|--------------|
-| [YAML Configuration](yaml-configuration.md) | Declarative use case definition | Data sources, processing steps, visualization |
-
-### Deployment Configuration
-
-| Page | Purpose | Key Settings |
-|------|---------|--------------|
-| [Docker Integration](docker-integration.md) | Container deployment | Profiles, volumes, environment mapping |
-| [Nginx Integration](nginx-integration.md) | Reverse proxy setup | SSL, upstream, WebSocket support |
+| Topic | Page |
+|---|---|
+| Environment variables | [Environment Variables](environment-variables.md) |
+| Gunicorn runtime | [Gunicorn](gunicorn.md) |
+| Health probes | [Health Endpoints](health-endpoints.md) |
+| Logging | [Logging](logging.md) |
+| Docker profiles | [Docker Integration](docker-integration.md) |
+| Institutional ingress contract | [Institutional Ingress Handoff](institutional_ingress_handoff.md) |
+| Nginx reverse proxy | [Nginx Integration](nginx-integration.md) |
 
 ---
 
-## Configuration Precedence
+## Runtime Profiles
 
-When the same setting can be configured in multiple places, BioRemPP follows this precedence order (highest to lowest):
-
-1. **Command-line arguments** (if applicable)
-2. **Environment variables** (`BIOREMPP_*`)
-3. **`.env` file** in project root
-4. **Configuration files** (`config/*.yaml`)
-5. **Default values** in code
-
-Example: If `BIOREMPP_LOG_LEVEL=DEBUG` is set as an environment variable, it overrides the default `INFO` level defined in the logging configuration file.
-
----
-
-## Environment Profiles
-
-BioRemPP supports two primary profiles that affect multiple configuration defaults:
-
-### Development Profile
+### Development
 
 ```bash
 BIOREMPP_ENV=development
 ```
 
-| Setting | Default Value |
-|---------|---------------|
-| Debug mode | `True` |
-| Hot reload | `True` |
-| Log level | `DEBUG` |
-| Host | `127.0.0.1` |
-| Port | `8050` |
-
-### Production Profile
+### Production
 
 ```bash
 BIOREMPP_ENV=production
-```
-
-| Setting | Default Value |
-|---------|---------------|
-| Debug mode | `False` (forced) |
-| Hot reload | `False` (forced) |
-| Log level | `WARNING` |
-| Host | `0.0.0.0` |
-| Port | `8080` |
-
----
-
-## Common Configuration Tasks
-
-### Starting Development Server
-
-```bash
-# Minimal development setup
-export BIOREMPP_ENV=development
-python -m src.biorempp_app
-```
-
-### Starting Production Server
-
-```bash
-# Minimal production setup
-export BIOREMPP_ENV=production
-export BIOREMPP_WORKERS=4
-gunicorn wsgi:server -c gunicorn_config.py
-```
-
-### Running with Docker
-
-```bash
-# Development
-docker compose --profile dev up
-
-# Production with Nginx
-docker compose --profile prod --profile nginx up -d
+BIOREMPP_DEBUG=False
+BIOREMPP_HOT_RELOAD=False
 ```
 
 ---
 
-## Configuration Files Overview
+## Compose Execution Model
 
-### Project Structure
+### Baseline (app + nginx)
 
+```bash
+docker compose --env-file .env/env.production --profile prod up -d --build
 ```
+
+### Add Redis cache/resume backend
+
+```bash
+docker compose --env-file .env/env.production --profile prod --profile cache up -d --build
+```
+
+### Add observability stack
+
+```bash
+docker compose --env-file .env/env.production --profile prod --profile cache --profile observability up -d --build
+```
+
+---
+
+## Project Configuration Structure
+
+```text
 biorempp_web/
-├── .env                          # Environment variables (gitignored)
-├── .env.example                  # Template for .env
-├── gunicorn_config.py            # Gunicorn WSGI configuration
-├── config/
-│   ├── logging_dev.yaml          # Development logging profile
-│   └── logging_prod.yaml         # Production logging profile
-├── src/infrastructure/plot_configs/
-│   └── moduleX/
-│       ├── uc_X_Y_config.yaml    # Use case plot configuration
-│       └── uc_X_Y_panel.yaml     # Use case panel configuration
-└── .docker/
-    ├── Dockerfile                # Multi-stage build
-    ├── docker-compose.yml        # Service orchestration
-    ├── entrypoint.sh             # Container entry point
-    ├── healthcheck.sh            # Health check script
-    └── nginx/
-        ├── nginx.dev.conf        # Development Nginx config
-        └── nginx.prod.conf       # Production Nginx config
+|-- docker-compose.yml
+|-- gunicorn_config.py
+|-- config/
+|   |-- settings.py
+|   |-- logging_dev.yaml
+|   `-- logging_prod.yaml
+|-- .env/
+|   |-- env.example
+|   `-- env.production
+|-- .docker/
+|   |-- Dockerfile
+|   |-- entrypoint.sh
+|   |-- healthcheck.sh
+|   `-- nginx/
+|       |-- nginx.prod.conf
+|       `-- nginx.prod.tls-mock.conf
+`-- observability/
+    |-- prometheus/
+    `-- grafana/
 ```
 
 ---
 
-## Validation and Troubleshooting
+## Validation Checklist
 
-### Validating Configuration
+1. Render effective compose config:
 
-1. **Check environment variables:**
-   ```bash
-   env | grep BIOREMPP
-   ```
+```bash
+docker compose --env-file .env/env.production --profile prod config
+```
 
-2. **Verify logging configuration:**
-   ```bash
-   python -c "from src.infrastructure.config import get_settings; print(get_settings())"
-   ```
+2. Validate app and proxy health:
 
-3. **Test health endpoints:**
-   ```bash
-   curl http://localhost:8080/health
-   curl http://localhost:8080/ready
-   ```
+```bash
+curl -f http://localhost/health
+curl -i http://localhost/metrics
+```
 
-### Common Issues
+3. Validate internal metrics path:
 
-| Issue | Likely Cause | Solution |
-|-------|--------------|----------|
-| 502 Bad Gateway | Port mismatch between Nginx and Gunicorn | Verify `BIOREMPP_PORT` matches Nginx upstream |
-| Slow startup | Too many workers for available CPU | Reduce `BIOREMPP_WORKERS` |
-| Missing logs | Log directory doesn't exist | Create `logs/` directory with write permissions |
-| Debug info in production | `BIOREMPP_ENV` not set to `production` | Set `BIOREMPP_ENV=production` |
+```bash
+docker exec biorempp curl -fsS http://127.0.0.1:8080/metrics
+```
+
+---
+
+## Common Issues
+
+| Issue | Likely Cause | Action |
+|---|---|---|
+| 404 on root route | `BIOREMPP_URL_BASE_PATH` mismatch with ingress rewrite | Align base path in env + ingress |
+| App startup fail-fast | insecure/missing required secrets | set secure values in `.env/env.production` |
+| Wrong client IP in logs/rate-limit | trusted proxy CIDRs missing/incorrect | fix `BIOREMPP_TRUSTED_PROXY_CIDRS` |
+| `/metrics` exposed publicly | proxy restrictions not applied | enforce allowlist + `deny all` in Nginx |
 
 ---
 
 ## See Also
 
-- [Quickstart Guide](../getting-started/quickstart.md) — Getting started with BioRemPP
-- [Use Case YAML Methodology](../methods/use-case-yaml.md) — Complete YAML schema reference
-- [Internal Validation](../validation/internal-validation.md) — Validation and quality control
+- [Quickstart](../getting-started/quickstart.md)
+- [Methods Overview](../methods/methods-overview.md)
+- [Validation](../validation/index.md)

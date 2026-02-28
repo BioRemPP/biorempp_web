@@ -8,8 +8,8 @@ BioRemPP provides ready-to-use example datasets to help you get started quickly.
 
 **Download example dataset:**
 
-- **[Download example_dataset.txt](https://github.com/BioRemPP/biorempp_web/blob/main/data/exemple_dataset.txt)**
-- **Load directly:** Click **"Use Example Data"** button in the upload panel (no download required)
+- **From homepage:** use **Need a KO Input Example? -> Download Example**
+- **Load directly:** click **Use Example Data** in the upload panel (no download required)
 
 ---
 
