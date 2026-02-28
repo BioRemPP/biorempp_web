@@ -1,145 +1,168 @@
 # Environment Variables Reference
 
-BioRemPP Web Service uses environment variables prefixed with `BIOREMPP_` to configure runtime behavior. Variables can be set via a `.env` file at the project root or passed directly to the process environment.
+BioRemPP uses environment variables to configure runtime behavior, security, resume flow, and observability.
 
-This page lists **stable, supported variables** organized by functional category.
+Use the tracked files below as reference:
 
----
-
-## Scope
-
-**This page covers:**
-
-- Documented environment variables used by the web service
-- Default behavior when variables are unset
-- Recommended values for development and production profiles
+- `.env/env.example` (template)
+- `.env/env.production` (production baseline)
 
 ---
 
-## Key Settings
+## Runtime Core
 
-### Runtime Environment
-
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_ENV` | Environment profile | `development`, `production` | `development` |
-| `BIOREMPP_DEBUG` | Enable debug mode (detailed errors) | `True`, `False` | `True` in dev, forced `False` in prod |
-| `BIOREMPP_HOT_RELOAD` | Enable hot reload (development only) | `True`, `False` | `True` in dev, forced `False` in prod |
-
-> **Note:** When `BIOREMPP_ENV=production`, `DEBUG` and `HOT_RELOAD` are forced to `False` regardless of their configured values.
-
----
-
-### Server Configuration
-
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_HOST` | Server bind address | `127.0.0.1`, `0.0.0.0` | `127.0.0.1` (changed to `0.0.0.0` in production) |
-| `BIOREMPP_PORT` | Server port | `8050`, `8080` | `8050` |
-| `BIOREMPP_TIMEOUT` | Request timeout (seconds) | `60`, `300` | `60` |
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_ENV` | Environment profile (`development` or `production`) | `development` |
+| `BIOREMPP_DEBUG` | Dash/Flask debug mode | `True` in dev, forced `False` in prod |
+| `BIOREMPP_HOT_RELOAD` | Dash hot reload | `True` in dev, forced `False` in prod |
+| `BIOREMPP_HOST` | Bind host | `127.0.0.1` (forced `0.0.0.0` in prod) |
+| `BIOREMPP_PORT` | Bind port | `8050` |
+| `BIOREMPP_URL_BASE_PATH` | Base path prefix (`/`, `/biorempp/`, `/app/biorempp/`) | `/` |
 
 ---
 
-### Gunicorn (Production WSGI)
+## Gunicorn
 
-These variables are relevant when running with Gunicorn in production mode.
-
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_WORKERS` | Number of worker processes | `2–8` (formula: `2×CPU + 1`) | `4` |
-| `BIOREMPP_WORKER_CLASS` | Worker type | `sync`, `gevent` | `sync` |
-| `BIOREMPP_WORKER_CONNECTIONS` | Max connections per worker (gevent only) | `500–2000` | `1000` |
-| `BIOREMPP_KEEPALIVE` | Keepalive timeout (seconds) | `2–10` | `5` |
-
-For detailed Gunicorn configuration, see [Gunicorn Configuration](gunicorn.md).
-
----
-
-### Logging
-
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_LOG_LEVEL` | Logging verbosity | `DEBUG`, `INFO`, `WARNING`, `ERROR` | `DEBUG` in dev, `WARNING` in prod |
-| `BIOREMPP_LOG_FILE` | Optional log file path | `/var/log/biorempp/app.log` | None (console only) |
-
-For detailed logging configuration, see [Logging Configuration](logging.md).
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_WORKERS` | Worker count | `4` |
+| `BIOREMPP_WORKER_CLASS` | Worker class (`sync`, `gevent`, `eventlet`) | `sync` |
+| `BIOREMPP_WORKER_CONNECTIONS` | Connections per worker (async classes) | `1000` |
+| `BIOREMPP_TIMEOUT` | Request timeout (seconds) | `60` |
+| `BIOREMPP_KEEPALIVE` | Keepalive timeout (seconds) | `5` |
+| `BIOREMPP_MAX_REQUESTS` | Worker recycle threshold | `1000` |
+| `BIOREMPP_MAX_REQUESTS_JITTER` | Worker recycle jitter | `100` |
 
 ---
 
-### Upload Limits
+## Upload and Parsing Limits
 
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_UPLOAD_MAX_SIZE_MB` | Maximum file size (MB) | `1–10` | `5` |
-| `BIOREMPP_UPLOAD_SAMPLE_LIMIT` | Maximum samples per file | `50–200` | `100` |
-| `BIOREMPP_UPLOAD_KO_LIMIT` | Maximum total KO entries | `100000–500000` | `500000` |
-| `BIOREMPP_UPLOAD_ENCODING` | Expected file encoding | `utf-8` | `utf-8` |
-
----
-
-### Parsing Limits
-
-| Variable | Purpose | Typical Values | Default |
-|----------|---------|----------------|---------|
-| `BIOREMPP_PARSING_MAX_SAMPLES` | Maximum samples to process | `500–2000` | `1000` |
-| `BIOREMPP_PARSING_MAX_KOS_PER_SAMPLE` | Maximum KOs per sample | `5000–20000` | `10000` |
-| `BIOREMPP_PARSING_MAX_TOTAL_KOS` | Maximum total KOs to process | `50000–200000` | `100000` |
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_UPLOAD_MAX_SIZE_MB` | Max upload size (MB) | `5` |
+| `BIOREMPP_UPLOAD_SAMPLE_LIMIT` | Max samples in uploaded file | `100` |
+| `BIOREMPP_UPLOAD_KO_LIMIT` | Max KO identifiers in uploaded file | `500000` |
+| `BIOREMPP_UPLOAD_ENCODING` | Expected file encoding | `utf-8` |
+| `BIOREMPP_PARSING_MAX_SAMPLES` | Max samples during parsing | `1000` |
+| `BIOREMPP_PARSING_MAX_KOS_PER_SAMPLE` | Max KOs per sample | `10000` |
+| `BIOREMPP_PARSING_MAX_TOTAL_KOS` | Max KOs during parsing | `100000` |
 
 ---
 
-### Validation Patterns
+## Resume by Job ID
 
-| Variable | Purpose | Default Pattern |
-|----------|---------|-----------------|
-| `BIOREMPP_KO_PATTERN` | Regex for KO identifier validation | `^K\d{5}$` |
-| `BIOREMPP_SAMPLE_NAME_PATTERN` | Regex for sample name validation | `^[a-zA-Z0-9_\-\.]+$` |
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_RESUME_BACKEND` | Resume storage backend (`diskcache`, `redis`) | `diskcache` |
+| `BIOREMPP_RESUME_SECURITY_MODE` | Error exposure mode (`normal`, `strict`) | `normal` |
+| `BIOREMPP_RESUME_TTL_SECONDS` | Resume TTL in seconds | `14400` (4h) |
+| `BIOREMPP_RESUME_CACHE_SIZE_MB` | Resume cache max size | `512` |
+| `BIOREMPP_RESUME_MAX_PAYLOAD_MB` | Max payload size per job | `64` |
+| `BIOREMPP_RESUME_REDIS_HOST` | Resume Redis host | `redis` |
+| `BIOREMPP_RESUME_REDIS_PORT` | Resume Redis port | `6379` |
+| `BIOREMPP_RESUME_REDIS_DB` | Resume Redis DB index | `0` |
+| `BIOREMPP_RESUME_REDIS_PASSWORD` | Resume Redis password | inherits `REDIS_PASSWORD` if unset |
+| `BIOREMPP_RESUME_REDIS_KEY_PREFIX` | Resume key prefix in Redis | `biorempp:resume:` |
+| `BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL` | Redis payload compression level (1..9) | `6` |
+| `BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS` | Redis socket timeout | `3` |
+| `BIOREMPP_RESUME_REDIS_HEALTHCHECK` | Startup Redis health gate for resume | `false` |
 
 ---
 
-## Examples
+## Resume Rate-Limit
 
-### Minimal Development `.env`
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_RESUME_RATE_LIMIT_ATTEMPTS` | Attempts per window | `10` |
+| `BIOREMPP_RESUME_RATE_LIMIT_WINDOW_SECONDS` | Rate-limit window | `60` |
+| `BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS` | Base backoff | `5` |
+| `BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS` | Max backoff | `300` |
+| `BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB` | Local limiter cache size | `64` |
+| `BIOREMPP_RESUME_RATE_LIMIT_BACKEND` | Backend (`auto`, `diskcache`, `redis`) | `auto` |
+| `BIOREMPP_RESUME_RATE_LIMIT_REDIS_KEY_PREFIX` | Redis limiter key prefix | `biorempp:resume:ratelimit:` |
+
+---
+
+## Resume Alert Thresholds
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_RESUME_ALERT_WINDOW_SECONDS` | Alert window | `300` |
+| `BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD` | Not-found threshold | `30` |
+| `BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD` | Token mismatch threshold | `10` |
+| `BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD` | Save failed threshold | `5` |
+
+---
+
+## Security and Proxy Trust
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `SECRET_KEY` | Required secret in production | empty (must be set securely in prod) |
+| `BIOREMPP_TRUST_PROXY_HEADERS` | Trust `X-Forwarded-*` headers | `false` |
+| `BIOREMPP_TRUSTED_PROXY_CIDRS` | Trusted ingress/proxy CIDRs | `127.0.0.1/32,::1/128` |
+| `BIOREMPP_PUBLIC_DATA_ALLOWED_FILES` | Allowlist for `/data/<filename>` | `exemple_dataset.txt` |
+| `BIOREMPP_LOG_REF_SALT` | Salt for HMAC log references | falls back to `SECRET_KEY` |
+| `BIOREMPP_LOG_REF_LENGTH` | Redacted reference length | `12` (clamped 8..24) |
+
+### Production fail-fast notes
+
+Startup aborts in production when:
+
+- `SECRET_KEY` is missing, placeholder, or weak;
+- Redis backend is selected without secure Redis password;
+- `BIOREMPP_TRUST_PROXY_HEADERS=true` with invalid/missing trusted CIDRs.
+
+---
+
+## Observability
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_OBSERVABILITY_ENABLED` | Enable app metrics instrumentation | `false` |
+| `BIOREMPP_OBSERVABILITY_METRICS_PATH` | Metrics endpoint path | `/metrics` |
+| `BIOREMPP_OBSERVABILITY_FAIL_FAST` | Fail startup when observability prerequisites fail | `false` |
+| `PROMETHEUS_MULTIPROC_DIR` | Prometheus multiprocess directory | `/tmp/prometheus_multiproc` |
+| `BIOREMPP_OBSERVABILITY_MULTIPROC_TMPFS_SIZE_BYTES` | tmpfs size for multiprocess files | `67108864` |
+
+---
+
+## Redis Cache (Optional)
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `ENABLE_CACHE` | Enable application Redis cache usage | `False` |
+| `REDIS_HOST` | Redis host | `redis` |
+| `REDIS_PORT` | Redis port | `6379` |
+| `REDIS_DB` | Redis DB index | `0` |
+| `REDIS_PASSWORD` | Redis password | empty (must be secure in prod use) |
+| `CACHE_DEFAULT_TIMEOUT` | Cache TTL (seconds) | `300` |
+| `CACHE_THRESHOLD` | Cache entry threshold | `1000` |
+
+---
+
+## Minimal Production Example
 
 ```bash
-# .env (development)
-BIOREMPP_ENV=development
-BIOREMPP_DEBUG=True
-BIOREMPP_LOG_LEVEL=DEBUG
-```
-
-### Minimal Production `.env`
-
-```bash
-# .env (production)
+# .env/env.production
 BIOREMPP_ENV=production
-BIOREMPP_PORT=8080
-BIOREMPP_WORKERS=4
-BIOREMPP_WORKER_CLASS=gevent
-BIOREMPP_LOG_LEVEL=WARNING
-BIOREMPP_TIMEOUT=300
+BIOREMPP_URL_BASE_PATH=/
+SECRET_KEY=<secure-secret>
+BIOREMPP_TRUST_PROXY_HEADERS=true
+BIOREMPP_TRUSTED_PROXY_CIDRS=<institution-cidrs>
+BIOREMPP_RESUME_BACKEND=diskcache
+BIOREMPP_OBSERVABILITY_ENABLED=false
 ```
 
----
-
-## Common Pitfalls
-
-1. **Forgetting `BIOREMPP_ENV=production`:** Without this, production overrides (disabling debug, changing host) are not applied.
-
-2. **Using `127.0.0.1` in containers:** When running inside Docker, set `BIOREMPP_HOST=0.0.0.0` or rely on the automatic production override.
-
-3. **Setting `DEBUG=True` in production:** This is overridden to `False` automatically, but explicit configuration avoids confusion.
-
-4. **Timeout too short for large datasets:** For processing-heavy workflows, consider `BIOREMPP_TIMEOUT=300` or higher.
-
-5. **Mismatched upload vs parsing limits:** If `UPLOAD_MAX_SIZE_MB` allows large files but `PARSING_MAX_TOTAL_KOS` is low, processing may fail silently on valid uploads.
+To enable Redis-backed resume and full observability, adjust values in `.env/env.production` and activate `cache`/`observability` profiles in Docker Compose.
 
 ---
 
 ## See Also
 
-- [Logging Configuration](logging.md) — Logging profiles and verbosity
-- [Gunicorn Configuration](gunicorn.md) — Production WSGI server settings
-- [YAML Configuration](yaml-configuration.md) — Declarative use case configuration
-- [Docker Integration](docker-integration.md) — Container-specific configuration
-- [Nginx Integration](nginx-integration.md) — Reverse proxy configuration
-- [Health Endpoints](health-endpoints.md) — Health check endpoints for monitoring
+- [Docker Integration](docker-integration.md)
+- [Nginx Integration](nginx-integration.md)
+- [Institutional Ingress Handoff](institutional_ingress_handoff.md)
+- [Gunicorn Configuration](gunicorn.md)
+- [Health Endpoints](health-endpoints.md)

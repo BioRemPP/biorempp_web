@@ -301,6 +301,34 @@ Processing time exceeds server-side timeout limit.
 
 ---
 
+### Resume by Job ID Not Working
+
+**Symptoms:**
+
+- Resume returns warning/danger status
+- Redirect to `/results` does not happen
+- Job ID appears valid but data is unavailable
+
+**Common causes:**
+
+1. **Expired retention window:**
+    - Resume payload exceeded TTL (default 4 hours)
+2. **Different browser profile/context:**
+    - Resume is restricted to the browser profile that created the run
+3. **Invalid Job ID format:**
+    - Expected pattern: `BRP-YYYYMMDD-HHMMSS-XXXXXX`
+4. **Temporary protection block:**
+    - Too many failed attempts can trigger short rate-limit backoff
+
+**Resolution:**
+
+1. Copy Job ID directly from the `/results` overview card when possible
+2. Retry in the same browser profile used for processing
+3. Wait and retry if rate-limited
+4. Reprocess input to generate a new Job ID when payload is expired/unavailable
+
+---
+
 ## Visualization Rendering Issues
 
 ### Charts Not Displaying
@@ -482,7 +510,7 @@ Support does **not** provide assistance with:
 ## Related Pages
 
 - [Input Format](../getting-started/input-format.md) — Complete format specification and validation rules
-- [FAQ](../getting-started/faq.md#common-issues) — Common questions and quick solutions
+- [FAQ](../getting-started/faq.md) — Common questions and quick solutions
 - [Results Page](results-page.md) — Understanding the analytical interface
 - [Downloads Guide](downloads.md) — Export troubleshooting
 - [Contact](../about/contact.md) — Report bugs and technical issues

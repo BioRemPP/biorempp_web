@@ -51,8 +51,9 @@ Users are solely responsible for:
 BioRemPP operates under a **privacy-by-design philosophy**:
 
 - **No user accounts:** The service requires no authentication or registration.
-- **No persistent storage:** Uploaded data is processed in-memory only during the active session.
-- **Session-based processing:** Data and results are automatically deleted when the browser session ends or after 6 hours of inactivity.
+- **No long-term persistent storage:** Uploaded data is processed using temporary server-side cache.
+- **Temporary retention:** Data/results are automatically removed after a limited retention window (default 4 hours, deployment-configurable).
+- **Resume constraints:** Resume by Job ID is restricted to the same browser context and subject to retention expiry.
 - **Minimal technical logging:** Server logs contain only IP addresses (rate limiting), user-agent strings (compatibility), and error messages (debugging). **No biological data is logged.**
 
 ---
@@ -92,7 +93,7 @@ BioRemPP is provided as a **best-effort service** without guaranteed uptime or p
 
 Use of BioRemPP in academic publications, reports, or presentations **requires proper citation** of both the web service and the BioRemPP database.
 
-Please refer to the [How to Cite](how-to-cite.md) page for detailed citation guidelines, including provisional formats (pending DOI assignment via Zenodo) and recommended language for Methods sections.
+Please refer to the [How to Cite](how-to-cite.md) page for current citation templates and recommended Methods wording.
 
 ---
 

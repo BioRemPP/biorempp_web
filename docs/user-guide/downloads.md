@@ -10,7 +10,7 @@ After analysis, users can export results for:
 - External statistical analysis
 - Scientific publication
 - Reproducible research
-- Long-term archival (beyond 4-hour session timeout)
+- Long-term archival (beyond temporary resume retention)
 
 This page defines export scopes, formats, metadata structure, and reproducibility requirements.
 
@@ -149,6 +149,8 @@ While BioRemPP does not automatically embed metadata in exported files, users sh
 ### File Naming Conventions
 
 BioRemPP generates filenames using two distinct patterns:
+
+Note: Job ID is displayed in UI for traceability and resume, but is not included in download filenames in this release cycle.
 
 #### Database-Level Downloads
 
@@ -346,5 +348,5 @@ For complete scope and limitations, see **[Limitations and Scope Boundaries](../
 - [Interpretation Guidelines](interpretation.md) — How to interpret exported results
 - [About - How to Cite](../about/how-to-cite.md) — Citation requirements for publications
 - [Troubleshooting](troubleshooting.md#download-related-issues) — Resolve export errors
-- [FAQ](../getting-started/faq.md#how-do-i-download-results) — Common download questions
+- [FAQ](../getting-started/faq.md) — Common download questions
 - [Methods Overview](../methods/methods-overview.md) — Scientific methodology for reproducibility

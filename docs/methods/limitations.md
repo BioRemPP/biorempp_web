@@ -464,16 +464,16 @@ All numeric limits are configurable via `config/settings.py`. Values listed abov
 
 Results are **session-dependent** and **not persistent**:
 
-- **Storage mechanism:** In-memory (Redis cache)
-- **Lifetime:** 4 hours of inactivity or until browser closure
-- **Deletion:** Automatic and irreversible upon session termination
+- **Storage mechanism:** Temporary server-side cache (deployment backend may vary)
+- **Lifetime:** Default 4 hours of inactivity (deployment-configurable)
+- **Deletion:** Automatic and irreversible after expiration
 
 **Session Management:**
 
 - **No user accounts:** No authentication or registration required
-- **No persistent storage:** Results are not saved to server disk
-- **No retrieval from browser history:** Cannot recover results after session expires
-- **No cloud backup:** Users must download results before closing browser
+- **No persistent storage:** Results are not intended as long-term server records
+- **No retrieval from browser history:** Browser history alone does not recover results
+- **No cloud backup:** Users must export/download important outputs
 
 **Privacy Implications:**
 
@@ -483,14 +483,14 @@ Results are **session-dependent** and **not persistent**:
 
 **User Responsibility:**
 
-- **Keep browser tab open** during active analysis
-- **Download results immediately** after analysis completes
-- **Re-upload required** if session expires
+- **Store the Job ID** after processing
+- **Use Resume by Job ID** in the same browser profile within retention window
+- **Reprocess input** if payload is expired/unavailable
 
 **Session Timeout:**
 
-- **4 hours of inactivity** triggers automatic session termination
-- **Browser closure** immediately terminates session
+- **4 hours of inactivity (default)** triggers automatic expiration
+- **Browser closure** does not guarantee immediate loss if resume conditions remain valid
 
 ---
 

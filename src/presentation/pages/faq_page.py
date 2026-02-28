@@ -19,7 +19,7 @@ Notes
 import dash_bootstrap_components as dbc
 from dash import html
 
-from config.settings import APP_VERSION
+from config.settings import APP_VERSION, get_settings
 
 from ..components.base import create_footer, create_header
 from ..components.composite.faq_item import (
@@ -31,6 +31,7 @@ from ..components.composite.faq_section import (
     create_faq_quick_links,
     create_faq_section,
 )
+from ..routing import app_path
 
 # ==================== FAQ CONSTANTS ====================
 # Version and contact information (now from centralized settings)
@@ -38,10 +39,14 @@ FAQ_APP_VERSION = APP_VERSION
 FAQ_SUPPORT_EMAIL = "biorempp@gmail.com"
 FAQ_CANONICAL_URL = "https://biorempp.cloud/"
 
-# Technical limits
-FAQ_SESSION_TIMEOUT_HOURS = 4
-FAQ_MAX_SAMPLES = 100
-FAQ_MAX_TOTAL_KOS = 500000
+# Technical limits (derived from runtime settings to avoid drift)
+_FAQ_SETTINGS = get_settings()
+FAQ_SESSION_TIMEOUT_HOURS = max(
+    1, (int(_FAQ_SETTINGS.RESUME_TTL_SECONDS) + 3599) // 3600
+)
+FAQ_MAX_SAMPLES = max(int(_FAQ_SETTINGS.UPLOAD_SAMPLE_LIMIT), 1)
+FAQ_MAX_TOTAL_KOS = max(int(_FAQ_SETTINGS.UPLOAD_KO_LIMIT), 1)
+FAQ_MAX_UPLOAD_MB = max(int(_FAQ_SETTINGS.UPLOAD_MAX_SIZE_MB), 1)
 
 # Zenodo placeholders (to be updated when DOIs are assigned)
 FAQ_ZENODO_WEB_SERVICE_DOI = "[Zenodo DOI pending]"
@@ -169,17 +174,20 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Yes. BioRemPP is freely accessible for academic and commercial use via the public web server. "
-                        "No login is required, and users can run analyses directly in the browser using their own input tables."
+                        "Yes. BioRemPP is free and open to all users, and no login is required."
                     ),
                     html.P(
-                        "To ensure fair usage and stable availability for the community, the server may enforce practical limits "
-                        "(e.g., request size, concurrency, and runtime). These limits are documented, and we recommend batching "
-                        "large studies or using the local deployment option when appropriate."
+                        [
+                            "BioRemPP is not usable for commercial product claims without experimental confirmation. "
+                            "Please review the ",
+                            html.A("Terms of Use", href=app_path("/terms-of-use"), className="text-decoration-underline"),
+                            " for detailed usage conditions.",
+                        ]
                     ),
                     create_faq_note(
-                        "For commercial usage, large-scale/high-throughput workloads, or institutional deployments, "
-                        "please contact the team to discuss appropriate access and hosting options.",
+                        "To ensure fair usage and stable availability, the server may enforce practical limits "
+                        "(request size, concurrency, and runtime). For high-throughput workloads, consider local "
+                        "or institutional deployment.",
                         note_type="info",
                     ),
                 ]
@@ -188,12 +196,19 @@ def create_faq_page() -> html.Div:
         ),
         create_faq_item(
             question="Do I need to create an account?",
-            answer=(
-                "No account creation is required! BioRemPP works with "
-                "session-based storage. Your data is processed in real-time "
-                "and stored temporarily for the duration of your session. "
-                "Once you close your browser or the session expires, all "
-                "data is automatically deleted."
+            answer=html.Div(
+                [
+                    html.P(
+                        "No account creation is required. BioRemPP runs directly in the browser workflow."
+                    ),
+                    html.P(
+                        "After processing, a Job ID is generated for each execution. "
+                        f"You can resume results in the same browser profile for up to {FAQ_SESSION_TIMEOUT_HOURS} hours without reprocessing."
+                    ),
+                    html.P(
+                        "Data remains in temporary server-side cache and is automatically removed after expiration."
+                    ),
+                ]
             ),
             item_id="faq-need-account",
         ),
@@ -403,7 +418,13 @@ def create_faq_page() -> html.Div:
                 [
                     html.P(
                         [
-                            "Maximum limits: ",
+                            "Current upload limit: ",
+                            html.Strong(f"{FAQ_MAX_UPLOAD_MB} MB per file"),
+                        ]
+                    ),
+                    html.P(
+                        [
+                            "Input validation limits: ",
                             html.Strong(f"{FAQ_MAX_SAMPLES} samples"),
                             " or ",
                             html.Strong(f"{FAQ_MAX_TOTAL_KOS:,} KO numbers total"),
@@ -525,6 +546,11 @@ def create_faq_page() -> html.Div:
                         "your data size and accuracy requirements.",
                         note_type="info",
                     ),
+                    create_faq_note(
+                        "Quick start: use the 'Need a KO Input Example?' card on the homepage "
+                        "to open input instructions (View Info) or download an example dataset.",
+                        note_type="success",
+                    ),
                 ]
             ),
             item_id="faq-annotation-tools",
@@ -617,6 +643,36 @@ def create_faq_page() -> html.Div:
                 ]
             ),
             item_id="faq-databases",
+        ),
+        create_faq_item(
+            question="What is the Job ID generated after processing?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Each successful processing run generates a unique Job ID "
+                        "(execution identifier)."
+                    ),
+                    html.P(html.Strong("Why it matters:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "You can resume the same analysis without reprocessing."
+                            ),
+                            html.Li(
+                                f"Resume is available for up to {FAQ_SESSION_TIMEOUT_HOURS} hours (temporary cache TTL)."
+                            ),
+                            html.Li(
+                                "Resume is restricted to the same browser profile for security."
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Store the Job ID in your notes. You can also copy it from the Results page overview.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-job-id-generated",
         ),
         create_faq_item(
             question="What if processing fails or gets stuck?",
@@ -904,6 +960,33 @@ def create_faq_page() -> html.Div:
                 ]
             ),
             item_id="faq-visualizations",
+        ),
+        create_faq_item(
+            question="Where can I find and copy my Job ID?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Open the Results page and check the top overview card. "
+                        "The Job ID appears in the 'Job ID' field."
+                    ),
+                    html.P(html.Strong("How to copy:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Use the copy icon next to the Job ID in the overview card."
+                            ),
+                            html.Li(
+                                "Save the identifier in your methods notes or analysis log."
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "This ID allows you to resume the same run without reprocessing (same browser profile, within TTL).",
+                        note_type="success",
+                    ),
+                ]
+            ),
+            item_id="faq-job-id-copy",
         ),
         create_faq_item(
             question="Can I customize the visualizations?",
@@ -1544,7 +1627,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Upload: "),
-                                    "File transmitted via HTTPS encryption to server",
+                                    "File transmitted to the server over secure web transport (HTTPS in production deployments)",
                                 ]
                             ),
                             html.Li(
@@ -1556,7 +1639,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Caching: "),
-                                    f"Results stored in Redis (in-memory cache) for {FAQ_SESSION_TIMEOUT_HOURS}-hour session",
+                                    f"Results stored in temporary server-side cache for up to {FAQ_SESSION_TIMEOUT_HOURS} hours",
                                 ]
                             ),
                             html.Li(
@@ -1568,7 +1651,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Deletion: "),
-                                    "Automatic purge when session ends",
+                                    "Automatic purge when the temporary retention window expires",
                                 ]
                             ),
                         ]
@@ -1583,7 +1666,8 @@ def create_faq_page() -> html.Div:
                     ),
                     create_faq_note(
                         "Your browser only displays results - no genomic data is stored "
-                        "client-side. All processing happens on secure servers.",
+                        "client-side. All processing happens on secure servers. "
+                        "Deployments may use different cache backends while keeping the same user-facing resume behavior.",
                         note_type="success",
                     ),
                 ]
@@ -1661,7 +1745,7 @@ def create_faq_page() -> html.Div:
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Dash 2.x: "),
+                                    html.Strong("Dash 3.x: "),
                                     "Interactive web framework (built on Flask)",
                                 ]
                             ),
@@ -1684,8 +1768,8 @@ def create_faq_page() -> html.Div:
                         [
                             html.Li(
                                 [
-                                    html.Strong("Redis: "),
-                                    "In-memory session caching (4-hour timeout)",
+                                    html.Strong("Temporary cache layer: "),
+                                    "Deployment-dependent backend used for short-lived result persistence",
                                 ]
                             ),
                             html.Li(
@@ -1804,16 +1888,30 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Results are session-based and automatically deleted for privacy. "
-                        "This is by design, not a bug."
+                        "Results are stored in temporary server-side cache and may still be recoverable."
                     ),
                     html.P(html.Strong("Why this happens:")),
                     html.Ul(
                         [
-                            html.Li(f"Session timeout: {FAQ_SESSION_TIMEOUT_HOURS} hours of inactivity"),
-                            html.Li("Browser closed: Immediate deletion"),
-                            html.Li("Session cleared: Manual or automatic cleanup"),
-                            html.Li("Server restart: Rare, scheduled maintenance"),
+                            html.Li(
+                                f"Resume window expired ({FAQ_SESSION_TIMEOUT_HOURS} hours)"
+                            ),
+                            html.Li(
+                                "Different browser/profile than the one used during processing"
+                            ),
+                            html.Li(
+                                "Cache cleanup or operational restart removed temporary data"
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("What to do first:")),
+                    html.Ol(
+                        [
+                            html.Li("Use Resume Analysis by Job ID on the homepage."),
+                            html.Li("Confirm the Job ID format and exact value."),
+                            html.Li(
+                                "Retry in the same browser profile where the run was created."
+                            ),
                         ]
                     ),
                     html.P(html.Strong("Best practices to preserve results:")),
@@ -1840,19 +1938,59 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Set reminders: "),
-                                    f"{FAQ_SESSION_TIMEOUT_HOURS}-hour timeout - download before taking long breaks",
+                                    f"Temporary cache expires after {FAQ_SESSION_TIMEOUT_HOURS} hours - download before long breaks",
                                 ]
                             ),
                         ]
                     ),
                     create_faq_note(
-                        "Data cannot be recovered after session ends. Always download "
-                        "important results before closing your browser.",
+                        "If resume is unavailable (expired or different browser context), process the file again to generate a new Job ID.",
                         note_type="warning",
                     ),
                 ]
             ),
             item_id="faq-lost-results",
+        ),
+        create_faq_item(
+            question="Why does Resume by Job ID fail?",
+            answer=html.Div(
+                [
+                    html.P("Common causes and fixes:"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Invalid format: "),
+                                    "Use BRP-YYYYMMDD-HHMMSS-XXXXXX.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Expired job: "),
+                                    f"Temporary cache keeps runs for about {FAQ_SESSION_TIMEOUT_HOURS} hours.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Different browser context: "),
+                                    "Resume is restricted to the same browser profile.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Too many attempts: "),
+                                    "A temporary anti-enumeration lock may request waiting before retry.",
+                                ]
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "If resume keeps failing, run processing again to generate a fresh Job ID.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-resume-job-id-fails",
         ),
         create_faq_item(
             question="Error: 'No KO annotations found'",
@@ -2192,10 +2330,12 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Session Management:")),
                     html.Ul(
                         [
-                            html.Li("Redis-based session caching (in-memory storage)"),
-                            html.Li("Unique session IDs for complete isolation"),
-                            html.Li("Automatic 4-hour session timeout"),
-                            html.Li("No cross-session data access"),
+                            html.Li("Temporary server-side cache with automatic expiration"),
+                            html.Li("Job-bound context validation for resume access"),
+                            html.Li(
+                                f"Automatic expiration after ~{FAQ_SESSION_TIMEOUT_HOURS} hours"
+                            ),
+                            html.Li("No cross-context data access"),
                         ]
                     ),
                     html.P(html.Strong("Data Handling:")),
@@ -2221,9 +2361,9 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Your data is stored temporarily only during your active session:"
+                        "Your data is stored temporarily in server-side cache for resumable access:"
                     ),
-                    html.P(html.Strong("Session Lifecycle:")),
+                    html.P(html.Strong("Retention lifecycle:")),
                     html.Ol(
                         [
                             html.Li(
@@ -2235,35 +2375,34 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Processing: "),
-                                    "Data is processed and results cached in Redis",
+                                    "Data is processed and results stored in temporary server-side cache",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Active Session: "),
-                                    f"Results available for {FAQ_SESSION_TIMEOUT_HOURS} hours of activity",
+                                    html.Strong("Retention Window: "),
+                                    f"Results available for up to {FAQ_SESSION_TIMEOUT_HOURS} hours",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Session End: "),
-                                    "All data automatically deleted",
+                                    html.Strong("Expiration/Cleanup: "),
+                                    "Data is automatically deleted after TTL or operational cache cleanup",
                                 ]
                             ),
                         ]
                     ),
-                    html.P(html.Strong("Session ends when:")),
+                    html.P(html.Strong("Resume becomes unavailable when:")),
                     html.Ul(
                         [
-                            html.Li("You close your browser"),
-                            html.Li(f"{FAQ_SESSION_TIMEOUT_HOURS} hours of inactivity passes"),
-                            html.Li("You explicitly clear your session"),
-                            html.Li("Server restarts (rare, scheduled maintenance)"),
+                            html.Li(f"{FAQ_SESSION_TIMEOUT_HOURS}-hour TTL expires"),
+                            html.Li("A different browser profile tries to load the Job ID"),
+                            html.Li("Browser/site storage is cleared"),
+                            html.Li("Server-side cache is purged during maintenance"),
                         ]
                     ),
                     create_faq_note(
-                        f"Session timeout: {FAQ_SESSION_TIMEOUT_HOURS} hours. Download important results before "
-                        "closing your browser or taking long breaks.",
+                        f"Resume by Job ID is temporary ({FAQ_SESSION_TIMEOUT_HOURS} hours). Download important results for long-term retention.",
                         note_type="warning",
                     ),
                 ]
@@ -2295,8 +2434,8 @@ def create_faq_page() -> html.Div:
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Session Metadata: "),
-                                    "Session ID, timestamp, file size (not file contents)",
+                                    html.Strong("Operational Metadata: "),
+                                    "Timestamp, request metrics, and file size (not file contents)",
                                 ]
                             ),
                         ]
@@ -2333,20 +2472,20 @@ def create_faq_page() -> html.Div:
                         [
                             html.Li(
                                 [
-                                    html.Strong("Unique Session IDs: "),
-                                    "Each session has a unique identifier",
+                                    html.Strong("Per-run Job IDs: "),
+                                    "Each processing execution has its own identifier",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Redis Namespacing: "),
-                                    "Session data is stored in isolated Redis keys",
+                                    html.Strong("Browser-context binding: "),
+                                    "Resume checks ownership in the same browser profile",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("No Cross-Session Access: "),
-                                    "Server-side validation prevents accessing other sessions",
+                                    html.Strong("No Cross-Context Access: "),
+                                    "Server-side validation prevents loading another browser context",
                                 ]
                             ),
                             html.Li(
@@ -2358,14 +2497,13 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     html.P(
-                        "Your results are only accessible to you during your session. "
-                        "Even if someone knows your session ID, server-side validation "
-                        "prevents unauthorized access.",
+                        "Your results are only accessible within your browser context "
+                        "during the temporary retention window. Job ID alone is not sufficient "
+                        "for unauthorized access.",
                         className="text-muted mt-2",
                     ),
                     create_faq_note(
-                        "Session IDs are not shareable. Each browser session is "
-                        "completely isolated from all others.",
+                        "Resume by Job ID is intentionally restricted to the originating browser profile.",
                         note_type="info",
                     ),
                 ]
@@ -2377,7 +2515,7 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "All session data is automatically and permanently deleted:"
+                        "Temporary analysis data is automatically purged after the retention window:"
                     ),
                     html.P(html.Strong("Deletion Process:")),
                     html.Ol(
@@ -2391,7 +2529,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Processed results: "),
-                                    "Removed from Redis cache",
+                                    "Removed from temporary server-side cache",
                                 ]
                             ),
                             html.Li(
@@ -2401,7 +2539,10 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Session cache: "), "Purged from Redis"]
+                                [
+                                    html.Strong("Resume cache: "),
+                                    "Purged automatically after expiration or maintenance cleanup",
+                                ]
                             ),
                             html.Li(
                                 [
@@ -2414,9 +2555,9 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Important Notes:")),
                     html.Ul(
                         [
-                            html.Li("Deletion is immediate and irreversible"),
-                            html.Li("No backup copies are kept"),
-                            html.Li("Data cannot be recovered after session ends"),
+                            html.Li("Deletion after expiration is irreversible"),
+                            html.Li("No persistent backup copies are kept for user uploads"),
+                            html.Li("Data cannot be recovered after cache expiration"),
                             html.Li(
                                 "Download results before closing if you want to keep them"
                             ),
@@ -2455,7 +2596,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Storage Limitation: "),
-                                    "Data deleted after 4-hour session timeout",
+                                    f"Data deleted after approximately {FAQ_SESSION_TIMEOUT_HOURS} hours (temporary retention)",
                                 ]
                             ),
                             html.Li(
@@ -2661,14 +2802,14 @@ def create_faq_page() -> html.Div:
             item_id="faq-database-versions",
         ),
         create_faq_item(
-            question="How do I cite BioRemPP before DOI assignment?",
+            question="How do I cite BioRemPP using current templates?",
             answer=html.Div(
                 [
                     html.P(
-                        "Until formal publication and Zenodo DOI assignment, use the following "
-                        "citation templates:"
+                        "Use the citation templates below as placeholders and replace metadata "
+                        "fields (authors, year, access date, version) before submission."
                     ),
-                    html.P(html.Strong("Web service citation (temporary):")),
+                    html.P(html.Strong("Web service citation template:")),
                     create_code_block(
                         f"BioRemPP: Bioremediation Potential Profile Analysis Tool.\n"
                         f"Version {FAQ_APP_VERSION} (2025).\n"
@@ -2676,7 +2817,7 @@ def create_faq_page() -> html.Div:
                         "Accessed: [DATE]",
                         language="text",
                     ),
-                    html.P(html.Strong("Database citation (temporary):")),
+                    html.P(html.Strong("Database citation template:")),
                     create_code_block(
                         f"BioRemPP Curated Database for Bioremediation Analysis.\n"
                         f"Version {FAQ_APP_VERSION} (2025).\n"
@@ -2692,9 +2833,8 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     create_faq_note(
-                        "A formal publication is in preparation. Check the 'How to Cite' page "
-                        "regularly for updated citation information and assigned DOIs.",
-                        note_type="warning",
+                        "These are mock templates. Keep DOI + version together when DOI is assigned.",
+                        note_type="info",
                     ),
                 ]
             ),

@@ -275,6 +275,7 @@ nav:
       - Logging: config/logging.md
       - Nginx Integration: config/nginx-integration.md
       - Docker Integration: config/docker-integration.md
+      - Institutional Ingress Handoff: config/institutional_ingress_handoff.md
 
 
   # ---------------------------

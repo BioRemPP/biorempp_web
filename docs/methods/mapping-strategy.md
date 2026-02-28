@@ -506,7 +506,7 @@ Same dataset uploaded in different order → same cache key → same cached resu
 
 - **TTL (Time-to-Live):** 3600 seconds (1 hour)
 - **Max entries:** 100 (FIFO eviction)
-- **Storage:** In-memory or Redis
+- **Storage:** Temporary cache layer (diskcache baseline; Redis optional for scale)
 
 **Cache hit behavior:**
 
