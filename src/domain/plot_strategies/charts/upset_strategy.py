@@ -390,16 +390,17 @@ class UpSetStrategy(BasePlotStrategy):
 
         import matplotlib.pyplot as plt
 
-        # Create matplotlib figure
-        plt.figure(figsize=(self.fig_width, self.fig_height))
-        upset_plot.plot()
+        # Create matplotlib figure and render UpSet explicitly into it.
+        # This avoids backend-dependent figure reuse and unstable dimensions.
+        mpl_fig = plt.figure(figsize=(self.fig_width, self.fig_height))
+        upset_plot.plot(fig=mpl_fig)
 
         # Convert to image
         buf = io.BytesIO()
-        plt.savefig(buf, format="png", dpi=150, bbox_inches="tight")
+        mpl_fig.savefig(buf, format="png", dpi=150)
         buf.seek(0)
         img_base64 = base64.b64encode(buf.read()).decode("utf-8")
-        plt.close()
+        plt.close(mpl_fig)
 
         # Create Plotly figure with image
         fig = go.Figure()
@@ -413,7 +414,7 @@ class UpSetStrategy(BasePlotStrategy):
                 y=1,
                 sizex=1,
                 sizey=1,
-                sizing="stretch",
+                sizing="contain",
                 layer="below",
             )
         )
@@ -476,6 +477,7 @@ class UpSetStrategy(BasePlotStrategy):
         - Apply title from config
         """
         layout_config = self.layout_config or {}
+        margin_config = layout_config.get("margin", {})
 
         fig.update_layout(
             # Hide axes (image plot)
@@ -486,10 +488,10 @@ class UpSetStrategy(BasePlotStrategy):
             paper_bgcolor="rgba(0,0,0,0)",
             # Margins
             margin=dict(
-                l=layout_config.get("margin_left", 20),
-                r=layout_config.get("margin_right", 20),
-                t=layout_config.get("margin_top", 60),
-                b=layout_config.get("margin_bottom", 80),
+                l=margin_config.get("l", layout_config.get("margin_left", 20)),
+                r=margin_config.get("r", layout_config.get("margin_right", 20)),
+                t=margin_config.get("t", layout_config.get("margin_top", 60)),
+                b=margin_config.get("b", layout_config.get("margin_bottom", 80)),
             ),
             # Title
             title=dict(

@@ -28,6 +28,7 @@
         retryAttempts: 10,   // How many times to retry finding elements
         retryDelay: 500      // Delay between retries in ms
     };
+    let lastPathname = window.location.pathname;
 
     /**
      * Smooth scroll to element with offset
@@ -173,6 +174,46 @@
     }
 
     /**
+     * Reset viewport to top when Dash SPA navigation changes pathname.
+     * Hash-only navigation is ignored to preserve section scrolling behavior.
+     */
+    function handlePathnameChange() {
+        const currentPathname = window.location.pathname;
+        if (currentPathname === lastPathname) {
+            return;
+        }
+
+        lastPathname = currentPathname;
+
+        // Wait for Dash to render target route before resetting viewport.
+        setTimeout(() => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+        }, 0);
+    }
+
+    /**
+     * Listen to history API updates used by Dash router.
+     */
+    function installPathnameObserver() {
+        const wrapHistoryMethod = (methodName) => {
+            const originalMethod = window.history[methodName];
+            if (typeof originalMethod !== 'function') {
+                return;
+            }
+
+            window.history[methodName] = function () {
+                const result = originalMethod.apply(this, arguments);
+                handlePathnameChange();
+                return result;
+            };
+        };
+
+        wrapHistoryMethod('pushState');
+        wrapHistoryMethod('replaceState');
+        window.addEventListener('popstate', handlePathnameChange);
+    }
+
+    /**
      * Initialize navigation with retry logic
      */
     function initializeNavigation(attempt = 1) {
@@ -245,12 +286,14 @@
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {
             preventDefaultHashScroll();
+            installPathnameObserver();
             initializeNavigation();
             observeDOMChanges();
         });
     } else {
         // DOM already loaded
         preventDefaultHashScroll();
+        installPathnameObserver();
         initializeNavigation();
         observeDOMChanges();
     }

@@ -5,7 +5,9 @@ Provides a guided walkthrough for first-time users, following the header navigat
 """
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
+
+from ...routing import app_path
 
 
 def create_new_user_guide_button():
@@ -47,9 +49,9 @@ def create_new_user_guide_button():
                             dbc.Button(
                                 [
                                     html.I(className="fas fa-map-marked-alt me-2"),
-                                    "Start Guided Tour",
+                                    "Start Quick Walkthrough",
                                 ],
-                                id="new-user-guide-btn",
+                                id="onboarding-walkthrough-open",
                                 color="primary",
                                 size="lg",
                                 className="shadow-sm",
@@ -57,10 +59,106 @@ def create_new_user_guide_button():
                         ],
                         className="d-grid",
                     ),
+                    # Always-visible fallback in case browser extensions hide the main button
+                    html.Div(
+                        [
+                            html.Small(
+                                "View the full user guide",
+                                className="text-muted d-block mb-2",
+                            ),
+                            dbc.Button(
+                                [
+                                    html.I(className="fas fa-book-open me-2"),
+                                    "Open User Guide",
+                                ],
+                                href=app_path("/user-guide"),
+                                color="secondary",
+                                outline=True,
+                                size="sm",
+                            ),
+                        ],
+                        className="text-center mt-3",
+                    ),
                 ]
             )
         ],
-        className="shadow-sm mb-4",
+        className="shadow-sm mb-4 h-100",
+    )
+
+
+def create_example_dataset_card() -> dbc.Card:
+    """
+    Create a quick-access card for example KO dataset actions.
+
+    Returns
+    -------
+    dbc.Card
+        Card with info and download actions for example dataset
+    """
+    return dbc.Card(
+        [
+            dbc.CardBody(
+                [
+                    html.Div(
+                        [
+                            html.I(className="fas fa-database fa-2x text-success mb-3"),
+                            html.H5(
+                                "Need a KO Input Example?",
+                                className="card-title mb-3",
+                            ),
+                        ],
+                        className="text-center",
+                    ),
+                    html.P(
+                        [
+                            "Start with the curated example dataset to validate the "
+                            "input format and begin your analysis pipeline from KO IDs.",
+                        ],
+                        className="text-muted text-center mb-3",
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                dbc.Button(
+                                    [
+                                        html.I(className="fas fa-circle-info me-2"),
+                                        "View Info",
+                                    ],
+                                    id="sample-data-card",
+                                    color="info",
+                                    outline=True,
+                                    className="w-100",
+                                    n_clicks=0,
+                                ),
+                                md=12,
+                                className="mb-2",
+                            ),
+                            dbc.Col(
+                                dbc.Button(
+                                    [
+                                        html.I(className="fas fa-download me-2"),
+                                        "Download Example",
+                                    ],
+                                    id="sample-data-download-btn",
+                                    color="success",
+                                    className="w-100",
+                                    n_clicks=0,
+                                ),
+                                md=12,
+                            ),
+                        ],
+                        className="g-2",
+                    ),
+                    html.P(
+                        "Don't have data? Click above to load an example dataset.",
+                        className="text-center text-muted mt-3 mb-0",
+                        style={"fontSize": "0.85rem"},
+                    ),
+                    dcc.Download(id="sample-data-download"),
+                ]
+            )
+        ],
+        className="shadow-sm mb-4 h-100",
     )
 
 
@@ -120,7 +218,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Explore Regulatory Frameworks",
                                 ],
-                                href="/regulatory",
+                                href=app_path("/regulatory"),
                                 color="primary",
                                 outline=True,
                                 size="sm",
@@ -165,7 +263,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Read User Guide",
                                 ],
-                                href="/user-guide",
+                                href=app_path("/user-guide"),
                                 color="success",
                                 outline=True,
                                 size="sm",
@@ -199,7 +297,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Explore Methods",
                                 ],
-                                href="/methods",
+                                href=app_path("/methods"),
                                 color="info",
                                 outline=True,
                                 size="sm",
@@ -268,7 +366,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-external-link-alt me-2"),
                                     "Browse FAQ",
                                 ],
-                                href="/faq",
+                                href=app_path("/faq"),
                                 color="secondary",
                                 outline=True,
                                 size="sm",
@@ -302,7 +400,7 @@ def create_new_user_guide_modal():
                                     html.I(className="fas fa-paper-plane me-2"),
                                     "Contact Us",
                                 ],
-                                href="/contact",
+                                href=app_path("/contact"),
                                 color="dark",
                                 outline=True,
                                 size="sm",
@@ -327,14 +425,14 @@ def create_new_user_guide_modal():
                 [
                     dbc.Button(
                         "Close",
-                        id="new-user-guide-close",
+                        id="onboarding-walkthrough-close",
                         color="secondary",
                         outline=True,
                     )
                 ]
             ),
         ],
-        id="new-user-guide-modal",
+        id="onboarding-walkthrough-dialog",
         size="lg",
         centered=True,
         scrollable=True,

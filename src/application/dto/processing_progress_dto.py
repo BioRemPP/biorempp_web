@@ -38,14 +38,14 @@ class ProcessingProgressDTO:
         ValueError
             If stage numbers invalid or percentage out of range
         """
+        if self.total_stages < 1:
+            raise ValueError("total_stages must be at least 1")
+
         if self.stage_number < 1 or self.stage_number > self.total_stages:
             raise ValueError(f"stage_number must be between 1 and {self.total_stages}")
 
         if not 0.0 <= self.progress_percentage <= 100.0:
             raise ValueError("progress_percentage must be between 0.0 and 100.0")
-
-        if self.total_stages < 1:
-            raise ValueError("total_stages must be at least 1")
 
         if (
             self.estimated_time_remaining is not None

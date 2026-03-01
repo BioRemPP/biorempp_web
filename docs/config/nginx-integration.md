@@ -210,48 +210,6 @@ server {
 ### Development
 
 ```bash
-# .env (development)
-BIOREMPP_HOST=0.0.0.0
-BIOREMPP_PORT=8050
-DOMAIN=localhost
-```
-
-### Production
-
-```bash
-# .env (production)
-BIOREMPP_HOST=0.0.0.0
-BIOREMPP_PORT=8080
-DOMAIN=biorempp.example.com
-ENABLE_HTTPS=true
-LETSENCRYPT_EMAIL=admin@example.com
-```
-
----
-
-## Common Pitfalls
-
-1. **Mismatched ports:** Nginx upstream port must match `BIOREMPP_PORT`; mismatch causes 502 Bad Gateway
-
-2. **Missing WebSocket headers:** Without `Upgrade` and `Connection` headers, Dash live updates fail
-
-3. **Timeout too short:** If `proxy_read_timeout` < `BIOREMPP_TIMEOUT`, Nginx terminates requests prematurely
-
-4. **SSL certificate path errors:** `${DOMAIN}` substitution requires the variable to be set during Nginx config generation
-
-5. **Upload size mismatch:** If `client_max_body_size` < actual upload, Nginx returns 413 Request Entity Too Large before BioRemPP sees the request
-
----
-
-## See Also
-
-- [Gunicorn Configuration](gunicorn.md) — Upstream application server
-- [Environment Variables](environment-variables.md) — Configuration reference
-- [Logging Configuration](logging.md) — Nginx and application logging
-- [Health Endpoints](health-endpoints.md) — Health check endpoints for load balancing
-- [Docker Integration](docker-integration.md) — Container deployment with Nginx
-=======
-```bash
 curl -f http://<nginx-host>/health
 curl -i http://<nginx-host>/metrics
 docker exec biorempp curl -fsS http://127.0.0.1:8080/metrics
@@ -265,7 +223,8 @@ Expected:
 
 ## See Also
 
-- [Docker Integration](docker-integration.md)
-- [Institutional Ingress Handoff](institutional_ingress_handoff.md)
-- [Environment Variables](environment-variables.md)
->>>>>>> 852602f (docs: update and align technical documentation with runtime behavior for v1.0.6-beta)
+- [Gunicorn Configuration](gunicorn.md) — Upstream application server
+- [Environment Variables](environment-variables.md) — Configuration reference
+- [Logging Configuration](logging.md) — Nginx and application logging
+- [Health Endpoints](health-endpoints.md) — Health check endpoints for load balancing
+- [Docker Integration](docker-integration.md) — Container deployment with Nginx

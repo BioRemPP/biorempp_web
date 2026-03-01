@@ -2,51 +2,59 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from .info_modal import create_info_modal
+from src.presentation.routing import app_path
 
 
-def _create_reviewer_disclaimer_button_inline():
-    """
-    Create reviewer disclaimer button (inline to avoid circular imports).
-
-    This is a temporary component for the initial submission review period.
-    The full implementation is in review_disclaimer.py.
-
-    Returns
-    -------
-    dbc.Card
-        Card containing button to open reviewer disclaimer modal
-    """
-    return dbc.Card(
+def create_how_to_cite_modal() -> dbc.Modal:
+    """Create compact How to Cite modal accessible from intro actions."""
+    return dbc.Modal(
         [
-            dbc.CardBody(
+            dbc.ModalHeader(
+                [html.I(className="fas fa-quote-right me-2"), "How to Cite"],
+                close_button=True,
+            ),
+            dbc.ModalBody(
                 [
-                    html.Div(
+                    html.P(
+                        html.I("Citation placeholder"),
+                        className="mb-3 text-dark",
+                    ),
+                    html.P(
+                        "For full citation templates, BibTeX entries, and DOI updates, "
+                        "open the complete citation page.",
+                        className="text-muted mb-3",
+                    ),
+                    dbc.Button(
                         [
-                            dbc.Button(
-                                [
-                                    html.I(className="fas fa-info-circle me-2"),
-                                    "Disclaimer for Reviewers - Please Read Before Proceeding",
-                                    html.I(className="fas fa-info-circle ms-2"),
-                                ],
-                                id="reviewer-disclaimer-btn",
-                                color="info",
-                                size="lg",
-                                className="shadow-sm",
-                            )
+                            html.I(className="fas fa-external-link-alt me-2"),
+                            "Open Full Citation Page",
                         ],
-                        className="d-grid",
+                        href=app_path("/how-to-cite"),
+                        color="success",
+                        className="w-100",
                     ),
                 ]
-            )
+            ),
+            dbc.ModalFooter(
+                dbc.Button(
+                    "Close",
+                    id="how-to-cite-close",
+                    color="secondary",
+                    n_clicks=0,
+                )
+            ),
         ],
-        className="shadow-sm mb-4",
+        id="how-to-cite-modal",
+        is_open=False,
+        centered=True,
+        size="lg",
     )
 
 
 def create_intro_card() -> html.Div:
     """
     Create an introduction block with the BioRemPP logo, description,
-    a privacy/info alert, and a styled "How to cite" section (no Toast).
+    a privacy/info alert, and top action buttons.
 
     Returns
     -------
@@ -55,61 +63,13 @@ def create_intro_card() -> html.Div:
     """
     text_class = "text-dark"
 
-    how_to_cite_card = dbc.Card(
-        [
-            dbc.CardHeader(
-                "How to cite",
-                className="text-center fw-semibold",
-                style={
-                    "fontSize": "1.25rem",
-                    "backgroundColor": "transparent",
-                    "borderBottom": "1px solid #e9ecef",
-                    "paddingTop": "0.9rem",
-                    "paddingBottom": "0.9rem",
-                },
-            ),
-            dbc.CardBody(
-                [
-                    html.P(
-                        [
-                            html.I("Citation placeholder "),
-                        ],
-                        className="text-dark mb-3",
-                        style={"fontSize": "1.02rem"},
-                    ),
-                    html.Div(
-                        dbc.Button(
-                            [
-                                html.I(className="fas fa-quote-right me-2"),
-                                "How to Cite",
-                            ],
-                            href="/how-to-cite",
-                            color="success",
-                            outline=True,
-                            size="sm",
-                        ),
-                        className="text-center",
-                    ),
-                ],
-                className="text-center",
-                style={"paddingTop": "1.2rem", "paddingBottom": "1.2rem"},
-            ),
-        ],
-        className="w-100 shadow-sm rounded-3 mb-5",
-        style={
-            "backgroundColor": "#ffffff",
-            "border": "1px solid #e9ecef",
-            "marginBottom": "4rem",  # extra spacing from the section below
-        },
-    )
-
     return html.Div(
         [
             dbc.Row(
                 [
                     dbc.Col(
                         html.Img(
-                            src="/assets/BIOREMPP_LOGO.png",
+                            src=app_path("/assets/BIOREMPP_LOGO.png"),
                             style={"maxWidth": "100%", "height": "auto"},
                             alt="BioRemPP Logo",
                         ),
@@ -132,23 +92,62 @@ def create_intro_card() -> html.Div:
                                     "samples, and toxicity-related annotations",
                                     className=text_class,
                                 ),
-                                # More Info button
+                                # Top actions
                                 html.Div(
-                                    dbc.Button(
-                                        "More Info",
-                                        id="info-modal-open-button",
-                                        color="primary",
-                                        outline=True,
-                                        size="md",
-                                        className="mt-2",
-                                        n_clicks=0,
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-exclamation-circle me-2"
+                                                        ),
+                                                        "More Info",
+                                                    ],
+                                                    id="info-modal-open-button",
+                                                    color="primary",
+                                                    size="md",
+                                                    className="mt-2 intro-action-btn",
+                                                    n_clicks=0,
+                                                ),
+                                                width="auto",
+                                            ),
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-exclamation-triangle me-2"
+                                                        ),
+                                                        "Terms of Use",
+                                                    ],
+                                                    id="terms-btn",
+                                                    color="warning",
+                                                    size="md",
+                                                    className="mt-2 intro-action-btn",
+                                                    n_clicks=0,
+                                                ),
+                                                width="auto",
+                                            ),
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-quote-right me-2"
+                                                        ),
+                                                        "How to Cite",
+                                                    ],
+                                                    id="how-to-cite-btn",
+                                                    color="success",
+                                                    size="md",
+                                                    className="mt-2 intro-action-btn",
+                                                    n_clicks=0,
+                                                ),
+                                                width="auto",
+                                            ),
+                                        ],
+                                        className="g-3 justify-content-center intro-actions-row",
                                     ),
-                                    className="text-center",
-                                ),
-                                # Reviewer Disclaimer button (temporary for initial submission)
-                                html.Div(
-                                    _create_reviewer_disclaimer_button_inline(),
-                                    className="mt-3",
+                                    className="text-center mt-1",
                                 ),
                             ],
                             className="p-3 text-center",
@@ -161,17 +160,22 @@ def create_intro_card() -> html.Div:
             # Privacy / no-login message
             dbc.Alert(
                 [
-                    "BioRemPP is free and open to all users and there is no login requirement. ",
-                    "No data are collected or saved, as BioRemPP works with session-based storage.",
+                    html.Div(
+                        "This web service is free and open to all users and does not require login."
+                    ),
+                    html.Div(
+                        "It is not usable for commercial product claims without experimental confirmation."
+                    ),
+                    html.Div("See the license page for detailed terms of use."),
                 ],
                 color="success",
                 className="mt-2 mb-3 text-center",
                 is_open=True,
             ),
-            # Styled "How to cite" section (replaces Toast)
-            how_to_cite_card,
             # More Info Modal
             create_info_modal(),
+            # How to Cite Modal
+            create_how_to_cite_modal(),
         ],
         className="mb-4",
         style={"backgroundColor": "transparent"},

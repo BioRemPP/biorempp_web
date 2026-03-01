@@ -1,0 +1,307 @@
+{
+  "id": null,
+  "uid": "biorempp-cache-performance",
+  "title": "BioRemPP - Cache Performance",
+  "tags": [
+    "biorempp",
+    "cache",
+    "observability"
+  ],
+  "timezone": "browser",
+  "schemaVersion": 39,
+  "version": 1,
+  "refresh": "30s",
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Memory Cache Hit Ratio",
+      "id": 1,
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(biorempp_cache_operations_total{cache_type=\"memory\",operation=\"get\",outcome=\"hit\"}[5m])) / clamp_min(sum(rate(biorempp_cache_operations_total{cache_type=\"memory\",operation=\"get\",outcome=~\"hit|miss|expired\"}[5m])), 0.001)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Graph Cache Hit Ratio",
+      "id": 2,
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(biorempp_cache_operations_total{cache_type=\"graph\",operation=\"get\",outcome=\"hit\"}[5m])) / clamp_min(sum(rate(biorempp_cache_operations_total{cache_type=\"graph\",operation=\"get\",outcome=~\"hit|miss|expired\"}[5m])), 0.001)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "DataFrame Cache Hit Ratio",
+      "id": 3,
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(biorempp_cache_operations_total{cache_type=\"dataframe\",operation=\"get\",outcome=\"hit\"}[5m])) / clamp_min(sum(rate(biorempp_cache_operations_total{cache_type=\"dataframe\",operation=\"get\",outcome=~\"hit|miss|expired\"}[5m])), 0.001)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percentunit"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Evictions/s (all caches)",
+      "id": 4,
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(biorempp_cache_operations_total{operation=\"evict\"}[5m]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Get Hits vs Misses",
+      "id": 5,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (cache_type) (rate(biorempp_cache_operations_total{operation=\"get\",outcome=\"hit\"}[5m]))",
+          "legendFormat": "hit {{cache_type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum by (cache_type) (rate(biorempp_cache_operations_total{operation=\"get\",outcome=~\"miss|expired\"}[5m]))",
+          "legendFormat": "miss {{cache_type}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Evictions by Cache Type",
+      "id": 6,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 5
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (cache_type, outcome) (rate(biorempp_cache_operations_total{operation=\"evict\"}[5m]))",
+          "legendFormat": "{{cache_type}} {{outcome}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ops"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Cache Size (items)",
+      "id": 7,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 13
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "sum by (cache_type) (biorempp_cache_size_items)",
+          "legendFormat": "{{cache_type}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Entry Size p95 (bytes)",
+      "id": 8,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 13
+      },
+      "datasource": {
+        "type": "prometheus",
+        "uid": "biorempp-prometheus"
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, sum by (le, cache_type) (rate(biorempp_cache_entry_size_bytes_bucket[5m])))",
+          "legendFormat": "{{cache_type}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "showLegend": true
+        }
+      }
+    }
+  ]
+}

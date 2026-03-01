@@ -795,7 +795,7 @@ BioRemPP is provided "as is" without warranty of any kind. The authors and contr
 
 **Critical Limitation:**
 
-BioRemPP databases are loaded from **CSV files without embedded version identifiers or checksums**. Updates to database files will change integration results for identical input KO sets.
+BioRemPP databases are file-based CSV resources. Version and integrity metadata are tracked externally (repository history plus `data/databases/checksums.sha256`), not embedded in each row. Updates to any database file can change integration results for identical KO inputs.
 
 **Reproducibility Table:**
 
@@ -810,7 +810,7 @@ BioRemPP databases are loaded from **CSV files without embedded version identifi
 
 **Implication:**
 
-Reproducibility depends on using the **same database versions** at the same **time point**. Database updates (e.g., KEGG refresh, regulatory framework amendments) will change results.
+Reproducibility depends on preserving the same service version, database checksums, and execution time point. Database updates (e.g., KEGG refresh, regulatory framework amendments) can change outputs.
 
 ---
 
@@ -820,12 +820,12 @@ Reproducibility depends on using the **same database versions** at the same **ti
 
 To ensure reproducibility, users must document:
 
-1. **BioRemPP version:** Service version (e.g., v1.0.0)
+1. **BioRemPP version:** Service version (e.g., `1.0.6-beta`)
 2. **Analysis date:** Date of analysis execution
 3. **Input file:** Original KO annotations (preserve and archive)
 4. **Annotation tool and version:** How KO identifiers were generated (e.g., eggNOG-mapper v2.1.12)
-5. **Database access date:** Especially for KEGG (updated regularly)
-6. **Database file checksums:** SHA256 of CSV files
+5. **Database snapshot date:** Date associated with the database files used
+6. **Database file checksums:** SHA256 entries from `data/databases/checksums.sha256`
 7. **Use case IDs analyzed:** Module and Use Case numbers (e.g., Module 2, UC-2.1)
 8. **Non-default parameters:** Top N values, thresholds, filters (if modified)
 
@@ -835,8 +835,8 @@ To ensure reproducibility, users must document:
 - [ ] Analysis execution date
 - [ ] Input file (KO annotations)
 - [ ] Annotation tool and version
-- [ ] Database access date
-- [ ] Database file checksums (if available)
+- [ ] Database snapshot date
+- [ ] Database file checksums
 - [ ] Use case IDs analyzed
 - [ ] Non-default parameters (if any)
 
@@ -848,10 +848,10 @@ To ensure reproducibility, users must document:
    ├── input/
    │   └── ko_annotations.txt
    ├── database_exports/
-   │   ├── biorempp_data.csv
-   │   ├── kegg_data.csv
-   │   ├── hadeg_data.csv
-   │   └── toxcsm_data.xlsx
+   │   ├── biorempp_db.csv
+   │   ├── kegg_degradation_db.csv
+   │   ├── hadeg_db.csv
+   │   └── toxcsm_db.csv
    ├── use_case_outputs/
    │   ├── uc_2_1_table.csv
    │   └── uc_2_1_plot.svg
@@ -860,12 +860,13 @@ To ensure reproducibility, users must document:
 
 2. **Document parameters** in `metadata.txt`:
    ```
-   BioRemPP version: 1.0.0-beta
-   Analysis date: 2025-12-15
+   BioRemPP version: 1.0.6-beta
+   Analysis date: 2026-02-19
    Input samples: 12
    Input KOs: 4532
    Annotation tool: eggNOG-mapper v2.1.12
    Modules analyzed: 1, 2, 7
+   Database checksums file: data/databases/checksums.sha256
    ```
 
 3. **Deposit with publications:** Zenodo, Figshare, or institutional repository with DOI

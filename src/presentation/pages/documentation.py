@@ -24,6 +24,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from ..components.base import create_footer, create_header
+from ..routing import app_path
 
 
 def create_documentation_card(
@@ -92,7 +93,7 @@ def create_documentation_card(
                     html.Div(
                         [
                             html.Img(
-                                src="/assets/BIOREMPP_LOGO.png",
+                                src=app_path("/assets/BIOREMPP_LOGO.png"),
                                 alt="BioRemPP Logo",
                                 style={
                                     "maxWidth": "200px",

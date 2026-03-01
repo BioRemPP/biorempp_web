@@ -20,6 +20,8 @@ from typing import Any, Dict, List
 import dash_bootstrap_components as dbc
 from dash import html
 
+from src.presentation.routing import app_path
+
 
 def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
     """
@@ -54,33 +56,26 @@ def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
 
     Notes
     -----
-    - Default links: Example Dataset, Contact Support, Publications and Awards
+    - Default links: Contact Support, Publications and Awards
     - Icons enhance visual recognition
     - Responsive grid layout (3 columns)
     - Hover effects for interactivity
     """
     # Import here to avoid circular import
     from ..composite.publications_modal import create_publications_modal
-    from ..composite.sample_data_modal import create_sample_data_modal
 
     default_links = [
-        {
-            "title": "Exemple Dataset",
-            "description": "Download and explore our example dataset",
-            "icon": "fas fa-database",
-            "url": "/help/samples",
-        },
         {
             "title": "Contact Support",
             "description": "Get help from our team",
             "icon": "fas fa-envelope",
-            "url": "/help/contact",
+            "url": app_path("/help/contact"),
         },
         {
             "title": "Publications and Awards",
             "description": "Scientific publications and recognitions",
             "icon": "fas fa-trophy",
-            "url": "/help/publications",
+            "url": app_path("/help/publications"),
         },
     ]
 
@@ -107,18 +102,7 @@ def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
         )
 
         # Create card with or without ID depending on title
-        if link["title"] == "Exemple Dataset":
-            # Wrap in html.Div with ID to capture clicks (modal)
-            card_component = html.Div(
-                dbc.Card(
-                    [card_body],
-                    className="h-100 shadow-sm",
-                    style={"cursor": "pointer"},
-                ),
-                id="sample-data-card",
-                n_clicks=0,
-            )
-        elif link["title"] == "Publications and Awards":
+        if link["title"] == "Publications and Awards":
             # Wrap in html.Div with ID to capture clicks (modal)
             card_component = html.Div(
                 dbc.Card(
@@ -141,7 +125,8 @@ def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
                 style={"textDecoration": "none", "color": "inherit"},
             )
 
-        card = dbc.Col([card_component], md=4, className="mb-3")
+        md_cols = 6 if len(links) == 2 else 4
+        card = dbc.Col([card_component], md=md_cols, className="mb-3")
         link_cards.append(card)
 
     return html.Div(
@@ -166,8 +151,6 @@ def create_help_links(custom_links: List[Dict[str, Any]] = None) -> dbc.Card:
                 ],
                 className="mb-4",
             ),
-            # Sample Data Modal
-            create_sample_data_modal(),
             # Publications Modal
             create_publications_modal(),
         ]

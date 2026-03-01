@@ -22,6 +22,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from config.settings import APP_VERSION
+from src.presentation.routing import app_path
 
 
 def create_footer(
@@ -81,7 +82,7 @@ def create_footer(
     )
 
     default_links = [
-        {"label": "Documentation", "url": "/documentation"},
+        {"label": "Documentation", "url": app_path("/documentation")},
     ]
 
     if additional_links:

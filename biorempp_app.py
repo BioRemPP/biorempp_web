@@ -22,7 +22,6 @@ from pathlib import Path
 import dash
 import dash_bootstrap_components as dbc
 import diskcache
-import pandas as pd
 from dash import DiskcacheManager, Input, Output, State, callback, dcc, html
 
 # Silence watchdog debug logs (used by Dash hot-reload)
@@ -43,6 +42,7 @@ from src.presentation.callbacks.download_callbacks import register_download_call
 from src.presentation.callbacks.navigation_callbacks import (
     register_navigation_callbacks,
 )
+from src.presentation.routing import app_path, strip_base_path
 from src.presentation.components.composite.analysis_suggestions import (
     register_suggestions_callbacks,
 )
@@ -71,9 +71,6 @@ from src.presentation.pages.methods.callbacks import (
     register_callbacks as register_methods_callbacks,
 )
 from src.presentation.pages.new_user import register_new_user_guide_callbacks
-from src.presentation.pages.review_disclaimer import (
-    register_reviewer_disclaimer_callbacks,
-)
 from src.presentation.pages.uc_user_guide import register_demo_callbacks
 
 # Initialize application settings and logging
@@ -133,19 +130,25 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("CHILD WORKER PROCESS - CREATING FULL APP INSTANCE")
     logger.info("=" * 80)
 
-    # Configure long callback cache manager for progress tracking
-    # Always enable diskcache for background callbacks (required by Dash)
-    cache_dir = Path(__file__).parent / ".cache"
-    cache_dir.mkdir(exist_ok=True)
-    cache = diskcache.Cache(str(cache_dir))
-    long_callback_manager = DiskcacheManager(cache)
-    logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    long_callback_manager = None
+    if settings.BACKGROUND_CALLBACKS_ENABLED:
+        # Configure long callback cache manager for progress tracking.
+        # Cache root is standardized via BIOREMPP_CACHE_DIR
+        # (default: /app/cache in Docker).
+        cache_dir = settings.CACHE_DIR / "long_callbacks"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache = diskcache.Cache(str(cache_dir))
+        long_callback_manager = DiskcacheManager(cache)
+        logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    else:
+        logger.warning(
+            "Background callbacks disabled; processing will run in request worker"
+        )
 
     # Initialize Dash app with Font Awesome
     font_awesome = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
-    app = dash.Dash(
-        __name__,
+    dash_kwargs = dict(
         external_stylesheets=[
             dbc.themes.MINTY,
             font_awesome
@@ -153,7 +156,14 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         suppress_callback_exceptions=True,
         title=f"{APP_NAME} v{APP_VERSION}",
         assets_folder='src/assets',
-        background_callback_manager=long_callback_manager
+        url_base_pathname=settings.URL_BASE_PATH,
+    )
+    if long_callback_manager is not None:
+        dash_kwargs["background_callback_manager"] = long_callback_manager
+
+    app = dash.Dash(__name__, **dash_kwargs)
+    app.server.config["BIOREMPP_BACKGROUND_CALLBACKS_ENABLED"] = (
+        settings.BACKGROUND_CALLBACKS_ENABLED
     )
     favicon_href = f"{app.get_asset_url('favicon.ico')}?v={APP_VERSION}"
     app.index_string = app.index_string.replace(
@@ -163,7 +173,9 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("[OK] Dash app created")
     logger.info("  - Theme: Bootstrap MINTY")
     logger.info("  - Callback exceptions: Suppressed")
-    logger.info("  - Long callbacks: Enabled with diskcache")
+    logger.info(
+        f"  - Long callbacks: {'Enabled with diskcache' if long_callback_manager else 'Disabled'}"
+    )
     
     # Set app layout with routing
     app.layout = html.Div([
@@ -202,51 +214,50 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         Component
             Page layout component
         """
-        if pathname == '/faq':
+        normalized_pathname = strip_base_path(pathname)
+
+        if normalized_pathname == '/faq':
             # FAQ page
             return create_faq_page()
-        elif pathname == '/regulatory':
+        elif normalized_pathname == '/regulatory':
             # Regulatory reference page
             return create_regulatory_page()
-        elif pathname == '/help/contact' or pathname == '/contact':
+        elif normalized_pathname == '/help/contact' or normalized_pathname == '/contact':
             # Contact/Help page
             return create_contact_page()
-        elif pathname == '/help/user-guide' or pathname == '/user-guide':
+        elif normalized_pathname == '/help/user-guide' or normalized_pathname == '/user-guide':
             # User Guide page
             return create_user_guide_page()
-        elif pathname == '/methods/overview':
+        elif normalized_pathname == '/methods/overview':
             # Scientific Methods Overview page
             return create_scientific_methods_page()
-        elif pathname == '/methods':
+        elif normalized_pathname == '/methods':
             # Methods page
             return create_methods_page()
-        elif pathname == '/documentation':
+        elif normalized_pathname == '/documentation':
             # Documentation page
             return create_documentation_page()
-        elif pathname == '/how-to-cite':
+        elif normalized_pathname == '/how-to-cite':
             # How to Cite page
             return create_how_to_cite_page()
-        elif pathname == '/schemas':
+        elif normalized_pathname == '/schemas':
             # Database Schemas index page
             return create_schemas_index_page()
-        elif pathname == '/schemas/biorempp':
+        elif normalized_pathname == '/schemas/biorempp':
             # BioRemPP schema page
             return create_biorempp_schema_page()
-        elif pathname == '/schemas/hadeg':
+        elif normalized_pathname == '/schemas/hadeg':
             # HADEG schema page
             return create_hadeg_schema_page()
-        elif pathname == '/schemas/kegg':
+        elif normalized_pathname == '/schemas/kegg':
             # KEGG schema page
             return create_kegg_schema_page()
-        elif pathname == '/schemas/toxcsm':
+        elif normalized_pathname == '/schemas/toxcsm':
             # ToxCSM schema page
             return create_toxcsm_schema_page()
-        elif pathname == '/results':
+        elif normalized_pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
-                import dash_bootstrap_components as dbc
-                from dash import html
-                
                 return dbc.Container([
                     dbc.Alert(
                         [
@@ -266,7 +277,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                                         html.I(className="fas fa-home me-2"),
                                         "Go to Homepage"
                                     ],
-                                    href="/",
+                                    href=app_path("/"),
                                     color="primary"
                                 )
                             ])
@@ -275,22 +286,8 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                         className="mt-5"
                     )
                 ], className="mt-5")
-            
-            # Convert dict back to DataFrames for results page
-            # Callback returns keys with '_d' suffix, convert to '_df' for compatibility
-            results_data = {
-                'biorempp_df': pd.DataFrame(merged_data['biorempp_df']),
-                'biorempp_raw_df': pd.DataFrame(merged_data['biorempp_raw_df']),
-                'hadeg_df': pd.DataFrame(merged_data['hadeg_df']),
-                'hadeg_raw_df': pd.DataFrame(merged_data['hadeg_raw_df']),
-                'toxcsm_df': pd.DataFrame(merged_data['toxcsm_df']),
-                'toxcsm_raw_df': pd.DataFrame(merged_data['toxcsm_raw_df']),
-                'kegg_df': pd.DataFrame(merged_data['kegg_df']),
-                'kegg_raw_df': pd.DataFrame(merged_data['kegg_raw_df']),
-                'metadata': merged_data['metadata']
-            }
-            
-            return get_results_layout(merged_data=results_data)
+
+            return get_results_layout(merged_data=merged_data)
         else:
             # Default to homepage
             return get_home_layout()
@@ -335,10 +332,6 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     # Register New User Guide callbacks
     logger.info("Registering New User Guide callbacks...")
     register_new_user_guide_callbacks(app)
-
-    # Register Reviewer Disclaimer callbacks (temporary for initial submission)
-    logger.info("Registering Reviewer Disclaimer callbacks...")
-    register_reviewer_disclaimer_callbacks(app)
 
     # Add health check endpoints
     @app.server.route('/health')
@@ -391,8 +384,28 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
 
     logger.info("[OK] Health check endpoints registered (/health, /ready)")
 
+    if settings.OBSERVABILITY_ENABLED:
+        from src.shared.metrics import setup_observability
+
+        setup_observability(
+            app,
+            metrics_path=settings.OBSERVABILITY_METRICS_PATH,
+        )
+        logger.info(
+            "[OK] Observability enabled "
+            f"({settings.OBSERVABILITY_METRICS_PATH})"
+        )
+    else:
+        @app.server.route(settings.OBSERVABILITY_METRICS_PATH)
+        def metrics_disabled():
+            return {
+                "status": "disabled",
+                "message": "Observability is disabled",
+            }, 404
+
+        logger.info("[OK] Observability disabled")
+
     # Add static file route for example dataset download
-    @app.server.route('/data/<path:filename>')
     def serve_data_files(filename):
         """
         Serve static data files (e.g., example datasets) for download.
@@ -409,13 +422,35 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         """
         from flask import send_from_directory
         data_dir = Path(__file__).parent / "data"
+        if not settings.is_public_data_file_allowed(filename):
+            logger.warning("Blocked non-allowlisted public data file request")
+            return {"error": "File not found"}, 404
         try:
             return send_from_directory(data_dir, filename, as_attachment=True)
         except FileNotFoundError:
-            logger.warning(f"File not found: {filename} in {data_dir}")
+            logger.warning("Allowlisted public data file not found on disk")
             return {"error": "File not found"}, 404
 
-    logger.info("[OK] Static data file route registered (/data/<filename>)")
+    root_data_route = "/data/<filename>"
+    app.server.add_url_rule(
+        root_data_route,
+        endpoint="serve_public_data_root",
+        view_func=serve_data_files,
+    )
+
+    prefixed_data_route = app_path("/data/<filename>")
+    if prefixed_data_route != root_data_route:
+        app.server.add_url_rule(
+            prefixed_data_route,
+            endpoint="serve_public_data_prefixed",
+            view_func=serve_data_files,
+        )
+        logger.info(
+            "[OK] Static data file routes registered "
+            f"({root_data_route}, {prefixed_data_route})"
+        )
+    else:
+        logger.info(f"[OK] Static data file route registered ({root_data_route})")
 
     logger.info("\n" + "=" * 80)
     logger.info("[OK] APPLICATION INITIALIZED SUCCESSFULLY")

@@ -126,7 +126,7 @@ def create_module1_overview_header() -> html.Div:
         overview_text=overview_text,
         guiding_questions=guiding_questions,
         section_id="module1-overview-header",
-        num_use_cases=7,  # Module 1 has 7 use cases (UC 1.1 - 1.6, plus regulatory)
+        num_use_cases=6,  # Module 1 has 6 use cases
     )
 
 

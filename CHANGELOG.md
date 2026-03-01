@@ -12,8 +12,162 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### To-Do
 
 - Structure and document Profiling Suite scripts for public release
-- Structure and document Internal Validation Suite scripts for public release
-- Publish validation results as supplementary materials
+
+---
+
+## [1.0.7-beta] - 2026-02-27
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Resume by Job ID + Production Observability
+
+- **Resume Analysis by Job ID (same-browser)** with temporary payload persistence and recovery flow from homepage to `/results`.
+- **Dual backend support for resume persistence** (`diskcache` baseline and `redis` for multi-worker scale), including backend resolution by environment.
+- **Prometheus/Grafana observability stack** with instrumentation for processing, resume flow, cache behavior, and callback execution.
+- **Operational telemetry and alerting** for resume outcomes (`not_found`, `token_mismatch`, `save_failed`, `rate_limited`) and worker health.
+
+### Changed
+
+#### Security, Deployment, and Routing
+
+- **Production hardening policy** with fail-fast validation for required secrets and safer production defaults.
+- **Nginx-first production topology** with internal app exposure, metrics protection, and institutional edge-TLS alignment.
+- **Configurable base path support** via `BIOREMPP_URL_BASE_PATH`, preserving root compatibility while enabling subpath deployments.
+- **Incremental deployment model** using environment overlays for baseline (`prod`) and full stack (`prod + cache + observability`) activation.
+
+#### UI and Editorial Alignment
+
+- **Homepage workflow refinement** based on editorial feedback (input onboarding flow, resume panel positioning, and cleaner action hierarchy).
+- **Deprecated reviewer disclaimer removed** (UI, callback registration, and related page module).
+- **Job ID UX improvements** in processing/results flow, with clearer recovery messaging and copy-oriented interaction.
+
+### Fixed
+
+#### Reliability and Runtime Consistency
+
+- **Results navigation stability** under production proxy/base-path scenarios.
+- **Nginx and app integration issues** affecting request routing, health behavior, and payload handling.
+- **UpSet rendering consistency** by centralizing dimension behavior in the shared strategy path.
+
+---
+
+## [1.0.6-beta] - 2026-02-19
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Internal Validation (GX)
+
+- **Official Internal Validation Suite in Root Directory**
+  - Added complete `internal_validation/` structure with configuration, scripts, suites, context, outputs, and operational docs.
+  - Added GX orchestration scripts:
+    - `internal_validation/scripts/run_all_gx.py`
+    - `internal_validation/scripts/ci_validation.py`
+    - `internal_validation/scripts/init_gx_context.py`
+    - `internal_validation/scripts/configure_data_sources.py`
+    - `internal_validation/scripts/verify_gx_setup.py`
+  - Added hybrid task modules for provenance, overlap, roundtrip, and parity support in:
+    - `internal_validation/scripts/tasks/`
+
+- **GX Validation Definitions and Checkpoints**
+  - Added schema, mapping, invariants, and vocabulary suites with persisted GX artifacts under:
+    - `internal_validation/gx_context/expectations/`
+    - `internal_validation/gx_context/validation_definitions/`
+    - `internal_validation/gx_context/checkpoints/`
+
+- **CI Workflow for Internal Validation**
+  - Added workflow:
+    - `.github/workflows/internal_validation_gx.yml`
+
+### Changed
+
+#### Validation Strictness and Contracts
+
+- **Strict Fixed Expectations for Consolidated Snapshot**
+  - Replaced range/tolerance expectations with fixed-value constraints in GX suites.
+  - Added fixed row-count contract per asset in:
+    - `internal_validation/config/validation_config.yaml` (`expected_row_counts`)
+  - Updated suite logic to enforce strict row counts and strict non-null checks.
+  - Replaced toxCSM `value_*` range checks with fixed discrete domain checks (`0.00` to `1.00`, step `0.01`).
+
+- **Output Ignore Rule for Roundtrip Summary**
+  - Updated `.gitignore` to ignore dated roundtrip summary JSON files:
+    - `internal_validation/outputs/*/05_example_roundtrip_regression/summary.json`
+
+- **Dependency Scope**
+  - Moved `great_expectations>=1.12,<2.0` to `dev` optional dependencies in `pyproject.toml`.
+
+#### Validation Documentation
+
+- Rewrote official validation documentation pages to reflect the GX implementation and current operational flow:
+  - `docs/validation/index.md`
+  - `docs/validation/internal-validation.md`
+  - `docs/validation/validation-suite.md`
+  - `docs/validation/validation-v1.md`
+
+### Fixed
+
+#### Checksum Consistency and Validation Reporting
+
+- Updated `docs/validation/validation-v1.md` with real execution metrics from:
+  - `internal_validation/outputs/2026-02-18/`
+- Aligned checksum references in documentation with current dataset hashes.
+- Updated `data/databases/checksums.sha256` to match current CSV files:
+  - `biorempp_db.csv`: `216cf113400161d6eee8d4eefb13bab23f60f9286874fa41ae8d00f3fc4637c0`
+  - `hadeg_db.csv`: `d546c01be1cf05866b18aa25fd1edb23e4d90f9ab4e65fb5e37911c1e57ce938`
+  - `kegg_degradation_db.csv`: `f3df93d3bc5492043d2f6a9ea087b6687757e4757057ba1ab19c1a0d53fcd619`
+  - `toxcsm_db.csv`: `0d4616930b438964d9e007b20c9ffb9c414879b775a3b89d660bfc6278fe5f38`
+
+---
+
+## [1.0.5-beta] - 2026-02-19
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Results Overview Aggregation
+
+- **Hybrid Aggregate Metrics in Top Results Panel** - Added a second compact metrics row in `/results` overview card
+  - New KPIs: `Integrated Relations`, `Databases with Matches`, `KO Match Rate`
+  - Added per-database contribution badges (BioRemPP, HADEG, ToxCSM, KEGG) with input relation totals and share percentages
+  - Added compact tooltip for aggregation semantics (sum of first relation metric per database; overlap may exist)
+
+- **Metadata Contract Extension** - Added optional aggregate payload generated during processing
+  - New key: `metadata["database_aggregate_overview"]`
+  - Fields: `total_relations_input`, `active_databases`, `total_databases`, `ko_match_rate_pct`, `matched_kos`, `total_kos`, `per_database`
+
+### Changed
+
+#### Dynamic Database Overview Cards (4 Databases)
+
+- **Database Cards Refactor** - Replaced hardcoded overview values with dynamic values from processing metadata
+  - BioRemPP: dynamic `enzyme_compound_relations`, `environmental_compounds`, `compound_classes`, `regulatory_frameworks`
+  - HADEG: dynamic `gene_pathway_relations`, `unique_ko_numbers`, `degradation_pathways`, `compound_categories`
+  - ToxCSM: dynamic `environmental_compounds`, `toxicity_endpoints`, `toxicity_categories`
+  - KEGG: dynamic `gene_pathway_associations`, `unique_ko_numbers`, `degradation_pathways`
+
+- **Input-vs-Reference Presentation Rule** - Updated KPI display behavior for readability and tidy-data consistency
+  - First metric in each database card now shows **input value only**
+  - Remaining metrics keep input value with compact reference indicator (database icon + value)
+  - Replaced explicit "Global" text with a small icon hover label (`Refrence database value`) to reduce visual noise
+
+- **ToxCSM Label Update** - Renamed first ToxCSM KPI label to `KO-Compound Relations`
+
+#### Processing Pipeline and Compatibility
+
+- **Service-Layer Aggregation Builders** - Added dedicated builders for database overview and aggregate overview in `DataProcessingService`
+- **Server-Side Rendering Integration** - Kept existing architecture (`DataProcessingService -> merged-result-store -> /results`) without introducing new callbacks
+- **Backward Compatibility Fallbacks** - Added resilient fallback logic when `database_overview` or `database_aggregate_overview` is missing (older sessions)
+
+### Fixed
+
+- **Overview Data Accuracy** - Ensured top-panel aggregate volume uses input-derived relations only, avoiding misleading comparisons with global table size for tidy datasets
+- **ToxCSM Endpoint Semantics** - Kept endpoint counting dynamic and column-driven (`value_*`) for both input and reference contexts
+- **Regression Coverage** - Added/updated unit tests for:
+  - `database_overview` and `database_aggregate_overview` metadata structure and formulas
+  - Top results panel rendering with aggregate payload
+  - Fallback rendering for sessions missing new metadata keys
 
 ---
 

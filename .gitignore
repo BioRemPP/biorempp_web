@@ -170,6 +170,17 @@ ENV/
 env.bak/
 venv.bak/
 
+# Keep versioned environment templates
+!.env/
+!.env/env.example
+!.env/env.production
+.env/env.development
+.env/ENV_CONFIG_GUIDE.md
+.env/*.local
+.env/env.production.biome
+.env/env.production.stack
+.env/env.production.stack.*
+
 # Environment files (never commit these!)
 biorempp_web/.env
 biorempp_web/.env.local
@@ -238,6 +249,7 @@ logs/*.log
 # Cache
 
 *.cache
+cache/
 
 # Data directories
 data/local/
@@ -266,3 +278,8 @@ internal_validation/outputs/*/05_example_roundtrip_regression/summary.json
 # They should not be committed to avoid cluttering the repository
 .git_commit_message.txt
 .git_tag_message.txt
+
+# ============================================================================
+# Observability local helper scripts (keep local only)
+# ============================================================================
+observability/docs/local/*.ps1

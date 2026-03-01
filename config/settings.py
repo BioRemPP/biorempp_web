@@ -32,6 +32,7 @@ All settings can be overridden with environment variables:
 - BIOREMPP_HOT_RELOAD: Enable hot reload (True/False)
 - BIOREMPP_HOST: Server host (default: 127.0.0.1)
 - BIOREMPP_PORT: Server port (default: 8050)
+- BIOREMPP_URL_BASE_PATH: Base URL path prefix (default: /)
 - BIOREMPP_LOG_LEVEL: Logging level (DEBUG/INFO/WARNING/ERROR)
 - BIOREMPP_LOG_FILE: Log file path (optional)
 - BIOREMPP_WORKERS: Number of Gunicorn workers (production)
@@ -43,10 +44,49 @@ All settings can be overridden with environment variables:
 - BIOREMPP_UPLOAD_ENCODING: Expected file encoding (default: utf-8)
 - BIOREMPP_KO_PATTERN: Regex pattern for KO validation
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
+- BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
+- BIOREMPP_BACKGROUND_CALLBACKS_ENABLED: Enable Dash background callbacks
+- BIOREMPP_OBSERVABILITY_ENABLED: Enable Prometheus instrumentation (True/False)
+- BIOREMPP_OBSERVABILITY_METRICS_PATH: Metrics endpoint path (default: /metrics)
+- BIOREMPP_RESUME_BACKEND: Resume backend (diskcache|redis)
+- BIOREMPP_RESUME_SECURITY_MODE: Resume error mode (normal|strict)
+- BIOREMPP_RESUME_TTL_SECONDS: Resume payload TTL in seconds (default: 14400)
+- BIOREMPP_RESUME_CACHE_SIZE_MB: Resume cache max size in MB (default: 512)
+- BIOREMPP_RESUME_MAX_PAYLOAD_MB: Max payload size per resume job in MB
+- BIOREMPP_RESUME_RATE_LIMIT_ATTEMPTS: Max resume attempts per window
+- BIOREMPP_RESUME_RATE_LIMIT_WINDOW_SECONDS: Rate-limit window in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS: Base backoff in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS: Max backoff in seconds
+- BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB: Cache size for limiter state
+- BIOREMPP_RESUME_RATE_LIMIT_BACKEND: Rate-limit backend (auto|diskcache|redis)
+- BIOREMPP_RESUME_RATE_LIMIT_REDIS_KEY_PREFIX: Redis key prefix for rate-limit state
+- BIOREMPP_RESUME_ALERT_WINDOW_SECONDS: Security alert window in seconds
+- BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD: Alert threshold for not_found
+- BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD: Alert threshold for token_mismatch
+- BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD: Alert threshold for save_failed
+- BIOREMPP_RESUME_REDIS_HOST: Resume Redis host
+- BIOREMPP_RESUME_REDIS_PORT: Resume Redis port
+- BIOREMPP_RESUME_REDIS_DB: Resume Redis database index
+- BIOREMPP_RESUME_REDIS_PASSWORD: Resume Redis password
+- BIOREMPP_RESUME_REDIS_KEY_PREFIX: Resume Redis key prefix
+- BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL: Resume Redis compression level (1-9)
+- BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: Resume Redis socket timeout
+- BIOREMPP_TRUST_PROXY_HEADERS: Trust X-Forwarded-For only from trusted proxies
+- BIOREMPP_TRUSTED_PROXY_CIDRS: CSV of trusted reverse-proxy CIDRs
+- BIOREMPP_PUBLIC_DATA_ALLOWED_FILES: CSV allowlist for /data/<filename>
+- BIOREMPP_LOG_REF_SALT: Optional dedicated salt for log identifier redaction
+- BIOREMPP_LOG_REF_LENGTH: Length of redacted log references (default: 12)
+- BIOREMPP_LIMIT_REQUEST_LINE: Gunicorn max request line length
+- BIOREMPP_LIMIT_REQUEST_FIELD_SIZE: Gunicorn max header field size
+- BIOREMPP_LIMIT_REQUEST_FIELDS: Gunicorn max header field count
+- BIOREMPP_MAX_REQUEST_BODY_BYTES: Observability threshold for request body size
+- SECRET_KEY: Secret key for cryptographic/session operations (required in production)
 """
 
+import ipaddress
 import logging
 import os
+import secrets
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Literal, Optional
@@ -157,6 +197,38 @@ def get_app_name() -> str:
 APP_NAME: str = get_app_name()
 APP_VERSION: str = get_app_version()
 
+_INSECURE_SECRET_PLACEHOLDERS = frozenset(
+    {
+        "DEV-SECRET-KEY-NOT-SECURE",
+        "DEV-SECRET-KEY-NOT-SECURE-FOR-DEVELOPMENT-ONLY",
+        "CHANGE-ME-IN-PRODUCTION-USE-SECRETS-TOKEN-HEX",
+        "REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS",
+        "REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX",
+        "CHANGE-THIS-REDIS-PASSWORD",
+        "CHANGE-THIS-GRAFANA-PASSWORD",
+        "__SET_IN_PROD__",
+    }
+)
+
+_DEFAULT_TRUSTED_PROXY_CIDRS = ("127.0.0.1/32", "::1/128")
+_DEFAULT_PUBLIC_DATA_ALLOWED_FILES = ("exemple_dataset.txt",)
+_DEFAULT_LOG_REF_LENGTH = 12
+_MIN_LOG_REF_LENGTH = 8
+_MAX_LOG_REF_LENGTH = 24
+
+
+def _is_insecure_secret(value: Optional[str], min_length: int = 1) -> bool:
+    """Return True when secret value is empty, too short, or placeholder-like."""
+    normalized = (value or "").strip()
+    if len(normalized) < min_length:
+        return True
+    normalized_upper = normalized.upper()
+    if normalized_upper in _INSECURE_SECRET_PLACEHOLDERS:
+        return True
+    if normalized_upper.startswith("CHANGE-THIS-"):
+        return True
+    return False
+
 
 # =============================================================================
 # DATABASE VERSIONS
@@ -226,6 +298,10 @@ class Settings:
         Configuration files directory
     ASSETS_DIR : Path
         Static assets directory
+    CACHE_DIR : Path
+        Base cache directory (shared by long callbacks and resume payloads)
+    BACKGROUND_CALLBACKS_ENABLED : bool
+        Enable Dash background callbacks (auto-disabled in incompatible prod setup)
     UPLOAD_MAX_SIZE_MB : int
         Maximum upload file size in MB
     UPLOAD_MAX_SIZE_BYTES : int
@@ -277,6 +353,10 @@ class Settings:
         default_factory=lambda: _get_int("BIOREMPP_PORT", 8050)
     )
 
+    URL_BASE_PATH: str = field(
+        default_factory=lambda: os.getenv("BIOREMPP_URL_BASE_PATH", "/")
+    )
+
     # ========================================================================
     # GUNICORN (PRODUCTION)
     # ========================================================================
@@ -311,6 +391,20 @@ class Settings:
         default_factory=lambda: os.getenv("BIOREMPP_LOG_FILE")
     )
 
+    SECRET_KEY: str = field(
+        default_factory=lambda: os.getenv("SECRET_KEY", "").strip()
+    )
+
+    LOG_REF_SALT: str = field(
+        default_factory=lambda: os.getenv("BIOREMPP_LOG_REF_SALT", "").strip()
+    )
+
+    LOG_REF_LENGTH: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_LOG_REF_LENGTH", _DEFAULT_LOG_REF_LENGTH
+        )
+    )
+
     # ========================================================================
     # PATHS
     # ========================================================================
@@ -332,6 +426,237 @@ class Settings:
 
     ASSETS_DIR: Path = field(
         default_factory=lambda: Path(__file__).parent.parent / "assets"
+    )
+
+    CACHE_DIR: Path = field(init=False)
+
+    # ========================================================================
+    # DASH CALLBACK EXECUTION
+    # ========================================================================
+    BACKGROUND_CALLBACKS_ENABLED: bool = field(
+        default_factory=lambda: _get_bool(
+            "BIOREMPP_BACKGROUND_CALLBACKS_ENABLED",
+            True,
+        )
+    )
+
+    # ========================================================================
+    # OBSERVABILITY
+    # ========================================================================
+    OBSERVABILITY_ENABLED: bool = field(
+        default_factory=lambda: _get_bool("BIOREMPP_OBSERVABILITY_ENABLED", False)
+    )
+
+    OBSERVABILITY_METRICS_PATH: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_OBSERVABILITY_METRICS_PATH",
+            "/metrics",
+        )
+    )
+
+    TRUST_PROXY_HEADERS: bool = field(
+        default_factory=lambda: _get_bool("BIOREMPP_TRUST_PROXY_HEADERS", False)
+    )
+
+    TRUSTED_PROXY_CIDRS: tuple[str, ...] = field(
+        default_factory=lambda: tuple(
+            part.strip()
+            for part in os.getenv(
+                "BIOREMPP_TRUSTED_PROXY_CIDRS",
+                ",".join(_DEFAULT_TRUSTED_PROXY_CIDRS),
+            ).split(",")
+            if part.strip()
+        )
+    )
+
+    PUBLIC_DATA_ALLOWED_FILES: tuple[str, ...] = field(
+        default_factory=lambda: tuple(
+            part.strip()
+            for part in os.getenv(
+                "BIOREMPP_PUBLIC_DATA_ALLOWED_FILES",
+                ",".join(_DEFAULT_PUBLIC_DATA_ALLOWED_FILES),
+            ).split(",")
+            if part.strip()
+        )
+    )
+
+    _trusted_proxy_networks: tuple[object, ...] = field(
+        init=False,
+        repr=False,
+        default_factory=tuple,
+    )
+    _trusted_proxy_cidrs_explicit: bool = field(
+        init=False,
+        repr=False,
+        default=False,
+    )
+    _invalid_trusted_proxy_cidrs: tuple[str, ...] = field(
+        init=False,
+        repr=False,
+        default_factory=tuple,
+    )
+    _log_ref_salt_source: str = field(
+        init=False,
+        repr=False,
+        default="unset",
+    )
+
+    # ========================================================================
+    # RESUME / SECURITY CONFIGURATION
+    # ========================================================================
+    RESUME_BACKEND: Literal["diskcache", "redis"] = field(
+        default_factory=lambda: os.getenv("BIOREMPP_RESUME_BACKEND", "diskcache")
+        .strip()
+        .lower()
+    )
+
+    RESUME_SECURITY_MODE: Literal["normal", "strict"] = field(
+        default_factory=lambda: os.getenv("BIOREMPP_RESUME_SECURITY_MODE", "normal")
+        .strip()
+        .lower()
+    )
+
+    RESUME_TTL_SECONDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_TTL_SECONDS", 14400)
+    )
+
+    RESUME_CACHE_SIZE_MB: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_CACHE_SIZE_MB", 512)
+    )
+
+    RESUME_MAX_PAYLOAD_MB: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_MAX_PAYLOAD_MB", 64)
+    )
+
+    RESUME_RATE_LIMIT_ATTEMPTS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_RATE_LIMIT_ATTEMPTS", 10)
+    )
+
+    RESUME_RATE_LIMIT_WINDOW_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_WINDOW_SECONDS", 60
+        )
+    )
+
+    RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS", 5
+        )
+    )
+
+    RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS", 300
+        )
+    )
+
+    RESUME_RATE_LIMIT_CACHE_SIZE_MB: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_RATE_LIMIT_CACHE_SIZE_MB", 64
+        )
+    )
+
+    RESUME_RATE_LIMIT_BACKEND: Literal["auto", "diskcache", "redis"] = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_RATE_LIMIT_BACKEND",
+            "auto",
+        )
+        .strip()
+        .lower()
+    )
+
+    RESUME_RATE_LIMIT_REDIS_KEY_PREFIX: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_RATE_LIMIT_REDIS_KEY_PREFIX",
+            "biorempp:resume:ratelimit:",
+        )
+    )
+
+    RESUME_ALERT_WINDOW_SECONDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_RESUME_ALERT_WINDOW_SECONDS", 300)
+    )
+
+    RESUME_ALERT_NOT_FOUND_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_NOT_FOUND_THRESHOLD", 30
+        )
+    )
+
+    RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD", 10
+        )
+    )
+
+    RESUME_ALERT_SAVE_FAILED_THRESHOLD: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_ALERT_SAVE_FAILED_THRESHOLD", 5
+        )
+    )
+
+    RESUME_REDIS_HOST: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_REDIS_HOST",
+            os.getenv("REDIS_HOST", "redis"),
+        )
+    )
+
+    RESUME_REDIS_PORT: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_PORT",
+            _get_int("REDIS_PORT", 6379),
+        )
+    )
+
+    RESUME_REDIS_DB: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_DB",
+            _get_int("REDIS_DB", 0),
+        )
+    )
+
+    RESUME_REDIS_PASSWORD: str = field(
+        default_factory=lambda: (
+            os.getenv("BIOREMPP_RESUME_REDIS_PASSWORD")
+            or os.getenv("REDIS_PASSWORD", "")
+        ).strip()
+    )
+
+    RESUME_REDIS_KEY_PREFIX: str = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESUME_REDIS_KEY_PREFIX", "biorempp:resume:"
+        )
+    )
+
+    RESUME_REDIS_COMPRESSION_LEVEL: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL", 6
+        )
+    )
+
+    RESUME_REDIS_SOCKET_TIMEOUT_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS", 3
+        )
+    )
+
+    GUNICORN_LIMIT_REQUEST_LINE: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_LINE", 4096)
+    )
+
+    GUNICORN_LIMIT_REQUEST_FIELD_SIZE: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_FIELD_SIZE", 8190)
+    )
+
+    GUNICORN_LIMIT_REQUEST_FIELDS: int = field(
+        default_factory=lambda: _get_int("BIOREMPP_LIMIT_REQUEST_FIELDS", 100)
+    )
+
+    GUNICORN_MAX_REQUEST_BODY_BYTES: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_MAX_REQUEST_BODY_BYTES",
+            5 * 1024 * 1024,
+        )
     )
 
     # ========================================================================
@@ -434,6 +759,7 @@ class Settings:
         """Post-initialization validation and setup."""
         # Normalize environment
         self.ENV = self.ENV.lower()
+        self.URL_BASE_PATH = self._normalize_url_base_path(self.URL_BASE_PATH)
 
         # Calculate byte size for upload limit
         self.UPLOAD_MAX_SIZE_BYTES = self.UPLOAD_MAX_SIZE_MB * 1024 * 1024
@@ -441,6 +767,205 @@ class Settings:
         # Ensure paths exist
         self.LOG_DIR.mkdir(exist_ok=True)
         self.DATA_DIR.mkdir(exist_ok=True)
+
+        cache_dir_raw = os.getenv(
+            "BIOREMPP_CACHE_DIR",
+            str(self.BASE_DIR / "cache"),
+        )
+        cache_path = Path(cache_dir_raw)
+        if not cache_path.is_absolute():
+            cache_path = self.BASE_DIR / cache_path
+        self.CACHE_DIR = cache_path
+        self.CACHE_DIR.mkdir(parents=True, exist_ok=True)
+
+        self.OBSERVABILITY_METRICS_PATH = (
+            self.OBSERVABILITY_METRICS_PATH or "/metrics"
+        ).strip()
+        if not self.OBSERVABILITY_METRICS_PATH:
+            self.OBSERVABILITY_METRICS_PATH = "/metrics"
+        if not self.OBSERVABILITY_METRICS_PATH.startswith("/"):
+            self.OBSERVABILITY_METRICS_PATH = (
+                f"/{self.OBSERVABILITY_METRICS_PATH}"
+            )
+        if len(self.OBSERVABILITY_METRICS_PATH) > 1:
+            self.OBSERVABILITY_METRICS_PATH = (
+                self.OBSERVABILITY_METRICS_PATH.rstrip("/")
+            )
+        if self.OBSERVABILITY_METRICS_PATH in ("/", "/health", "/ready"):
+            print(
+                "[WARNING] Invalid BIOREMPP_OBSERVABILITY_METRICS_PATH, "
+                "using '/metrics'"
+            )
+            self.OBSERVABILITY_METRICS_PATH = "/metrics"
+
+        raw_proxy_cidrs_env = os.getenv("BIOREMPP_TRUSTED_PROXY_CIDRS")
+        self._trusted_proxy_cidrs_explicit = bool(
+            raw_proxy_cidrs_env and raw_proxy_cidrs_env.strip()
+        )
+
+        normalized_proxy_cidrs: list[str] = []
+        trusted_networks: list[object] = []
+        invalid_proxy_cidrs: list[str] = []
+        for cidr in self.TRUSTED_PROXY_CIDRS:
+            cidr_candidate = (cidr or "").strip()
+            if not cidr_candidate:
+                continue
+            try:
+                network = ipaddress.ip_network(cidr_candidate, strict=False)
+            except ValueError:
+                invalid_proxy_cidrs.append(cidr_candidate)
+                print(
+                    "[WARNING] Ignoring invalid BIOREMPP_TRUSTED_PROXY_CIDRS "
+                    f"entry: {cidr_candidate}"
+                )
+                continue
+            normalized_proxy_cidrs.append(str(network))
+            trusted_networks.append(network)
+
+        if not trusted_networks:
+            normalized_proxy_cidrs = list(_DEFAULT_TRUSTED_PROXY_CIDRS)
+            trusted_networks = [
+                ipaddress.ip_network(cidr, strict=False)
+                for cidr in _DEFAULT_TRUSTED_PROXY_CIDRS
+            ]
+        self.TRUSTED_PROXY_CIDRS = tuple(normalized_proxy_cidrs)
+        self._trusted_proxy_networks = tuple(trusted_networks)
+        self._invalid_trusted_proxy_cidrs = tuple(invalid_proxy_cidrs)
+
+        allowed_public_files: list[str] = []
+        seen_public_files: set[str] = set()
+        for raw_name in self.PUBLIC_DATA_ALLOWED_FILES:
+            candidate = (raw_name or "").strip()
+            if not candidate:
+                continue
+            if "/" in candidate or "\\" in candidate or ".." in candidate:
+                print(
+                    "[WARNING] Ignoring unsafe BIOREMPP_PUBLIC_DATA_ALLOWED_FILES "
+                    f"entry: {candidate}"
+                )
+                continue
+            normalized_name = Path(candidate).name
+            if normalized_name != candidate:
+                print(
+                    "[WARNING] Ignoring non-basename PUBLIC_DATA_ALLOWED_FILES "
+                    f"entry: {candidate}"
+                )
+                continue
+            if normalized_name in seen_public_files:
+                continue
+            seen_public_files.add(normalized_name)
+            allowed_public_files.append(normalized_name)
+
+        if not allowed_public_files:
+            allowed_public_files = list(_DEFAULT_PUBLIC_DATA_ALLOWED_FILES)
+        self.PUBLIC_DATA_ALLOWED_FILES = tuple(allowed_public_files)
+
+        if self.RESUME_BACKEND not in ("diskcache", "redis"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_BACKEND, using 'diskcache'"
+            )
+            self.RESUME_BACKEND = "diskcache"
+
+        if self.RESUME_SECURITY_MODE not in ("normal", "strict"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_SECURITY_MODE, using 'normal'"
+            )
+            self.RESUME_SECURITY_MODE = "normal"
+
+        self.RESUME_TTL_SECONDS = max(self.RESUME_TTL_SECONDS, 60)
+        self.RESUME_CACHE_SIZE_MB = max(self.RESUME_CACHE_SIZE_MB, 32)
+        self.RESUME_MAX_PAYLOAD_MB = max(self.RESUME_MAX_PAYLOAD_MB, 8)
+
+        self.RESUME_RATE_LIMIT_ATTEMPTS = max(self.RESUME_RATE_LIMIT_ATTEMPTS, 1)
+        self.RESUME_RATE_LIMIT_WINDOW_SECONDS = max(
+            self.RESUME_RATE_LIMIT_WINDOW_SECONDS, 10
+        )
+        self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS = max(
+            self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS, 1
+        )
+        self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS = max(
+            self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS,
+            self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS,
+        )
+        self.RESUME_RATE_LIMIT_CACHE_SIZE_MB = max(
+            self.RESUME_RATE_LIMIT_CACHE_SIZE_MB, 16
+        )
+        if self.RESUME_RATE_LIMIT_BACKEND not in ("auto", "diskcache", "redis"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESUME_RATE_LIMIT_BACKEND, using 'auto'"
+            )
+            self.RESUME_RATE_LIMIT_BACKEND = "auto"
+        self.RESUME_RATE_LIMIT_REDIS_KEY_PREFIX = (
+            self.RESUME_RATE_LIMIT_REDIS_KEY_PREFIX.strip()
+            or "biorempp:resume:ratelimit:"
+        )
+
+        self.RESUME_ALERT_WINDOW_SECONDS = max(self.RESUME_ALERT_WINDOW_SECONDS, 60)
+        self.RESUME_ALERT_NOT_FOUND_THRESHOLD = max(
+            self.RESUME_ALERT_NOT_FOUND_THRESHOLD, 1
+        )
+        self.RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD = max(
+            self.RESUME_ALERT_TOKEN_MISMATCH_THRESHOLD, 1
+        )
+        self.RESUME_ALERT_SAVE_FAILED_THRESHOLD = max(
+            self.RESUME_ALERT_SAVE_FAILED_THRESHOLD, 1
+        )
+
+        self.RESUME_REDIS_PORT = max(self.RESUME_REDIS_PORT, 1)
+        self.RESUME_REDIS_DB = max(self.RESUME_REDIS_DB, 0)
+        self.RESUME_REDIS_COMPRESSION_LEVEL = min(
+            max(self.RESUME_REDIS_COMPRESSION_LEVEL, 1), 9
+        )
+        self.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS = max(
+            self.RESUME_REDIS_SOCKET_TIMEOUT_SECONDS, 1
+        )
+        self.RESUME_REDIS_KEY_PREFIX = (
+            self.RESUME_REDIS_KEY_PREFIX.strip() or "biorempp:resume:"
+        )
+
+        self.LOG_REF_LENGTH = min(
+            max(int(self.LOG_REF_LENGTH), _MIN_LOG_REF_LENGTH),
+            _MAX_LOG_REF_LENGTH,
+        )
+
+        configured_log_ref_salt = self.LOG_REF_SALT.strip()
+        if not _is_insecure_secret(configured_log_ref_salt, min_length=16):
+            self.LOG_REF_SALT = configured_log_ref_salt
+            self._log_ref_salt_source = "env"
+        elif not _is_insecure_secret(self.SECRET_KEY, min_length=16):
+            self.LOG_REF_SALT = self.SECRET_KEY.strip()
+            self._log_ref_salt_source = "secret_key"
+        elif self.is_development:
+            self.LOG_REF_SALT = secrets.token_hex(32)
+            self._log_ref_salt_source = "ephemeral_dev"
+        else:
+            # Production validation will fail when SECRET_KEY is insecure.
+            self.LOG_REF_SALT = self.SECRET_KEY.strip()
+            self._log_ref_salt_source = "secret_key"
+
+        if self.is_production:
+            self._validate_production_security()
+
+        self.GUNICORN_LIMIT_REQUEST_LINE = max(self.GUNICORN_LIMIT_REQUEST_LINE, 512)
+        self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE = max(
+            self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE, 512
+        )
+        self.GUNICORN_LIMIT_REQUEST_FIELDS = max(
+            self.GUNICORN_LIMIT_REQUEST_FIELDS, 10
+        )
+        self.GUNICORN_MAX_REQUEST_BODY_BYTES = max(
+            self.GUNICORN_MAX_REQUEST_BODY_BYTES, self.UPLOAD_MAX_SIZE_BYTES
+        )
+
+        worker_class_normalized = (self.WORKER_CLASS or "").strip().lower()
+        if self.is_production and self.BACKGROUND_CALLBACKS_ENABLED:
+            if self.WORKERS > 1 or worker_class_normalized in ("gevent", "eventlet"):
+                print(
+                    "[WARNING] Disabling BIOREMPP_BACKGROUND_CALLBACKS_ENABLED in "
+                    "production due to incompatible worker model "
+                    f"(workers={self.WORKERS}, worker_class={self.WORKER_CLASS})."
+                )
+                self.BACKGROUND_CALLBACKS_ENABLED = False
 
         # Auto-adjust settings based on environment
         if self.is_production:
@@ -460,6 +985,138 @@ class Settings:
             if self.LOG_LEVEL == "DEBUG":
                 print("[WARNING] LOG_LEVEL changed to WARNING for production")
                 self.LOG_LEVEL = "WARNING"
+
+    def _validate_production_security(self) -> None:
+        """Fail fast on insecure secret configuration in production."""
+        if _is_insecure_secret(self.SECRET_KEY, min_length=32):
+            raise ValueError(
+                "Invalid production SECRET_KEY: missing, placeholder, or too short "
+                "(minimum 32 chars)."
+            )
+
+        if self.RESUME_BACKEND == "redis" and _is_insecure_secret(
+            self.RESUME_REDIS_PASSWORD, min_length=12
+        ):
+            raise ValueError(
+                "Invalid production Redis password for resume backend: set "
+                "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
+            )
+
+        effective_rate_limit_backend = self.RESUME_RATE_LIMIT_BACKEND
+        if effective_rate_limit_backend == "auto":
+            effective_rate_limit_backend = (
+                "redis" if self.RESUME_BACKEND == "redis" else "diskcache"
+            )
+        if effective_rate_limit_backend == "redis" and _is_insecure_secret(
+            self.RESUME_REDIS_PASSWORD, min_length=12
+        ):
+            raise ValueError(
+                "Invalid production Redis password for resume rate-limit backend: set "
+                "BIOREMPP_RESUME_REDIS_PASSWORD (or REDIS_PASSWORD) with a secure value."
+            )
+
+        if self.TRUST_PROXY_HEADERS:
+            if not self._trusted_proxy_cidrs_explicit:
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "BIOREMPP_TRUSTED_PROXY_CIDRS must be explicitly set when "
+                    "BIOREMPP_TRUST_PROXY_HEADERS=true."
+                )
+            if self._invalid_trusted_proxy_cidrs:
+                invalid_entries = ", ".join(self._invalid_trusted_proxy_cidrs)
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "BIOREMPP_TRUSTED_PROXY_CIDRS contains invalid CIDR entries "
+                    f"({invalid_entries})."
+                )
+            default_proxy_cidrs = set(_DEFAULT_TRUSTED_PROXY_CIDRS)
+            configured_proxy_cidrs = set(self.TRUSTED_PROXY_CIDRS)
+            if configured_proxy_cidrs.issubset(default_proxy_cidrs):
+                raise ValueError(
+                    "Invalid production proxy trust configuration: "
+                    "replace loopback-only trusted CIDRs with institutional "
+                    "ingress/proxy CIDRs."
+                )
+
+    def is_trusted_proxy_ip(self, ip: str) -> bool:
+        """Return True when IP address belongs to configured trusted proxy CIDRs."""
+        candidate = (ip or "").strip()
+        if not candidate:
+            return False
+        try:
+            ip_obj = ipaddress.ip_address(candidate)
+        except ValueError:
+            return False
+        return any(ip_obj in network for network in self._trusted_proxy_networks)
+
+    def is_public_data_file_allowed(self, filename: str) -> bool:
+        """Return True when filename is in public allowlist and path-safe."""
+        candidate = (filename or "").strip()
+        if not candidate:
+            return False
+        if "/" in candidate or "\\" in candidate or ".." in candidate:
+            return False
+        normalized_name = Path(candidate).name
+        if normalized_name != candidate:
+            return False
+        return normalized_name in self.PUBLIC_DATA_ALLOWED_FILES
+
+    @staticmethod
+    def _normalize_url_base_path(path: str) -> str:
+        """Normalize URL base path to '/' or '/prefix/' format."""
+        candidate = (path or "/").strip()
+        if not candidate:
+            return "/"
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate == "/":
+            return "/"
+        return f"/{candidate.strip('/')}/"
+
+    def build_app_path(self, path: str = "/") -> str:
+        """Build an application-internal path honoring URL_BASE_PATH."""
+        candidate = (path or "").strip()
+        if not candidate:
+            return self.URL_BASE_PATH
+        if candidate.startswith(("http://", "https://", "mailto:", "tel:", "#")):
+            return candidate
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate != "/" and candidate.endswith("/"):
+            candidate = candidate.rstrip("/")
+
+        base = self.URL_BASE_PATH
+        if base == "/":
+            return candidate
+
+        base_without_trailing = base.rstrip("/")
+        if candidate == base_without_trailing or candidate.startswith(base):
+            return candidate
+        if candidate == "/":
+            return base
+        return f"{base_without_trailing}{candidate}"
+
+    def strip_base_path(self, pathname: Optional[str]) -> str:
+        """Strip URL_BASE_PATH prefix from pathname for internal route matching."""
+        candidate = (pathname or "").strip()
+        if not candidate:
+            return "/"
+        if not candidate.startswith("/"):
+            candidate = f"/{candidate}"
+        if candidate != "/" and candidate.endswith("/"):
+            candidate = candidate.rstrip("/")
+
+        base = self.URL_BASE_PATH
+        if base == "/":
+            return candidate or "/"
+
+        base_without_trailing = base.rstrip("/")
+        if candidate == base_without_trailing or candidate == base:
+            return "/"
+        if candidate.startswith(base):
+            stripped = candidate[len(base) - 1 :]
+            return stripped or "/"
+        return candidate
 
     # ========================================================================
     # PROPERTIES
@@ -521,6 +1178,40 @@ class Settings:
         logger.info(f"Port: {self.PORT}")
         logger.info(f"Log Level: {self.LOG_LEVEL}")
         logger.info(f"Log Directory: {self.LOG_DIR}")
+        logger.info(f"Cache Directory: {self.CACHE_DIR}")
+        logger.info(
+            "Observability Configuration",
+            extra={
+                "observability_enabled": self.OBSERVABILITY_ENABLED,
+                "observability_metrics_path": self.OBSERVABILITY_METRICS_PATH,
+                "url_base_path": self.URL_BASE_PATH,
+                "trust_proxy_headers": self.TRUST_PROXY_HEADERS,
+                "trusted_proxy_cidrs": ",".join(self.TRUSTED_PROXY_CIDRS),
+                "public_data_allowed_files": ",".join(self.PUBLIC_DATA_ALLOWED_FILES),
+                "log_ref_length": self.LOG_REF_LENGTH,
+                "log_ref_salt_source": self._log_ref_salt_source,
+            },
+        )
+        logger.info(
+            "Resume Configuration",
+            extra={
+                "resume_backend": self.RESUME_BACKEND,
+                "resume_security_mode": self.RESUME_SECURITY_MODE,
+                "resume_ttl_seconds": self.RESUME_TTL_SECONDS,
+                "resume_rate_limit_attempts": self.RESUME_RATE_LIMIT_ATTEMPTS,
+                "resume_rate_limit_window_seconds": self.RESUME_RATE_LIMIT_WINDOW_SECONDS,
+                "resume_rate_limit_backend": self.RESUME_RATE_LIMIT_BACKEND,
+                "gunicorn_limit_request_line": self.GUNICORN_LIMIT_REQUEST_LINE,
+                "gunicorn_limit_request_field_size": self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE,
+                "gunicorn_limit_request_fields": self.GUNICORN_LIMIT_REQUEST_FIELDS,
+            },
+        )
+        logger.info(
+            "Dash Callback Execution",
+            extra={
+                "background_callbacks_enabled": self.BACKGROUND_CALLBACKS_ENABLED,
+            },
+        )
 
         if self.is_production:
             logger.info(f"Workers: {self.WORKERS} ({self.WORKER_CLASS})")
@@ -599,6 +1290,33 @@ class Settings:
             f"  Circuit Breaker Timeout: "
             f"{self.PROCESSING_CIRCUIT_BREAKER_TIMEOUT}s",
             "",
+            "Observability:",
+            f"  Enabled: {self.OBSERVABILITY_ENABLED}",
+            f"  Metrics Path: {self.OBSERVABILITY_METRICS_PATH}",
+            f"  URL Base Path: {self.URL_BASE_PATH}",
+            f"  Trust Proxy Headers: {self.TRUST_PROXY_HEADERS}",
+            f"  Trusted Proxy CIDRs: {', '.join(self.TRUSTED_PROXY_CIDRS)}",
+            f"  Public Data Allowlist: {', '.join(self.PUBLIC_DATA_ALLOWED_FILES)}",
+            f"  Log Ref Length: {self.LOG_REF_LENGTH}",
+            f"  Log Ref Salt Source: {self._log_ref_salt_source}",
+            "",
+            "Resume Configuration:",
+            f"  Backend: {self.RESUME_BACKEND}",
+            f"  Security Mode: {self.RESUME_SECURITY_MODE}",
+            f"  TTL: {self.RESUME_TTL_SECONDS}s",
+            f"  Cache Size: {self.RESUME_CACHE_SIZE_MB} MB",
+            f"  Max Payload: {self.RESUME_MAX_PAYLOAD_MB} MB",
+            f"  Rate Limit: {self.RESUME_RATE_LIMIT_ATTEMPTS} attempts / "
+            f"{self.RESUME_RATE_LIMIT_WINDOW_SECONDS}s",
+            f"  Rate Limit Backend: {self.RESUME_RATE_LIMIT_BACKEND}",
+            f"  Backoff: base {self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS}s, "
+            f"max {self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS}s",
+            f"  Alert Window: {self.RESUME_ALERT_WINDOW_SECONDS}s",
+            f"  Gunicorn Line Limit: {self.GUNICORN_LIMIT_REQUEST_LINE}",
+            f"  Gunicorn Header Size: {self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE}",
+            f"  Gunicorn Header Count: {self.GUNICORN_LIMIT_REQUEST_FIELDS}",
+            f"  Max Request Body: {self.GUNICORN_MAX_REQUEST_BODY_BYTES} bytes",
+            "",
             "Validation Patterns:",
             f"  KO Pattern: {self.KO_PATTERN}",
             f"  Sample Name Pattern: {self.SAMPLE_NAME_PATTERN}",
@@ -607,6 +1325,7 @@ class Settings:
             f"  Base: {self.BASE_DIR}",
             f"  Data: {self.DATA_DIR}",
             f"  Logs: {self.LOG_DIR}",
+            f"  Cache: {self.CACHE_DIR}",
             f"  Config: {self.CONFIG_DIR}",
             f"  Assets: {self.ASSETS_DIR}",
             "=" * 60,

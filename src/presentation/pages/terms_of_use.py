@@ -8,6 +8,8 @@ following best practices for open-access research platforms.
 import dash_bootstrap_components as dbc
 from dash import html
 
+from ..routing import app_path
+
 
 def create_terms_button():
     """
@@ -440,7 +442,7 @@ def create_terms_modal():
                                     "Please refer to the ",
                                     html.A(
                                         "How to Cite",
-                                        href="/how-to-cite",
+                                        href=app_path("/how-to-cite"),
                                         className="fw-bold",
                                     ),
                                     " page for detailed citation guidelines, including provisional "

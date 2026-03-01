@@ -20,6 +20,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from ..components.base import create_footer, create_header
+from ..routing import app_path
 
 
 def create_team_card(
@@ -153,7 +154,7 @@ def create_lab_info_card() -> dbc.Card:
                             dbc.Col(
                                 [
                                     html.Img(
-                                        src="/assets/lbmg_logo.png",
+                                        src=app_path("/assets/lbmg_logo.png"),
                                         style={
                                             "maxWidth": "100%",
                                             "height": "auto",
@@ -424,7 +425,7 @@ def create_contact_page() -> html.Div:
                                     "and software engineering with focus on Data Science, Artificial Intelligence, "
                                     "and Computational Intelligence for integrated data science and machine learning workflows."
                                 ),
-                                image_path="/assets/developer.jpeg",
+                                image_path=app_path("/assets/developer.jpeg"),
                                 additional_info="BioRemPP Developer",
                             )
                         ],
@@ -446,7 +447,7 @@ def create_contact_page() -> html.Div:
                                     "graduate programs in Biochemistry, RENORBIO, and Bioinformatics, with research focused "
                                     "on genetics, molecular biology, biotechnology, and environmental genomics."
                                 ),
-                                image_path="/assets/supervisor.png",
+                                image_path=app_path("/assets/supervisor.png"),
                                 additional_info="Department of Cell Biology and Genetics - UFRN",
                                 badge_text="CNPq Research Fellow",
                             )
@@ -464,13 +465,6 @@ def create_contact_page() -> html.Div:
     # Contact Section
     contact_section = html.Div(
         [
-            html.H2(
-                [
-                    html.I(className="fas fa-paper-plane me-2 text-success"),
-                    "Contact Information",
-                ],
-                className="mb-4",
-            ),
             create_contact_methods(),
         ],
         className="mb-5",

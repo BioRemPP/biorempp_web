@@ -1,0 +1,118 @@
+groups:
+  - name: biorempp_app_alerts
+    rules:
+      - alert: BioRemPPAppDown
+        expr: up{job="biorempp-app"} == 0
+        for: 1m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "BioRemPP target is down"
+          description: "Prometheus cannot scrape the biorempp-app target."
+
+      - alert: BioRemPPHighHttpErrorRatio
+        expr: job:biorempp_http_error_ratio:rate5m > __HTTP_ERROR_RATIO_THRESHOLD__
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "HTTP error ratio above threshold"
+          description: "Error ratio stayed above configured threshold for 5 minutes."
+
+      - alert: BioRemPPHighHttpLatencyP95
+        expr: endpoint:biorempp_http_latency_p95:rate5m > __HTTP_P95_LATENCY_THRESHOLD_SECONDS__
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "P95 latency above threshold on {{ $labels.endpoint }}"
+          description: "Endpoint P95 latency has remained above configured threshold."
+
+  - name: biorempp_resume_alerts
+    rules:
+      - alert: BioRemPPResumeNotFoundSpike
+        expr: increase(biorempp_resume_load_attempts_total{outcome="not_found"}[__RESUME_ALERT_WINDOW__]) > __RESUME_NOT_FOUND_THRESHOLD__
+        for: 1m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume not_found spike"
+          description: "Configured threshold exceeded for resume not_found events."
+
+      - alert: BioRemPPResumeTokenMismatchSpike
+        expr: increase(biorempp_resume_load_attempts_total{outcome="token_mismatch"}[__RESUME_ALERT_WINDOW__]) > __RESUME_TOKEN_MISMATCH_THRESHOLD__
+        for: 1m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume token mismatch spike"
+          description: "Configured threshold exceeded for token_mismatch events."
+
+      - alert: BioRemPPResumeSaveFailedSpike
+        expr: increase(biorempp_resume_save_total{outcome="save_failed"}[__RESUME_ALERT_WINDOW__]) > __RESUME_SAVE_FAILED_THRESHOLD__
+        for: 1m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "Resume save_failed spike"
+          description: "Configured threshold exceeded for resume save_failed events."
+
+      - alert: BioRemPPResumeRateLimitedSpike
+        expr: increase(biorempp_resume_callback_attempts_total{outcome="rate_limited"}[__RESUME_ALERT_WINDOW__]) > __RESUME_RATE_LIMITED_THRESHOLD__
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume rate-limited spike"
+          description: "Configured threshold exceeded for rate_limited resume callbacks."
+
+      - alert: BioRemPPResumeRateLimitBackendErrors
+        expr: increase(biorempp_resume_rate_limit_errors_total[__RESUME_ALERT_WINDOW__]) > __RESUME_RATE_LIMIT_ERROR_THRESHOLD__
+        for: 2m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Resume rate-limit backend errors detected"
+          description: "Rate-limit backend emitted errors during init/evaluate/reset."
+
+  - name: biorempp_worker_alerts
+    rules:
+      - alert: BioRemPPLowWorkerCount
+        expr: biorempp_workers_active < __WORKERS_ACTIVE_MIN_THRESHOLD__
+        for: 2m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "Active worker count below expected minimum"
+          description: "biorempp_workers_active is below configured minimum."
+
+      - alert: BioRemPPFrequentWorkerRestarts
+        expr: sum(rate(biorempp_worker_restarts_total[10m])) > __WORKER_RESTART_RATE_THRESHOLD__
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Frequent worker restarts"
+          description: "Worker restart rate is above configured threshold."
+
+  - name: biorempp_cache_alerts
+    rules:
+      - alert: BioRemPPLowCacheHitRatio
+        expr: cache_type:biorempp_cache_get_hit_ratio:rate5m < __CACHE_HIT_RATIO_MIN_THRESHOLD__
+        for: 10m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Low cache hit ratio for {{ $labels.cache_type }}"
+          description: "Cache hit ratio stayed below configured threshold for 10 minutes."

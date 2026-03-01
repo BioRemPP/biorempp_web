@@ -124,7 +124,7 @@ def create_module5_overview_header() -> html.Div:
         overview_text=overview_text,
         guiding_questions=guiding_questions,
         section_id="module5-overview-header",
-        num_use_cases=7,
+        num_use_cases=6,
     )
 
 

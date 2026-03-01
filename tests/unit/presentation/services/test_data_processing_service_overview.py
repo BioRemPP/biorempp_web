@@ -1,5 +1,7 @@
 """Unit tests for dynamic database overview metadata generation."""
 
+import re
+
 import pandas as pd
 import pytest
 
@@ -159,6 +161,8 @@ def test_process_upload_includes_database_overview(mock_database_dir):
     assert overview["biorempp"]["enzyme_compound_relations"]["global_value"] == 3
     assert overview["hadeg"]["gene_pathway_relations"]["input_value"] == 2
     assert overview["hadeg"]["gene_pathway_relations"]["global_value"] == 3
+    assert isinstance(result["metadata"].get("job_id"), str)
+    assert re.match(r"^BRP-\d{8}-\d{6}-[A-F0-9]{6}$", result["metadata"]["job_id"])
 
 
 def test_database_aggregate_overview_follows_hybrid_rules(mock_database_dir):
@@ -202,3 +206,16 @@ def test_toxcsm_endpoints_and_categories_follow_value_prefix_rules(mock_database
     assert toxcsm_stats["toxicity_endpoints"]["global_value"] == 5
     assert toxcsm_stats["toxicity_categories"]["input_value"] == 5
     assert toxcsm_stats["toxicity_categories"]["global_value"] == 5
+
+
+def test_process_upload_preserves_provided_job_id(mock_database_dir):
+    """When provided, custom job_id should be propagated to metadata."""
+    service = DataProcessingService(database_path=mock_database_dir)
+    content = ">SampleA\nK00001\n>SampleB\nK00002\n"
+    custom_job_id = "BRP-20260225-120000-ABC123"
+
+    result = service.process_upload(
+        content=content, filename="input.txt", job_id=custom_job_id
+    )
+
+    assert result["metadata"]["job_id"] == custom_job_id

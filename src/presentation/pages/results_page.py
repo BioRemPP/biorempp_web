@@ -302,6 +302,9 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         }
 
     metadata = merged_data.get("metadata", {})
+    job_id = metadata.get("job_id")
+    if not isinstance(job_id, str) or not job_id.strip():
+        job_id = "--"
     database_overview = metadata.get("database_overview", {})
     if not isinstance(database_overview, dict):
         database_overview = {}
@@ -459,6 +462,57 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
                             ),
                         ],
                         className="mt-2",
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-fingerprint text-secondary me-2"
+                                                ),
+                                                "Job ID",
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.Div(
+                                            [
+                                                html.Code(
+                                                    job_id,
+                                                    id="results-job-id-copy-target",
+                                                    className="text-dark",
+                                                    style={
+                                                        "fontSize": "0.9rem",
+                                                        "cursor": "pointer",
+                                                    },
+                                                ),
+                                                (
+                                                    dcc.Clipboard(
+                                                        target_id="results-job-id-copy-target",
+                                                        title="Copy Job ID",
+                                                        className="ms-2",
+                                                        style={
+                                                            "display": "inline-flex",
+                                                            "alignItems": "center",
+                                                            "cursor": "pointer",
+                                                            "color": "#6c757d",
+                                                            "fontSize": "1rem",
+                                                        },
+                                                    )
+                                                    if job_id != "--"
+                                                    else html.Span()
+                                                ),
+                                            ],
+                                            className="d-inline-flex align-items-center justify-content-center",
+                                        ),
+                                    ],
+                                    className="text-center mt-3",
+                                ),
+                                width=12,
+                            )
+                        ]
                     ),
                     dbc.Row(
                         [

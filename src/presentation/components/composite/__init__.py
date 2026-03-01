@@ -15,6 +15,7 @@ from .faq_section import (
 )
 from .info_modal import create_info_modal
 from .intro_card import create_intro_card
+from .job_resume_panel import create_job_resume_panel
 from .module_description import create_module_description
 from .ondemand_table import create_data_table, create_ondemand_table
 from .progress_panel import create_progress_panel
@@ -33,6 +34,7 @@ from .validation_panel import create_validation_panel
 
 __all__ = [
     "create_intro_card",
+    "create_job_resume_panel",
     "create_info_modal",
     "create_sample_data_modal",
     "create_publications_modal",

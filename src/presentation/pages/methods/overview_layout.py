@@ -37,6 +37,7 @@ from typing import Dict
 import dash_bootstrap_components as dbc
 from dash import html
 
+from ...routing import app_path
 from .overview_service import get_all_overview_data
 
 
@@ -1481,7 +1482,7 @@ def _create_cta_section() -> dbc.Container:
                                             html.I(className="fas fa-arrow-right me-2"),
                                             "View 56 Analytical Workflows",
                                         ],
-                                        href="/methods",
+                                        href=app_path("/methods"),
                                         color="success",
                                         size="lg",
                                         className="px-5",

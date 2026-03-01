@@ -20,6 +20,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from ..components.base import create_footer, create_header
+from ..routing import app_path
 from .uc_user_guide import create_interactive_demo_section
 
 
@@ -352,7 +353,7 @@ def create_workflow_section() -> html.Div:
                     "Data merging: Combines all databases into unified dataset",
                 ],
                 alert_message=(
-                    "Processing time varies based on file size (typically 30 seconds to 3 minutes). "
+                    "Processing time varies based on file size (typically < 30 seconds). "
                     "Do not close your browser during processing."
                 ),
                 alert_type="info",
@@ -634,10 +635,10 @@ def create_user_guide_page() -> html.Div:
             html.P(
                 [
                     "For detailed examples, check our ",
-                    html.A("FAQ page", href="/faq", className="danger-link"),
+                    html.A("FAQ page", href=app_path("/faq"), className="danger-link"),
                     " or ",
                     html.A(
-                        "Contact Support", href="/help/contact", className="danger-link"
+                        "Contact Support", href=app_path("/help/contact"), className="danger-link"
                     ),
                     ".",
                 ],

@@ -54,7 +54,6 @@ def create_completion_panel() -> dbc.Card:
                                 id="view-results-btn",
                                 color="success",
                                 size="lg",
-                                href="/results",
                                 className="w-100",
                             )
                         ],

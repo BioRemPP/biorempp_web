@@ -10,6 +10,7 @@ import time
 from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+from uuid import uuid4
 
 import pandas as pd
 
@@ -68,6 +69,20 @@ class DataProcessingService:
                 )
             else:
                 raise FileNotFoundError(f"Database not found: {db_path}")
+
+    @staticmethod
+    def generate_job_id() -> str:
+        """
+        Generate unique job identifier for a processing execution.
+
+        Returns
+        -------
+        str
+            Job identifier in format BRP-YYYYMMDD-HHMMSS-XXXXXX.
+        """
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        suffix = uuid4().hex[:6].upper()
+        return f"BRP-{timestamp}-{suffix}"
 
     @staticmethod
     def _safe_nunique(df: pd.DataFrame, column: str) -> int:
@@ -546,7 +561,9 @@ class DataProcessingService:
 
         return toxcsm_wide
 
-    def process_upload(self, content: str, filename: str) -> Dict[str, Any]:
+    def process_upload(
+        self, content: str, filename: str, job_id: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Complete processing pipeline for uploaded file.
 
@@ -556,6 +573,8 @@ class DataProcessingService:
             File content
         filename : str
             Original filename
+        job_id : Optional[str]
+            Optional job identifier. If None, generated automatically.
 
         Returns
         -------
@@ -572,6 +591,8 @@ class DataProcessingService:
             - metadata: Processing metadata dict
         """
         start_time = time.time()
+        if not job_id:
+            job_id = self.generate_job_id()
 
         # 1. Parse uploaded file
         sample_df = self.parse_upload_content(content, filename)
@@ -622,6 +643,7 @@ class DataProcessingService:
         )
 
         metadata = {
+            "job_id": job_id,
             "filename": filename,
             "sample_count": sample_count,
             "ko_count": total_kos,

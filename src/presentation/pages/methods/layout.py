@@ -8,6 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from ...components.base import create_footer, create_header
+from ...routing import app_path
 
 
 def create_methods_layout() -> html.Div:
@@ -102,7 +103,7 @@ def create_methods_layout() -> html.Div:
                                                                     ),
                                                                     "View Scientific Overview",
                                                                 ],
-                                                                href="/methods/overview",
+                                                                href=app_path("/methods/overview"),
                                                                 color="primary",
                                                                 size="lg",
                                                                 className="w-100 mb-2",

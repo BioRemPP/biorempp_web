@@ -59,7 +59,7 @@ RUN groupadd -g ${APP_GID} ${APP_USER} && \
     useradd -m -u ${APP_UID} -g ${APP_GID} -s /bin/bash ${APP_USER}
 
 # Create application directories
-RUN mkdir -p /app /app/logs /app/data && \
+RUN mkdir -p /app /app/logs /app/data /app/cache /app/cache/prometheus_multiproc && \
     chown -R ${APP_USER}:${APP_USER} /app
 
 WORKDIR /app
@@ -78,10 +78,11 @@ COPY --chown=${APP_USER}:${APP_USER} pyproject.toml README.md ./
 # Create full package structure for setuptools
 # Must match packages defined in pyproject.toml
 RUN mkdir -p src/domain src/application src/presentation src/infrastructure \
-             src/shared src/data_tables src/assets config && \
+             src/shared src/shared/metrics src/data_tables src/assets config && \
     touch src/__init__.py src/domain/__init__.py src/application/__init__.py \
           src/presentation/__init__.py src/infrastructure/__init__.py \
-          src/shared/__init__.py src/data_tables/__init__.py src/assets/__init__.py \
+          src/shared/__init__.py src/shared/metrics/__init__.py \
+          src/data_tables/__init__.py src/assets/__init__.py \
           config/__init__.py
 
 # OPTIMIZED: Build wheels with BuildKit cache mount
@@ -151,10 +152,11 @@ COPY --chown=${APP_USER}:${APP_USER} pyproject.toml README.md ./
 # Step 2: Create full package structure for setuptools
 # Must match packages defined in pyproject.toml
 RUN mkdir -p src/domain src/application src/presentation src/infrastructure \
-             src/shared src/data_tables src/assets config && \
+             src/shared src/shared/metrics src/data_tables src/assets config && \
     touch src/__init__.py src/domain/__init__.py src/application/__init__.py \
           src/presentation/__init__.py src/infrastructure/__init__.py \
-          src/shared/__init__.py src/data_tables/__init__.py src/assets/__init__.py \
+          src/shared/__init__.py src/shared/metrics/__init__.py \
+          src/data_tables/__init__.py src/assets/__init__.py \
           config/__init__.py
 
 # Step 3: Install dependencies with BuildKit cache mount
@@ -210,6 +212,7 @@ ENV BIOREMPP_ENV=production \
     BIOREMPP_HOT_RELOAD=False \
     BIOREMPP_HOST=0.0.0.0 \
     BIOREMPP_PORT=8080 \
+    PROMETHEUS_MULTIPROC_DIR=/app/cache/prometheus_multiproc \
     PYTHONPATH=/app
 
 # Install wheels with BuildKit cache mount
