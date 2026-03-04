@@ -15,6 +15,39 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.8-beta] - 2026-03-04
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### HTTP Error Pages and Centralized Error Catalog
+
+- **Centralized HTTP error catalog** with typed specifications (`HttpErrorSpec`) for `400` and `500`, including stable titles, user-facing guidance, and JSON-safe message contracts.
+- **Custom browser-facing error pages** for bad requests and internal failures, aligned with BioRemPP visual shell and support actions (`Back to Home`, `Contact Support`).
+- **Flask-level HTTP error handlers** with content negotiation to preserve Dash protocol compatibility on internal JSON requests.
+
+### Changed
+
+#### Error Routing, Response Semantics, and App Integration
+
+- **Application routing expanded** with explicit error paths (`/error/400`, `/error/500`) for direct navigation and operational validation.
+- **Centralized error-handler registration** in app bootstrap, keeping real HTTP status codes in browser responses while returning compact JSON payloads for Dash/internal endpoints.
+- **Public file download error consistency** by reusing shared file-not-found payload contract in allowlisted static-data routes.
+
+#### Methods Access in Use-Case Panels
+
+- **Methods modal access embedded in use-case headers** across analytical modules, adding a direct `Methods` action in panel controls (adjacent to `Download Data` where available).
+- **Pattern-matching modal integration standardized** in use-case layouts, reusing existing `link/modal/modal-close` callback IDs for unified behavior with the Methods page.
+
+### Fixed
+
+#### Error Handling Compatibility and Safety
+
+- **Dash callback compatibility during HTTP errors** by preventing HTML fallback on internal JSON/Dash requests.
+- **Safer client-visible failure messaging** for `500` responses, avoiding exposure of internal exception details while preserving structured server logs.
+
+---
+
 ## [1.0.7-beta] - 2026-02-27
 ##### The application will remain in beta until the article is officially released.
 

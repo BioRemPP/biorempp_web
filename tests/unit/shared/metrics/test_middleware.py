@@ -10,6 +10,7 @@ from src.shared.metrics.middleware import (
     register_metrics_middleware,
 )
 from src.shared.metrics.registry import (
+    HTTP_ERRORS_TOTAL,
     HTTP_REQUEST_DURATION_SECONDS,
     HTTP_REQUESTS_TOTAL,
 )
@@ -53,6 +54,14 @@ def _build_test_app() -> Flask:
     @app.get("/health")
     def health_route():
         return jsonify({"status": "healthy"}), 200
+
+    @app.get("/error-400")
+    def error_400_route():
+        return "<h1>bad request</h1>", 400
+
+    @app.get("/error-500")
+    def error_500_route():
+        return "<h1>internal error</h1>", 500
 
     return app
 
@@ -177,6 +186,46 @@ def test_middleware_sets_trace_id_when_missing() -> None:
     assert response.status_code == 200
     assert isinstance(trace_id, str)
     assert bool(re.fullmatch(r"[a-f0-9]{32}", trace_id))
+
+
+def test_middleware_counts_html_error_responses() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    err400_before = _counter_value(
+        HTTP_ERRORS_TOTAL,
+        method="GET",
+        endpoint="/error-400",
+        status_code="400",
+    )
+    err500_before = _counter_value(
+        HTTP_ERRORS_TOTAL,
+        method="GET",
+        endpoint="/error-500",
+        status_code="500",
+    )
+
+    response_400 = client.get("/error-400", headers={"Accept": "text/html"})
+    response_500 = client.get("/error-500", headers={"Accept": "text/html"})
+
+    assert response_400.status_code == 400
+    assert response_500.status_code == 500
+
+    err400_after = _counter_value(
+        HTTP_ERRORS_TOTAL,
+        method="GET",
+        endpoint="/error-400",
+        status_code="400",
+    )
+    err500_after = _counter_value(
+        HTTP_ERRORS_TOTAL,
+        method="GET",
+        endpoint="/error-500",
+        status_code="500",
+    )
+
+    assert err400_after == err400_before + 1.0
+    assert err500_after == err500_before + 1.0
 
 
 def test_middleware_extracts_trace_id_from_traceparent() -> None:

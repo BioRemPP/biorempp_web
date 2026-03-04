@@ -42,6 +42,10 @@ from src.presentation.callbacks.download_callbacks import register_download_call
 from src.presentation.callbacks.navigation_callbacks import (
     register_navigation_callbacks,
 )
+from src.presentation.errors import (
+    FILE_NOT_FOUND_PAYLOAD,
+    register_http_error_handlers,
+)
 from src.presentation.routing import app_path, strip_base_path
 from src.presentation.components.composite.analysis_suggestions import (
     register_suggestions_callbacks,
@@ -51,6 +55,8 @@ from src.presentation.components.composite.analysis_suggestions import (
 from src.presentation.pages import (
     create_contact_page,
     create_documentation_page,
+    create_error_400_page,
+    create_error_500_page,
     create_faq_page,
     create_how_to_cite_page,
     create_methods_page,
@@ -255,6 +261,12 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         elif normalized_pathname == '/schemas/toxcsm':
             # ToxCSM schema page
             return create_toxcsm_schema_page()
+        elif normalized_pathname == '/error/400':
+            # Custom bad request page
+            return create_error_400_page()
+        elif normalized_pathname == '/error/500':
+            # Custom internal server error page
+            return create_error_500_page()
         elif normalized_pathname == '/results':
             if merged_data is None:
                 # No data available - show alert
@@ -382,7 +394,9 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                 "error": str(e)
             }, 503
 
-    logger.info("[OK] Health check endpoints registered (/health, /ready)")
+    register_http_error_handlers(app)
+
+    logger.info("[OK] Health/error endpoints registered (/health, /ready, 400, 500)")
 
     if settings.OBSERVABILITY_ENABLED:
         from src.shared.metrics import setup_observability
@@ -424,12 +438,12 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         data_dir = Path(__file__).parent / "data"
         if not settings.is_public_data_file_allowed(filename):
             logger.warning("Blocked non-allowlisted public data file request")
-            return {"error": "File not found"}, 404
+            return FILE_NOT_FOUND_PAYLOAD, 404
         try:
             return send_from_directory(data_dir, filename, as_attachment=True)
         except FileNotFoundError:
             logger.warning("Allowlisted public data file not found on disk")
-            return {"error": "File not found"}, 404
+            return FILE_NOT_FOUND_PAYLOAD, 404
 
     root_data_route = "/data/<filename>"
     app.server.add_url_rule(

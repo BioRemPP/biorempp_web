@@ -78,6 +78,36 @@ Expected:
 - external `/metrics` blocked;
 - internal `/metrics` available when observability is enabled.
 
+## HTTP Error Troubleshooting (400/500)
+
+Use the following sequence to investigate browser/API errors with correlation IDs:
+
+```bash
+docker compose --env-file .env/env.production --profile prod --profile cache --profile observability logs -f biorempp
+```
+
+Trigger test requests:
+
+```bash
+curl -i -H "Accept: text/html" http://localhost/error/400
+curl -i -H "Accept: application/json" http://localhost/error/500
+```
+
+Validate in logs:
+
+- structured fields: `status_code`, `path`, `method`, `request_id`, `trace_id`;
+- correlate repeated failures by `request_id`/`trace_id` instead of payload/IP data.
+
+Useful PromQL queries:
+
+```promql
+status_class:biorempp_http_errors:rate5m
+status_code:biorempp_http_errors:rate5m
+topk(10, endpoint:biorempp_http_error_ratio:rate5m)
+job:biorempp_http_5xx_ratio:rate5m
+job:biorempp_http_4xx_ratio:rate5m
+```
+
 ## Notes
 
 - No Certbot/Let's Encrypt automation exists in this repository by design.

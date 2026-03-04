@@ -13,10 +13,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from src.presentation.components.composite.use_cases import create_panel_by_id
-from src.presentation.components.download_component import (
-    create_download_button,
-    create_download_toast,
-)
+from src.presentation.components.download_component import create_download_toast
 
 
 def create_uc_3_3_layout() -> dbc.Card:
@@ -34,6 +31,11 @@ def create_uc_3_3_layout() -> dbc.Card:
     """
     # Informative panel with scientific context
     info_panel = create_panel_by_id("uc-3-3")
+    from src.presentation.pages.methods.methods_service import get_methods_service
+    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
+
+    workflow = get_methods_service().get_workflow("UC-3.3")
+    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -58,18 +60,49 @@ def create_uc_3_3_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    html.Span(
+                                    dbc.Row(
                                         [
-                                            html.I(
-                                                className="fas fa-exclamation-triangle text-warning",
-                                                id="uc-3-3-info-icon",
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={
+                                                        "type": "link",
+                                                        "index": "UC-3.3",
+                                                    },
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
                                             ),
-                                            dbc.Tooltip(
-                                                "⚠️ Currently unavailable",
-                                                target="uc-3-3-info-icon",
-                                                placement="left",
+                                            dbc.Col(
+                                                html.Span(
+                                                    [
+                                                        html.I(
+                                                            className=(
+                                                                "fas fa-exclamation-"
+                                                                "triangle text-warning"
+                                                            ),
+                                                            id="uc-3-3-info-icon",
+                                                        ),
+                                                        dbc.Tooltip(
+                                                            "Warning: Currently unavailable",
+                                                            target="uc-3-3-info-icon",
+                                                            placement="left",
+                                                        ),
+                                                    ]
+                                                ),
+                                                width="auto",
                                             ),
-                                        ]
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -190,6 +223,7 @@ def create_uc_3_3_layout() -> dbc.Card:
                 ],
                 className="p-4",
             ),
+            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-3-3-card",

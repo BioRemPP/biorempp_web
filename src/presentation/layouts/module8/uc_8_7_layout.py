@@ -30,6 +30,11 @@ def create_uc_8_7_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-8-7")
+    from src.presentation.pages.methods.methods_service import get_methods_service
+    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
+
+    workflow = get_methods_service().get_workflow("UC-8.7")
+    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -54,18 +59,43 @@ def create_uc_8_7_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    html.Span(
+                                    dbc.Row(
                                         [
-                                            html.I(
-                                                className="fas fa-exclamation-triangle text-warning",
-                                                id="uc-8-7-info-icon",
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={"type": "link", "index": "UC-8.7"},
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
                                             ),
-                                            dbc.Tooltip(
-                                                "⚠️ Currently unavailable",
-                                                target="uc-8-7-info-icon",
-                                                placement="left",
+                                            dbc.Col(
+                                                html.Span(
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-exclamation-triangle text-warning",
+                                                            id="uc-8-7-info-icon",
+                                                        ),
+                                                        dbc.Tooltip(
+                                                            "Currently unavailable",
+                                                            target="uc-8-7-info-icon",
+                                                            placement="left",
+                                                        ),
+                                                    ]
+                                                ),
+                                                width="auto",
                                             ),
-                                        ]
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -133,6 +163,7 @@ def create_uc_8_7_layout() -> dbc.Card:
                     ),
                 ]
             ),
+            workflow_modal,
         ],
         className="mb-4",
         id="uc-8-7-card",

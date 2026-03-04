@@ -21,6 +21,36 @@ groups:
           summary: "HTTP error ratio above 5%"
           description: "Error ratio stayed above 5% for 5 minutes."
 
+      - alert: BioRemPPHighHttp5xxRate
+        expr: job:biorempp_http_5xx_ratio:rate5m > 0.025
+        for: 5m
+        labels:
+          severity: critical
+          service: biorempp
+        annotations:
+          summary: "HTTP 5xx ratio above 2.5%"
+          description: "Server-side error ratio stayed above 2.5% for 5 minutes."
+
+      - alert: BioRemPPHighHttp4xxRate
+        expr: job:biorempp_http_4xx_ratio:rate5m > 0.1
+        for: 10m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "HTTP 4xx ratio above 10%"
+          description: "Client-facing error ratio stayed above 10% for 10 minutes."
+
+      - alert: BioRemPPErrorEndpointHotspot
+        expr: endpoint:biorempp_http_error_ratio:rate5m > 0.1 and sum by (endpoint) (rate(biorempp_http_requests_total[5m])) > 0.05
+        for: 5m
+        labels:
+          severity: warning
+          service: biorempp
+        annotations:
+          summary: "Endpoint error hotspot detected"
+          description: "An endpoint kept error ratio above 10% under sustained traffic."
+
       - alert: BioRemPPHighHttpLatencyP95
         expr: endpoint:biorempp_http_latency_p95:rate5m > 2
         for: 5m

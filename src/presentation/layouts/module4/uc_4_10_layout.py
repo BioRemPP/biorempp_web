@@ -34,6 +34,11 @@ def create_uc_4_10_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-4-10")
+    from src.presentation.pages.methods.methods_service import get_methods_service
+    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
+
+    workflow = get_methods_service().get_workflow("UC-4.10")
+    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -61,12 +66,34 @@ def create_uc_4_10_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-4.10",
-                                        button_id="uc-4-10-download-btn",
-                                        download_id="uc-4-10-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={"type": "link", "index": "UC-4.10"},
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-4.10",
+                                                button_id="uc-4-10-download-btn",
+                                                download_id="uc-4-10-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -127,6 +154,7 @@ def create_uc_4_10_layout() -> dbc.Card:
                 ],
                 className="p-4",
             ),
+            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-4-10-card",

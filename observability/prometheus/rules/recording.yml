@@ -14,6 +14,54 @@ groups:
           /
           clamp_min(job:biorempp_http_requests:rate5m, 0.001)
 
+      - record: status_code:biorempp_http_errors:rate5m
+        expr: sum by (status_code) (rate(biorempp_http_errors_total[5m]))
+
+      - record: status_class:biorempp_http_errors:rate5m
+        expr: |
+          sum by (status_class) (
+            label_replace(
+              rate(biorempp_http_errors_total[5m]),
+              "status_class",
+              "$1xx",
+              "status_code",
+              "([45])[0-9][0-9]"
+            )
+          )
+
+      - record: endpoint_status_class:biorempp_http_errors:rate5m
+        expr: |
+          sum by (endpoint, status_class) (
+            label_replace(
+              rate(biorempp_http_errors_total[5m]),
+              "status_class",
+              "$1xx",
+              "status_code",
+              "([45])[0-9][0-9]"
+            )
+          )
+
+      - record: endpoint:biorempp_http_error_ratio:rate5m
+        expr: |
+          sum by (endpoint) (rate(biorempp_http_errors_total[5m]))
+          /
+          clamp_min(
+            sum by (endpoint) (rate(biorempp_http_requests_total[5m])),
+            0.001
+          )
+
+      - record: job:biorempp_http_4xx_ratio:rate5m
+        expr: |
+          sum by (job) (rate(biorempp_http_errors_total{status_code=~"4.."}[5m]))
+          /
+          clamp_min(job:biorempp_http_requests:rate5m, 0.001)
+
+      - record: job:biorempp_http_5xx_ratio:rate5m
+        expr: |
+          sum by (job) (rate(biorempp_http_errors_total{status_code=~"5.."}[5m]))
+          /
+          clamp_min(job:biorempp_http_requests:rate5m, 0.001)
+
       - record: endpoint:biorempp_http_latency_p95:rate5m
         expr: |
           histogram_quantile(
