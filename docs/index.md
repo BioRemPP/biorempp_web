@@ -7,7 +7,7 @@ description: Open-access scientific web service for integrative functional analy
 
 *Open-Access Scientific Platform for Bioremediation Functional Analysis*
 
-**Version:** 1.0.7-beta | **Last Updated:** 2026-02-28
+**Version:** 1.0.9-beta | **Last Updated:** 2026-03-07
 
 ---
 
@@ -227,7 +227,7 @@ flowchart LR
 
 ```text
 BioRemPP Development Team (2026). BioRemPP: Bioremediation Potential Profile 
-Web Service (v1.0.7-beta). Available at: https://biorempp.cloud
+Web Service (v1.0.9-beta). Available at: https://biorempp.cloud
 ```
 
 ??? note "BibTeX Format"
@@ -237,7 +237,7 @@ Web Service (v1.0.7-beta). Available at: https://biorempp.cloud
       author={BioRemPP Development Team},
       year={2025},
       url={https://biorempp.cloud},
-      note={Version 1.0.7-beta}
+      note={Version 1.0.9-beta}
     }
     ```
 

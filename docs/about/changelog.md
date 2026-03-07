@@ -15,6 +15,36 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.9-beta] - 2026-03-07
+##### The application will remain in beta until the article is officially released.
+
+### Added
+
+#### Results Runtime Modularization and Observability Toolkit
+
+- **Lazy modular shell for `/results`** with on-demand module rendering and lightweight context loading.
+- **Collapsible navigation groups by analysis module** to reduce scroll depth and improve navigation efficiency.
+- **Observability toolkit for performance tracking**
+- **Client/server transition telemetry integration**
+
+
+### Changed
+
+#### Results UX, Navigation, and Loading Consistency
+
+- **Cross-module hash navigation behavior** updated to synchronize module selection and canonical anchor scrolling (`#uc-x-y-card`).
+- **Analysis suggestions link standardization** to compact `View UC x-x` labels and consistent `Relevant Use Cases` blocks.
+
+### Fixed
+
+#### Results Runtime Regressions and Data Consistency
+
+- **Internal navigation regression** that could trigger white-screen/global-spinner behavior during in-page interactions.
+- **Workflow modal auto-open regression** on initial `/results` render.
+- **Top-scroll behavior regression** when transitioning to `/results`.
+
+---
+
 ## [1.0.8-beta] - 2026-03-04
 ##### The application will remain in beta until the article is officially released.
 
