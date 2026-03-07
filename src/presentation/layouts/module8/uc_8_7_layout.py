@@ -30,11 +30,6 @@ def create_uc_8_7_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-8-7")
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-8.7")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -64,7 +59,7 @@ def create_uc_8_7_layout() -> dbc.Card:
                                             dbc.Col(
                                                 dbc.Button(
                                                     "Methods",
-                                                    id={"type": "link", "index": "UC-8.7"},
+                                                    id={"type": "results-methods-link", "index": "UC-8.7"},
                                                     color="primary",
                                                     outline=False,
                                                     size="sm",
@@ -143,14 +138,19 @@ def create_uc_8_7_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Selection)
                                     # ========================================
-                                    html.Div(
-                                        html.P(
-                                            "Please select at least 2 samples from the dropdown "
-                                            "to generate the UpSet plot.",
-                                            className="text-muted text-center p-5",
+                                    dcc.Loading(
+                                        id="uc-8-7-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            html.P(
+                                                "Please select at least 2 samples from the dropdown "
+                                                "to generate the UpSet plot.",
+                                                className="text-muted text-center p-5",
+                                            ),
+                                            id="uc-8-7-chart",
+                                            className="mt-4 border rounded p-3",
                                         ),
-                                        id="uc-8-7-chart",
-                                        className="mt-4 border rounded p-3",
                                     ),
                                 ],
                                 title="View Results",
@@ -163,7 +163,6 @@ def create_uc_8_7_layout() -> dbc.Card:
                     ),
                 ]
             ),
-            workflow_modal,
         ],
         className="mb-4",
         id="uc-8-7-card",

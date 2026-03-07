@@ -11,7 +11,7 @@
 
 **Question:** Which genes tend to co-occur across the samples, and what might this pattern suggest about potential functional relationships, co-regulation, or participation in the same metabolic pathways?
 
-This use case investigates **gene co-occurrence** patterns across all biological samples. By examining how often pairs of genes appear together (or separately) across samples, the analysis constructs a gene-by-gene correlogram that may serve as a map of potential **functional linkages**, including shared pathway membership, operon-like organization, or co-regulated modules. This gene-centric view complements sample-level analyses by potentially revealing putative **functional modules** encoded within the system.
+This use case investigates **gene co-annotation** patterns across all biological samples. By examining how often pairs of genes appear together (or separately) across samples, the analysis constructs a gene-by-gene correlogram that may serve as a map of potential **functional linkages**, including shared pathway membership, operon-like organization, or co-regulated modules. This gene-centric view complements sample-level analyses by potentially revealing putative **functional modules** encoded within the system.
 
 ---
 

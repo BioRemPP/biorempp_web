@@ -34,11 +34,6 @@ def create_uc_6_2_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-6-2")
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-6.2")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -68,7 +63,7 @@ def create_uc_6_2_layout() -> dbc.Card:
                                             dbc.Col(
                                                 dbc.Button(
                                                     "Methods",
-                                                    id={"type": "link", "index": "UC-6.2"},
+                                                    id={"type": "results-methods-link", "index": "UC-6.2"},
                                                     color="primary",
                                                     outline=False,
                                                     size="sm",
@@ -124,6 +119,7 @@ def create_uc_6_2_layout() -> dbc.Card:
                                     dcc.Loading(
                                         id="uc-6-2-loading",
                                         type="circle",
+                                        color="#0d6efd",
                                         children=html.Div(
                                             id="uc-6-2-chart", className="mt-4"
                                         ),
@@ -139,7 +135,6 @@ def create_uc_6_2_layout() -> dbc.Card:
                 ],
                 className="p-4",
             ),
-            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-6-2-card",

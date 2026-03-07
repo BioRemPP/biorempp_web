@@ -86,12 +86,14 @@ def test_resolve_resume_request_rejects_invalid_job_id(
     before_invalid = _counter_value(
         RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="invalid_job_id"
     )
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request("invalid-job-id", "token-1")
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "Invalid Job ID" in _flatten_text(status_component)
     assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="attempt") >= (
         before_attempt + 1.0
@@ -106,7 +108,7 @@ def test_resolve_resume_request_returns_not_found_when_job_absent(
     isolated_rate_limiter,
 ):
     """Missing job id should surface not found/expired guidance."""
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(
             "BRP-20260225-123000-ABC111",
             "token-2",
@@ -114,7 +116,9 @@ def test_resolve_resume_request_returns_not_found_when_job_absent(
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "not found or expired" in _flatten_text(status_component)
 
 
@@ -135,12 +139,14 @@ def test_resolve_resume_request_returns_not_found_when_job_expired(
     )
     time.sleep(1.2)
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(job_id, owner_token)
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "not found or expired" in _flatten_text(status_component)
 
 
@@ -158,12 +164,14 @@ def test_resolve_resume_request_rejects_token_mismatch(
         ttl_seconds=30,
     )
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(job_id, "token-owner-b")
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "belongs to another browser context" in _flatten_text(status_component)
 
 
@@ -186,12 +194,16 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
         ttl_seconds=30,
     )
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(job_id, owner_token)
     )
 
     assert data_update == payload
+    assert isinstance(context_update, dict)
+    assert context_update.get("ready") is True
+    assert context_update.get("job_id") == job_id
     assert pathname_update == "/results"
+    assert hash_update == ""
     assert "loaded" in _flatten_text(status_component)
     assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success") >= (
         before_success + 1.0
@@ -218,12 +230,16 @@ def test_resolve_resume_request_success_respects_url_base_path(
         ttl_seconds=30,
     )
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(job_id, owner_token)
     )
 
     assert data_update == payload
+    assert isinstance(context_update, dict)
+    assert context_update.get("ready") is True
+    assert context_update.get("job_id") == job_id
     assert pathname_update == "/biorempp/results"
+    assert hash_update == ""
     assert "loaded" in _flatten_text(status_component)
 
 
@@ -242,12 +258,14 @@ def test_resolve_resume_request_uses_generic_error_in_strict_mode(
         ttl_seconds=30,
     )
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(job_id, "token-owner-y")
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "unavailable in this browser context" in _flatten_text(status_component)
 
 
@@ -259,13 +277,13 @@ def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
         RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
     )
     for _ in range(3):
-        _, _, status_component = job_resume_callbacks.resolve_resume_request(
+        _, _, _, _, status_component = job_resume_callbacks.resolve_resume_request(
             "BRP-20260225-223000-ABC119",
             "token-bruteforce",
         )
         assert "not found or expired" in _flatten_text(status_component)
 
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(
             "BRP-20260225-223000-ABC119",
             "token-bruteforce",
@@ -273,7 +291,9 @@ def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "Too many resume attempts" in _flatten_text(status_component)
     assert _counter_value(
         RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
@@ -290,14 +310,14 @@ def test_resolve_resume_request_unblocks_after_backoff_window(
             "token-backoff",
         )
 
-    _, _, blocked_component = job_resume_callbacks.resolve_resume_request(
+    _, _, _, _, blocked_component = job_resume_callbacks.resolve_resume_request(
         "BRP-20260225-223001-ABC120",
         "token-backoff",
     )
     assert "Too many resume attempts" in _flatten_text(blocked_component)
 
     time.sleep(1.1)
-    data_update, pathname_update, status_component = (
+    data_update, context_update, pathname_update, hash_update, status_component = (
         job_resume_callbacks.resolve_resume_request(
             "BRP-20260225-223001-ABC120",
             "token-backoff",
@@ -305,7 +325,9 @@ def test_resolve_resume_request_unblocks_after_backoff_window(
     )
 
     assert data_update is no_update
+    assert context_update is no_update
     assert pathname_update is no_update
+    assert hash_update is no_update
     assert "not found or expired" in _flatten_text(status_component)
 
 

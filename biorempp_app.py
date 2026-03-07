@@ -17,12 +17,15 @@ Notes
 
 import logging
 import os
+import json
+import time
 from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
 import diskcache
 from dash import DiskcacheManager, Input, Output, State, callback, dcc, html
+from flask import request
 
 # Silence watchdog debug logs (used by Dash hot-reload)
 logging.getLogger("watchdog").setLevel(logging.WARNING)
@@ -50,6 +53,12 @@ from src.presentation.routing import app_path, strip_base_path
 from src.presentation.components.composite.analysis_suggestions import (
     register_suggestions_callbacks,
 )
+from src.shared.metrics import instrument_callback
+from src.shared.metrics.results_transition import (
+    mark_results_transition_invalid_sample,
+    observe_results_transition_sample,
+    sanitize_results_transition_payload,
+)
 
 # Presentation Layer
 from src.presentation.pages import (
@@ -64,7 +73,8 @@ from src.presentation.pages import (
     create_scientific_methods_page,
     create_user_guide_page,
     get_home_layout,
-    get_results_layout,
+    get_results_module_layout,
+    get_results_shell_layout,
 )
 from src.presentation.pages.database_schemas import (
     create_schemas_index_page,
@@ -78,6 +88,7 @@ from src.presentation.pages.methods.callbacks import (
 )
 from src.presentation.pages.new_user import register_new_user_guide_callbacks
 from src.presentation.pages.uc_user_guide import register_demo_callbacks
+from src.presentation.services.results_context import context_has_results
 
 # Initialize application settings and logging
 settings = get_settings()
@@ -191,20 +202,22 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         dcc.Store(id='upload-data-store', storage_type='memory'),
         dcc.Store(id='example-data-store', storage_type='memory'),
         dcc.Store(id='merged-result-store', storage_type='memory'),
+        dcc.Store(id='results-context-store', storage_type='memory'),
         
         html.Div(id='page-content')
     ])
     logger.info("[OK] App layout configured")
-    logger.info("  - Stores: upload-data, example-data, merged-result")
+    logger.info("  - Stores: upload-data, example-data, merged-result, results-context")
     logger.info("  - Routing: url, page-content")
     
     # Routing callback
     @app.callback(
         Output('page-content', 'children'),
         Input('url', 'pathname'),
-        State('merged-result-store', 'data')
+        State('results-context-store', 'data')
     )
-    def display_page(pathname, merged_data):
+    @instrument_callback("routing.display_page")
+    def display_page(pathname, results_context):
         """
         Route page display based on URL pathname.
 
@@ -212,14 +225,15 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         ----------
         pathname : str
             URL pathname
-        merged_data : dict
-            Merged result data from processing
+        results_context : dict
+            Lightweight context from processing/resume flow
 
         Returns
         -------
         Component
             Page layout component
         """
+        callback_started_at = time.perf_counter()
         normalized_pathname = strip_base_path(pathname)
 
         if normalized_pathname == '/faq':
@@ -268,9 +282,16 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             # Custom internal server error page
             return create_error_500_page()
         elif normalized_pathname == '/results':
-            if merged_data is None:
+            has_results = context_has_results(results_context)
+            metadata = {}
+            if has_results and isinstance(results_context, dict):
+                metadata_raw = results_context.get("metadata", {})
+                if isinstance(metadata_raw, dict):
+                    metadata = metadata_raw
+
+            if not has_results:
                 # No data available - show alert
-                return dbc.Container([
+                result_layout = dbc.Container([
                     dbc.Alert(
                         [
                             html.I(className="fas fa-info-circle me-2"),
@@ -298,11 +319,73 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                         className="mt-5"
                     )
                 ], className="mt-5")
+            else:
+                result_layout = get_results_shell_layout(
+                    merged_data={"metadata": metadata},
+                    initial_module=1,
+                )
 
-            return get_results_layout(merged_data=merged_data)
+            logger.info(
+                "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+                json.dumps(
+                    {
+                        "callback": "routing.display_page",
+                        "route": "/results",
+                        "duration_seconds": round(
+                            max(time.perf_counter() - callback_started_at, 0.0),
+                            6,
+                        ),
+                        "has_merged_data": has_results,
+                        "has_results_context": has_results,
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+            )
+            return result_layout
         else:
             # Default to homepage
             return get_home_layout()
+
+    @app.callback(
+        Output("results-module-container", "children"),
+        Input("results-module-selector", "value"),
+        prevent_initial_call=False,
+    )
+    @instrument_callback("results.render_active_module")
+    def render_active_results_module(selected_module):
+        """
+        Render selected results module on demand.
+
+        Parameters
+        ----------
+        selected_module : Any
+            Module selector value (1..8)
+
+        Returns
+        -------
+        Component
+            Module section layout for selected value
+        """
+        callback_started_at = time.perf_counter()
+        module_layout = get_results_module_layout(selected_module)
+        logger.info(
+            "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+            json.dumps(
+                {
+                    "callback": "results.render_active_module",
+                    "route": "/results",
+                    "module": selected_module,
+                    "duration_seconds": round(
+                        max(time.perf_counter() - callback_started_at, 0.0),
+                        6,
+                    ),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ),
+        )
+        return module_layout
     
     # ========================================================================
     # Initialize Singleton PlotService (CRITICAL: Single instance per worker)
@@ -393,6 +476,50 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                 "status": "not ready",
                 "error": str(e)
             }, 503
+
+    def collect_results_transition_perf():
+        """Collect client-side timings for results page transition diagnostics."""
+        payload = request.get_json(silent=True)
+        sanitized_sample = sanitize_results_transition_payload(
+            payload,
+            remote_addr=request.remote_addr,
+        )
+        if sanitized_sample is None:
+            mark_results_transition_invalid_sample()
+            return {"status": "invalid_payload"}, 400
+
+        observe_results_transition_sample(sanitized_sample)
+        logger.info(
+            "RESULTS_TRANSITION_SAMPLE %s",
+            json.dumps(sanitized_sample, sort_keys=True, separators=(",", ":")),
+        )
+        return {"status": "accepted"}, 202
+
+    root_results_perf_route = "/perf/results-transition"
+    app.server.add_url_rule(
+        root_results_perf_route,
+        endpoint="results_transition_perf_root",
+        view_func=collect_results_transition_perf,
+        methods=["POST"],
+    )
+
+    prefixed_results_perf_route = app_path("/perf/results-transition")
+    if prefixed_results_perf_route != root_results_perf_route:
+        app.server.add_url_rule(
+            prefixed_results_perf_route,
+            endpoint="results_transition_perf_prefixed",
+            view_func=collect_results_transition_perf,
+            methods=["POST"],
+        )
+        logger.info(
+            "[OK] Results transition perf routes registered "
+            f"({root_results_perf_route}, {prefixed_results_perf_route})"
+        )
+    else:
+        logger.info(
+            "[OK] Results transition perf route registered "
+            f"({root_results_perf_route})"
+        )
 
     register_http_error_handlers(app)
 

@@ -34,11 +34,6 @@ def create_uc_5_4_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-5-4")
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-5.4")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -67,7 +62,7 @@ def create_uc_5_4_layout() -> dbc.Card:
                                         dbc.Col(
                                             dbc.Button(
                                                 "Methods",
-                                                id={"type": "link", "index": "UC-5.4"},
+                                                id={"type": "results-methods-link", "index": "UC-5.4"},
                                                 color="primary",
                                                 outline=False,
                                                 size="sm",
@@ -116,12 +111,17 @@ def create_uc_5_4_layout() -> dbc.Card:
                         [
                             dbc.AccordionItem(
                                 [
+                                    html.Div(
+                                        "This network visualization may take longer for larger inputs.",
+                                        className="text-muted small mb-2",
+                                    ),
                                     # ========================================
                                     # Loading Spinner & Chart Container
                                     # ========================================
                                     dcc.Loading(
                                         id="uc-5-4-loading",
                                         type="circle",
+                                        color="#0d6efd",
                                         children=html.Div(
                                             id="uc-5-4-chart", className="mt-4"
                                         ),
@@ -137,7 +137,6 @@ def create_uc_5_4_layout() -> dbc.Card:
                 ],
                 className="p-4",
             ),
-            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-5-4-card",

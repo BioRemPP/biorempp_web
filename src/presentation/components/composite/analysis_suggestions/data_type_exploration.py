@@ -79,19 +79,19 @@ def create_entity_accordion_item(
     """
     # Create UC links - force all icons to fa-chart-bar for consistency
     uc_links = [
-        create_uc_link(uc_id, title, "fas fa-chart-bar")
+        create_uc_link(uc_id, icon="fas fa-chart-bar")
         for uc_id, title, uc_icon in ucs
     ]
 
     return dbc.AccordionItem(
         [
             html.P(description, className="text-muted small mb-3"),
-            html.P(
+            html.H6(
                 [
-                    html.I(className="fas fa-chart-bar me-2 text-muted"),
-                    html.Strong(f"{len(ucs)} use cases", className="text-muted"),
+                    html.I(className="fas fa-link me-2 text-success"),
+                    f"Relevant Use Cases ({len(ucs)}):",
                 ],
-                className="small mb-3",
+                className="mb-2",
             ),
             (
                 dbc.ListGroup(uc_links, flush=True)

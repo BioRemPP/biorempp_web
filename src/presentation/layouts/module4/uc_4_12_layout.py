@@ -34,11 +34,6 @@ def create_uc_4_12_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-4-12")
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-4.12")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -70,7 +65,7 @@ def create_uc_4_12_layout() -> dbc.Card:
                                         dbc.Col(
                                             dbc.Button(
                                                 "Methods",
-                                                id={"type": "link", "index": "UC-4.12"},
+                                                id={"type": "results-methods-link", "index": "UC-4.12"},
                                                 color="primary",
                                                 outline=False,
                                                 size="sm",
@@ -140,8 +135,14 @@ def create_uc_4_12_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Selection)
                                     # ========================================
-                                    html.Div(
-                                        id="uc-4-12-chart-container", className="mt-4"
+                                    dcc.Loading(
+                                        id="uc-4-12-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-4-12-chart-container",
+                                            className="mt-4",
+                                        ),
                                     ),
                                 ],
                                 title="View Results",
@@ -154,7 +155,6 @@ def create_uc_4_12_layout() -> dbc.Card:
                 ],
                 className="p-4",
             ),
-            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-4-12-card",

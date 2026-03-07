@@ -22,6 +22,10 @@ import logging
 import uuid
 
 from dash import Input, Output, State, callback, ctx, no_update
+from src.presentation.services.results_navigation import (
+    normalize_target_hash,
+    resolve_target_module,
+)
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs from parent loggers
@@ -199,91 +203,62 @@ def register_navigation_callbacks(app):
         return False, button_visible
 
     # ========================================
-    # Callback 2: Navigate to Target Section (WITHOUT auto-close)
+    # Callback 2: Sync hash target with lazy module selector
     # ========================================
     @app.callback(
-        Output("url", "hash"),
         [
-            # Database Tables
-            Input("nav-biorempp", "n_clicks"),
-            Input("nav-hadeg", "n_clicks"),
-            Input("nav-toxcsm", "n_clicks"),
-            Input("nav-kegg", "n_clicks"),
-            # Module Overviews
-            Input("nav-module1", "n_clicks"),
-            Input("nav-module2", "n_clicks"),
-            Input("nav-module3", "n_clicks"),
-            Input("nav-module4", "n_clicks"),
-            Input("nav-module5", "n_clicks"),
-            Input("nav-module6", "n_clicks"),
-            Input("nav-module7", "n_clicks"),
-            Input("nav-module8", "n_clicks"),
-            # Module 2 Use Cases
-            Input("nav-uc-2-1", "n_clicks"),
-            Input("nav-uc-2-2", "n_clicks"),
-            Input("nav-uc-2-3", "n_clicks"),
-            Input("nav-uc-2-4", "n_clicks"),
-            Input("nav-uc-2-5", "n_clicks"),
+            Output("results-module-selector", "value"),
+            Output("navigation-offcanvas", "is_open", allow_duplicate=True),
+            Output("suggestions-offcanvas", "is_open", allow_duplicate=True),
         ],
+        Input("url", "hash"),
+        State("results-module-selector", "value"),
         prevent_initial_call=True,
     )
-    def navigate_to_section(*args):
+    def sync_navigation_target(url_hash, current_module):
         """
-        Navigate to target section using URL hash.
+        Sync URL hash target with lazy module selector and panel visibility.
 
         Parameters
         ----------
-        *args : tuple
-            Click counts from all navigation items
+        url_hash : str
+            Current URL hash target.
+        current_module : int | None
+            Current selector value for active results module.
 
         Returns
         -------
-        str
-            URL hash for target section (e.g., "#module2-section")
+        tuple
+            (
+                results_module_selector_value_or_no_update,
+                navigation_offcanvas_is_open,
+                suggestions_offcanvas_is_open,
+            )
 
         Notes
         -----
-        - Uses ctx.triggered_id to identify clicked item
-        - Maps navigation IDs to section IDs
-        - Triggers browser scroll via hash change
-        - Does NOT auto-close offcanvas (manual close only)
+        - Supports canonical and legacy UC hashes:
+          #uc-x-y-card and #uc-x-y-info-panel
+        - Closes both offcanvas panels after a valid navigation target
+        - Only updates selector when target resolves to module 1..8
         """
-        if not ctx.triggered_id:
-            logger.debug("[NAVIGATION] No triggered_id, returning no_update")
-            return no_update
+        normalized_hash = normalize_target_hash(url_hash)
+        if not normalized_hash:
+            return no_update, no_update, no_update
 
-        logger.info(f"[NAVIGATION] Navigation triggered by: {ctx.triggered_id}")
+        target_module = resolve_target_module(normalized_hash)
+        if target_module is None:
+            return no_update, False, False
 
-        # Navigation ID to Section ID mapping
-        navigation_map = {
-            # Database Tables
-            "nav-biorempp": "#biorempp-section",
-            "nav-hadeg": "#hadeg-section",
-            "nav-toxcsm": "#toxcsm-section",
-            "nav-kegg": "#kegg-section",
-            # Module Overviews
-            "nav-module1": "#module1-section",
-            "nav-module2": "#module2-section",
-            "nav-module3": "#module3-section",
-            "nav-module4": "#module4-section",
-            "nav-module5": "#module5-section",
-            "nav-module6": "#module6-section",
-            "nav-module7": "#module7-section",
-            "nav-module8": "#module8-section",
-            # Module 2 Use Cases
-            "nav-uc-2-1": "#uc-2-1-card",
-            "nav-uc-2-2": "#uc-2-2-card",
-            "nav-uc-2-3": "#uc-2-3-card",
-            "nav-uc-2-4": "#uc-2-4-card",
-            "nav-uc-2-5": "#uc-2-5-card",
-        }
+        try:
+            current_module_int = int(current_module) if current_module is not None else None
+        except (TypeError, ValueError):
+            current_module_int = None
 
-        target_hash = navigation_map.get(ctx.triggered_id, "")
-        if target_hash:
-            logger.info(f"[NAVIGATION] Navigating to: {target_hash}")
-            return target_hash
-        logger.warning(f"[NAVIGATION] No mapping found for: {ctx.triggered_id}")
-        return no_update
+        if current_module_int == target_module:
+            return no_update, False, False
+
+        return str(target_module), False, False
 
     # Mark callbacks as registered
     _navigation_callbacks_registered = True
@@ -292,4 +267,6 @@ def register_navigation_callbacks(app):
     logger.info(
         f"[NAVIGATION]     - toggle_navigation: Input='nav-toggle-button', Output='navigation-offcanvas.is_open'"
     )
-    logger.info(f"[NAVIGATION]     - navigate_to_section: Multiple nav-* inputs")
+    logger.info(
+        "[NAVIGATION]     - sync_navigation_target: Input='url.hash', Output='results-module-selector.value'"
+    )

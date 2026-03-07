@@ -1,0 +1,67 @@
+/* Results module segmented selector (Option B) */
+
+.results-module-tabs-card {
+    border: 1px solid #6ac9b2;
+    border-left: 5px solid #1f9d77;
+    background: linear-gradient(180deg, #fcfffe 0%, #f2faf7 100%);
+}
+
+.results-module-tabs-card .card-header {
+    background-color: #eaf6f1;
+    border-bottom: 1px solid #d2ebdf;
+}
+
+.results-module-tabs-parent {
+    margin-top: 0.15rem;
+}
+
+.results-module-tabs {
+    display: grid;
+    grid-template-columns: repeat(8, minmax(0, 1fr));
+    gap: 0.5rem;
+    border-bottom: none !important;
+    align-items: stretch;
+}
+
+.results-module-tab {
+    width: 100%;
+    text-align: center;
+    border: 1.5px solid #83cfba !important;
+    border-radius: 0.45rem !important;
+    background: #ffffff !important;
+    color: #2e6f5f !important;
+    padding: 0.42rem 0.25rem !important;
+    font-weight: 700;
+    letter-spacing: 0.015em;
+    transition: all 0.12s ease-in-out;
+}
+
+.results-module-tab:hover {
+    background: #eef9f4 !important;
+    border-color: #59bca0 !important;
+}
+
+.results-module-tab--selected {
+    background: #1f9d77 !important;
+    color: #ffffff !important;
+    border-color: #1f9d77 !important;
+    box-shadow: 0 2px 8px rgba(31, 157, 119, 0.2);
+}
+
+.results-module-tab--selected:hover {
+    color: #ffffff !important;
+}
+
+@media (max-width: 992px) {
+    .results-module-tabs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 576px) {
+    .results-module-tabs {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        gap: 0.42rem;
+    }
+
+}

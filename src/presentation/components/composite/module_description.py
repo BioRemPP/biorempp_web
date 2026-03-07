@@ -12,7 +12,7 @@ create_module_description
 Notes
 -----
 - Phase 1 & 2 Implementation: Core restructuring + Visual enhancements
-- Collapsible sections (default: open)
+    - Collapsible sections (overview open, questions closed)
 - Module-specific color coding
 - Responsive design (mobile-first)
 - Icons, badges, and improved typography
@@ -75,7 +75,7 @@ def create_module_description(
     -----
     Phase 1 & 2 Features:
     - Collapsible overview (default: open)
-    - Accordion questions (default: open)
+    - Accordion questions (default: closed)
     - Module-specific icons and colors
     - Badges for metadata
     - Responsive grid layout
@@ -222,9 +222,10 @@ def create_module_description(
                             for question_data in guiding_questions
                         ],
                         id=f"module-{module_id}-questions-accordion",
-                        start_collapsed=False,  # Default: OPEN (all items)
+                        start_collapsed=True,  # Default: CLOSED (all items)
                         flush=True,
-                        always_open=True,  # Allow multiple items open
+                        always_open=True,  # Allow multiple items open after user action
+                        active_item=[],
                     )
                 ],
                 className="p-0",

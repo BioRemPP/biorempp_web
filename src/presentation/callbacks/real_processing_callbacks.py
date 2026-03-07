@@ -11,6 +11,8 @@ logging and comprehensive error recovery.
 
 import os
 import time
+import json
+import logging
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, no_update
 from dash.exceptions import PreventUpdate
@@ -25,6 +27,7 @@ from src.presentation.components.composite.processing_feedback import (
 )
 from src.presentation.routing import app_path
 from src.presentation.services import DataProcessingService, job_resume_service
+from src.presentation.services.results_context import build_results_context
 from src.shared.exceptions import (
     CircuitBreakerOpenError,
     DataProcessingTimeoutError,
@@ -43,6 +46,9 @@ from src.shared.metrics import (
 
 # Configure logging
 logger = get_logger(__name__)
+# Dedicated logger outside `src.presentation.callbacks` hierarchy so
+# transition samples always propagate to app.log.
+results_transition_logger = logging.getLogger("biorempp.results_transition")
 
 # Initialize data processing service (singleton)
 _data_service = None
@@ -201,6 +207,7 @@ def register_real_processing_callbacks(app):
         output=[
             Output("processing-status", "children"),
             Output("merged-result-store", "data"),
+            Output("results-context-store", "data"),
             Output("completion-panel", "style"),
             Output("processing-progress", "style"),
             Output("resume-browser-token-store", "data", allow_duplicate=True),
@@ -245,6 +252,7 @@ def register_real_processing_callbacks(app):
             (
                 status_message,
                 merged_data,
+                results_context,
                 completion_panel_style,
                 progress_panel_style,
                 owner_token_store_update,
@@ -271,6 +279,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},  # Keep progress hidden
+                no_update,
                 no_update,
             )
 
@@ -415,6 +424,7 @@ def register_real_processing_callbacks(app):
             return (
                 status_message,
                 serialized_result,
+                build_results_context(serialized_result),
                 {"display": "block"},  # Show completion panel
                 {"display": "none"},  # Hide progress panel
                 effective_owner_token,
@@ -448,6 +458,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 {"display": "none"},
                 no_update,
+                no_update,
             )
 
         # Timeout errors
@@ -474,6 +485,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
                 no_update,
             )
 
@@ -502,6 +514,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 {"display": "none"},
                 no_update,
+                no_update,
             )
 
         # Circuit breaker errors
@@ -527,6 +540,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
                 no_update,
             )
 
@@ -554,6 +568,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
                 no_update,
             )
 
@@ -586,6 +601,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 {"display": "none"},
                 no_update,
+                no_update,
             )
 
         # Generic processing errors
@@ -612,6 +628,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
                 no_update,
             )
 
@@ -645,6 +662,7 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
                 no_update,
             )
         finally:
@@ -701,10 +719,14 @@ def register_real_processing_callbacks(app):
         return not (upload_data or example_data)
 
     @app.callback(
-        Output("url", "pathname", allow_duplicate=True),
+        [
+            Output("url", "pathname", allow_duplicate=True),
+            Output("url", "hash", allow_duplicate=True),
+        ],
         Input("view-results-btn", "n_clicks"),
         prevent_initial_call=True,
     )
+    @instrument_callback("processing.navigate_to_results")
     def navigate_to_results(n_clicks):
         """
         Navigate to results page when completion button is clicked.
@@ -716,12 +738,33 @@ def register_real_processing_callbacks(app):
 
         Returns
         -------
-        str
-            URL pathname for results route
+        tuple[str, str]
+            URL pathname for results route and cleared hash.
         """
+        callback_started_at = time.perf_counter()
         if not n_clicks:
             raise PreventUpdate
-        return app_path("/results")
+        logger.info(
+            "navigate_to_results callback triggered",
+            extra={"n_clicks": int(n_clicks)},
+        )
+        results_transition_logger.info(
+            "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+            json.dumps(
+                {
+                    "callback": "processing.navigate_to_results",
+                    "route": "/results",
+                    "duration_seconds": round(
+                        max(time.perf_counter() - callback_started_at, 0.0),
+                        6,
+                    ),
+                    "n_clicks": int(n_clicks),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ),
+        )
+        return app_path("/results"), ""
 
     logger.info("[OK] Real processing callbacks registered successfully")
     logger.info(

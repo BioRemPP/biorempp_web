@@ -71,6 +71,15 @@ class DataProcessingService:
                 raise FileNotFoundError(f"Database not found: {db_path}")
 
     @staticmethod
+    def _dedupe_rows(
+        df: pd.DataFrame, subset: Optional[List[str]] = None
+    ) -> pd.DataFrame:
+        """Remove duplicate rows while preserving first occurrence order."""
+        if df.empty:
+            return df
+        return df.drop_duplicates(subset=subset).reset_index(drop=True)
+
+    @staticmethod
     def generate_job_id() -> str:
         """
         Generate unique job identifier for a processing execution.
@@ -334,7 +343,11 @@ class DataProcessingService:
                 if ko.startswith("K"):  # Validate KO format
                     data.append({"Sample": current_sample, "KO": ko})
 
-        return pd.DataFrame(data)
+        parsed_df = pd.DataFrame(data)
+        if parsed_df.empty:
+            return parsed_df
+        # Prevent artificial row multiplication from repeated KO lines in same sample.
+        return self._dedupe_rows(parsed_df, subset=["Sample", "KO"])
 
     def merge_with_biorempp(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -380,7 +393,7 @@ class DataProcessingService:
             "Enzyme_Activity",
         ]
 
-        return result
+        return self._dedupe_rows(result)
 
     def merge_with_hadeg(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -406,7 +419,7 @@ class DataProcessingService:
 
         result.columns = ["Sample", "KO", "Gene", "Pathway", "Compound"]
 
-        return result
+        return self._dedupe_rows(result)
 
     def merge_with_toxcsm(self, biorempp_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -449,7 +462,7 @@ class DataProcessingService:
 
         # Select compoundname + value_ columns and remove duplicates
         required_cols = ["compoundname"] + value_columns
-        df_tox = toxcsm_db[required_cols].drop_duplicates()
+        df_tox = self._dedupe_rows(toxcsm_db[required_cols])
 
         # Convert to long format (wide → long)
         df_long = df_tox.melt(
@@ -478,9 +491,7 @@ class DataProcessingService:
         df_long["endpoint"] = df_long["endpoint"].str.replace("value_", "", regex=False)
 
         # Keep unique compounds
-        result = df_long.drop_duplicates()
-
-        return result
+        return self._dedupe_rows(df_long)
 
     def merge_with_kegg(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -507,7 +518,7 @@ class DataProcessingService:
 
         result.columns = ["Sample", "KO", "Pathway", "Gene_Symbol"]
 
-        return result
+        return self._dedupe_rows(result)
 
     def _get_toxcsm_wide_format(self, biorempp_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -542,7 +553,7 @@ class DataProcessingService:
             return pd.DataFrame()
 
         # Get unique Sample-compound pairs from BioRemPP (user's matches)
-        sample_compounds = biorempp_df[["Sample", "Compound_ID"]].drop_duplicates()
+        sample_compounds = self._dedupe_rows(biorempp_df[["Sample", "Compound_ID"]])
 
         # Rename to match ToxCSM database column name
         sample_compounds = sample_compounds.rename(columns={"Compound_ID": "cpd"})
@@ -559,7 +570,7 @@ class DataProcessingService:
 
         logger.info(f"  - ToxCSM wide merged shape: {toxcsm_wide.shape}")
 
-        return toxcsm_wide
+        return self._dedupe_rows(toxcsm_wide)
 
     def process_upload(
         self, content: str, filename: str, job_id: Optional[str] = None

@@ -1,7 +1,7 @@
 """
 UC-3.6 Callbacks - Gene Co-occurrence Patterns Across Samples.
 
-This module implements callback functions for visualizing gene-gene co-occurrence
+This module implements callback functions for visualizing gene-gene co-annotation
 patterns through correlation analysis based on shared presence across samples.
 
 Functions

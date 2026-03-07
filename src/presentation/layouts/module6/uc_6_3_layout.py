@@ -10,7 +10,7 @@ Notes
 """
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
 from src.presentation.components.composite.use_cases import create_panel_by_id
 from src.presentation.components.download_component import (
@@ -34,11 +34,6 @@ def create_uc_6_3_layout() -> dbc.Card:
     """
     # Load informative panel from YAML config
     info_panel = create_panel_by_id("uc-6-3")
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-6.3")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -68,7 +63,7 @@ def create_uc_6_3_layout() -> dbc.Card:
                                             dbc.Col(
                                                 dbc.Button(
                                                     "Methods",
-                                                    id={"type": "link", "index": "UC-6.3"},
+                                                    id={"type": "results-methods-link", "index": "UC-6.3"},
                                                     color="primary",
                                                     outline=False,
                                                     size="sm",
@@ -118,8 +113,16 @@ def create_uc_6_3_layout() -> dbc.Card:
                         [
                             dbc.AccordionItem(
                                 [
-                                    # Chart Container (Treemap)
-                                    html.Div(id="uc-6-3-chart", className="mt-3")
+                                    # Chart Container with Loading Spinner
+                                    dcc.Loading(
+                                        id="uc-6-3-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-6-3-chart",
+                                            className="mt-3",
+                                        ),
+                                    )
                                 ],
                                 title="View Results",
                                 item_id="uc-6-3-accordion",
@@ -131,7 +134,6 @@ def create_uc_6_3_layout() -> dbc.Card:
                     ),
                 ]
             ),
-            workflow_modal,
         ],
         className="mb-4 shadow-sm",
         id="uc-6-3-card",

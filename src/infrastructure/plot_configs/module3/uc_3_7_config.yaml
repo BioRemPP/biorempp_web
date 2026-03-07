@@ -1,7 +1,7 @@
 # ============================================================================
 # UC-3.7: Compound Co-occurrence Patterns Across Samples
 # ============================================================================
-# Description: Correlogram showing compound-compound co-occurrence patterns based on sample presence
+# Description: Correlogram showing compound-compound co-annotation patterns based on sample presence
 # Module: module3
 # Plot Type: Correlogram (Correlation Heatmap - Feature Mode)
 # Rendering: On-demand (accordion activation)

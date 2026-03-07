@@ -32,11 +32,6 @@ def create_uc_8_2_layout() -> dbc.Card:
     -----
     - See official documentation for use case details
     """
-    from src.presentation.pages.methods.methods_service import get_methods_service
-    from src.presentation.pages.methods.workflow_modal import create_workflow_modal
-
-    workflow = get_methods_service().get_workflow("UC-8.2")
-    workflow_modal = create_workflow_modal(workflow) if workflow else html.Div()
 
     return dbc.Card(
         [
@@ -64,7 +59,7 @@ def create_uc_8_2_layout() -> dbc.Card:
                                             dbc.Col(
                                                 dbc.Button(
                                                     "Methods",
-                                                    id={"type": "link", "index": "UC-8.2"},
+                                                    id={"type": "results-methods-link", "index": "UC-8.2"},
                                                     color="primary",
                                                     outline=False,
                                                     size="sm",
@@ -111,7 +106,8 @@ def create_uc_8_2_layout() -> dbc.Card:
                             [
                                 dcc.Loading(
                                     id="loading-uc-8-2",
-                                    type="default",
+                                    type="circle",
+                                    color="#0d6efd",
                                     children=html.Div(
                                         id="uc-8-2-chart",
                                         style={"minHeight": "650px"},
@@ -126,7 +122,6 @@ def create_uc_8_2_layout() -> dbc.Card:
                     ),
                 ]
             ),
-            workflow_modal,
         ],
         className="shadow-sm mb-4",
         id="uc-8-2-card",

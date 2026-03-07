@@ -251,7 +251,8 @@ def create_kegg_section(
 
     # Complete section with enhanced styling
     section = html.Div(
-        [description_component, accordion, download, html.Hr(className="my-4")]
+        [description_component, accordion, download, html.Hr(className="my-4")],
+        id="kegg-section",
     )
 
     return section

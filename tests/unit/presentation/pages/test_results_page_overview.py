@@ -49,6 +49,28 @@ def _collect_titles(node: Any) -> list[str]:
     return titles
 
 
+def _collect_ids(node: Any) -> set[str]:
+    """Collect component ids recursively from Dash component trees."""
+    ids: set[str] = set()
+
+    def visit(value: Any) -> None:
+        if value is None:
+            return
+        if isinstance(value, (list, tuple)):
+            for item in value:
+                visit(item)
+            return
+        node_id = getattr(value, "id", None)
+        if isinstance(node_id, str):
+            ids.add(node_id)
+        children = getattr(value, "children", None)
+        if children is not None:
+            visit(children)
+
+    visit(node)
+    return ids
+
+
 def _build_overview_payload() -> dict:
     """Build complete overview payload used by the four database cards."""
     return {
@@ -203,3 +225,15 @@ def test_results_page_shows_job_id_placeholder_when_missing():
 
     assert "Job ID" in text
     assert "--" in text
+
+
+def test_results_page_includes_global_workflow_modal_ids():
+    """Results layout should include single global workflow modal components."""
+    metadata = {"sample_count": 1, "ko_count": 1, "processing_time": 0.1}
+    layout = create_results_layout(merged_data=_build_merged_data(metadata))
+    ids = _collect_ids(layout)
+
+    assert "results-workflow-modal" in ids
+    assert "results-workflow-modal-title" in ids
+    assert "results-workflow-modal-body" in ids
+    assert "results-workflow-modal-close" in ids

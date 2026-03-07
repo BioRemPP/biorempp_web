@@ -50,27 +50,26 @@ def create_basic_exploration_content() -> html.Div:
                                 "Explore gene diversity, distribution, and relationships across your samples.",
                                 className="text-muted small mb-3",
                             ),
+                            html.H6(
+                                [
+                                    html.I(className="fas fa-link me-2 text-success"),
+                                    "Relevant Use Cases (4):",
+                                ],
+                                className="mb-2",
+                            ),
                             dbc.ListGroup(
                                 [
                                     create_uc_link(
                                         "uc-2-1",
-                                        "Gene Counts Across Samples",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-2-5",
-                                        "Gene Distribution Among Samples",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-1-1",
-                                        "Database Intersection Analysis",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-3-6",
-                                        "Gene Co-occurrence Patterns",
-                                        "fas fa-chart-bar",
                                     ),
                                 ],
                                 flush=True,
@@ -98,22 +97,23 @@ def create_basic_exploration_content() -> html.Div:
                                 "Understand which metabolic routes are active and how they vary across samples.",
                                 className="text-muted small mb-3",
                             ),
+                            html.H6(
+                                [
+                                    html.I(className="fas fa-link me-2 text-success"),
+                                    "Relevant Use Cases (3):",
+                                ],
+                                className="mb-2",
+                            ),
                             dbc.ListGroup(
                                 [
                                     create_uc_link(
                                         "uc-4-1",
-                                        "Pathway Profiling by Sample",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-4-2",
-                                        "Pathway Richness Ranking",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-8-2",
-                                        "Pathway Completeness Scorecard",
-                                        "fas fa-chart-bar",
                                     ),
                                 ],
                                 flush=True,
@@ -139,22 +139,23 @@ def create_basic_exploration_content() -> html.Div:
                                 "Analyze chemical diversity and toxicity predictions for target compounds.",
                                 className="text-muted small mb-3",
                             ),
+                            html.H6(
+                                [
+                                    html.I(className="fas fa-link me-2 text-success"),
+                                    "Relevant Use Cases (3):",
+                                ],
+                                className="mb-2",
+                            ),
                             dbc.ListGroup(
                                 [
                                     create_uc_link(
                                         "uc-7-1",
-                                        "Toxicity Prediction Heatmap",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-4-7",
-                                        "Gene-Compound Association Explorer",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-2-2",
-                                        "Chemical Diversity Ranking",
-                                        "fas fa-chart-bar",
                                     ),
                                 ],
                                 flush=True,
@@ -180,22 +181,23 @@ def create_basic_exploration_content() -> html.Div:
                                 "Compare samples and identify those with unique or complementary profiles.",
                                 className="text-muted small mb-3",
                             ),
+                            html.H6(
+                                [
+                                    html.I(className="fas fa-link me-2 text-success"),
+                                    "Relevant Use Cases (3):",
+                                ],
+                                className="mb-2",
+                            ),
                             dbc.ListGroup(
                                 [
                                     create_uc_link(
                                         "uc-3-3",
-                                        "Hierarchical Clustering",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-8-1",
-                                        "Minimal Sample Grouping",
-                                        "fas fa-chart-bar",
                                     ),
                                     create_uc_link(
                                         "uc-1-5",
-                                        "Regulatory Compliance Scorecard",
-                                        "fas fa-chart-bar",
                                     ),
                                 ],
                                 flush=True,

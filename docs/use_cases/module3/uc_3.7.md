@@ -11,7 +11,7 @@
 
 **Question:** Which chemical compounds tend to be acted upon together across the samples, and what might this pattern suggest about degradation pathways, co-contamination scenarios, or enzymatic similarity?
 
-This use case investigates **compound co-occurrence** patterns across all biological samples. By examining how often pairs of compounds appear together within the same sample, the analysis constructs a compound-by-compound correlogram that may provide a map of potential **metabolic, chemical, or environmental linkages**. These patterns could indicate shared pathways, typical co-contamination scenarios, or common enzymatic requirements.
+This use case investigates **compound co-annotation** patterns across all biological samples. By examining how often pairs of compounds appear together within the same sample, the analysis constructs a compound-by-compound correlogram that may provide a map of potential **metabolic, chemical, or environmental linkages**. These patterns could indicate shared pathways, typical co-contamination scenarios, or common enzymatic requirements.
 
 ---
 

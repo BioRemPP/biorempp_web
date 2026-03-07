@@ -20,6 +20,7 @@ from threading import Lock
 from config.settings import get_settings
 from src.presentation.routing import app_path
 from src.presentation.services import job_resume_service
+from src.presentation.services.results_context import build_results_context
 from src.presentation.services.resume_store_redis import redis as redis_client_module
 from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
@@ -460,7 +461,13 @@ def resolve_resume_request(job_id: str, owner_token: str):
     Returns
     -------
     tuple
-        (merged_result_store_update, pathname_update, status_component)
+        (
+            merged_result_store_update,
+            results_context_store_update,
+            pathname_update,
+            hash_update,
+            status_component,
+        )
     """
     _set_rate_limit_backend_info(_ACTIVE_RATE_LIMIT_BACKEND)
     normalized_job_id = (job_id or "").strip().upper()
@@ -473,12 +480,16 @@ def resolve_resume_request(job_id: str, owner_token: str):
         return (
             no_update,
             no_update,
+            no_update,
+            no_update,
             _build_status_alert("Provide a Job ID to resume an analysis.", "warning"),
         )
 
     if not isinstance(owner_token, str) or not owner_token.strip():
         RESUME_CALLBACK_ATTEMPTS_TOTAL.labels(outcome="token_missing").inc()
         return (
+            no_update,
+            no_update,
             no_update,
             no_update,
             _build_status_alert(
@@ -503,6 +514,8 @@ def resolve_resume_request(job_id: str, owner_token: str):
         return (
             no_update,
             no_update,
+            no_update,
+            no_update,
             _build_status_alert(
                 f"Too many resume attempts. Please retry in {retry_after_seconds}s.",
                 "danger",
@@ -522,6 +535,8 @@ def resolve_resume_request(job_id: str, owner_token: str):
         return (
             no_update,
             no_update,
+            no_update,
+            no_update,
             _build_status_alert(
                 "Invalid Job ID length. Use BRP-YYYYMMDD-HHMMSS-XXXXXX.",
                 "danger",
@@ -539,6 +554,8 @@ def resolve_resume_request(job_id: str, owner_token: str):
             },
         )
         return (
+            no_update,
+            no_update,
             no_update,
             no_update,
             _build_status_alert(
@@ -566,7 +583,9 @@ def resolve_resume_request(job_id: str, owner_token: str):
         resume_rate_limiter.register_success(identity_hash)
         return (
             payload,
+            build_results_context(payload),
             app_path("/results"),
+            "",
             _build_status_alert(
                 f"Job {normalized_job_id} loaded. Redirecting to results...",
                 "success",
@@ -588,11 +607,15 @@ def resolve_resume_request(job_id: str, owner_token: str):
             return (
                 no_update,
                 no_update,
+                no_update,
+                no_update,
                 _build_status_alert(
                     "Job ID unavailable in this browser context.", "warning"
                 ),
             )
         return (
+            no_update,
+            no_update,
             no_update,
             no_update,
             _build_status_alert(
@@ -615,11 +638,15 @@ def resolve_resume_request(job_id: str, owner_token: str):
             return (
                 no_update,
                 no_update,
+                no_update,
+                no_update,
                 _build_status_alert(
                     "Job ID unavailable in this browser context.", "warning"
                 ),
             )
         return (
+            no_update,
+            no_update,
             no_update,
             no_update,
             _build_status_alert(
@@ -643,10 +670,14 @@ def resolve_resume_request(job_id: str, owner_token: str):
         return (
             no_update,
             no_update,
+            no_update,
+            no_update,
             _build_status_alert("Job ID unavailable in this browser context.", "warning"),
         )
 
     return (
+        no_update,
+        no_update,
         no_update,
         no_update,
         _build_status_alert(
@@ -678,7 +709,9 @@ def register_job_resume_callbacks(app):
     @app.callback(
         [
             Output("merged-result-store", "data", allow_duplicate=True),
+            Output("results-context-store", "data", allow_duplicate=True),
             Output("url", "pathname"),
+            Output("url", "hash"),
             Output("resume-job-status", "children"),
         ],
         Input("resume-job-btn", "n_clicks"),

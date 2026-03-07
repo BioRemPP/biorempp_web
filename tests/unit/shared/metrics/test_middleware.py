@@ -5,11 +5,15 @@ import re
 from flask import Flask, jsonify
 
 from src.shared.metrics.middleware import (
+    _extract_dash_output_label,
     _is_excluded_endpoint,
     _normalize_endpoint,
     register_metrics_middleware,
 )
 from src.shared.metrics.registry import (
+    DASH_CALLBACK_REQUEST_SIZE_BYTES,
+    DASH_CALLBACK_RESPONSE_SIZE_BYTES,
+    DASH_CALLBACK_SERVER_DURATION_SECONDS,
     HTTP_ERRORS_TOTAL,
     HTTP_REQUEST_DURATION_SECONDS,
     HTTP_REQUESTS_TOTAL,
@@ -50,6 +54,10 @@ def _build_test_app() -> Flask:
     @app.get("/_dash-layout")
     def dash_internal_route():
         return jsonify({"layout": "ok"}), 200
+
+    @app.post("/_dash-update-component")
+    def dash_update_component_route():
+        return jsonify({"ok": True}), 200
 
     @app.get("/health")
     def health_route():
@@ -136,6 +144,65 @@ def test_middleware_collapses_dash_internal_endpoints() -> None:
         status_code="200",
     )
     assert counter_after == counter_before + 1.0
+
+
+def test_extract_dash_output_label_supports_string_and_dict() -> None:
+    assert (
+        _extract_dash_output_label({"output": "url.pathname"})
+        == "url.pathname"
+    )
+    assert (
+        _extract_dash_output_label(
+            {"outputs": {"id": "page-content", "property": "children"}}
+        )
+        == "page-content.children"
+    )
+
+
+def test_middleware_tracks_dash_callback_size_and_duration_metrics() -> None:
+    app = _build_test_app()
+    client = app.test_client()
+
+    dash_output = "url.pathname"
+    req_size_before = _histogram_count(
+        DASH_CALLBACK_REQUEST_SIZE_BYTES,
+        dash_output=dash_output,
+    )
+    res_size_before = _histogram_count(
+        DASH_CALLBACK_RESPONSE_SIZE_BYTES,
+        dash_output=dash_output,
+    )
+    duration_before = _histogram_count(
+        DASH_CALLBACK_SERVER_DURATION_SECONDS,
+        dash_output=dash_output,
+    )
+
+    response = client.post(
+        "/_dash-update-component",
+        json={
+            "output": "url.pathname",
+            "inputs": [{"id": "view-results-btn", "property": "n_clicks", "value": 1}],
+            "state": [],
+        },
+    )
+    assert response.status_code == 200
+
+    req_size_after = _histogram_count(
+        DASH_CALLBACK_REQUEST_SIZE_BYTES,
+        dash_output=dash_output,
+    )
+    res_size_after = _histogram_count(
+        DASH_CALLBACK_RESPONSE_SIZE_BYTES,
+        dash_output=dash_output,
+    )
+    duration_after = _histogram_count(
+        DASH_CALLBACK_SERVER_DURATION_SECONDS,
+        dash_output=dash_output,
+    )
+
+    assert req_size_after == req_size_before + 1.0
+    assert res_size_after == res_size_before + 1.0
+    assert duration_after == duration_before + 1.0
 
 
 def test_middleware_skips_health_endpoint() -> None:

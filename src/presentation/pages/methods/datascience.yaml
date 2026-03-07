@@ -98,7 +98,7 @@ categories:
       - radar_plots
     
     biorempp_applications:
-      - "Heatmaps for gene-compound co-occurrence matrices"
+      - "Heatmaps for gene-compound co-annotation matrices"
       - "PCA plots for sample clustering by functional profiles"
       - "UpSet plots for database and pathway intersections"
       - "Sankey diagrams for multi-level functional flows"
@@ -208,7 +208,7 @@ categories:
           - "AI integration with bioremediation bioinformatics"
           - "Data-driven ecological risk modeling"
           - "Prioritization of microorganisms and pathways for sustainable remediation"
-        relevance_to_biorempp: "Serves as bridge between current BioRemPP visual analytics layer and future predictive layers (consortium choice, risk prediction). Justifies use of features like KO richness, gene-compound co-occurrence, completeness scores, and toxicity metrics as AI model inputs"
+        relevance_to_biorempp: "Serves as bridge between current BioRemPP visual analytics layer and future predictive layers (consortium choice, risk prediction). Justifies use of features like KO richness, gene-compound co-annotation, completeness scores, and toxicity metrics as AI model inputs"
         related_workflows: ["uc-2-1", "uc-2-4", "uc-4-9", "uc-5-4", "uc-5-5", "uc-7-2", "uc-7-6", "uc-7-7", "uc-8-1", "uc-8-2"]
       
       - id: "BIO3"

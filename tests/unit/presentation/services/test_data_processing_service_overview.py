@@ -219,3 +219,68 @@ def test_process_upload_preserves_provided_job_id(mock_database_dir):
     )
 
     assert result["metadata"]["job_id"] == custom_job_id
+
+
+def test_parse_upload_content_deduplicates_sample_ko_pairs(mock_database_dir):
+    """Repeated KO lines per sample should be deduplicated at parse stage."""
+    service = DataProcessingService(database_path=mock_database_dir)
+    content = ">SampleA\nK00001\nK00001\nK00001\n>SampleA\nK00001\n>SampleB\nK00002\n"
+
+    parsed = service.parse_upload_content(content=content, filename="input.txt")
+
+    assert not parsed.empty
+    assert parsed.duplicated(subset=["Sample", "KO"]).sum() == 0
+    assert len(parsed) == 2
+
+
+def test_process_upload_removes_duplicate_rows_from_all_outputs(mock_database_dir):
+    """All display/download outputs must be free of exact duplicate rows."""
+    service = DataProcessingService(database_path=mock_database_dir)
+    content = ">SampleA\nK00001\nK00001\nK00001\n>SampleB\nK00002\nK00002\n"
+
+    result = service.process_upload(content=content, filename="input.txt")
+
+    for key in [
+        "biorempp_df",
+        "biorempp_raw_df",
+        "hadeg_df",
+        "hadeg_raw_df",
+        "kegg_df",
+        "kegg_raw_df",
+        "toxcsm_df",
+        "toxcsm_raw_df",
+    ]:
+        df = result[key]
+        assert df.duplicated().sum() == 0, f"{key} still has duplicate rows"
+
+
+def test_process_upload_metadata_matches_deduplicated_outputs(mock_database_dir):
+    """Overview/aggregate counts must be computed from deduplicated outputs."""
+    service = DataProcessingService(database_path=mock_database_dir)
+    content = ">SampleA\nK00001\nK00001\nK00001\n>SampleB\nK00002\nK00002\n"
+
+    result = service.process_upload(content=content, filename="input.txt")
+    metadata = result["metadata"]
+    overview = metadata["database_overview"]
+    aggregate = metadata["database_aggregate_overview"]
+
+    assert overview["biorempp"]["enzyme_compound_relations"]["input_value"] == len(
+        result["biorempp_df"]
+    )
+    assert overview["hadeg"]["gene_pathway_relations"]["input_value"] == len(
+        result["hadeg_df"]
+    )
+    assert overview["toxcsm"]["environmental_compounds"]["input_value"] == len(
+        result["toxcsm_raw_df"]
+    )
+    assert overview["kegg"]["gene_pathway_associations"]["input_value"] == len(
+        result["kegg_df"]
+    )
+
+    expected_total_relations = (
+        len(result["biorempp_df"])
+        + len(result["hadeg_df"])
+        + len(result["toxcsm_raw_df"])
+        + len(result["kegg_df"])
+    )
+    assert aggregate["total_relations_input"] == expected_total_relations

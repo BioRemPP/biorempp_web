@@ -31,6 +31,7 @@ from ..components.composite.analysis_suggestions import (
     create_suggestions_offcanvas,
     create_suggestions_trigger_button,
 )
+from ..pages.methods.workflow_modal import create_results_workflow_modal
 from ..layouts.module_layouts import (
     create_module1_section,
     create_module2_section,
@@ -257,7 +258,128 @@ def _format_percentage(value: Optional[float]) -> str:
     return f"{value:.2f}%"
 
 
-def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.Div:
+RESULTS_MODULE_DEFINITIONS = (
+    {
+        "value": 1,
+        "short_label": "M1",
+        "full_label": "Module 1 - Comparative Assessment",
+    },
+    {
+        "value": 2,
+        "short_label": "M2",
+        "full_label": "Module 2 - Exploratory Analysis",
+    },
+    {"value": 3, "short_label": "M3", "full_label": "Module 3 - System Structure"},
+    {
+        "value": 4,
+        "short_label": "M4",
+        "full_label": "Module 4 - Functional and Genetic Profiling",
+    },
+    {
+        "value": 5,
+        "short_label": "M5",
+        "full_label": "Module 5 - Modeling Interactions",
+    },
+    {
+        "value": 6,
+        "short_label": "M6",
+        "full_label": "Module 6 - Hierarchical and Flow-based Analysis",
+    },
+    {
+        "value": 7,
+        "short_label": "M7",
+        "full_label": "Module 7 - Toxicological Risk Assessment",
+    },
+    {
+        "value": 8,
+        "short_label": "M8",
+        "full_label": "Module 8 - Assembly of Functional Consortia",
+    },
+)
+
+
+def _normalize_module_index(module_value: Any) -> int:
+    """Normalize module selector value to valid integer index [1..8]."""
+    try:
+        module_index = int(module_value)
+    except (TypeError, ValueError):
+        return 1
+    if module_index < 1 or module_index > 8:
+        return 1
+    return module_index
+
+
+def create_results_module_layout(module_value: Any = 1) -> html.Div:
+    """Create layout for one selected analysis module."""
+    module_index = _normalize_module_index(module_value)
+    module_factories = {
+        1: create_module1_section,
+        2: create_module2_section,
+        3: create_module3_section,
+        4: create_module4_section,
+        5: create_module5_section,
+        6: create_module6_section,
+        7: create_module7_section,
+        8: create_module8_section,
+    }
+    return module_factories[module_index]()
+
+
+def _build_results_module_selector(default_module: int) -> html.Div:
+    """Build segmented module selector with contextual guidance."""
+    module_tabs = [
+        dcc.Tab(
+            label=module["short_label"],
+            value=str(module["value"]),
+            className="results-module-tab",
+            selected_className="results-module-tab--selected",
+        )
+        for module in RESULTS_MODULE_DEFINITIONS
+    ]
+
+    return html.Div(
+        [
+            dbc.Card(
+                [
+                    dbc.CardHeader(
+                        html.H5(
+                            [
+                                html.I(
+                                    className="fas fa-layer-group me-2 text-primary"
+                                ),
+                                "Analysis Modules",
+                            ],
+                            className="mb-0",
+                        ),
+                        className="py-2",
+                    ),
+                    dbc.CardBody(
+                        [
+                            html.P(
+                                "Choose a module to load its use cases.",
+                                className="text-muted mb-3",
+                            ),
+                            dcc.Tabs(
+                                id="results-module-selector",
+                                value=str(default_module),
+                                parent_className="results-module-tabs-parent",
+                                className="results-module-tabs",
+                                children=module_tabs,
+                            ),
+                        ]
+                    ),
+                ],
+                className="results-module-tabs-card mb-3 shadow-sm",
+            )
+        ]
+    )
+
+
+def create_results_layout(
+    merged_data: Optional[Dict[str, Any]] = None,
+    include_modules: bool = True,
+    initial_module: int = 1,
+) -> html.Div:
     """
     Create results page layout with feed-style accordions.
 
@@ -268,6 +390,11 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         Expected keys: biorempp_df, biorempp_raw_df, hadeg_df, hadeg_raw_df,
         toxcsm_df (processed), toxcsm_raw_df (complete 66 columns),
         kegg_df, kegg_raw_df, metadata
+    include_modules : bool, optional
+        If True, render all modules 1..8 in initial layout.
+        If False, render shell + module selector with dynamic container.
+    initial_module : int, optional
+        Default selected module value for lazy render shell.
 
     Returns
     -------
@@ -663,47 +790,66 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         overview_stats=database_overview.get("kegg", {})
     )
 
-    # Module 1: Comparative Assessment
-    module1_section = create_module1_section()
+    content_children = [
+        overview_card,
+        biorempp_section,
+        hadeg_section,
+        toxcsm_section,
+        kegg_section,
+    ]
 
-    # Module 2: Exploratory Analysis
-    module2_section = create_module2_section()
+    if include_modules:
+        # Module 1: Comparative Assessment
+        module1_section = create_module1_section()
 
-    # Module 3: System Structure
-    module3_section = create_module3_section()
+        # Module 2: Exploratory Analysis
+        module2_section = create_module2_section()
 
-    # Module 4: Functional and Genetic Profiling
-    module4_section = create_module4_section()
+        # Module 3: System Structure
+        module3_section = create_module3_section()
 
-    # Module 5: Modeling Interactions
-    module5_section = create_module5_section()
+        # Module 4: Functional and Genetic Profiling
+        module4_section = create_module4_section()
 
-    # Module 6: Hierarchical and Flow-based Analysis
-    module6_section = create_module6_section()
+        # Module 5: Modeling Interactions
+        module5_section = create_module5_section()
 
-    # Module 7: Toxicological Risk Assessment
-    module7_section = create_module7_section()
+        # Module 6: Hierarchical and Flow-based Analysis
+        module6_section = create_module6_section()
 
-    # Module 8: Assembly of Functional Consortia
-    module8_section = create_module8_section()
+        # Module 7: Toxicological Risk Assessment
+        module7_section = create_module7_section()
+
+        # Module 8: Assembly of Functional Consortia
+        module8_section = create_module8_section()
+        content_children.extend(
+            [
+                module1_section,
+                module2_section,
+                module3_section,
+                module4_section,
+                module5_section,
+                module6_section,
+                module7_section,
+                module8_section,
+            ]
+        )
+    else:
+        default_module = _normalize_module_index(initial_module)
+        content_children.append(_build_results_module_selector(default_module))
+        content_children.append(
+            html.Div(
+                html.Div(
+                    id="results-module-container",
+                    children=[],
+                ),
+                className="mb-4",
+            )
+        )
 
     # Main Content Container
     main_content = dbc.Container(
-        [
-            overview_card,
-            biorempp_section,
-            hadeg_section,
-            toxcsm_section,
-            kegg_section,
-            module1_section,
-            module2_section,
-            module3_section,
-            module4_section,
-            module5_section,
-            module6_section,
-            module7_section,
-            module8_section,
-        ],
+        content_children,
         fluid=False,
         className="my-4",
     )
@@ -718,6 +864,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
     # Analytical Suggestions components
     suggestions_button = create_suggestions_trigger_button()
     suggestions_offcanvas = create_suggestions_offcanvas()
+    results_workflow_modal = create_results_workflow_modal()
 
     # Complete Layout (NO dcc.Location here - already in main app)
     return html.Div(
@@ -729,6 +876,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
             nav_button,  # Right side
             suggestions_offcanvas,
             nav_offcanvas,
+            results_workflow_modal,
         ]
     )
 
@@ -748,3 +896,20 @@ def get_results_layout(merged_data: Optional[Dict[str, Any]] = None):
         Complete results page layout
     """
     return create_results_layout(merged_data)
+
+
+def get_results_shell_layout(
+    merged_data: Optional[Dict[str, Any]] = None,
+    initial_module: int = 1,
+):
+    """Get lightweight /results shell layout with lazy module container."""
+    return create_results_layout(
+        merged_data=merged_data,
+        include_modules=False,
+        initial_module=initial_module,
+    )
+
+
+def get_results_module_layout(module_value: Any = 1):
+    """Get selected module layout for dynamic /results rendering."""
+    return create_results_module_layout(module_value=module_value)

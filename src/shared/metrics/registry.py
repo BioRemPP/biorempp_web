@@ -75,6 +75,20 @@ CALLBACK_DURATION_BUCKETS = (
     60.0,
 )
 
+DASH_CALLBACK_DURATION_BUCKETS = (
+    0.005,
+    0.01,
+    0.025,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.5,
+    5.0,
+    10.0,
+)
+
 PROCESSING_DURATION_BUCKETS = (
     0.05,
     0.1,
@@ -88,6 +102,22 @@ PROCESSING_DURATION_BUCKETS = (
     60.0,
     120.0,
     300.0,
+)
+
+RESULTS_TRANSITION_DURATION_BUCKETS = (
+    0.01,
+    0.025,
+    0.05,
+    0.1,
+    0.25,
+    0.5,
+    1.0,
+    2.0,
+    3.0,
+    5.0,
+    8.0,
+    13.0,
+    21.0,
 )
 
 # HTTP metrics
@@ -143,6 +173,31 @@ CALLBACK_ERRORS_TOTAL = _metric(
     "biorempp_callback_errors_total",
     "Total callback execution errors",
     ["callback_id", "error_type"],
+)
+
+# Dash callback request-level metrics
+DASH_CALLBACK_SERVER_DURATION_SECONDS = _metric(
+    Histogram,
+    "biorempp_dash_callback_server_duration_seconds",
+    "Dash callback request duration in seconds by callback output",
+    ["dash_output"],
+    buckets=DASH_CALLBACK_DURATION_BUCKETS,
+)
+
+DASH_CALLBACK_REQUEST_SIZE_BYTES = _metric(
+    Histogram,
+    "biorempp_dash_callback_request_size_bytes",
+    "Dash callback request payload size in bytes by callback output",
+    ["dash_output"],
+    buckets=SIZE_BUCKETS,
+)
+
+DASH_CALLBACK_RESPONSE_SIZE_BYTES = _metric(
+    Histogram,
+    "biorempp_dash_callback_response_size_bytes",
+    "Dash callback response size in bytes by callback output",
+    ["dash_output"],
+    buckets=SIZE_BUCKETS,
 )
 
 # Cache metrics
@@ -299,6 +354,53 @@ RESUME_PERSIST_DURATION_SECONDS = _metric(
     ),
 )
 
+RESULTS_TRANSITION_SAMPLES_TOTAL = _metric(
+    Counter,
+    "biorempp_results_transition_samples_total",
+    "Total results transition client telemetry samples by outcome",
+    ["outcome"],
+)
+
+RESULTS_TRANSITION_CLICK_TO_REQUEST_SECONDS = _metric(
+    Histogram,
+    "biorempp_results_transition_click_to_request_seconds",
+    "Client-side time from clicking view results to first Dash request start",
+    ["route"],
+    buckets=RESULTS_TRANSITION_DURATION_BUCKETS,
+)
+
+RESULTS_TRANSITION_REQUEST_TO_PAINT_SECONDS = _metric(
+    Histogram,
+    "biorempp_results_transition_request_to_paint_seconds",
+    "Client-side time from first Dash request start to final paint",
+    ["route"],
+    buckets=RESULTS_TRANSITION_DURATION_BUCKETS,
+)
+
+RESULTS_TRANSITION_CLICK_TO_PAINT_SECONDS = _metric(
+    Histogram,
+    "biorempp_results_transition_click_to_paint_seconds",
+    "Client-side time from click to final paint",
+    ["route"],
+    buckets=RESULTS_TRANSITION_DURATION_BUCKETS,
+)
+
+RESULTS_TRANSITION_REQUEST_BYTES = _metric(
+    Histogram,
+    "biorempp_results_transition_request_bytes",
+    "Client-observed request payload size in bytes for results transition",
+    ["route"],
+    buckets=SIZE_BUCKETS,
+)
+
+RESULTS_TRANSITION_RESPONSE_BYTES = _metric(
+    Histogram,
+    "biorempp_results_transition_response_bytes",
+    "Client-observed response size in bytes for results transition",
+    ["route"],
+    buckets=SIZE_BUCKETS,
+)
+
 # Worker metrics
 WORKERS_ACTIVE = _metric(
     Gauge,
@@ -336,6 +438,9 @@ __all__ = [
     "HTTP_RESPONSE_SIZE_BYTES",
     "CALLBACK_DURATION_SECONDS",
     "CALLBACK_ERRORS_TOTAL",
+    "DASH_CALLBACK_SERVER_DURATION_SECONDS",
+    "DASH_CALLBACK_REQUEST_SIZE_BYTES",
+    "DASH_CALLBACK_RESPONSE_SIZE_BYTES",
     "CACHE_OPERATIONS_TOTAL",
     "CACHE_SIZE_ITEMS",
     "CACHE_HIT_RATIO",
@@ -352,6 +457,12 @@ __all__ = [
     "UPLOAD_SIZE_BYTES",
     "PROCESSING_DURATION_SECONDS",
     "RESUME_PERSIST_DURATION_SECONDS",
+    "RESULTS_TRANSITION_SAMPLES_TOTAL",
+    "RESULTS_TRANSITION_CLICK_TO_REQUEST_SECONDS",
+    "RESULTS_TRANSITION_REQUEST_TO_PAINT_SECONDS",
+    "RESULTS_TRANSITION_CLICK_TO_PAINT_SECONDS",
+    "RESULTS_TRANSITION_REQUEST_BYTES",
+    "RESULTS_TRANSITION_RESPONSE_BYTES",
     "WORKERS_ACTIVE",
     "WORKER_REQUESTS_TOTAL",
     "WORKER_MEMORY_BYTES",
