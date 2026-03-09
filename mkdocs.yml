@@ -2,7 +2,7 @@
 # NOTE: API Reference section is preserved exactly as provided.
 
 site_name: BioRemPP Documentation
-site_url: https://bioinfo.imd.ufrn.br/biorempp/
+site_url: https://biorempp-web.readthedocs.io/en/stable/
 site_description: >-
   BioRemPP Web Service — documentation for an interactive platform supporting
   bioremediation-oriented functional analysis and data integration workflows.

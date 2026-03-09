@@ -80,9 +80,9 @@ integration:
 # Related documentation links
 related_docs:
   - title: "Data Sources"
-    url: "https://biorempp-web.readthedocs.io/en/latest/methods/data-sources/"
+    url: "https://biorempp-web.readthedocs.io/en/stable/"
   - title: "Mapping Strategy"
-    url: "https://biorempp-web.readthedocs.io/en/latest/methods/mapping-strategy/"
+    url: "https://biorempp-web.readthedocs.io/en/stable/"
   - title: "GitHub Repository"
     url: "https://github.com/BioRemPP/biorempp_web"
 

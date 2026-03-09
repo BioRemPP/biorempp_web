@@ -2,7 +2,7 @@
 
 **Bioremediation Potential Profile — Scientific Web Application**
 
-[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](https://biormepp-web.readthedocs.io/en/latest/)
+[![Documentation](https://img.shields.io/badge/docs-Read%20the%20Docs-blue)](https://biorempp-web.readthedocs.io/en/stable/)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen)](https://hub.docker.com/r/biorempp/biorempp-web)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Database: CC BY 4.0](https://img.shields.io/badge/Database-CC%20BY%204.0-lightgrey.svg)](https://creativecommons.org/licenses/by/4.0/)
@@ -37,7 +37,7 @@ pip install -e ".[dev]"
 python biorempp_app.py
 ```
 
-> For detailed setup options, see [Quickstart Guide](https://biormepp-web.readthedocs.io/en/latest/getting-started/quickstart/).
+> For detailed setup options, see [Quickstart Guide](https://biorempp-web.readthedocs.io/en/stable/).
 
 ---
 
@@ -56,7 +56,7 @@ K00004
 
 **Limits:** 100 samples, 500,000 KOs, 5 MB max file size.
 
-> Full specification: [Input Format](https://biormepp-web.readthedocs.io/en/latest/getting-started/input-format/)
+> Full specification: [Input Format](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
@@ -75,7 +75,7 @@ BioRemPP provides **56 use cases** across **8 thematic modules**:
 | **7** | Toxicological risk assessment |
 | **8** | Assembly of functional consortia |
 
-> Complete catalog: [Use Cases](https://biormepp-web.readthedocs.io/en/latest/use_cases/)
+> Complete catalog: [Use Cases](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
@@ -90,7 +90,7 @@ BioRemPP provides **56 use cases** across **8 thematic modules**:
 
 Regulatory frameworks: IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA.
 
-> Details: [Data Sources](https://biormepp-web.readthedocs.io/en/latest/methods/data-sources/) | [Database Schemas](https://biormepp-web.readthedocs.io/en/latest/database_schemas/biorempp-schema/)
+> Details: [Data Sources](https://biorempp-web.readthedocs.io/en/stable/) | [Database Schemas](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
@@ -98,12 +98,12 @@ Regulatory frameworks: IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA.
 
 | Section | Description |
 |---------|-------------|
-| [Getting Started](https://biormepp-web.readthedocs.io/en/latest/getting-started/) | Quickstart, input format, example datasets |
-| [User Guide](https://biormepp-web.readthedocs.io/en/latest/user-guide/) | Results interpretation, downloads, troubleshooting |
-| [Use Cases](https://biormepp-web.readthedocs.io/en/latest/use_cases/) | Complete analytical catalog (56 use cases) |
-| [Methods](https://biormepp-web.readthedocs.io/en/latest/methods/) | Data sources, mapping strategy, limitations |
-| [Configuration](https://biormepp-web.readthedocs.io/en/latest/config/) | Environment variables, Docker, deployment |
-| [API Reference](https://biormepp-web.readthedocs.io/en/latest/api/) | Technical documentation |
+| [Getting Started](https://biorempp-web.readthedocs.io/en/stable/) | Quickstart, input format, example datasets |
+| [User Guide](https://biorempp-web.readthedocs.io/en/stable/) | Results interpretation, downloads, troubleshooting |
+| [Use Cases](https://biorempp-web.readthedocs.io/en/stable/) | Complete analytical catalog (56 use cases) |
+| [Methods](https://biorempp-web.readthedocs.io/en/stable/) | Data sources, mapping strategy, limitations |
+| [Configuration](https://biorempp-web.readthedocs.io/en/stable/) | Environment variables, Docker, deployment |
+| [API Reference](https://biorempp-web.readthedocs.io/en/stable/) | Technical documentation |
 
 ---
 
@@ -113,7 +113,7 @@ When using BioRemPP, please cite:
 
 > BioRemPP Web Service v1.0.3-beta. Available at: https://bioinfo.imd.ufrn.br/biorempp/ (accessed [DATE]).
 
-> Full citation guidelines: [How to Cite](https://biormepp-web.readthedocs.io/en/latest/about/how-to-cite/)
+> Full citation guidelines: [How to Cite](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
@@ -123,7 +123,7 @@ When using BioRemPP, please cite:
 - **Database Content:** [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
 - **Third-party:** KEGG (academic license), HADEG (open access), toxCSM (open access)
 
-> Details: [License](https://biormepp-web.readthedocs.io/en/latest/about/license/) | [Terms of Use](https://biormepp-web.readthedocs.io/en/latest/about/terms-of-use/)
+> Details: [License](https://biorempp-web.readthedocs.io/en/stable/) | [Terms of Use](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
@@ -131,16 +131,16 @@ When using BioRemPP, please cite:
 
 BioRemPP is a research tool for hypothesis generation. Results represent **genetic potential**, not confirmed biological activity. Not intended for clinical, regulatory, or remediation decisions without experimental validation.
 
-> Complete limitations: [Limitations and Scope](https://biormepp-web.readthedocs.io/en/latest/methods/limitations/)
+> Complete limitations: [Limitations and Scope](https://biorempp-web.readthedocs.io/en/stable/)
 
 ---
 
 ## Support
 
-- **Documentation:** [biorempp-web.readthedocs.io](https://biormepp-web.readthedocs.io/en/latest/)
+- **Documentation:** [biorempp-web.readthedocs.io](https://biorempp-web.readthedocs.io/en/stable/)
 - **Issues:** [GitHub Issues](https://github.com/BioRemPP/biorempp_web/issues)
 - **Email:** biorempp@gmail.com
 
 ---
 
-**BioRemPP v1.0.3-beta** | [Documentation](https://biormepp-web.readthedocs.io/en/latest/) | [GitHub](https://github.com/BioRemPP/biorempp_web)
+**BioRemPP v1.0.3-beta** | [Documentation](https://biorempp-web.readthedocs.io/en/stable/) | [GitHub](https://github.com/BioRemPP/biorempp_web)
