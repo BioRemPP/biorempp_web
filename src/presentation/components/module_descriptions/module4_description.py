@@ -33,93 +33,93 @@ def create_module4_overview_header() -> html.Div:
     Notes
     -----
     Module 4 Focus:
-    - Bridge system-level structure with mechanistic detail
-    - Characterize functional fingerprints of individual samples
-    - Enable function-specific candidate selection and gene-level profiling
+    - Bridge system-level structure with annotation detail
+    - Characterize KO annotation profiles of individual samples
+    - Enable annotation-based candidate selection and gene-level profiling
 
     Guiding Questions:
-    - 4.1: Comprehensive functional potential per sample
-    - 4.2: Function-specific best candidate samples
-    - 4.3: Genetic and hierarchical architecture of key functions
+    - 4.1: Comprehensive KO annotation coverage per sample
+    - 4.2: Annotation-based best candidate samples per function
+    - 4.3: Gene and hierarchical annotation architecture of key functions
     """
     # Module 4 configuration
     module_id = "4"
     title = "Functional and Genetic Profiling"
 
     overview_text = (
-        "This module bridges the gap between system-level structure and "
-        "mechanisms. After identifying how samples cluster and rank in terms "
-        "of their functional and chemical potential, we now focus on what each "
-        "sample can do at a finer resolution and how these capabilities are "
-        "encoded at the genetic level. The analyses in this section are "
-        "organized to mirror the decision-making process of a researcher or "
-        "engineer selecting candidates for specific bioremediation tasks: from "
-        "broad functional fingerprints, to targeted candidate selection, down "
-        "to gene-level architecture. The goal is to provide actionable, "
-        "biologically interpretable profiles that support both practical "
-        "solutions and hypothesis-driven experimentation."
+        "This module bridges the gap between system-level annotation structure "
+        "and mechanistic detail. After identifying how samples cluster and rank "
+        "in terms of their KO annotation counts and compound co-annotation "
+        "breadth, we now focus on the annotation profile of each sample at a "
+        "finer resolution and how these annotations are organized at the gene "
+        "level. The analyses in this section are organized to support a "
+        "researcher exploring which samples show the broadest annotation "
+        "coverage for a given function, pathway, or compound class—from "
+        "broad KO annotation profiles, to targeted candidate selection, down "
+        "to gene-level annotation architecture. The goal is to provide "
+        "annotation-level profiles that support hypothesis-driven "
+        "experimentation and the design of targeted experimental validations."
     )
 
     # Guiding questions for Module 4
     guiding_questions = [
         {
             "id": "4.1",
-            "subtitle": "Sample functional capabilities",
+            "subtitle": "Sample annotation profiles",
             "question": (
-                "What is the comprehensive functional potential of each "
-                "individual sample? We first construct a detailed functional "
-                "profile—or 'fingerprint'—for every sample. This involves "
-                "characterizing its full repertoire of metabolic pathways and "
-                "ranking its most prominent enzymatic activities, typically "
-                "using the diversity and abundance of associated genes "
-                "(e.g., KO richness) as key indicators. Through this lens, we "
-                "obtain a nuanced understanding of each sample's primary "
-                "metabolic strengths and specializations. Samples can then be "
-                "classified along a continuum from versatile 'generalists', "
-                "which encode broad and diverse functional repertoires, to "
-                "'specialists', which concentrate their capacity on a narrower "
-                "set of highly developed pathways."
+                "What is the KO annotation coverage of each individual sample? "
+                "We first construct a detailed annotation "
+                "profile for every sample. This involves "
+                "characterizing its full repertoire of annotated KOs across "
+                "pathways and ranking its most represented annotation "
+                "categories, typically using KO counts and associated gene "
+                "annotations as key indicators. Through this lens, we "
+                "obtain a descriptive overview of each sample's primary "
+                "annotation strengths. Samples can then be compared along a "
+                "continuum from those with broad and diverse KO annotation "
+                "coverage to those with annotation concentrated in a narrower "
+                "set of pathways or functions."
             ),
         },
         {
             "id": "4.2",
-            "subtitle": "Function-specific candidate selection",
+            "subtitle": "Annotation-based candidate selection",
             "question": (
-                "For a specific function, which samples are the most capable "
-                "candidates? Once individual profiles are established, the "
-                "analysis shifts to a task-oriented, comparative perspective. "
-                "Instead of asking 'what can each sample do?', we ask: for a "
-                "given metabolic pathway, functional category, or chemical "
-                "class of interest, which samples are best equipped to perform "
-                "the corresponding task? We address this by ranking samples "
-                "according to function-specific metrics such as the number of "
-                "unique KOs, gene counts, or pathway completeness associated "
-                "with the selected function. The result is a direct, "
-                "data-driven procedure for identifying elite candidate samples "
-                "tailored to predefined bioremediation challenges, such as the "
-                "degradation of a particular pollutant or class of compounds."
+                "For a specific function, which samples show the broadest "
+                "annotation coverage? Once individual profiles are established, "
+                "the analysis shifts to a task-oriented, comparative "
+                "perspective. Instead of asking 'what is each sample annotated "
+                "with?', we ask: for a given metabolic pathway, functional "
+                "category, or chemical class of interest, which samples have "
+                "the highest annotation counts for the corresponding KOs? "
+                "We address this by ranking samples "
+                "according to annotation-specific metrics such as the number "
+                "of unique KOs, gene counts, or annotated pathway components "
+                "associated with the selected function. The result is a "
+                "data-driven procedure for identifying candidate samples with "
+                "broad annotation coverage for predefined functions—such as "
+                "KOs co-annotated with a particular compound class."
             ),
         },
         {
             "id": "4.3",
-            "subtitle": "Genetic architecture profiling",
+            "subtitle": "Gene annotation architecture",
             "question": (
-                "What is the underlying genetic and hierarchical architecture "
-                "of these key functions? To achieve a mechanistic understanding "
-                "of the observed potential, we decompose the genetic and "
-                "structural basis of high-priority functions. We map detailed "
+                "What is the underlying gene annotation structure of these "
+                "key functions? To achieve a more detailed understanding "
+                "of the observed annotation patterns, we examine the gene "
+                "and structural basis of high-priority KO annotations. We map "
                 "gene inventories associated with selected pathways to "
-                "distinguish core genetic components (consistently present "
-                "across samples) from accessory or auxiliary elements (present "
-                "only in subsets of samples). In parallel, we explore the "
-                "hierarchical organization of these pathways—from genes and "
-                "reactions to modules and full metabolic routes—and provide "
+                "distinguish KO annotations consistently present "
+                "across samples from those present only in subsets. In "
+                "parallel, we explore the "
+                "hierarchical organization of these annotations—from genes and "
+                "reactions to modules and full annotated routes—and provide "
                 "tools to query specific gene–sample and gene–compound "
-                "associations. This level of resolution enables the "
-                "construction of detailed mechanistic profiles for each "
-                "function and sample, supporting hypothesis generation, strain "
-                "engineering strategies, and the design of targeted "
-                "experimental validations."
+                "co-annotations. This level of resolution enables the "
+                "construction of detailed annotation profiles for each "
+                "function and sample, supporting hypothesis generation "
+                "and the design of targeted experimental validations."
             ),
         },
     ]

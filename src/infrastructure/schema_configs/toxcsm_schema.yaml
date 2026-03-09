@@ -1,0 +1,377 @@
+# ToxCSM Database Schema Configuration
+# Formal specification based on actual toxcsm_db.csv header
+
+schema_id: "toxcsm"
+title: "ToxCSM Database Schema"
+version: "1.0.0"
+last_updated: "2026-01-26"
+color: "danger"
+
+# Overview section
+overview:
+  description: >
+    The ToxCSM (Toxicity Computational Structural Model) Database uses a 
+    wide-format schema optimized for multi-endpoint toxicological analysis. 
+    The schema consists of a single table with 66 columns representing 
+    compound identifiers, structural information, and 31 toxicological 
+    endpoint predictions (both labels and numeric values).
+  design_rationale:
+    - title: "Comprehensive"
+      description: "31 toxicological endpoints with both categorical labels and numeric scores"
+    - title: "Multi-database integration"
+      description: "KEGG, ChEBI, and SMILES identifiers enable cross-referencing"
+    - title: "Risk assessment"
+      description: "Categories (High Safety, Medium Safety, etc.) enable rapid risk classification"
+
+# Schema definition
+schema_definition:
+  format: "CSV (Comma-Separated Values)"
+  rows: 370
+  columns: 66
+  encoding: "UTF-8"
+  delimiter: "Semicolon (;)"
+  text_qualifier: 'Double quote (")'
+  header: true
+  completeness: "100% — Zero missing values across all fields"
+
+# Column organization
+column_organization:
+  - category: "Compound Identifiers"
+    count: 4
+    columns: ["SMILES", "cpd", "ChEBI", "compoundname"]
+  - category: "Toxicity Labels"
+    count: 31
+    description: "Categorical predictions (3 levels)"
+  - category: "Toxicity Values"
+    count: 31
+    description: "Numeric scores (0.0 - 1.0)"
+
+# Identifier columns (first 4)
+columns:
+  - name: "SMILES"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "SMILES notation"
+    example: "C[C@@H](Oc1ccc(Cl)cc1Cl)C(=O)O"
+    description: "Simplified Molecular Input Line Entry System"
+    purpose: "Machine-readable molecular structure representation for cheminformatics"
+    uniqueness: "Unique — 370 unique SMILES (one per compound)"
+    cardinality: 370
+
+  - name: "cpd"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "C##### (capital C followed by exactly 5 digits)"
+    regex: "^C\\d{5}$"
+    example: "C19609"
+    description: "KEGG Compound identifier"
+    purpose: "Links to KEGG Compound database for cross-reference"
+    uniqueness: "Unique — 370 unique compound IDs"
+    cardinality: 370
+    cross_references:
+      - name: "KEGG Compound"
+        url_pattern: "https://www.kegg.jp/entry/{value}"
+      - name: "BioRemPP Database"
+
+  - name: "ChEBI"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "CHEBI:#####"
+    example: "CHEBI:29035"
+    description: "Chemical Entities of Biological Interest identifier"
+    purpose: "Links to ChEBI database"
+    uniqueness: "Unique — 370 unique ChEBI IDs"
+    cardinality: 370
+    cross_references:
+      - name: "ChEBI database"
+        url_pattern: "https://www.ebi.ac.uk/chebi/searchId.do?chebiId={value}"
+
+  - name: "compoundname"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Chemical nomenclature"
+    example: "(R)-(2,4-Dichlorophenoxy)propanoic acid"
+    description: "Human-readable compound name"
+    purpose: "Human-readable compound name for display and search"
+    uniqueness: "Unique — 370 unique names"
+    cardinality: 370
+
+# Toxicity label categories
+label_categories:
+  - value: "Safety"
+    interpretation: "No significant toxicity concern"
+    level: 1
+  - value: "Moderate Risk"
+    interpretation: "Moderate toxicity concern"
+    level: 2
+  - value: "High Risk"
+    interpretation: "Significant toxicity concern"
+    level: 3
+
+# Toxicological endpoints (31 total) - From actual CSV header
+toxicity_endpoints:
+  environmental:
+    - endpoint: "Avian"
+      label_column: "label_Avian"
+      value_column: "value_Avian"
+      description: "Bird toxicity prediction"
+      samples: "591 (501/90)"
+      source: "Zhang et al., 2015"
+    - endpoint: "Biodegradation"
+      label_column: "label_Biodegradation"
+      value_column: "value_Biodegradation"
+      description: "Environmental persistence/degradation"
+      samples: "1592 (1007/585)"
+      source: "Cheng et al., 2012"
+    - endpoint: "Crustacean"
+      label_column: "label_Crustacean"
+      value_column: "value_Crustacean"
+      description: "Crustacean toxicity"
+      samples: "1020 (487/533)"
+      source: "Cao et al., 2018"
+    - endpoint: "Fathead Minnow"
+      label_column: "label_Fathead_Minnow"
+      value_column: "value_Fathead_Minnow"
+      description: "Fish (Fathead Minnow) toxicity"
+      samples: "554 (188/366)"
+      source: "Fei-xiong et al., 2010"
+    - endpoint: "Honey Bee"
+      label_column: "label_Honey_Bee"
+      value_column: "value_Honey_Bee"
+      description: "Pollinator (Honey Bee) toxicity"
+      samples: "195 (96/99)"
+      source: "Fei-xiong et al., 2010"
+    - endpoint: "T. Pyriformis"
+      label_column: "label_T._Pyriformis"
+      value_column: "value_T._Pyriformis"
+      description: "Protozoan (Tetrahymena pyriformis) toxicity"
+      samples: "1571 (354/1217)"
+      source: "Cheng et al., 2011"
+
+  genomic:
+    - endpoint: "AMES Mutagenesis"
+      label_column: "label_Genomic_AMES_Mutagenesis"
+      value_column: "value_Genomic_AMES_Mutagenesis"
+      description: "Bacterial mutagenicity (Ames test)"
+      samples: "8102 (3470/4632)"
+      source: "Xu et al., 2012"
+    - endpoint: "Carcinogenesis"
+      label_column: "label_Genomic_Carcinogenesis"
+      value_column: "value_Genomic_Carcinogenesis"
+      description: "Cancer potential"
+      samples: "278 (220/58)"
+      source: "Li et al., 2015"
+    - endpoint: "Micronucleus"
+      label_column: "label_Genomic_Micronucleus"
+      value_column: "value_Genomic_Micronucleus"
+      description: "Chromosomal damage (micronucleus formation)"
+      samples: "641 (377/264)"
+      source: "Fan et al., 2018"
+
+  organic:
+    - endpoint: "Eye Corrosion"
+      label_column: "label_Eye_Corrosion"
+      value_column: "value_Eye_Corrosion"
+      description: "Ocular corrosion potential"
+      samples: "2299 (1412/887)"
+      source: "Wang et al., 2017"
+    - endpoint: "Eye Irritation"
+      label_column: "label_Eye_Irritation"
+      value_column: "value_Eye_Irritation"
+      description: "Ocular irritation potential"
+      samples: "5220 (1346/3874)"
+      source: "Wang et al., 2017"
+    - endpoint: "hERG I Inhibitor"
+      label_column: "label_hERG_I_Inhibitor"
+      value_column: "value_hERG_I_Inhibitor"
+      description: "hERG potassium channel block (class I)"
+      samples: "368 (289/79)"
+      source: "Marchese et al., 2011"
+    - endpoint: "hERG II Inhibitor"
+      label_column: "label_hERG_II_Inhibitor"
+      value_column: "value_hERG_II_Inhibitor"
+      description: "hERG potassium channel block (class II)"
+      samples: "806 (373/433)"
+      source: "Wang et al., 2012"
+    - endpoint: "Liver Injury I"
+      label_column: "label_Liver_Injury_I"
+      value_column: "value_Liver_Injury_I"
+      description: "Hepatotoxicity type I"
+      samples: "515 (277/238)"
+      source: "Fourches et al., 2010"
+    - endpoint: "Liver Injury II"
+      label_column: "label_Liver_Injury_II"
+      value_column: "value_Liver_Injury_II"
+      description: "Hepatotoxicity type II"
+      samples: "960 (670/290)"
+      source: "Mulliner et al., 2016"
+    - endpoint: "Respiratory Disease"
+      label_column: "label_Respiratory_Disease"
+      value_column: "value_Respiratory_Disease"
+      description: "Respiratory toxicity/disease"
+      samples: "2529 (1089/1440)"
+      source: "Wang et al., 2021"
+    - endpoint: "Skin Sensitisation"
+      label_column: "label_Skin_Sensitisation"
+      value_column: "value_Skin_Sensitisation"
+      description: "Allergic skin sensitisation"
+      samples: "404 (130/274)"
+      source: "Alves et al, 2015"
+
+  nuclear_response:
+    - endpoint: "NR-AhR"
+      label_column: "label_NR_AhR"
+      value_column: "value_NR_AhR"
+      description: "Aryl hydrocarbon receptor activation"
+      samples: "6876 (6088/788)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-AR"
+      label_column: "label_NR_AR"
+      value_column: "value_NR_AR"
+      description: "Androgen receptor binding"
+      samples: "7583 (7307/276)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-AR-LBD"
+      label_column: "label_NR_AR_LBD"
+      value_column: "value_NR_AR_LBD"
+      description: "Androgen receptor ligand-binding domain"
+      samples: "6922 (6698/224)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-Aromatase"
+      label_column: "label_NR_Aromatase"
+      value_column: "value_NR_Aromatase"
+      description: "Aromatase enzyme inhibition"
+      samples: "5961 (5664/297)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-ER"
+      label_column: "label_NR_ER"
+      value_column: "value_NR_ER"
+      description: "Estrogen receptor binding"
+      samples: "6437 (5725/712)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-ER-LBD"
+      label_column: "label_NR_ER_LBD"
+      value_column: "value_NR_ER_LBD"
+      description: "Estrogen receptor ligand-binding domain"
+      samples: "7133 (6813/320)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-GR"
+      label_column: "label_NR_GR"
+      value_column: "value_NR_GR"
+      description: "Glucocorticoid receptor binding"
+      samples: "6055 (5454/601)"
+      source: "Sun et al., 2019"
+    - endpoint: "NR-PPAR-gamma"
+      label_column: "label_NR_PPAR_gamma"
+      value_column: "value_NR_PPAR_gamma"
+      description: "PPAR-gamma activation"
+      samples: "6602 (6418/184)"
+      source: "Huang et al., 2016"
+    - endpoint: "NR-TR"
+      label_column: "label_NR_TR"
+      value_column: "value_NR_TR"
+      description: "Thyroid hormone receptor binding"
+      samples: "5372 (4999/373)"
+      source: "Sun et al., 2019"
+
+  stress_response:
+    - endpoint: "SR-ARE"
+      label_column: "label_SR_ARE"
+      value_column: "value_SR_ARE"
+      description: "Antioxidant response element activation"
+      samples: "5956 (5014/942)"
+      source: "Huang et al., 2016"
+    - endpoint: "SR-ATAD5"
+      label_column: "label_SR_ATAD5"
+      value_column: "value_SR_ATAD5"
+      description: "DNA damage/genotoxicity stress response"
+      samples: "7251 (6999/252)"
+      source: "Huang et al., 2016"
+    - endpoint: "SR-HSE"
+      label_column: "label_SR_HSE"
+      value_column: "value_SR_HSE"
+      description: "Heat shock response element activation"
+      samples: "6613 (6257/356)"
+      source: "Huang et al., 2016"
+    - endpoint: "SR-MMP"
+      label_column: "label_SR_MMP"
+      value_column: "value_SR_MMP"
+      description: "Mitochondrial membrane potential disruption"
+      samples: "6094 (5163/931)"
+      source: "Huang et al., 2016"
+    - endpoint: "SR-p53"
+      label_column: "label_SR_p53"
+      value_column: "value_SR_p53"
+      description: "Tumor suppressor p53 pathway activation"
+      samples: "7112 (6686/426)"
+      source: "Huang et al., 2016"
+
+# Value columns info
+value_columns_info:
+  data_type: "float64"
+  range: "0.0 - 1.0"
+  interpretation: "Higher values indicate stronger prediction confidence"
+  usage: "Threshold-based classification, ranking, quantitative risk assessment"
+
+# Schema constraints
+constraints:
+  primary_key: "cpd"
+  primary_key_note: "KEGG Compound ID — unique per row"
+  foreign_keys:
+    - column: "cpd"
+      references: "KEGG Compound database"
+    - column: "cpd"
+      references: "BioRemPP Database"
+    - column: "ChEBI"
+      references: "ChEBI database"
+
+# Data quality
+data_quality:
+  completeness:
+    status: "100%"
+    description: "Zero missing values across all 66 columns"
+  accuracy:
+    - column: "SMILES, cpd, compoundname"
+      source: "KEGG Compound database"
+    - column: "ChEBI"
+      source: "ChEBI database cross-reference"
+    - column: "Toxicity predictions"
+      source: "ToxCSM QSAR models"
+  source: "ToxCSM (Toxicity Computational Structural Model) web server predictions"
+
+# Usage examples
+usage_examples:
+  r: |
+    library(readr)
+    db <- read_delim("path/toxcsm_db.csv", delim=";")
+    
+    # View identifier columns
+    head(db[, c("cpd", "compoundname", "ChEBI")])
+    
+    # View ecotoxicity labels
+    head(db[, c("compoundname", "label_Avian", "label_Crustacean")])
+  python: |
+    import pandas as pd
+    
+    db = pd.read_csv("path/toxcsm_db.csv", sep=";")
+    
+    # Filter high toxicity compounds
+    high_tox = db[db['label_hERG_I_Inhibitor'] == 'High Toxicity']
+    
+    # Get average toxicity scores
+    value_cols = [c for c in db.columns if c.startswith('value_')]
+    db[value_cols].mean()
+  common_queries:
+    - description: "Find compounds with high cardiotoxicity risk"
+      code: 'high_herg <- db[db$label_hERG_I_Inhibitor == "High Toxicity", ]'
+    - description: "Rank compounds by biodegradation"
+      code: 'ranked <- db[order(-db$value_Biodegradation), c("compoundname", "value_Biodegradation")]'
+
+# Contact
+contact:
+  github_issues: "https://github.com/BioRemPP/biorempp_db/issues"
+  email: "biorempp@gmail.com"

@@ -9,6 +9,8 @@ import logging.config
 from pathlib import Path
 from typing import Optional
 
+from .handlers import RequestContextFilter
+
 try:
     import yaml
 
@@ -60,6 +62,30 @@ class LogConfig:
             self._setup_from_yaml()
         else:
             self._setup_basic()
+        self._attach_request_context_filter()
+
+    @staticmethod
+    def _iter_logger_handlers():
+        """Iterate all configured handlers across root and named loggers."""
+        root_logger = logging.getLogger()
+        for handler in root_logger.handlers:
+            yield handler
+
+        manager = logging.Logger.manager
+        for logger_obj in manager.loggerDict.values():
+            if isinstance(logger_obj, logging.Logger):
+                for handler in logger_obj.handlers:
+                    yield handler
+
+    def _attach_request_context_filter(self) -> None:
+        """Ensure request-id filter is attached once to all handlers."""
+        for handler in self._iter_logger_handlers():
+            already_attached = any(
+                isinstance(existing, RequestContextFilter)
+                for existing in getattr(handler, "filters", [])
+            )
+            if not already_attached:
+                handler.addFilter(RequestContextFilter())
 
     def _setup_from_yaml(self) -> None:
         """Load logging configuration from YAML file."""
@@ -76,6 +102,7 @@ class LogConfig:
                 with open(config_path, "r", encoding="utf-8") as f:
                     config = yaml.safe_load(f)
                     logging.config.dictConfig(config)
+                    self._attach_request_context_filter()
                     logging.info(
                         f"Logging configured from {config_file} "
                         f"in {self.environment} mode"
@@ -93,11 +120,15 @@ class LogConfig:
         # Determine log level based on environment
         if self.environment.lower() in ["production", "prod"]:
             level = logging.INFO
-            format_str = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+            format_str = (
+                "%(asctime)s - %(name)s - %(levelname)s - "
+                "[req:%(request_id)s] - [trace:%(trace_id)s] - %(message)s"
+            )
         else:
             level = logging.DEBUG
             format_str = (
                 "%(asctime)s - %(name)s - %(levelname)s - "
+                "[req:%(request_id)s] - [trace:%(trace_id)s] - "
                 "[%(filename)s:%(lineno)d] - %(message)s"
             )
 

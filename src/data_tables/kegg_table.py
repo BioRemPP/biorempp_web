@@ -10,13 +10,61 @@ create_kegg_section
     Create complete KEGG section with enhanced description and accordion
 """
 
+from typing import Any, Dict, Optional
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from src.presentation.components.composite import create_database_description
 
 
-def create_kegg_section() -> html.Div:
+def _format_stat_value(value: Any) -> str:
+    """Format stat values with fallback placeholder."""
+    if value is None:
+        return "--"
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        return f"{int(value):,}" if value.is_integer() else f"{value:,.2f}"
+    return str(value)
+
+
+def _get_stat_value(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]],
+    metric_key: str,
+    value_key: str,
+) -> Any:
+    """Safely get nested overview stat value."""
+    if not overview_stats:
+        return None
+    metric = overview_stats.get(metric_key)
+    if not isinstance(metric, dict):
+        return None
+    return metric.get(value_key)
+
+
+def _create_reference_value_indicator(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]], metric_key: str
+) -> html.Small:
+    """Render compact database reference indicator (icon + value)."""
+    return html.Small(
+        [
+            html.I(
+                className="fas fa-database me-1",
+                title="Refrence database value",
+                style={"fontSize": "0.7rem"},
+            ),
+            _format_stat_value(_get_stat_value(overview_stats, metric_key, "global_value")),
+        ],
+        className="text-muted d-block",
+    )
+
+
+def create_kegg_section(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> html.Div:
     """
     Create KEGG pathway results table section with enhanced metadata.
 
@@ -48,7 +96,14 @@ def create_kegg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "871", className="text-info mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "gene_pathway_associations",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-info mb-0",
                                                 ),
                                                 html.Small(
                                                     "Gene-Pathway Associations",
@@ -65,7 +120,18 @@ def create_kegg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "517", className="text-primary mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "unique_ko_numbers",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-primary mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "unique_ko_numbers",
                                                 ),
                                                 html.Small(
                                                     "Unique KO Numbers",
@@ -82,7 +148,18 @@ def create_kegg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "20", className="text-success mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "degradation_pathways",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-success mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "degradation_pathways",
                                                 ),
                                                 html.Small(
                                                     "Degradation Pathways",
@@ -101,85 +178,6 @@ def create_kegg_section() -> html.Div:
             ],
             className="mb-3 shadow-sm",
         ),
-        # Top pathways card
-        dbc.Card(
-            [
-                dbc.CardHeader(
-                    [
-                        html.I(className="fas fa-chart-bar me-2"),
-                        html.Strong("Top Degradation Pathways"),
-                    ],
-                    className="bg-light",
-                ),
-                dbc.CardBody(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Aromatic: "),
-                                                        "215 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Benzoate: "),
-                                                        "106 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Aminobenzoate: "),
-                                                        "89 genes",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Toluene: "),
-                                                        "46 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Cl. alkane/alkene: "
-                                                        ),
-                                                        "43 genes",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong("Others: "),
-                                                        "15+ pathways",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                            ]
-                        )
-                    ]
-                ),
-            ],
-            className="mb-3",
-        ),
     ]
 
     # Create download button for merged database
@@ -196,6 +194,19 @@ def create_kegg_section() -> html.Div:
         show_spinner=True,
     )
 
+    # Create Database Info button that opens schema page in new tab
+    # Using html.A instead of dbc.Button to bypass Dash router and open in new tab
+    info_button = html.A(
+        [
+            html.I(className="fas fa-info-circle me-2"),
+            "Database Info",
+        ],
+        href="/schemas/kegg",
+        target="_blank",
+        rel="noopener noreferrer",
+        className="btn btn-outline-info btn-sm",
+    )
+
     # Enhanced database description
     description_component = create_database_description(
         title="KEGG Degradation Pathway Mapping",
@@ -203,15 +214,10 @@ def create_kegg_section() -> html.Div:
             "Integrates your data with the KEGG Degradation Database, mapping KO numbers "
             "to xenobiotic degradation pathways and gene symbols for metabolic context analysis."
         ),
-        insights=(
-            "Pathway Coverage: 20 degradation routes for major pollutant classes\n"
-            "Gene Catalog: 517 unique KO numbers with degradation functions\n"
-            "Major Pathways: Aromatic (215 genes), Benzoate (106), Aminobenzoate (89), Toluene (46), Chlorinated compounds (43)\n"
-            "KEGG Integration: Direct links to metabolic pathway context"
-        ),
         section_id="kegg-results-table",
         custom_components=custom_components,
-        download_button=download_button,  # Add download button to header
+        download_button=download_button,
+        info_button=info_button,
     )
 
     # Accordion with on-demand table and enhanced title
@@ -232,46 +238,6 @@ def create_kegg_section() -> html.Div:
                     ),
                     # Table container
                     html.Div(id="kegg-container", className="chart-container"),
-                    # Column descriptions
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                [
-                                    html.I(className="fas fa-table me-2"),
-                                    html.Strong("Column Descriptions"),
-                                ],
-                                className="bg-light",
-                            ),
-                            dbc.CardBody(
-                                [
-                                    html.Ul(
-                                        [
-                                            html.Li(
-                                                [
-                                                    html.Strong("ko: "),
-                                                    "KEGG Orthology identifier linking to metabolic functions (e.g., K00001)",
-                                                ]
-                                            ),
-                                            html.Li(
-                                                [
-                                                    html.Strong("pathname: "),
-                                                    "Degradation pathway category (e.g., Aromatic, Benzoate, Toluene, Naphthalene)",
-                                                ]
-                                            ),
-                                            html.Li(
-                                                [
-                                                    html.Strong("genesymbol: "),
-                                                    "Gene symbol associated with the degradation enzyme (e.g., benA, xylC, nahAa)",
-                                                ]
-                                            ),
-                                        ],
-                                        className="mb-0",
-                                    )
-                                ]
-                            ),
-                        ],
-                        className="mt-3",
-                    ),
                 ],
                 title="View KEGG Degradation Pathway Table",
             )
@@ -285,7 +251,8 @@ def create_kegg_section() -> html.Div:
 
     # Complete section with enhanced styling
     section = html.Div(
-        [description_component, accordion, download, html.Hr(className="my-4")]
+        [description_component, accordion, download, html.Hr(className="my-4")],
+        id="kegg-section",
     )
 
     return section

@@ -25,7 +25,9 @@ def load_uc_config():
 
 
 def create_uc_link(
-    uc_id: str, label: str, icon: str = "fas fa-chart-bar"
+    uc_id: str,
+    label: str | None = None,
+    icon: str = "fas fa-chart-bar",
 ) -> dbc.ListGroupItem:
     """
     Create clickable link to use case.
@@ -34,8 +36,8 @@ def create_uc_link(
     ----------
     uc_id : str
         Use case ID (e.g., "uc-2-1")
-    label : str
-        Display label
+    label : str | None
+        Display label. If None, uses compact "View UC-x-x" format.
     icon : str
         FontAwesome icon class
 
@@ -44,10 +46,14 @@ def create_uc_link(
     dbc.ListGroupItem
         Clickable list item
     """
+    resolved_label = label if isinstance(label, str) and label.strip() else f"View {uc_id.upper()}"
     return dbc.ListGroupItem(
-        [html.I(className=f"{icon} me-2 text-primary"), label],
+        [
+            html.I(className=f"{icon} me-2 text-primary"),
+            html.Span(resolved_label, title=resolved_label),
+        ],
         id={"type": "suggestion-uc-link", "index": uc_id},
-        href=f"#{uc_id}-info-panel",  # Add href for JavaScript navigation
+        href=f"#{uc_id}-card",
         action=True,
         className="suggestion-uc-link",
         n_clicks=0,
@@ -128,19 +134,20 @@ def create_guiding_questions_content() -> html.Div:
     # Build accordion items
     accordion_items = []
     for idx, q in enumerate(questions, 1):
-        uc_links = [
-            create_uc_link(uc_id, label, icon) for uc_id, label, icon in q["ucs"]
-        ]
+        uc_links = [create_uc_link(uc_id, icon=icon) for uc_id, label, icon in q["ucs"]]
 
         accordion_items.append(
             dbc.AccordionItem(
                 [
                     html.P(q["description"], className="text-muted mb-3"),
-                    dbc.ListGroup(uc_links, flush=True),
-                    html.Small(
-                        f"Related UCs: {', '.join([uc[0].upper() for uc in q['ucs']])}",
-                        className="text-muted mt-3 d-block",
+                    html.H6(
+                        [
+                            html.I(className="fas fa-link me-2 text-success"),
+                            f"Relevant Use Cases ({len(uc_links)}):",
+                        ],
+                        className="mb-2",
                     ),
+                    dbc.ListGroup(uc_links, flush=True),
                 ],
                 title=f"{idx}. {q['question']}",
             )

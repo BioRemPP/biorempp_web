@@ -13,11 +13,11 @@ Tests cover:
 import pytest
 import pandas as pd
 
-from biorempp_web.src.application.mappers.sample_mapper import SampleMapper
-from biorempp_web.src.domain.entities.sample import Sample
-from biorempp_web.src.domain.entities.dataset import Dataset
-from biorempp_web.src.domain.value_objects.sample_id import SampleId
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
+from src.application.mappers.sample_mapper import SampleMapper
+from src.domain.entities.sample import Sample
+from src.domain.entities.dataset import Dataset
+from src.domain.value_objects.sample_id import SampleId
+from src.domain.value_objects.kegg_orthology import KO
 
 
 class TestSampleMapperToDataFrame:

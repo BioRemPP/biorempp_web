@@ -17,13 +17,15 @@ Notes
 
 import logging
 import os
+import json
+import time
 from pathlib import Path
 
 import dash
 import dash_bootstrap_components as dbc
 import diskcache
-import pandas as pd
 from dash import DiskcacheManager, Input, Output, State, callback, dcc, html
+from flask import request
 
 # Silence watchdog debug logs (used by Dash hot-reload)
 logging.getLogger("watchdog").setLevel(logging.WARNING)
@@ -31,7 +33,7 @@ logging.getLogger("watchdog.observers").setLevel(logging.WARNING)
 logging.getLogger("watchdog.observers.inotify_buffer").setLevel(logging.WARNING)
 
 # Import unified configuration system
-from config.settings import get_settings
+from config.settings import APP_NAME, APP_VERSION, get_settings
 
 # Import Singleton PlotService
 from src.application.plot_services.singleton import get_plot_service
@@ -43,27 +45,50 @@ from src.presentation.callbacks.download_callbacks import register_download_call
 from src.presentation.callbacks.navigation_callbacks import (
     register_navigation_callbacks,
 )
+from src.presentation.errors import (
+    FILE_NOT_FOUND_PAYLOAD,
+    register_http_error_handlers,
+)
+from src.presentation.routing import app_path, strip_base_path
 from src.presentation.components.composite.analysis_suggestions import (
     register_suggestions_callbacks,
+)
+from src.shared.metrics import instrument_callback
+from src.shared.metrics.results_transition import (
+    mark_results_transition_invalid_sample,
+    observe_results_transition_sample,
+    sanitize_results_transition_payload,
 )
 
 # Presentation Layer
 from src.presentation.pages import (
     create_contact_page,
     create_documentation_page,
+    create_error_400_page,
+    create_error_500_page,
     create_faq_page,
+    create_how_to_cite_page,
     create_methods_page,
     create_regulatory_page,
     create_scientific_methods_page,
     create_user_guide_page,
     get_home_layout,
-    get_results_layout,
+    get_results_module_layout,
+    get_results_shell_layout,
+)
+from src.presentation.pages.database_schemas import (
+    create_schemas_index_page,
+    create_biorempp_schema_page,
+    create_hadeg_schema_page,
+    create_kegg_schema_page,
+    create_toxcsm_schema_page,
 )
 from src.presentation.pages.methods.callbacks import (
     register_callbacks as register_methods_callbacks,
 )
 from src.presentation.pages.new_user import register_new_user_guide_callbacks
 from src.presentation.pages.uc_user_guide import register_demo_callbacks
+from src.presentation.services.results_context import context_has_results
 
 # Initialize application settings and logging
 settings = get_settings()
@@ -122,32 +147,52 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
     logger.info("CHILD WORKER PROCESS - CREATING FULL APP INSTANCE")
     logger.info("=" * 80)
 
-    # Configure long callback cache manager for progress tracking
-    # Always enable diskcache for background callbacks (required by Dash)
-    cache_dir = Path(__file__).parent / ".cache"
-    cache_dir.mkdir(exist_ok=True)
-    cache = diskcache.Cache(str(cache_dir))
-    long_callback_manager = DiskcacheManager(cache)
-    logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    long_callback_manager = None
+    if settings.BACKGROUND_CALLBACKS_ENABLED:
+        # Configure long callback cache manager for progress tracking.
+        # Cache root is standardized via BIOREMPP_CACHE_DIR
+        # (default: /app/cache in Docker).
+        cache_dir = settings.CACHE_DIR / "long_callbacks"
+        cache_dir.mkdir(parents=True, exist_ok=True)
+        cache = diskcache.Cache(str(cache_dir))
+        long_callback_manager = DiskcacheManager(cache)
+        logger.info(f"[OK] Long callback cache configured at: {cache_dir}")
+    else:
+        logger.warning(
+            "Background callbacks disabled; processing will run in request worker"
+        )
 
     # Initialize Dash app with Font Awesome
     font_awesome = "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
 
-    app = dash.Dash(
-        __name__,
+    dash_kwargs = dict(
         external_stylesheets=[
             dbc.themes.MINTY,
             font_awesome
         ],
         suppress_callback_exceptions=True,
-        title="BioRemPP v1.0",
+        title=f"{APP_NAME} v{APP_VERSION}",
         assets_folder='src/assets',
-        background_callback_manager=long_callback_manager
+        url_base_pathname=settings.URL_BASE_PATH,
+    )
+    if long_callback_manager is not None:
+        dash_kwargs["background_callback_manager"] = long_callback_manager
+
+    app = dash.Dash(__name__, **dash_kwargs)
+    app.server.config["BIOREMPP_BACKGROUND_CALLBACKS_ENABLED"] = (
+        settings.BACKGROUND_CALLBACKS_ENABLED
+    )
+    favicon_href = f"{app.get_asset_url('favicon.ico')}?v={APP_VERSION}"
+    app.index_string = app.index_string.replace(
+        "{%favicon%}",
+        f'<link rel="icon" type="image/x-icon" href="{favicon_href}">'
     )
     logger.info("[OK] Dash app created")
     logger.info("  - Theme: Bootstrap MINTY")
     logger.info("  - Callback exceptions: Suppressed")
-    logger.info("  - Long callbacks: Enabled with diskcache")
+    logger.info(
+        f"  - Long callbacks: {'Enabled with diskcache' if long_callback_manager else 'Disabled'}"
+    )
     
     # Set app layout with routing
     app.layout = html.Div([
@@ -157,20 +202,22 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         dcc.Store(id='upload-data-store', storage_type='memory'),
         dcc.Store(id='example-data-store', storage_type='memory'),
         dcc.Store(id='merged-result-store', storage_type='memory'),
+        dcc.Store(id='results-context-store', storage_type='memory'),
         
         html.Div(id='page-content')
     ])
     logger.info("[OK] App layout configured")
-    logger.info("  - Stores: upload-data, example-data, merged-result")
+    logger.info("  - Stores: upload-data, example-data, merged-result, results-context")
     logger.info("  - Routing: url, page-content")
     
     # Routing callback
     @app.callback(
         Output('page-content', 'children'),
         Input('url', 'pathname'),
-        State('merged-result-store', 'data')
+        State('results-context-store', 'data')
     )
-    def display_page(pathname, merged_data):
+    @instrument_callback("routing.display_page")
+    def display_page(pathname, results_context):
         """
         Route page display based on URL pathname.
 
@@ -178,42 +225,73 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         ----------
         pathname : str
             URL pathname
-        merged_data : dict
-            Merged result data from processing
+        results_context : dict
+            Lightweight context from processing/resume flow
 
         Returns
         -------
         Component
             Page layout component
         """
-        if pathname == '/faq':
+        callback_started_at = time.perf_counter()
+        normalized_pathname = strip_base_path(pathname)
+
+        if normalized_pathname == '/faq':
             # FAQ page
             return create_faq_page()
-        elif pathname == '/regulatory':
+        elif normalized_pathname == '/regulatory':
             # Regulatory reference page
             return create_regulatory_page()
-        elif pathname == '/help/contact' or pathname == '/contact':
+        elif normalized_pathname == '/help/contact' or normalized_pathname == '/contact':
             # Contact/Help page
             return create_contact_page()
-        elif pathname == '/help/user-guide' or pathname == '/user-guide':
+        elif normalized_pathname == '/help/user-guide' or normalized_pathname == '/user-guide':
             # User Guide page
             return create_user_guide_page()
-        elif pathname == '/methods/overview':
+        elif normalized_pathname == '/methods/overview':
             # Scientific Methods Overview page
             return create_scientific_methods_page()
-        elif pathname == '/methods':
+        elif normalized_pathname == '/methods':
             # Methods page
             return create_methods_page()
-        elif pathname == '/documentation':
+        elif normalized_pathname == '/documentation':
             # Documentation page
             return create_documentation_page()
-        elif pathname == '/results':
-            if merged_data is None:
+        elif normalized_pathname == '/how-to-cite':
+            # How to Cite page
+            return create_how_to_cite_page()
+        elif normalized_pathname == '/schemas':
+            # Database Schemas index page
+            return create_schemas_index_page()
+        elif normalized_pathname == '/schemas/biorempp':
+            # BioRemPP schema page
+            return create_biorempp_schema_page()
+        elif normalized_pathname == '/schemas/hadeg':
+            # HADEG schema page
+            return create_hadeg_schema_page()
+        elif normalized_pathname == '/schemas/kegg':
+            # KEGG schema page
+            return create_kegg_schema_page()
+        elif normalized_pathname == '/schemas/toxcsm':
+            # ToxCSM schema page
+            return create_toxcsm_schema_page()
+        elif normalized_pathname == '/error/400':
+            # Custom bad request page
+            return create_error_400_page()
+        elif normalized_pathname == '/error/500':
+            # Custom internal server error page
+            return create_error_500_page()
+        elif normalized_pathname == '/results':
+            has_results = context_has_results(results_context)
+            metadata = {}
+            if has_results and isinstance(results_context, dict):
+                metadata_raw = results_context.get("metadata", {})
+                if isinstance(metadata_raw, dict):
+                    metadata = metadata_raw
+
+            if not has_results:
                 # No data available - show alert
-                import dash_bootstrap_components as dbc
-                from dash import html
-                
-                return dbc.Container([
+                result_layout = dbc.Container([
                     dbc.Alert(
                         [
                             html.I(className="fas fa-info-circle me-2"),
@@ -232,7 +310,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                                         html.I(className="fas fa-home me-2"),
                                         "Go to Homepage"
                                     ],
-                                    href="/",
+                                    href=app_path("/"),
                                     color="primary"
                                 )
                             ])
@@ -241,25 +319,73 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                         className="mt-5"
                     )
                 ], className="mt-5")
-            
-            # Convert dict back to DataFrames for results page
-            # Callback returns keys with '_d' suffix, convert to '_df' for compatibility
-            results_data = {
-                'biorempp_df': pd.DataFrame(merged_data['biorempp_df']),
-                'biorempp_raw_df': pd.DataFrame(merged_data['biorempp_raw_df']),
-                'hadeg_df': pd.DataFrame(merged_data['hadeg_df']),
-                'hadeg_raw_df': pd.DataFrame(merged_data['hadeg_raw_df']),
-                'toxcsm_df': pd.DataFrame(merged_data['toxcsm_df']),
-                'toxcsm_raw_df': pd.DataFrame(merged_data['toxcsm_raw_df']),
-                'kegg_df': pd.DataFrame(merged_data['kegg_df']),
-                'kegg_raw_df': pd.DataFrame(merged_data['kegg_raw_df']),
-                'metadata': merged_data['metadata']
-            }
-            
-            return get_results_layout(merged_data=results_data)
+            else:
+                result_layout = get_results_shell_layout(
+                    merged_data={"metadata": metadata},
+                    initial_module=1,
+                )
+
+            logger.info(
+                "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+                json.dumps(
+                    {
+                        "callback": "routing.display_page",
+                        "route": "/results",
+                        "duration_seconds": round(
+                            max(time.perf_counter() - callback_started_at, 0.0),
+                            6,
+                        ),
+                        "has_merged_data": has_results,
+                        "has_results_context": has_results,
+                    },
+                    sort_keys=True,
+                    separators=(",", ":"),
+                ),
+            )
+            return result_layout
         else:
             # Default to homepage
             return get_home_layout()
+
+    @app.callback(
+        Output("results-module-container", "children"),
+        Input("results-module-selector", "value"),
+        prevent_initial_call=False,
+    )
+    @instrument_callback("results.render_active_module")
+    def render_active_results_module(selected_module):
+        """
+        Render selected results module on demand.
+
+        Parameters
+        ----------
+        selected_module : Any
+            Module selector value (1..8)
+
+        Returns
+        -------
+        Component
+            Module section layout for selected value
+        """
+        callback_started_at = time.perf_counter()
+        module_layout = get_results_module_layout(selected_module)
+        logger.info(
+            "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+            json.dumps(
+                {
+                    "callback": "results.render_active_module",
+                    "route": "/results",
+                    "module": selected_module,
+                    "duration_seconds": round(
+                        max(time.perf_counter() - callback_started_at, 0.0),
+                        6,
+                    ),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ),
+        )
+        return module_layout
     
     # ========================================================================
     # Initialize Singleton PlotService (CRITICAL: Single instance per worker)
@@ -313,8 +439,8 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         """
         return {
             "status": "healthy",
-            "service": "BioRemPP",
-            "version": "1.0.0",
+            "service": APP_NAME,
+            "version": APP_VERSION,
             "environment": settings.ENV
         }, 200
 
@@ -351,7 +477,121 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
                 "error": str(e)
             }, 503
 
-    logger.info("[OK] Health check endpoints registered (/health, /ready)")
+    def collect_results_transition_perf():
+        """Collect client-side timings for results page transition diagnostics."""
+        payload = request.get_json(silent=True)
+        sanitized_sample = sanitize_results_transition_payload(
+            payload,
+            remote_addr=request.remote_addr,
+        )
+        if sanitized_sample is None:
+            mark_results_transition_invalid_sample()
+            return {"status": "invalid_payload"}, 400
+
+        observe_results_transition_sample(sanitized_sample)
+        logger.info(
+            "RESULTS_TRANSITION_SAMPLE %s",
+            json.dumps(sanitized_sample, sort_keys=True, separators=(",", ":")),
+        )
+        return {"status": "accepted"}, 202
+
+    root_results_perf_route = "/perf/results-transition"
+    app.server.add_url_rule(
+        root_results_perf_route,
+        endpoint="results_transition_perf_root",
+        view_func=collect_results_transition_perf,
+        methods=["POST"],
+    )
+
+    prefixed_results_perf_route = app_path("/perf/results-transition")
+    if prefixed_results_perf_route != root_results_perf_route:
+        app.server.add_url_rule(
+            prefixed_results_perf_route,
+            endpoint="results_transition_perf_prefixed",
+            view_func=collect_results_transition_perf,
+            methods=["POST"],
+        )
+        logger.info(
+            "[OK] Results transition perf routes registered "
+            f"({root_results_perf_route}, {prefixed_results_perf_route})"
+        )
+    else:
+        logger.info(
+            "[OK] Results transition perf route registered "
+            f"({root_results_perf_route})"
+        )
+
+    register_http_error_handlers(app)
+
+    logger.info("[OK] Health/error endpoints registered (/health, /ready, 400, 500)")
+
+    if settings.OBSERVABILITY_ENABLED:
+        from src.shared.metrics import setup_observability
+
+        setup_observability(
+            app,
+            metrics_path=settings.OBSERVABILITY_METRICS_PATH,
+        )
+        logger.info(
+            "[OK] Observability enabled "
+            f"({settings.OBSERVABILITY_METRICS_PATH})"
+        )
+    else:
+        @app.server.route(settings.OBSERVABILITY_METRICS_PATH)
+        def metrics_disabled():
+            return {
+                "status": "disabled",
+                "message": "Observability is disabled",
+            }, 404
+
+        logger.info("[OK] Observability disabled")
+
+    # Add static file route for example dataset download
+    def serve_data_files(filename):
+        """
+        Serve static data files (e.g., example datasets) for download.
+
+        Parameters
+        ----------
+        filename : str
+            Name of the file to serve
+
+        Returns
+        -------
+        Response
+            File download response or 404 if not found
+        """
+        from flask import send_from_directory
+        data_dir = Path(__file__).parent / "data"
+        if not settings.is_public_data_file_allowed(filename):
+            logger.warning("Blocked non-allowlisted public data file request")
+            return FILE_NOT_FOUND_PAYLOAD, 404
+        try:
+            return send_from_directory(data_dir, filename, as_attachment=True)
+        except FileNotFoundError:
+            logger.warning("Allowlisted public data file not found on disk")
+            return FILE_NOT_FOUND_PAYLOAD, 404
+
+    root_data_route = "/data/<filename>"
+    app.server.add_url_rule(
+        root_data_route,
+        endpoint="serve_public_data_root",
+        view_func=serve_data_files,
+    )
+
+    prefixed_data_route = app_path("/data/<filename>")
+    if prefixed_data_route != root_data_route:
+        app.server.add_url_rule(
+            prefixed_data_route,
+            endpoint="serve_public_data_prefixed",
+            view_func=serve_data_files,
+        )
+        logger.info(
+            "[OK] Static data file routes registered "
+            f"({root_data_route}, {prefixed_data_route})"
+        )
+    else:
+        logger.info(f"[OK] Static data file route registered ({root_data_route})")
 
     logger.info("\n" + "=" * 80)
     logger.info("[OK] APPLICATION INITIALIZED SUCCESSFULLY")

@@ -37,22 +37,18 @@ class TestPlotServiceInitialization:
         """Test that initialization creates all dependencies."""
         service = PlotService()
 
-        assert hasattr(service, 'config_loader')
-        assert hasattr(service, 'factory')
-        assert hasattr(service, 'cache_manager')
-        assert isinstance(
-            service.config_loader, PlotConfigLoader
-        )
+        assert isinstance(service.config_loader, PlotConfigLoader)
         assert isinstance(service.factory, PlotFactory)
-        assert isinstance(
-            service.cache_manager, GraphCacheManager
-        )
+        assert isinstance(service.cache_manager, GraphCacheManager)
 
-    def test_initialization_components_are_instances(self, plot_service):
-        """Test that all components are properly instantiated."""
-        assert plot_service.config_loader is not None
-        assert plot_service.factory is not None
-        assert plot_service.cache_manager is not None
+    def test_initialization_creates_independent_dependency_instances(self):
+        """Different PlotService instances should not share mutable dependencies."""
+        service_1 = PlotService()
+        service_2 = PlotService()
+
+        assert service_1.config_loader is not service_2.config_loader
+        assert service_1.factory is not service_2.factory
+        assert service_1.cache_manager is not service_2.cache_manager
 
 
 # ============================================================================

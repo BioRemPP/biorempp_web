@@ -9,9 +9,15 @@ Uses background callbacks for progress tracking with structured
 logging and comprehensive error recovery.
 """
 
+import os
+import time
+import json
+import logging
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, no_update
 from dash.exceptions import PreventUpdate
+from threading import Thread
+from uuid import uuid4
 
 from src.presentation.components.composite.processing_feedback import (
     create_merge_statistics_card,
@@ -19,7 +25,9 @@ from src.presentation.components.composite.processing_feedback import (
     create_processing_error_alert,
     create_validation_summary,
 )
-from src.presentation.services import DataProcessingService
+from src.presentation.routing import app_path
+from src.presentation.services import DataProcessingService, job_resume_service
+from src.presentation.services.results_context import build_results_context
 from src.shared.exceptions import (
     CircuitBreakerOpenError,
     DataProcessingTimeoutError,
@@ -29,13 +37,30 @@ from src.shared.exceptions import (
     StageProcessingError,
     ValidationError,
 )
-from src.shared.logging import get_logger
+from src.shared.logging import build_log_ref, get_logger
+from src.shared.metrics import (
+    PROCESSING_DURATION_SECONDS,
+    RESUME_PERSIST_DURATION_SECONDS,
+    instrument_callback,
+)
 
 # Configure logging
 logger = get_logger(__name__)
+# Dedicated logger outside `src.presentation.callbacks` hierarchy so
+# transition samples always propagate to app.log.
+results_transition_logger = logging.getLogger("biorempp.results_transition")
 
 # Initialize data processing service (singleton)
 _data_service = None
+_RESUME_SAVE_TIMEOUT_SECONDS = max(
+    float(os.getenv("BIOREMPP_RESUME_SAVE_TIMEOUT_SECONDS", "2.5")),
+    0.1,
+)
+
+
+def _job_ref(job_id: str) -> str:
+    """Return deterministic, redacted job reference for logs."""
+    return build_log_ref(job_id, namespace="job")
 
 
 def get_data_service():
@@ -45,6 +70,82 @@ def get_data_service():
         _data_service = DataProcessingService()
         logger.info("DataProcessingService initialized")
     return _data_service
+
+
+def _persist_resume_payload_with_timeout(
+    job_id: str,
+    payload: dict,
+    owner_token: str,
+    ttl_seconds: int,
+    timeout_seconds: float = _RESUME_SAVE_TIMEOUT_SECONDS,
+) -> bool:
+    """
+    Persist resume payload with bounded wait time.
+
+    Returns
+    -------
+    bool
+        True on successful persistence, False on timeout or errors.
+    """
+    outcome = {"saved": False, "error": None}
+    persist_started = time.perf_counter()
+
+    def _worker() -> None:
+        try:
+            outcome["saved"] = job_resume_service.save_job_payload(
+                job_id=job_id,
+                payload=payload,
+                owner_token=owner_token,
+                ttl_seconds=ttl_seconds,
+            )
+        except Exception as exc:  # pragma: no cover - defensive fallback
+            outcome["error"] = exc
+
+    worker = Thread(
+        target=_worker,
+        name="resume-persistence",
+        daemon=True,
+    )
+    worker.start()
+    worker.join(timeout_seconds)
+
+    if worker.is_alive():
+        RESUME_PERSIST_DURATION_SECONDS.labels(outcome="timed_out").observe(
+            max(time.perf_counter() - persist_started, 0.0)
+        )
+        logger.warning(
+            "Resume payload persistence timed out",
+            extra={
+                "job_ref": _job_ref(job_id),
+                "timeout_seconds": timeout_seconds,
+            },
+        )
+        return False
+
+    error = outcome["error"]
+    if error is not None:
+        RESUME_PERSIST_DURATION_SECONDS.labels(outcome="error").observe(
+            max(time.perf_counter() - persist_started, 0.0)
+        )
+        logger.error(
+            "Resume payload persistence failed with unexpected error",
+            extra={"job_ref": _job_ref(job_id)},
+            exc_info=(type(error), error, error.__traceback__),
+        )
+        return False
+
+    saved = bool(outcome["saved"])
+    RESUME_PERSIST_DURATION_SECONDS.labels(
+        outcome="saved" if saved else "failed"
+    ).observe(max(time.perf_counter() - persist_started, 0.0))
+    return saved
+
+
+def _observe_processing_duration(started_at: float, outcome: str) -> None:
+    """Observe processing callback duration by coarse outcome class."""
+    PROCESSING_DURATION_SECONDS.labels(outcome=outcome).observe(
+        max(time.perf_counter() - started_at, 0.0)
+    )
 
 
 def create_spinner_message(elapsed_time):
@@ -95,17 +196,28 @@ def register_real_processing_callbacks(app):
     logger.info("=" * 60)
     logger.info("Registering REAL PROCESSING callbacks with long_callback...")
     logger.info("=" * 60)
+    use_background_callbacks = bool(
+        app.server.config.get("BIOREMPP_BACKGROUND_CALLBACKS_ENABLED", True)
+    )
+    execution_mode = "background" if use_background_callbacks else "synchronous"
+    logger.info(f"Processing callback execution mode: {execution_mode}")
 
     # Background callback for data processing with simple spinner
     @app.callback(
         output=[
             Output("processing-status", "children"),
             Output("merged-result-store", "data"),
+            Output("results-context-store", "data"),
             Output("completion-panel", "style"),
             Output("processing-progress", "style"),
+            Output("resume-browser-token-store", "data", allow_duplicate=True),
         ],
         inputs=Input("process-data-btn", "n_clicks"),
-        state=[State("upload-data-store", "data"), State("example-data-store", "data")],
+        state=[
+            State("upload-data-store", "data"),
+            State("example-data-store", "data"),
+            State("resume-browser-token-store", "data"),
+        ],
         running=[
             (
                 Output("process-data-btn", "disabled"),
@@ -113,10 +225,11 @@ def register_real_processing_callbacks(app):
                 False,  # Enable when complete
             )
         ],
-        background=True,
+        background=use_background_callbacks,
         prevent_initial_call=True,
     )
-    def process_data_with_spinner(n_clicks, upload_data, example_data):
+    @instrument_callback("processing.process_data_with_spinner")
+    def process_data_with_spinner(n_clicks, upload_data, example_data, owner_token):
         """
         Process uploaded or example data with real-time progress tracking.
 
@@ -130,19 +243,30 @@ def register_real_processing_callbacks(app):
             Uploaded file data
         example_data : dict
             Example file data
+        owner_token : str
+            Browser ownership token used for resume-by-job-id binding
 
         Returns
         -------
         tuple
-            (status_message, merged_data, completion_panel_style)
+            (
+                status_message,
+                merged_data,
+                results_context,
+                completion_panel_style,
+                progress_panel_style,
+                owner_token_store_update,
+            )
         """
         if n_clicks is None:
             raise PreventUpdate
+        callback_started_at = time.perf_counter()
 
         # Determine data source
         file_data = upload_data or example_data
 
         if not file_data:
+            _observe_processing_duration(callback_started_at, "no_data")
             return (
                 dbc.Alert(
                     [
@@ -155,23 +279,37 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},  # Keep progress hidden
+                no_update,
+                no_update,
             )
 
+        processing_outcome = "unknown"
         try:
             service = get_data_service()
+            job_id = DataProcessingService.generate_job_id()
+            effective_owner_token = owner_token or str(uuid4())
+            generated_owner_token = not bool(owner_token)
 
             logger.info(
                 "Starting data processing",
                 extra={
+                    "job_ref": _job_ref(job_id),
                     "file_name": file_data.get("filename", "unknown"),
                     "sample_count": file_data.get("sample_count"),
                     "ko_count": file_data.get("ko_count"),
                 },
             )
+            if generated_owner_token:
+                logger.info(
+                    "Resume owner token was missing and has been generated for this run",
+                    extra={"job_ref": _job_ref(job_id)},
+                )
 
             # Process data (all merges happen here)
             result = service.process_upload(
-                content=file_data["content"], filename=file_data["filename"]
+                content=file_data["content"],
+                filename=file_data["filename"],
+                job_id=job_id,
             )
 
             logger.info(
@@ -242,29 +380,59 @@ def register_real_processing_callbacks(app):
 
             logger.info("DataFrames serialized successfully")
 
-            # Success message with metadata
+            # Persist serialized payload for resume-by-job-id flow (non-blocking)
             metadata = result["metadata"]
-            status_message = create_processing_alert(
-                "success",
-                "Processing completed successfully!",
-                details={
-                    "Samples": metadata["sample_count"],
-                    "KO IDs": metadata["ko_count"],
-                    "Matched KOs": f"{metadata['matched_kos']}/{metadata['total_kos']}",
-                    "Processing Time": f"{metadata['processing_time']:.2f}s",
+            persisted_job_id = metadata.get("job_id", job_id)
+            resume_saved = _persist_resume_payload_with_timeout(
+                job_id=persisted_job_id,
+                payload=serialized_result,
+                owner_token=effective_owner_token,
+                ttl_seconds=job_resume_service.get_resume_ttl_seconds(),
+            )
+            payload_size_bytes = job_resume_service.estimate_payload_size_bytes(
+                serialized_result
+            )
+
+            logger.info(
+                "Resume payload persistence result",
+                extra={
+                    "job_ref": _job_ref(persisted_job_id),
+                    "resume_saved": resume_saved,
+                    "payload_size_bytes": payload_size_bytes,
+                    "resume_max_payload_mb": job_resume_service.get_resume_max_payload_mb(),
                 },
             )
 
+            if not resume_saved:
+                logger.warning(
+                    "Resume payload unavailable for this run",
+                    extra={"job_ref": _job_ref(persisted_job_id)},
+                )
+
+            status_message = create_processing_alert(
+                "success",
+                "Processing completed successfully!",
+                details={"Job ID": persisted_job_id},
+                notes=[
+                    "This identifier lets you resume analysis without reprocessing.",
+                    "On the results page, you can copy it for later use.",
+                ],
+            )
+
             # Return results
+            processing_outcome = "success"
             return (
                 status_message,
                 serialized_result,
+                build_results_context(serialized_result),
                 {"display": "block"},  # Show completion panel
                 {"display": "none"},  # Hide progress panel
+                effective_owner_token,
             )
 
         # Validation errors (expected)
         except ValidationError as e:
+            processing_outcome = "validation_error"
             logger.warning(
                 f"Data validation error: {str(e)}",
                 extra={
@@ -289,10 +457,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Timeout errors
         except DataProcessingTimeoutError as e:
+            processing_outcome = "timeout"
             logger.error(
                 f"Processing timeout: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -314,10 +485,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Empty DataFrame errors
         except EmptyDataFrameError as e:
+            processing_outcome = "empty_dataframe"
             logger.error(
                 f"Empty DataFrame error: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -339,10 +513,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Circuit breaker errors
         except CircuitBreakerOpenError as e:
+            processing_outcome = "circuit_breaker"
             logger.error(
                 f"Circuit breaker open: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -363,10 +540,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Retry exhausted errors
         except RetryExhaustedError as e:
+            processing_outcome = "retry_exhausted"
             logger.error(
                 f"Retry exhausted: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -388,10 +568,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Stage processing errors
         except StageProcessingError as e:
+            processing_outcome = "stage_error"
             logger.error(
                 f"Stage processing failed: {e.stage_name}",
                 extra={
@@ -417,10 +600,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Generic processing errors
         except ProcessingError as e:
+            processing_outcome = "processing_error"
             logger.error(
                 f"Processing error: {str(e)}",
                 extra={"file_name": file_data.get("filename", "unknown")},
@@ -442,10 +628,13 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
 
         # Unexpected errors
         except Exception as e:
+            processing_outcome = "unexpected_error"
             logger.exception(
                 "Unexpected error during data processing",
                 exc_info=True,
@@ -473,7 +662,11 @@ def register_real_processing_callbacks(app):
                 no_update,
                 no_update,
                 {"display": "none"},
+                no_update,
+                no_update,
             )
+        finally:
+            _observe_processing_duration(callback_started_at, processing_outcome)
 
     # Callback to show progress panel immediately when button is clicked
 
@@ -525,9 +718,58 @@ def register_real_processing_callbacks(app):
         """
         return not (upload_data or example_data)
 
+    @app.callback(
+        [
+            Output("url", "pathname", allow_duplicate=True),
+            Output("url", "hash", allow_duplicate=True),
+        ],
+        Input("view-results-btn", "n_clicks"),
+        prevent_initial_call=True,
+    )
+    @instrument_callback("processing.navigate_to_results")
+    def navigate_to_results(n_clicks):
+        """
+        Navigate to results page when completion button is clicked.
+
+        Parameters
+        ----------
+        n_clicks : int
+            Button click count
+
+        Returns
+        -------
+        tuple[str, str]
+            URL pathname for results route and cleared hash.
+        """
+        callback_started_at = time.perf_counter()
+        if not n_clicks:
+            raise PreventUpdate
+        logger.info(
+            "navigate_to_results callback triggered",
+            extra={"n_clicks": int(n_clicks)},
+        )
+        results_transition_logger.info(
+            "RESULTS_SERVER_CALLBACK_SAMPLE %s",
+            json.dumps(
+                {
+                    "callback": "processing.navigate_to_results",
+                    "route": "/results",
+                    "duration_seconds": round(
+                        max(time.perf_counter() - callback_started_at, 0.0),
+                        6,
+                    ),
+                    "n_clicks": int(n_clicks),
+                },
+                sort_keys=True,
+                separators=(",", ":"),
+            ),
+        )
+        return app_path("/results"), ""
+
     logger.info("[OK] Real processing callbacks registered successfully")
     logger.info(
         "  - process_data_with_spinner: Background callback with simple spinner"
     )
     logger.info("  - show_progress_on_click: Show panel immediately on click")
     logger.info("  - enable_process_button: Button enable/disable")
+    logger.info("  - navigate_to_results: Redirect to /results from completion panel")

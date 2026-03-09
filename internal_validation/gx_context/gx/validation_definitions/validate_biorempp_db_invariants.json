@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "207fada9-570e-4f7a-9b3b-d2031b0e59f9",
+      "name": "biorempp_db"
+    },
+    "batch_definition": {
+      "id": "f867d21d-5448-469b-9828-d92c4c3d7fa0",
+      "name": "biorempp_db_full"
+    },
+    "datasource": {
+      "id": "2da621c1-84b2-4806-8170-c36cad89fb91",
+      "name": "biorempp_databases"
+    }
+  },
+  "id": "99853ad4-420a-4271-8a37-1ab44bc76265",
+  "name": "validate_biorempp_db_invariants",
+  "suite": {
+    "id": "1c060efa-dea8-4444-9bef-0fde9ea2504a",
+    "name": "biorempp_invariants_suite"
+  }
+}

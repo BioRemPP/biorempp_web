@@ -1,0 +1,534 @@
+"""Unit tests for job resume callback logic."""
+
+import time
+from typing import Any
+
+import pytest
+from dash import no_update
+from flask import Flask
+
+from src.presentation.callbacks import job_resume_callbacks
+from src.presentation.services.job_resume_service import JobResumeService
+from src.shared.metrics import (
+    RESUME_CALLBACK_ATTEMPTS_TOTAL,
+    RESUME_REQUEST_IP_SOURCE_TOTAL,
+    RESUME_RATE_LIMIT_BACKEND_INFO,
+    RESUME_RATE_LIMIT_ERRORS_TOTAL,
+)
+
+
+def _flatten_text(node: Any) -> str:
+    """Extract plain text recursively from Dash component trees."""
+    fragments: list[str] = []
+
+    def visit(value: Any) -> None:
+        if value is None:
+            return
+        if isinstance(value, (str, int, float)):
+            fragments.append(str(value))
+            return
+        if isinstance(value, (list, tuple)):
+            for item in value:
+                visit(item)
+            return
+        children = getattr(value, "children", None)
+        if children is not None:
+            visit(children)
+
+    visit(node)
+    return " ".join(fragments)
+
+
+def _counter_value(counter, **labels) -> float:
+    """Read Prometheus counter value for labels."""
+    return float(counter.labels(**labels)._value.get())
+
+
+def _gauge_value(gauge, **labels) -> float:
+    """Read Prometheus gauge value for labels."""
+    return float(gauge.labels(**labels)._value.get())
+
+
+@pytest.fixture
+def isolated_resume_service(tmp_path, monkeypatch):
+    """Patch callback module singleton with isolated diskcache service."""
+    service = JobResumeService(
+        cache_dir=tmp_path / "callback_resume_cache",
+        ttl_seconds=30,
+        cache_size_mb=64,
+    )
+    monkeypatch.setattr(job_resume_callbacks, "job_resume_service", service)
+    yield service
+    service.close()
+
+
+@pytest.fixture
+def isolated_rate_limiter(tmp_path, monkeypatch):
+    """Use isolated limiter state and low thresholds for deterministic tests."""
+    limiter = job_resume_callbacks.ResumeRateLimiter(
+        cache_dir=tmp_path / "resume_rate_limit_cache",
+        cache_size_mb=16,
+        attempts=3,
+        window_seconds=60,
+        backoff_base_seconds=1,
+        backoff_max_seconds=4,
+    )
+    monkeypatch.setattr(job_resume_callbacks, "resume_rate_limiter", limiter)
+    yield limiter
+    limiter.close()
+
+
+def test_resolve_resume_request_rejects_invalid_job_id(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Invalid job id should return an error and keep stores unchanged."""
+    before_attempt = _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="attempt")
+    before_invalid = _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="invalid_job_id"
+    )
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request("invalid-job-id", "token-1")
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "Invalid Job ID" in _flatten_text(status_component)
+    assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="attempt") >= (
+        before_attempt + 1.0
+    )
+    assert _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="invalid_job_id"
+    ) >= (before_invalid + 1.0)
+
+
+def test_resolve_resume_request_returns_not_found_when_job_absent(
+    isolated_resume_service,
+    isolated_rate_limiter,
+):
+    """Missing job id should surface not found/expired guidance."""
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-123000-ABC111",
+            "token-2",
+        )
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "not found or expired" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_returns_not_found_when_job_expired(
+    isolated_resume_service,
+    isolated_rate_limiter,
+):
+    """Expired cache entries should behave as not found."""
+    job_id = "BRP-20260225-123001-ABC112"
+    owner_token = "token-3"
+    payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
+
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        owner_token,
+        ttl_seconds=1,
+    )
+    time.sleep(1.2)
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, owner_token)
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "not found or expired" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_rejects_token_mismatch(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Owner token mismatch must be blocked."""
+    job_id = "BRP-20260225-123002-ABC113"
+    payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
+
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        "token-owner-a",
+        ttl_seconds=30,
+    )
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, "token-owner-b")
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "belongs to another browser context" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_success_returns_payload_and_redirect(
+    isolated_resume_service,
+    isolated_rate_limiter,
+):
+    """Valid job+token should restore payload and redirect to results."""
+    before_success = _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success")
+    job_id = "BRP-20260225-123003-ABC114"
+    owner_token = "token-4"
+    payload = {
+        "metadata": {"job_id": job_id},
+        "biorempp_df": [{"Sample": "S1", "KO": "K00001"}],
+    }
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        owner_token,
+        ttl_seconds=30,
+    )
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, owner_token)
+    )
+
+    assert data_update == payload
+    assert isinstance(context_update, dict)
+    assert context_update.get("ready") is True
+    assert context_update.get("job_id") == job_id
+    assert pathname_update == "/results"
+    assert hash_update == ""
+    assert "loaded" in _flatten_text(status_component)
+    assert _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success") >= (
+        before_success + 1.0
+    )
+
+
+def test_resolve_resume_request_success_respects_url_base_path(
+    isolated_resume_service,
+    isolated_rate_limiter,
+    monkeypatch,
+):
+    """Redirect should honor configured URL_BASE_PATH."""
+    monkeypatch.setattr(job_resume_callbacks.settings, "URL_BASE_PATH", "/biorempp/")
+    job_id = "BRP-20260225-123005-ABC116"
+    owner_token = "token-5"
+    payload = {
+        "metadata": {"job_id": job_id},
+        "biorempp_df": [{"Sample": "S1", "KO": "K00001"}],
+    }
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        owner_token,
+        ttl_seconds=30,
+    )
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, owner_token)
+    )
+
+    assert data_update == payload
+    assert isinstance(context_update, dict)
+    assert context_update.get("ready") is True
+    assert context_update.get("job_id") == job_id
+    assert pathname_update == "/biorempp/results"
+    assert hash_update == ""
+    assert "loaded" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_uses_generic_error_in_strict_mode(
+    isolated_resume_service, isolated_rate_limiter, monkeypatch
+):
+    """Strict security mode should hide token mismatch details."""
+    monkeypatch.setenv("BIOREMPP_RESUME_SECURITY_MODE", "strict")
+
+    job_id = "BRP-20260225-123004-ABC115"
+    payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
+    assert isolated_resume_service.save_job_payload(
+        job_id,
+        payload,
+        "token-owner-z",
+        ttl_seconds=30,
+    )
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(job_id, "token-owner-y")
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "unavailable in this browser context" in _flatten_text(status_component)
+
+
+def test_resolve_resume_request_blocks_bruteforce_after_rate_limit(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Repeated attempts should trigger temporary rate-limit blocking."""
+    before_limited = _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
+    )
+    for _ in range(3):
+        _, _, _, _, status_component = job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223000-ABC119",
+            "token-bruteforce",
+        )
+        assert "not found or expired" in _flatten_text(status_component)
+
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223000-ABC119",
+            "token-bruteforce",
+        )
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "Too many resume attempts" in _flatten_text(status_component)
+    assert _counter_value(
+        RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="rate_limited"
+    ) >= (before_limited + 1.0)
+
+
+def test_resolve_resume_request_unblocks_after_backoff_window(
+    isolated_resume_service, isolated_rate_limiter
+):
+    """Blocked clients should be allowed again after backoff interval."""
+    for _ in range(4):
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223001-ABC120",
+            "token-backoff",
+        )
+
+    _, _, _, _, blocked_component = job_resume_callbacks.resolve_resume_request(
+        "BRP-20260225-223001-ABC120",
+        "token-backoff",
+    )
+    assert "Too many resume attempts" in _flatten_text(blocked_component)
+
+    time.sleep(1.1)
+    data_update, context_update, pathname_update, hash_update, status_component = (
+        job_resume_callbacks.resolve_resume_request(
+            "BRP-20260225-223001-ABC120",
+            "token-backoff",
+        )
+    )
+
+    assert data_update is no_update
+    assert context_update is no_update
+    assert pathname_update is no_update
+    assert hash_update is no_update
+    assert "not found or expired" in _flatten_text(status_component)
+
+
+def test_get_request_ip_ignores_xff_when_proxy_trust_disabled(monkeypatch):
+    """When proxy trust is disabled, callback must use REMOTE_ADDR only."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", False)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: True,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "172.18.0.5"
+
+
+def test_get_request_ip_uses_xff_from_trusted_proxy(monkeypatch):
+    """Use first valid XFF address only when sender proxy is trusted."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda ip: ip == "172.18.0.5",
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10, 10.0.0.2"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "203.0.113.10"
+
+
+def test_get_request_ip_source_metric_for_trusted_xff(monkeypatch):
+    """Trusted proxy + valid XFF should increment xff source metric."""
+    before_xff = _counter_value(RESUME_REQUEST_IP_SOURCE_TOTAL, source="xff")
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda ip: ip == "172.18.0.5",
+    )
+
+    with app.test_request_context(
+        "/resume",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_overrides={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "203.0.113.10"
+
+    assert _counter_value(RESUME_REQUEST_IP_SOURCE_TOTAL, source="xff") >= (
+        before_xff + 1.0
+    )
+
+
+def test_get_request_ip_ignores_xff_from_untrusted_proxy(monkeypatch):
+    """If REMOTE_ADDR is not trusted, XFF must be ignored."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: False,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "203.0.113.10"},
+        environ_base={"REMOTE_ADDR": "198.51.100.4"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "198.51.100.4"
+
+
+def test_get_request_ip_falls_back_for_malformed_xff(monkeypatch):
+    """Malformed XFF content must fall back to REMOTE_ADDR."""
+    app = Flask(__name__)
+    monkeypatch.setattr(job_resume_callbacks.settings, "TRUST_PROXY_HEADERS", True)
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "is_trusted_proxy_ip",
+        lambda _: True,
+    )
+
+    with app.test_request_context(
+        "/",
+        headers={"X-Forwarded-For": "not-an-ip, ???"},
+        environ_base={"REMOTE_ADDR": "172.18.0.5"},
+    ):
+        assert job_resume_callbacks._get_request_ip() == "172.18.0.5"
+
+
+def test_job_id_ref_uses_hmac_redaction():
+    """job_ref helper should not expose raw job_id in logs."""
+    raw_job_id = "BRP-20260227-101500-ABCDEF"
+    ref = job_resume_callbacks._job_id_ref(raw_job_id)
+
+    assert ref.startswith("job_")
+    assert raw_job_id not in ref
+
+
+def test_resolve_rate_limit_backend_auto_follows_resume_backend(monkeypatch):
+    """AUTO backend should follow configured resume backend."""
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "RESUME_RATE_LIMIT_BACKEND",
+        "auto",
+    )
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "diskcache")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "diskcache"
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "redis"
+
+
+def test_resolve_rate_limit_backend_explicit(monkeypatch):
+    """Explicit backend values should take precedence over AUTO."""
+    monkeypatch.setattr(
+        job_resume_callbacks.settings,
+        "RESUME_RATE_LIMIT_BACKEND",
+        "diskcache",
+    )
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "diskcache"
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_RATE_LIMIT_BACKEND", "redis")
+    assert job_resume_callbacks._resolve_resume_rate_limit_backend() == "redis"
+
+
+def test_build_rate_limiter_falls_back_to_diskcache_when_redis_unavailable(
+    monkeypatch,
+):
+    """Factory should fallback to diskcache if Redis limiter init fails."""
+
+    def _raise_redis_init(*args, **kwargs):
+        raise RuntimeError("redis unavailable")
+
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESUME_RATE_LIMIT_BACKEND", "redis")
+    monkeypatch.setattr(
+        job_resume_callbacks,
+        "RedisResumeRateLimiter",
+        _raise_redis_init,
+    )
+
+    before_init_errors = _counter_value(
+        RESUME_RATE_LIMIT_ERRORS_TOTAL,
+        backend="redis",
+        operation="init",
+    )
+    limiter = job_resume_callbacks._build_resume_rate_limiter()
+    try:
+        assert isinstance(limiter, job_resume_callbacks.ResumeRateLimiter)
+        assert _gauge_value(RESUME_RATE_LIMIT_BACKEND_INFO, backend="diskcache") == 1.0
+        assert _counter_value(
+            RESUME_RATE_LIMIT_ERRORS_TOTAL,
+            backend="redis",
+            operation="init",
+        ) >= (before_init_errors + 1.0)
+    finally:
+        limiter.close()
+
+
+def test_redis_rate_limiter_evaluate_error_increments_metric():
+    """Redis limiter should emit backend error metric and fail-open on eval error."""
+
+    class _FailingEvalClient:
+        @staticmethod
+        def eval(*args, **kwargs):
+            raise RuntimeError("redis down")
+
+        @staticmethod
+        def close():
+            return None
+
+    before_errors = _counter_value(
+        RESUME_RATE_LIMIT_ERRORS_TOTAL,
+        backend="redis",
+        operation="evaluate",
+    )
+    limiter = job_resume_callbacks.RedisResumeRateLimiter(
+        host="redis",
+        port=6379,
+        db=0,
+        password="",
+        key_prefix="biorempp:resume:ratelimit:test:",
+        client=_FailingEvalClient(),
+    )
+    try:
+        allowed, retry_after = limiter.evaluate("identity-hash-test")
+        assert allowed is True
+        assert retry_after == 0
+        assert _counter_value(
+            RESUME_RATE_LIMIT_ERRORS_TOTAL,
+            backend="redis",
+            operation="evaluate",
+        ) >= (before_errors + 1.0)
+    finally:
+        limiter.close()

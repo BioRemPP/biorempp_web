@@ -4,9 +4,9 @@
 use_case_id: "uc-3-7"
 
 scientific_question: >
-  Which chemical compounds tend to be acted upon together across the biological
-  samples, suggesting they might be part of the same biotransformation pathway,
-  co-contaminants, or require similar enzymatic machinery?
+  Which chemical compounds tend to co-occur across the biological samples,
+  and what hypotheses might this co-occurrence pattern suggest about shared
+  annotation contexts, metabolic associations, or compound co-presence?
 
 description: >
   This visualization explores the pairwise co-occurrence relationships
@@ -48,30 +48,35 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Metabolic or Contamination Clusters: Brightly colored squares or blocks
-    off the main diagonal identify clusters of compounds that frequently
-    co-occur. These may represent degradation pathways (sequential
-    intermediates), co-contaminants (pollutants typically found together),
-    or compounds requiring similar enzymatic machinery.
+    Co-occurrence Clusters: Brightly colored squares or blocks off the main
+    diagonal identify clusters of compounds that frequently co-occur across
+    samples. These patterns may generate hypotheses about shared annotation
+    contexts — such as potential pathway associations or compound co-presence —
+    but do not establish causal or mechanistic relationships from co-occurrence
+    alone.
 
   - >
-    Biotransformation Pathways: Compounds that are sequential intermediates in a
-    single metabolic biotransformation pathway will show strong positive
-    correlations, as they are processed together by the same biological sources.
+    Potential Pathway Associations: Compounds with strong positive correlations
+    tend to appear together in the same samples. This pattern is consistent with,
+    but does not confirm, shared pathway annotation. It may serve as a
+    hypothesis-generating signal for further pathway-level investigation.
 
   - >
-    Co-contaminants: Pollutants that are typically found together in the
-    environment (e.g., different components of crude oil, PAH mixtures)
-    will cluster together in the correlogram.
+    Co-annotation Patterns: Pollutants frequently found together across samples
+    may reflect shared environmental origin or annotation co-occurrence in the
+    dataset. These patterns are observational and should be interpreted with
+    reference to the underlying annotation sources.
 
   - >
-    Shared Enzymatic Machinery: Structurally similar compounds that are
-    acted upon by the same versatile enzymes (e.g., broad-specificity
-    dioxygenases) will show co-occurrence patterns.
+    Shared Gene Annotations: Compounds that share similar co-occurrence profiles
+    may be associated with overlapping gene annotations in the dataset. This
+    is an annotation-level observation and does not confirm shared enzymatic
+    processing.
 
   - >
-    Distinct Chemical Groups: The overall structure may help identify distinct
-    groups of chemicals that are treated similarly by the biological
-    samples, helping identify functional specialization.
+    Distinct Compound Groups: The overall structure may help identify groups of
+    compounds with similar co-occurrence profiles across samples, which can
+    guide exploratory analyses of compound class coverage and annotation
+    patterns within the dataset.
 
 color_scheme: "success"

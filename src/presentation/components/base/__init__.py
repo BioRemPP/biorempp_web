@@ -13,7 +13,12 @@ from .navigation_button import create_navigation_button
 from .navigation_offcanvas import create_navigation_offcanvas
 from .progress_bar import create_progress_bar
 from .upload_component import create_upload
-from .use_case_panel import create_use_case_panel, load_use_case_config
+from .use_case_panel import (
+    clear_use_case_config_cache,
+    create_use_case_panel,
+    get_use_case_config_cache_stats,
+    load_use_case_config,
+)
 
 __all__ = [
     "create_header",
@@ -25,6 +30,8 @@ __all__ = [
     "create_help_links",
     "create_navigation_button",
     "create_navigation_offcanvas",
+    "clear_use_case_config_cache",
     "create_use_case_panel",
+    "get_use_case_config_cache_stats",
     "load_use_case_config",
 ]

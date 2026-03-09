@@ -57,12 +57,34 @@ def create_uc_7_3_layout() -> dbc.Card:
                         ),
                         dbc.Col(
                             [
-                                create_download_button(
-                                    use_case_id="UC-7.3",
-                                    button_id="uc-7-3-download-btn",
-                                    download_id="uc-7-3-download",
-                                    formats=["csv", "excel", "json"],
-                                    button_text="Download Data",
+                                dbc.Row(
+                                    [
+                                        dbc.Col(
+                                            dbc.Button(
+                                                "Methods",
+                                                id={"type": "results-methods-link", "index": "UC-7.3"},
+                                                color="primary",
+                                                outline=False,
+                                                size="sm",
+                                                className="me-1",
+                                                n_clicks=0,
+                                                title=(
+                                                    "View analytical workflow "
+                                                    "for this use case"
+                                                ),
+                                            ),
+                                            width="auto",
+                                        ),
+                                        create_download_button(
+                                            use_case_id="UC-7.3",
+                                            button_id="uc-7-3-download-btn",
+                                            download_id="uc-7-3-download",
+                                            formats=["csv", "excel", "json"],
+                                            button_text="Download Data",
+                                        ),
+                                    ],
+                                    align="center",
+                                    className="g-1 flex-nowrap",
                                 )
                             ],
                             width="auto",
@@ -112,7 +134,8 @@ def create_uc_7_3_layout() -> dbc.Card:
                                     # ========================================
                                     dcc.Loading(
                                         id="uc-7-3-loading",
-                                        type="default",
+                                        type="circle",
+                                        color="#0d6efd",
                                         children=html.Div(
                                             id="uc-7-3-chart", className="mt-4"
                                         ),

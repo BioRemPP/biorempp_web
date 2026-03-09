@@ -1,0 +1,113 @@
+{
+  "expectations": [
+    {
+      "id": "7f01115d-d310-4e88-b6de-2a9c9f94edb4",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "eb2767ec-5096-4fb3-891b-7e2012ce6474",
+      "kwargs": {
+        "column": "cpd",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "06660edf-57b9-4066-842a-7bfb470927bb",
+      "kwargs": {
+        "column": "SMILES"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "3c29f275-4add-42fe-b72b-4f4e2b977d72",
+      "kwargs": {
+        "column": "SMILES",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "db3b5ea8-ad3e-4841-9d46-cb40af13d0de",
+      "kwargs": {
+        "column": "ChEBI"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "4137410c-af2a-4d31-b23b-e02a6c10c84d",
+      "kwargs": {
+        "column": "ChEBI",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "d01032c2-04e8-46a9-b3df-d9b7773569c2",
+      "kwargs": {
+        "column": "compoundname"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "482f55c8-f28a-4c3d-bb71-718e70bc828d",
+      "kwargs": {
+        "column": "compoundname",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "bc4a0088-48f9-4f63-9dfc-8854ea7252c0",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "f457d6a8-32ab-4ec6-bb91-36397c6ca66e",
+      "kwargs": {
+        "column_list": [
+          "cpd",
+          "SMILES",
+          "ChEBI",
+          "compoundname"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "0b842ee2-2e0f-4e9b-b42f-6708c3a16808",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "toxcsm_db_schema_integrity_suite",
+  "notes": null
+}

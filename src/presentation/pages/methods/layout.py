@@ -8,6 +8,7 @@ import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from ...components.base import create_footer, create_header
+from ...routing import app_path
 
 
 def create_methods_layout() -> html.Div:
@@ -29,9 +30,14 @@ def create_methods_layout() -> html.Div:
                     html.Div(
                         [
                             html.H1(
-                                "Analytical Methods",
-                                className="display-4 mb-3",
-                                style={"fontWeight": "600"},
+                                [
+                                    html.I(
+                                        className="fas fa-cogs text-success",
+                                        style={"fontSize": "0.9em", "lineHeight": "1"},
+                                    ),
+                                    "Analytical Methods",
+                                ],
+                                className="mb-3 d-flex align-items-center justify-content-center gap-3 flex-wrap",
                             ),
                             html.P(
                                 "Comprehensive analytical workflows for all 56 use cases across 8 modules",
@@ -39,11 +45,11 @@ def create_methods_layout() -> html.Div:
                             ),
                             html.Hr(),
                         ],
-                        className="text-center py-4",
+                        className="mb-5",
                     )
                 ],
-                fluid=True,
-                className="bg-light",
+                fluid=False,
+                className="px-4 py-4",
             ),
             # Scientific Overview Card
             dbc.Container(
@@ -102,7 +108,7 @@ def create_methods_layout() -> html.Div:
                                                                     ),
                                                                     "View Scientific Overview",
                                                                 ],
-                                                                href="/methods/overview",
+                                                                href=app_path("/methods/overview"),
                                                                 color="primary",
                                                                 size="lg",
                                                                 className="w-100 mb-2",
@@ -151,7 +157,7 @@ def create_methods_layout() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2024)
+    footer = create_footer()
 
     # Complete layout
     layout = html.Div([header, content, footer])

@@ -58,12 +58,37 @@ def create_uc_2_1_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-2.1",
-                                        button_id="uc-2-1-download-btn",
-                                        download_id="uc-2-1-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={
+                                                        "type": "results-methods-link",
+                                                        "index": "UC-2.1",
+                                                    },
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-2.1",
+                                                button_id="uc-2-1-download-btn",
+                                                download_id="uc-2-1-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -157,8 +182,14 @@ def create_uc_2_1_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Demand)
                                     # ========================================
-                                    html.Div(
-                                        id="uc-2-1-chart-container", className="mt-4"
+                                    dcc.Loading(
+                                        id="uc-2-1-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-2-1-chart-container",
+                                            className="mt-4",
+                                        ),
                                     ),
                                 ],
                                 title="View Results",

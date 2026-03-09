@@ -1,0 +1,96 @@
+{
+  "expectations": [
+    {
+      "id": "3ca628cb-364a-4632-b803-5a7a3dfc6e8f",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "9045dde3-e0ec-48f5-bdb9-e6a099fc7e0d",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "10e26034-0c82-40f1-a010-25fc39a8c174",
+      "kwargs": {
+        "column": "pathname"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "4bd0ee80-2bd5-4544-8a3d-bda18d382572",
+      "kwargs": {
+        "column": "pathname"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d5bd83f7-87b6-4e9b-8e33-1b420f7ccfe5",
+      "kwargs": {
+        "column": "genesymbol"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "ae032764-e454-4c6f-bc27-8aaec8f3d336",
+      "kwargs": {
+        "column": "genesymbol"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "b6f3352a-1d9a-40e2-8af8-8a5c2d90683a",
+      "kwargs": {
+        "value": 855
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_equal"
+    },
+    {
+      "id": "523155a4-50bc-4380-8f95-c49c21a74c34",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "4149acc1-a9a3-4977-9022-85fe14b5f39e",
+      "kwargs": {
+        "column_list": [
+          "ko",
+          "pathname",
+          "genesymbol"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "090099db-064d-43e9-a7ce-98f09781a5b2",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "kegg_degradation_db_schema_integrity_suite",
+  "notes": null
+}

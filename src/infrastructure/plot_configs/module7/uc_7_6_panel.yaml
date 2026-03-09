@@ -1,19 +1,21 @@
-# UC-7.6: Sample Risk Mitigation Breadth by Compound Variety
+# UC-7.6: Sample Annotation Coverage Breadth for High Predicted-Risk Compounds
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-7-6"
 
 scientific_question: >
-  Which biological samples possess the broadest capability to mitigate risk,
-  as measured by the diversity of high-risk compounds they can target
-  within each toxicological category?
+  Which biological samples show the broadest gene annotation coverage across
+  high predicted-risk compounds, as measured by the variety of such compounds
+  they are co-annotated with within each toxicological category?
 
 description: >
-  This visualization creates a "Risk Mitigation Breadth Profile" for each sample.
-  In contrast to measuring the depth of genetic investment, this treemap quantifies
-  the variety of compounds a sample can handle. The size of each rectangle is
-  proportional to the number of unique high-risk compounds a sample interacts with
-  for a given toxicological category. The hierarchy follows: Sample -> Toxicity Category.
+  This visualization creates an annotation coverage breadth profile for each
+  sample. In contrast to measuring annotation depth (gene count per compound),
+  this treemap quantifies the variety of high predicted-risk compounds for which
+  a sample has at least one gene annotation. The size of each rectangle is
+  proportional to the number of unique high predicted-risk compounds co-annotated
+  with a given sample within each toxicological category. The hierarchy follows:
+  Sample → Toxicity Category.
 
 visual_elements:
   - label: "Nested Rectangles (Hierarchy)"
@@ -24,9 +26,9 @@ visual_elements:
 
   - label: "Rectangle Area (Values)"
     description: >
-      The area of each rectangle is proportional to the count of unique high-risk
-      compounds targeted by that sample within that category. Larger areas indicate
-      a broader mitigation capability.
+      The area of each rectangle is proportional to the count of unique high
+      predicted-risk compounds co-annotated with that sample within that category.
+      Larger areas indicate broader annotation coverage across those compounds.
 
   - label: "Color (Toxicity Category)"
     description: >
@@ -40,26 +42,29 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Versatile Generalists: Samples with the largest overall area are the most
-    versatile "generalists," capable of targeting the widest variety of high-risk
-    compounds across all categories.
+    Broad Annotation Coverage: Samples with the largest overall area are
+    co-annotated with the widest variety of high predicted-risk compounds across
+    all categories. This reflects annotation breadth in the database and does
+    not confirm that these samples can process or mitigate those compounds.
 
   - >
-    Category Specialists: By examining the second level of the hierarchy, one can
-    can help identify a sample's specialization. A sample with a large rectangle for the
-    "High Predicted Risk" category may be a specialist in mitigating the most
-    hazardous compounds.
+    Category-Level Annotation Patterns: By examining the second level of the
+    hierarchy, one can identify which toxicological categories contain more
+    compound annotations for a given sample. This is an annotation-level
+    observation and does not confirm functional specialization.
 
   - >
-    Complementary Consortium Design: This view is ideal for designing a consortium
-    with maximum chemical coverage. One would select Sample A for its broad coverage
-    of "Genomic" toxins and combine it with Sample B for its broad coverage of
-    "Organic" toxins to create a team that can handle the widest possible range
-    of threats.
+    Complementary Annotation Profiles: Samples with annotation coverage
+    concentrated in different toxicological categories show complementary
+    annotation profiles. Identifying such patterns can serve as a starting
+    point for exploratory analyses of annotation coverage, though any
+    functional inference requires experimental validation beyond annotation
+    and prediction data.
 
   - >
-    Risk Prioritization: The relative sizes of toxicity categories within a sample
-    can help reveal which types of risks that sample is best suited to mitigate, enabling
-    strategic selection for specific remediation scenarios.
+    Annotation Coverage Context: The relative sizes of toxicological categories
+    within a sample reflect which categories have more compound annotations
+    co-occurring with that sample. These are annotation-level patterns and
+    should not be interpreted as confirmed functional capacity for risk mitigation.
 
 color_scheme: "success"

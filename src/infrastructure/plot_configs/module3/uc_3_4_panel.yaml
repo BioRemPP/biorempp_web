@@ -4,16 +4,16 @@
 use_case_id: "uc-3-4"
 
 scientific_question: >
-  How functionally similar are the biological samples to one another, based on
-  their shared repertoire of KEGG Orthology (KO) identifiers?
+  How similar are the biological samples to one another, based on the
+  overlap of their KEGG Orthology (KO) annotation profiles?
 
 description: >
-  This visualization assesses the pairwise functional similarity between all
-  biological samples. The correlogram (a heatmap of a correlation matrix) is
-  constructed based on shared KEGG Orthology (KO) profiles, providing a
-  quantitative measure of how alike the metabolic potentials of any two
-  samples are. A presence/absence matrix is built for each sample-KO pair,
-  and Pearson correlation coefficients are computed between samples.
+  This visualization assesses the pairwise similarity between all biological
+  samples based on their shared KO annotation profiles. The correlogram
+  (a heatmap of a correlation matrix) is constructed from a presence/absence
+  matrix of KO identifiers per sample, providing a quantitative measure of
+  how similar the KO annotation profiles of any two samples are. Pearson
+  correlation coefficients are computed between samples.
 
 visual_elements:
   - label: "X-axis and Y-axis"
@@ -45,30 +45,34 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Clusters: Brightly colored squares or blocks off the main
-    diagonal identify clusters of samples with highly similar functional
-    profiles. These may represent biological sources that share similar
-    ecological niches, metabolic strategies, or phylogenetic relationships.
+    KO Profile Clusters: Brightly colored squares or blocks off the main
+    diagonal identify clusters of samples with highly similar KO annotation
+    profiles. These groupings may reflect shared annotation patterns and can
+    generate hypotheses about ecological or functional relationships, but do
+    not confirm shared metabolic activity.
 
   - >
-    Distinct Groups: The overall structure of the heatmap may help identify distinct
-    functional groups within the dataset. Samples that form a tight, warm-colored
-    cluster are functionally more related to each other than to samples in
-    other, cooler-colored regions of the plot.
+    Distinct Groups: The overall structure of the heatmap may help identify
+    distinct KO annotation groups within the dataset. Samples forming a tight,
+    warm-colored cluster share more similar KO profiles than samples in
+    cooler-colored regions of the plot.
 
   - >
-    Unique Samples: A sample that shows low correlation (neutral or cool colors)
-    with most other samples may possess a more unique or specialized functional
-    profile within this dataset.
+    Unique Annotation Profiles: A sample that shows low correlation (neutral
+    or cool colors) with most other samples has a KO annotation profile that
+    differs substantially from the rest of the dataset, which may warrant
+    further investigation.
 
   - >
-    Metabolic Redundancy: High overall correlation across many samples may suggest
-    functional redundancy in the biological community, where multiple biological
-    sources can perform similar metabolic functions.
+    Annotation Overlap: High overall correlation across many samples indicates
+    broadly similar KO annotation profiles. This may reflect shared annotation
+    sources, similar biological contexts, or simply shared KO content in the
+    reference databases used.
 
   - >
-    Consortium Design: Identifying samples with complementary (low correlation)
-    profiles can guide the design of biological consortia with diverse and
-    non-overlapping functional capabilities.
+    Complementary Profiles: Identifying samples with low correlation can help
+    explore annotation complementarity. Any inference about functional
+    collaboration or consortium design based on KO overlap requires experimental
+    validation beyond annotation data.
 
 color_scheme: "primary"

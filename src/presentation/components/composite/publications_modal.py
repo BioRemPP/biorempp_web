@@ -328,7 +328,7 @@ def create_publications_modal() -> dbc.Modal:
                                     html.I(className="fas fa-calendar-alt me-2"),
                                     "Presented at the ",
                                     html.Strong(
-                                        "Bioinformatics and Computational Biology 1st Brazilian Conference (X-Meeting 2025)"
+                                        "Bioinformatics and Computational Biology 21st Brazilian Conference (X-Meeting 2025)"
                                     ),
                                     ", in the area Database and Software Development",
                                 ],

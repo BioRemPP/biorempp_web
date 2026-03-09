@@ -1,20 +1,20 @@
-# UC-4.3: Interactive Comparison of Sample Performance by Pathway (KEGG)
+# UC-4.3: Interactive Comparison of Sample KO Annotation Coverage by Pathway (KEGG)
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-3"
 
 scientific_question: >
-  For a given metabolic pathway, what is the relative functional richness of
-  each biological sample, and which samples are the key functional players?
+  For a given metabolic pathway, what is the relative KO annotation count of
+  each biological sample, and how does this annotation coverage compare
+  across samples?
 
 description: >
-  This interactive visualization provides a comparative profile of all samples
-  for a single, user-selected metabolic pathway. By selecting a pathway from
-  the dropdown menu, the radar chart dynamically updates to display the
-  functional richness—measured by the count of unique KEGG Orthology (KO)
-  identifiers—of each sample for that specific function. This allows for a
-  direct comparison of which biological sources are best equipped for a given metabolic
-  task.
+  This interactive visualization provides a comparative KO annotation profile
+  of all samples for a single, user-selected metabolic pathway. By selecting a
+  pathway from the dropdown menu, the radar chart dynamically updates to display
+  the KO annotation count — measured by the number of unique KEGG Orthology (KO)
+  identifiers — of each sample for that specific pathway. This allows for a
+  direct comparison of annotation coverage across biological samples.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -29,31 +29,33 @@ visual_elements:
   - label: "Value (r)"
     description: >
       The distance of a point from the center along a sample's axis indicates
-      the count of unique KOs that sample possesses for the selected pathway.
+      the count of unique KO annotations that sample has for the selected pathway.
 
   - label: "Shape"
     description: >
-      The blue shape connecting the points represents the overall "functional
-      footprint" of the selected pathway across the entire consortium of
-      samples.
+      The blue shape connecting the points represents the distribution of KO
+      annotation counts for the selected pathway across all samples.
 
 interpretation_guidelines:
   - >
-    Functional Strength: Points farther from the center may signify a higher
-    functional richness for that sample within the selected pathway. These
-    samples may be considered the most potent "specialists" for that function.
+    Annotation Coverage per Sample: Points farther from the center indicate
+    a higher KO annotation count for that sample within the selected pathway.
+    Samples with more distant points have greater annotation coverage for that
+    pathway in the database, which may generate hypotheses for further
+    investigation but does not confirm functional specialization.
 
   - >
-    Identifying Key Players: The overall shape of the radar plot can help
-    identify which samples are the dominant functional players for a given
-    pathway. A shape that is heavily skewed towards one or two samples
-    may indicate a highly specialized function within the community.
+    Annotation Distribution Pattern: The overall shape of the radar plot can help
+    identify how KO annotation counts are distributed across samples for a given
+    pathway. A shape skewed towards one or two samples indicates annotation
+    concentration in those samples, which is an annotation-level observation
+    and does not confirm functional dominance.
 
   - >
-    Comparative Pathway Analysis: By switching between different pathways in
-    the dropdown, one can rapidly compare how the functional roles of the
-    samples shift. A sample that is a key player for "Toluene biotransformation"
-    might be a minor player for "Methane metabolism," potentially revealing its specific
-    ecological niche.
+    Comparative Pathway Annotation Profiles: By switching between different
+    pathways in the dropdown, one can compare how annotation counts shift across
+    samples. Differences between pathways reflect annotation structure in the
+    database and may guide exploratory analyses, but do not confirm ecological
+    roles or metabolic specializations.
 
 color_scheme: "success"

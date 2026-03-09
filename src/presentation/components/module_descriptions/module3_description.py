@@ -35,11 +35,11 @@ def create_module3_overview_header() -> html.Div:
     -----
     Module 3 Focus:
     - Characterize emergent system-wide organization
-    - Identify functional guilds and shared degradation strategies
+    - Identify annotation-based groups and shared co-annotation patterns
     - Reveal molecular and chemical co-occurrence modules
 
     Guiding Questions:
-    - 3.1: Functional and chemical clustering of samples
+    - 3.1: KO and compound annotation clustering of samples
     - 3.2: Quantitative similarity between samples
     - 3.3: Molecular and chemical co-occurrence patterns
     """
@@ -50,36 +50,38 @@ def create_module3_overview_header() -> html.Div:
     overview_text = (
         "This module moves from describing individual entities to "
         "characterizing the emergent organization of the system as a whole. "
-        "After ranking samples and compounds by their functional and chemical "
-        "potential, the next step is to understand how these entities group, "
-        "relate, and co-vary in a higher-dimensional space. Here, we adopt a "
-        "systems-level perspective to reveal clusters, similarity gradients, "
-        "and co-occurrence patterns that define the functional architecture of "
-        "the dataset. These structural insights are essential for identifying "
-        "functional guilds, shared degradation strategies, and recurring "
-        "molecular 'modules' that may underpin robust bioremediation responses."
+        "After ranking samples and compounds by their KO annotation counts and "
+        "co-annotation breadth, the next step is to understand how these "
+        "entities group, relate, and co-vary in a higher-dimensional space. "
+        "Here, we adopt a systems-level perspective to reveal clusters, "
+        "similarity gradients, and co-occurrence patterns that define the "
+        "annotation structure of the dataset. These structural insights are "
+        "essential for identifying annotation-based sample groups, shared "
+        "co-annotation patterns, and recurring molecular co-occurrence "
+        "patterns that may be worth investigating experimentally."
     )
 
     # Guiding questions for Module 3
     guiding_questions = [
         {
             "id": "3.1",
-            "subtitle": "Functional and chemical clusters",
+            "subtitle": "KO and compound annotation clusters",
             "question": (
-                "How do the samples organize into functional and chemical "
-                "clusters? We first address the global organization of the "
-                "samples in both functional and chemical terms by applying "
-                "multivariate dimensionality-reduction and clustering methods. "
-                "Principal Component Analysis (PCA) is used on functional "
-                "(KO-based) and chemical (compound-based) profiles to "
+                "How do the samples organize into KO annotation and compound "
+                "co-annotation clusters? We first address the global "
+                "organization of the samples in both KO and compound "
+                "annotation terms by applying multivariate "
+                "dimensionality-reduction and clustering methods. "
+                "Principal Component Analysis (PCA) is used on KO-based "
+                "and compound-based annotation profiles to "
                 "visualize dominant axes of variation and to highlight groups "
-                "of samples with similar response patterns. This is "
+                "of samples with similar annotation patterns. This is "
                 "complemented by hierarchical clustering, generating "
                 "dendrograms that reveal nested, fine-grained relationships "
                 "among sample groups. Together, these approaches enable the "
-                "robust identification of distinct 'functional guilds'—"
-                "clusters of samples that appear to share comparable metabolic "
-                "strategies or chemical degradation repertoires."
+                "identification of distinct sample clusters—"
+                "groups of samples that appear to share comparable KO "
+                "annotation profiles or compound co-annotation repertoires."
             ),
         },
         {
@@ -92,10 +94,10 @@ def create_module3_overview_header() -> html.Div:
                 "correlograms that assign numerical similarity scores to all "
                 "pairwise combinations of samples. This analysis is carried "
                 "out from two complementary perspectives: one based on shared "
-                "functional repertoires (KO Richness) and another based on "
-                "shared chemical targets (Compound Richness). The resulting "
-                "similarity matrices provide statistical support for the "
-                "functional guilds identified in the clustering step, while "
+                "KO annotations (KO Richness) and another based on "
+                "shared compound co-annotations (Compound Richness). The "
+                "resulting similarity matrices provide statistical support for "
+                "the sample groups identified in the clustering step, while "
                 "also revealing intermediate degrees of relatedness that may "
                 "not be immediately apparent from visual inspection alone."
             ),
@@ -104,18 +106,19 @@ def create_module3_overview_header() -> html.Div:
             "id": "3.3",
             "subtitle": "Molecular and chemical patterns",
             "question": (
-                "What are the underlying molecular and chemical patterns that "
-                "drive these sample similarities? To elucidate the mechanistic "
-                "basis of the observed sample guilds, we examine co-occurrence "
-                "patterns among the core molecular and chemical features. "
+                "What are the underlying molecular and chemical co-occurrence "
+                "patterns that drive these sample similarities? To examine "
+                "the annotation basis of the observed sample groups, we "
+                "investigate co-occurrence patterns among the core molecular "
+                "and chemical features. "
                 "Using correlograms and related association metrics, we ask "
                 "which genes tend to co-occur across samples and which "
-                "compounds are frequently targeted together. From this, we "
-                "infer potential 'metabolic modules' (sets of correlated genes "
-                "or functions) and 'chemical suites' (sets of co-targeted "
-                "compounds) that likely act as recurrent building blocks "
-                "within the system, providing a functional and chemical "
-                "rationale for the sample groupings."
+                "compounds are frequently co-annotated together. From this, "
+                "we characterize potential co-occurrence clusters (sets of "
+                "correlated genes or KOs) and compound co-annotation sets "
+                "(sets of co-annotated compounds) that recur across samples, "
+                "providing an annotation-level rationale for the sample "
+                "groupings observed in this module."
             ),
         },
     ]

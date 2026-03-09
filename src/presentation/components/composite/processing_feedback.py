@@ -55,7 +55,7 @@ Reuses functions from upload_feedback.py for consistency.
 All feedback is user-friendly and actionable.
 """
 
-from typing import Dict, List, Optional
+from typing import Any, Dict, List, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
@@ -64,7 +64,8 @@ from dash import html
 def create_processing_alert(
     severity: str,
     message: str,
-    details: Optional[Dict] = None,
+    details: Optional[Dict[str, Any]] = None,
+    notes: Optional[List[str]] = None,
     icon: Optional[str] = None,
 ) -> dbc.Alert:
     """
@@ -76,8 +77,10 @@ def create_processing_alert(
         Alert severity: 'success', 'info', 'warning', 'danger'
     message : str
         Main message to display
-    details : Optional[Dict]
+    details : Optional[Dict[str, Any]]
         Additional details (key-value pairs)
+    notes : Optional[List[str]]
+        Additional short lines rendered below details
     icon : Optional[str]
         FontAwesome icon class (e.g., 'fa-check-circle')
 
@@ -122,13 +125,26 @@ def create_processing_alert(
     if details:
         detail_items = []
         for key, value in details.items():
+            value_component = (
+                html.Span(str(value))
+                if isinstance(value, (str, int, float, bool)) or value is None
+                else value
+            )
+            row = [value_component] if not key else [html.Strong(f"{key}: "), value_component]
             detail_items.append(
-                html.Div(
-                    [html.Strong(f"{key}: "), html.Span(str(value))], className="ms-3"
-                )
+                html.Div(row, className="ms-3")
             )
 
         content.extend([html.Br(), html.Div(detail_items, className="mt-2")])
+
+    if notes:
+        note_items = [
+            html.Div(note, className="ms-3 text-muted small")
+            for note in notes
+            if isinstance(note, str) and note.strip()
+        ]
+        if note_items:
+            content.append(html.Div(note_items, className="mt-2"))
 
     return dbc.Alert(content, color=severity, className="mt-3")
 

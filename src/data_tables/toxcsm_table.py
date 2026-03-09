@@ -10,13 +10,61 @@ create_toxcsm_section
     Create complete ToxCSM section with enhanced description and accordion
 """
 
+from typing import Any, Dict, Optional
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from src.presentation.components.composite import create_database_description
 
 
-def create_toxcsm_section() -> html.Div:
+def _format_stat_value(value: Any) -> str:
+    """Format stat values with fallback placeholder."""
+    if value is None:
+        return "--"
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        return f"{int(value):,}" if value.is_integer() else f"{value:,.2f}"
+    return str(value)
+
+
+def _get_stat_value(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]],
+    metric_key: str,
+    value_key: str,
+) -> Any:
+    """Safely get nested overview stat value."""
+    if not overview_stats:
+        return None
+    metric = overview_stats.get(metric_key)
+    if not isinstance(metric, dict):
+        return None
+    return metric.get(value_key)
+
+
+def _create_reference_value_indicator(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]], metric_key: str
+) -> html.Small:
+    """Render compact database reference indicator (icon + value)."""
+    return html.Small(
+        [
+            html.I(
+                className="fas fa-database me-1",
+                title="Refrence database value",
+                style={"fontSize": "0.7rem"},
+            ),
+            _format_stat_value(_get_stat_value(overview_stats, metric_key, "global_value")),
+        ],
+        className="text-muted d-block",
+    )
+
+
+def create_toxcsm_section(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> html.Div:
     """
     Create ToxCSM results table section with enhanced metadata.
 
@@ -48,10 +96,17 @@ def create_toxcsm_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "323", className="text-warning mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "environmental_compounds",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-warning mb-0",
                                                 ),
                                                 html.Small(
-                                                    "Environmental Compounds",
+                                                    "KO-Compound Relations",
                                                     className="text-muted",
                                                 ),
                                             ],
@@ -65,7 +120,18 @@ def create_toxcsm_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "66", className="text-danger mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "toxicity_endpoints",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-danger mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "toxicity_endpoints",
                                                 ),
                                                 html.Small(
                                                     "Toxicity Endpoints",
@@ -82,7 +148,18 @@ def create_toxcsm_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "5", className="text-info mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "toxicity_categories",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-info mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "toxicity_categories",
                                                 ),
                                                 html.Small(
                                                     "Toxicity Categories",
@@ -101,95 +178,6 @@ def create_toxcsm_section() -> html.Div:
             ],
             className="mb-3 shadow-sm",
         ),
-        # Toxicity categories card
-        dbc.Card(
-            [
-                dbc.CardHeader(
-                    [
-                        html.I(className="fas me-2"),
-                        html.Strong("Toxicity Prediction Categories"),
-                    ],
-                    className="bg-light",
-                ),
-                dbc.CardBody(
-                    [
-                        dbc.Row(
-                            [
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Nuclear Response (NR): "
-                                                        ),
-                                                        "10 endpoints",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Stress Response (SR): "
-                                                        ),
-                                                        "6 endpoints",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Genotoxicity (Gen): "
-                                                        ),
-                                                        "3 endpoints",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.Ul(
-                                            [
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Environmental (Env): "
-                                                        ),
-                                                        "6 endpoints",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Organ-Specific (Org): "
-                                                        ),
-                                                        "9 endpoints",
-                                                    ]
-                                                ),
-                                                html.Li(
-                                                    [
-                                                        html.Strong(
-                                                            "Total Predictions: "
-                                                        ),
-                                                        "34 toxicity assays",
-                                                    ]
-                                                ),
-                                            ],
-                                            className="mb-0",
-                                        )
-                                    ],
-                                    md=6,
-                                ),
-                            ]
-                        )
-                    ]
-                ),
-            ],
-            className="mb-3",
-        ),
     ]
 
     # Create download button for merged database
@@ -206,6 +194,19 @@ def create_toxcsm_section() -> html.Div:
         show_spinner=True,
     )
 
+    # Create Database Info button that opens schema page in new tab
+    # Using html.A instead of dbc.Button to bypass Dash router and open in new tab
+    info_button = html.A(
+        [
+            html.I(className="fas fa-info-circle me-2"),
+            "Database Info",
+        ],
+        href="/schemas/toxcsm",
+        target="_blank",
+        rel="noopener noreferrer",
+        className="btn btn-outline-info btn-sm",
+    )
+
     # Enhanced database description
     description_component = create_database_description(
         title="toxCSM Toxicity Prediction Analysis",
@@ -213,18 +214,10 @@ def create_toxcsm_section() -> html.Div:
             "Integrates your data with the ToxCSM database (Toxicity Prediction via Machine Learning), "
             "providing in silico toxicity predictions across 34 biological endpoints using validated ML models."
         ),
-        insights=(
-            "Compound Coverage: 323 environmental compounds with toxicity profiles\n"
-            "Prediction Categories: 5 major groups (Nuclear Response, Stress Response, Genotoxicity, Environmental, Organ-Specific)\n"
-            "Nuclear Response: Androgen, Estrogen, Aromatase, PPAR-γ, Glucocorticoid, Thyroid receptors (10 endpoints)\n"
-            "Stress Response: ARE, ATAD5, HSE, MMP, p53 pathways (6 endpoints)\n"
-            "Genotoxicity: AMES mutagenesis, carcinogenesis, micronucleus (3 endpoints)\n"
-            "Environmental: Aquatic toxicity, biodegradation, avian effects (6 endpoints)\n"
-            "Organ Toxicity: Skin, hERG, liver, eye, respiratory (9 endpoints)"
-        ),
         section_id="toxcsm-results-table",
         custom_components=custom_components,
-        download_button=download_button,  # Add download button to header
+        download_button=download_button,
+        info_button=info_button,
     )
 
     # Accordion with on-demand table and enhanced title
@@ -246,141 +239,6 @@ def create_toxcsm_section() -> html.Div:
                     ),
                     # Table container
                     html.Div(id="toxcsm-container", className="chart-container"),
-                    # Column descriptions
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                [
-                                    html.I(className="fas fa-table me-2"),
-                                    html.Strong("Column Descriptions"),
-                                ],
-                                className="bg-light",
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        [
-                                            dbc.Col(
-                                                [
-                                                    html.H6(
-                                                        "Compound Identifiers:",
-                                                        className="text-primary",
-                                                    ),
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "SMILES: "
-                                                                    ),
-                                                                    "Chemical structure notation",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "cpd: "
-                                                                    ),
-                                                                    "KEGG compound ID (e.g., C00001)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "ChEBI: "
-                                                                    ),
-                                                                    "ChEBI database ID",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "compoundname: "
-                                                                    ),
-                                                                    "Common compound name",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="mb-3",
-                                                    ),
-                                                    html.H6(
-                                                        "Toxicity Predictions:",
-                                                        className="text-danger",
-                                                    ),
-                                                    html.P(
-                                                        [
-                                                            "Each endpoint has 2 columns: ",
-                                                            html.Code("value_*"),
-                                                            " (numerical score 0-1) and ",
-                                                            html.Code("label_*"),
-                                                            " (High/Medium/Low Safety or Toxicity)",
-                                                        ],
-                                                        className="small",
-                                                    ),
-                                                ],
-                                                md=6,
-                                            ),
-                                            dbc.Col(
-                                                [
-                                                    html.H6(
-                                                        "Endpoint Categories:",
-                                                        className="text-warning",
-                                                    ),
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "NR_*: "
-                                                                    ),
-                                                                    "Nuclear receptor assays (AR, ER, AhR, Aromatase, PPAR-γ, GR, TR)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "SR_*: "
-                                                                    ),
-                                                                    "Stress response pathways (ARE, ATAD5, HSE, MMP, p53)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "Gen_*: "
-                                                                    ),
-                                                                    "Genotoxicity (AMES, Carcinogenesis, Micronucleus)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "Env_*: "
-                                                                    ),
-                                                                    "Environmental toxicity (Fathead Minnow, T. Pyriformis, Honey Bee, Biodegradation, Crustacean, Avian)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "Org_*: "
-                                                                    ),
-                                                                    "Organ toxicity (Skin, hERG I/II, Liver I/II, Eye Irritation/Corrosion, Respiratory)",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="small mb-0",
-                                                    ),
-                                                ],
-                                                md=6,
-                                            ),
-                                        ]
-                                    )
-                                ]
-                            ),
-                        ],
-                        className="mt-3",
-                    ),
                 ],
                 title=" View ToxCSM Toxicity Prediction Table",
             )
@@ -394,7 +252,8 @@ def create_toxcsm_section() -> html.Div:
 
     # Complete section with enhanced styling
     section = html.Div(
-        [description_component, accordion, download, html.Hr(className="my-4")]
+        [description_component, accordion, download, html.Hr(className="my-4")],
+        id="toxcsm-section",
     )
 
     return section

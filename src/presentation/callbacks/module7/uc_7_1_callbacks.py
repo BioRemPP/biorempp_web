@@ -277,7 +277,7 @@ def register_uc_7_1_callbacks(app, plot_service) -> None:
                     "displaylogo": False,
                     "modeBarButtonsToRemove": ["pan2d", "lasso2d", "select2d"],
                     "toImageButtonOptions": {
-                        "format": "png",
+                        "format": "svg",
                         "filename": base_filename,
                         "height": 800,
                         "width": 1200,

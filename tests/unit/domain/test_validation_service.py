@@ -1,16 +1,28 @@
 """
-Unit Tests for ValidationService
+Unit tests for ValidationService.
+
+This module tests the ValidationService domain service, which provides
+validation logic for raw input content, datasets, and KO lists.
+
+Test Coverage:
+- Raw input validation (valid, empty, no sample, no KO, invalid lines)
+- Empty sample name handling
+- Invalid KO format detection
+- Empty line handling
+- Dataset validation (valid, empty, invalid samples)
+- KO list validation (valid, empty, invalid KOs)
+- Duplicate sample detection
 """
 
 import pytest
 
-from biorempp_web.src.domain.entities.dataset import Dataset
-from biorempp_web.src.domain.entities.sample import Sample
-from biorempp_web.src.domain.services.validation_service import (
+from src.domain.entities.dataset import Dataset
+from src.domain.entities.sample import Sample
+from src.domain.services.validation_service import (
     ValidationService,
 )
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
-from biorempp_web.src.domain.value_objects.sample_id import SampleId
+from src.domain.value_objects.kegg_orthology import KO
+from src.domain.value_objects.sample_id import SampleId
 
 
 class TestValidationService:
@@ -182,3 +194,69 @@ class TestValidationService:
         assert has_dups is True
         assert "Sample1" in dup_ids
         assert len(dup_ids) == 1
+
+    def test_validate_file_size_within_limit(self):
+        """Tests file size validation when size is within limit."""
+        is_valid, error = ValidationService.validate_file_size(
+            size_bytes=512 * 1024, max_bytes=1024 * 1024
+        )
+
+        assert is_valid
+        assert error == ""
+
+    def test_validate_file_size_exceeds_limit(self):
+        """Tests file size validation when size exceeds limit."""
+        is_valid, error = ValidationService.validate_file_size(
+            size_bytes=2 * 1024 * 1024, max_bytes=1024 * 1024
+        )
+
+        assert not is_valid
+        assert "exceeds maximum allowed size" in error
+
+    def test_validate_sample_count_within_limit(self):
+        """Tests sample count validation when count is within limit."""
+        is_valid, error = ValidationService.validate_sample_count(10, 20)
+
+        assert is_valid
+        assert error == ""
+
+    def test_validate_sample_count_exceeds_limit(self):
+        """Tests sample count validation when count exceeds limit."""
+        is_valid, error = ValidationService.validate_sample_count(25, 20)
+
+        assert not is_valid
+        assert "exceeds maximum allowed" in error
+
+    def test_validate_ko_count_within_limit(self):
+        """Tests KO count validation when count is within limit."""
+        is_valid, error = ValidationService.validate_ko_count(1000, 5000)
+
+        assert is_valid
+        assert error == ""
+
+    def test_validate_ko_count_exceeds_limit(self):
+        """Tests KO count validation when count exceeds limit."""
+        is_valid, error = ValidationService.validate_ko_count(6000, 5000)
+
+        assert not is_valid
+        assert "exceeds maximum allowed" in error
+
+    def test_validate_encoding_utf8_success(self):
+        """Tests encoding validation with valid UTF-8 bytes."""
+        content = "Amostra válida com UTF-8".encode("utf-8")
+
+        is_valid, decoded, error = ValidationService.validate_encoding(content)
+
+        assert is_valid
+        assert decoded == "Amostra válida com UTF-8"
+        assert error == ""
+
+    def test_validate_encoding_latin1_fallback(self):
+        """Tests encoding validation fallback to latin-1."""
+        content = "café".encode("latin-1")
+
+        is_valid, decoded, error = ValidationService.validate_encoding(content)
+
+        assert is_valid
+        assert decoded == "café"
+        assert error == ""

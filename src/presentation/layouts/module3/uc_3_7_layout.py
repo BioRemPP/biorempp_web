@@ -10,7 +10,7 @@ Notes
 """
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
 from src.presentation.components.composite.use_cases import create_panel_by_id
 from src.presentation.components.download_component import (
@@ -21,12 +21,12 @@ from src.presentation.components.download_component import (
 
 def create_uc_3_7_layout() -> dbc.Card:
     """
-    Create UC-3.7 layout for compound co-occurrence pattern analysis.
+    Create UC-3.7 layout for compound co-annotation pattern analysis.
 
     Returns
     -------
     dbc.Card
-        Card component with correlogram showing compound-compound co-occurrence.
+        Card component with correlogram showing compound-compound co-annotation.
 
     Notes
     -----
@@ -59,12 +59,37 @@ def create_uc_3_7_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-3.7",
-                                        button_id="uc-3-7-download-btn",
-                                        download_id="uc-3-7-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={
+                                                        "type": "results-methods-link",
+                                                        "index": "UC-3.7",
+                                                    },
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-3.7",
+                                                button_id="uc-3-7-download-btn",
+                                                download_id="uc-3-7-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -107,8 +132,16 @@ def create_uc_3_7_layout() -> dbc.Card:
                         [
                             dbc.AccordionItem(
                                 [
-                                    # Chart Container (Correlogram)
-                                    html.Div(id="uc-3-7-chart", className="mt-3")
+                                    # Chart Container with Loading Spinner
+                                    dcc.Loading(
+                                        id="uc-3-7-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-3-7-chart",
+                                            className="mt-3",
+                                        ),
+                                    )
                                 ],
                                 title="View Results",
                                 item_id="uc-3-7-accordion",

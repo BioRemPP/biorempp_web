@@ -32,6 +32,7 @@ def create_uc_8_1_layout() -> dbc.Card:
     -----
     - See official documentation for use case details
     """
+
     return dbc.Card(
         [
             # Card Header
@@ -54,12 +55,34 @@ def create_uc_8_1_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-8.1",
-                                        button_id="uc-8-1-download-btn",
-                                        download_id="uc-8-1-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={"type": "results-methods-link", "index": "UC-8.1"},
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-8.1",
+                                                button_id="uc-8-1-download-btn",
+                                                download_id="uc-8-1-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -107,7 +130,8 @@ def create_uc_8_1_layout() -> dbc.Card:
                                 # Chart container
                                 dcc.Loading(
                                     id="loading-uc-8-1",
-                                    type="default",
+                                    type="circle",
+                                    color="#0d6efd",
                                     children=html.Div(
                                         id="uc-8-1-chart",
                                         style={"minHeight": "650px"},

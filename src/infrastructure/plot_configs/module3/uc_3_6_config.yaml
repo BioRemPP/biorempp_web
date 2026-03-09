@@ -1,7 +1,7 @@
 # ============================================================================
 # UC-3.6: Gene Co-occurrence Patterns Across Samples
 # ============================================================================
-# Description: Correlogram showing gene-gene co-occurrence patterns based on sample presence
+# Description: Correlogram showing gene-gene co-annotation patterns based on sample presence
 # Module: module3
 # Plot Type: Correlogram (Correlation Heatmap - Feature Mode)
 # Rendering: On-demand (accordion activation)

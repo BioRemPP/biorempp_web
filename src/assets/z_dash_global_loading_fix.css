@@ -1,0 +1,12 @@
+/*
+ * Dash global loading overlay fix.
+ *
+ * Keeps component-level loaders (dcc.Loading / dbc.Spinner) intact while
+ * disabling Dash renderer's fullscreen callback overlay that causes page-wide
+ * white flashes during routine interactions.
+ */
+
+._dash-loading,
+._dash-loading-callback {
+    display: none !important;
+}

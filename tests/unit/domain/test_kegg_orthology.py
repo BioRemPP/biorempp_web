@@ -1,10 +1,21 @@
 """
-Unit Tests for KEGG Orthology Value Object
+Unit tests for KEGG Orthology (KO) Value Object.
+
+This module tests the KO value object, which represents a KEGG Orthology
+identifier following the pattern K followed by 5 digits (e.g., K00001).
+
+Test Coverage:
+- KO creation and validation
+- String and repr representations
+- Immutability enforcement
+- Equality and hashability
+- Invalid KO handling (empty, wrong prefix, wrong length, non-numeric)
+- KO use cases (lists, dictionary keys)
 """
 
 import pytest
 
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
+from src.domain.value_objects.kegg_orthology import KO
 
 
 class TestKO:

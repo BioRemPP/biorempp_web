@@ -9,7 +9,8 @@ import logging
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
+from uuid import uuid4
 
 import pandas as pd
 
@@ -44,7 +45,11 @@ class DataProcessingService:
 
         self.database_path = Path(database_path)
         self._databases: Dict[str, pd.DataFrame] = {}
+        self._database_overview_global_stats: Dict[str, Dict[str, int]] = {}
         self._load_databases()
+        self._database_overview_global_stats = (
+            self._build_database_overview_global_stats()
+        )
 
     def _load_databases(self) -> None:
         """Load all databases into memory."""
@@ -64,6 +69,237 @@ class DataProcessingService:
                 )
             else:
                 raise FileNotFoundError(f"Database not found: {db_path}")
+
+    @staticmethod
+    def _dedupe_rows(
+        df: pd.DataFrame, subset: Optional[List[str]] = None
+    ) -> pd.DataFrame:
+        """Remove duplicate rows while preserving first occurrence order."""
+        if df.empty:
+            return df
+        return df.drop_duplicates(subset=subset).reset_index(drop=True)
+
+    @staticmethod
+    def generate_job_id() -> str:
+        """
+        Generate unique job identifier for a processing execution.
+
+        Returns
+        -------
+        str
+            Job identifier in format BRP-YYYYMMDD-HHMMSS-XXXXXX.
+        """
+        timestamp = datetime.now().strftime("%Y%m%d-%H%M%S")
+        suffix = uuid4().hex[:6].upper()
+        return f"BRP-{timestamp}-{suffix}"
+
+    @staticmethod
+    def _safe_nunique(df: pd.DataFrame, column: str) -> int:
+        """Get nunique with safe fallback for missing/empty DataFrames."""
+        if df.empty or column not in df.columns:
+            return 0
+        return int(df[column].nunique())
+
+    @staticmethod
+    def _count_value_columns(columns: List[str]) -> int:
+        """Count toxicity endpoint columns using `value_` prefix."""
+        return len([col for col in columns if col.startswith("value_")])
+
+    @staticmethod
+    def _count_toxicity_categories(columns: List[str]) -> int:
+        """Count unique ToxCSM super-categories from `value_` prefixes."""
+        categories = set()
+        for col in columns:
+            if not col.startswith("value_"):
+                continue
+            parts = col.split("_")
+            if len(parts) > 1 and parts[1]:
+                categories.add(parts[1])
+        return len(categories)
+
+    def _build_database_overview_global_stats(self) -> Dict[str, Dict[str, int]]:
+        """
+        Build global overview stats from loaded CSV databases.
+
+        Returns
+        -------
+        Dict[str, Dict[str, int]]
+            Global stats grouped by database and metric name.
+        """
+        biorempp_db = self._databases.get("biorempp", pd.DataFrame())
+        hadeg_db = self._databases.get("hadeg", pd.DataFrame())
+        toxcsm_db = self._databases.get("toxcsm", pd.DataFrame())
+        kegg_db = self._databases.get("kegg", pd.DataFrame())
+
+        toxcsm_columns = toxcsm_db.columns.tolist() if not toxcsm_db.empty else []
+
+        return {
+            "biorempp": {
+                "enzyme_compound_relations": int(len(biorempp_db)),
+                "environmental_compounds": self._safe_nunique(biorempp_db, "cpd"),
+                "compound_classes": self._safe_nunique(biorempp_db, "compoundclass"),
+                "regulatory_frameworks": self._safe_nunique(biorempp_db, "referenceAG"),
+            },
+            "hadeg": {
+                "gene_pathway_relations": int(len(hadeg_db)),
+                "unique_ko_numbers": self._safe_nunique(hadeg_db, "ko"),
+                "degradation_pathways": self._safe_nunique(hadeg_db, "Pathway"),
+                "compound_categories": self._safe_nunique(hadeg_db, "compound_pathway"),
+            },
+            "toxcsm": {
+                "environmental_compounds": int(len(toxcsm_db)),
+                "toxicity_endpoints": self._count_value_columns(toxcsm_columns),
+                "toxicity_categories": self._count_toxicity_categories(toxcsm_columns),
+            },
+            "kegg": {
+                "gene_pathway_associations": int(len(kegg_db)),
+                "unique_ko_numbers": self._safe_nunique(kegg_db, "ko"),
+                "degradation_pathways": self._safe_nunique(kegg_db, "pathname"),
+            },
+        }
+
+    def _build_database_overview_input_stats(
+        self,
+        biorempp_df: pd.DataFrame,
+        hadeg_df: pd.DataFrame,
+        toxcsm_raw_df: pd.DataFrame,
+        kegg_df: pd.DataFrame,
+    ) -> Dict[str, Dict[str, int]]:
+        """
+        Build input-specific overview stats from merged DataFrames.
+
+        Returns
+        -------
+        Dict[str, Dict[str, int]]
+            Input stats grouped by database and metric name.
+        """
+        toxcsm_columns = toxcsm_raw_df.columns.tolist() if not toxcsm_raw_df.empty else []
+
+        return {
+            "biorempp": {
+                "enzyme_compound_relations": int(len(biorempp_df)),
+                "environmental_compounds": self._safe_nunique(
+                    biorempp_df, "Compound_ID"
+                ),
+                "compound_classes": self._safe_nunique(biorempp_df, "Compound_Class"),
+                "regulatory_frameworks": self._safe_nunique(biorempp_df, "Agency"),
+            },
+            "hadeg": {
+                "gene_pathway_relations": int(len(hadeg_df)),
+                "unique_ko_numbers": self._safe_nunique(hadeg_df, "KO"),
+                "degradation_pathways": self._safe_nunique(hadeg_df, "Pathway"),
+                "compound_categories": self._safe_nunique(hadeg_df, "Compound"),
+            },
+            "toxcsm": {
+                "environmental_compounds": int(len(toxcsm_raw_df)),
+                "toxicity_endpoints": self._count_value_columns(toxcsm_columns),
+                "toxicity_categories": self._count_toxicity_categories(toxcsm_columns),
+            },
+            "kegg": {
+                "gene_pathway_associations": int(len(kegg_df)),
+                "unique_ko_numbers": self._safe_nunique(kegg_df, "KO"),
+                "degradation_pathways": self._safe_nunique(kegg_df, "Pathway"),
+            },
+        }
+
+    def _build_database_overview_metadata(
+        self,
+        biorempp_df: pd.DataFrame,
+        hadeg_df: pd.DataFrame,
+        toxcsm_raw_df: pd.DataFrame,
+        kegg_df: pd.DataFrame,
+    ) -> Dict[str, Dict[str, Dict[str, int]]]:
+        """
+        Build complete overview metadata with input + global values.
+
+        Returns
+        -------
+        Dict[str, Dict[str, Dict[str, int]]]
+            Nested overview metadata structured as:
+            {db_name: {metric_name: {"input_value": int, "global_value": int}}}
+        """
+        input_stats = self._build_database_overview_input_stats(
+            biorempp_df=biorempp_df,
+            hadeg_df=hadeg_df,
+            toxcsm_raw_df=toxcsm_raw_df,
+            kegg_df=kegg_df,
+        )
+
+        overview: Dict[str, Dict[str, Dict[str, int]]] = {}
+        db_names = set(self._database_overview_global_stats) | set(input_stats)
+
+        for db_name in db_names:
+            overview[db_name] = {}
+            global_metrics = self._database_overview_global_stats.get(db_name, {})
+            input_metrics = input_stats.get(db_name, {})
+            metric_names = set(global_metrics) | set(input_metrics)
+
+            for metric_name in metric_names:
+                overview[db_name][metric_name] = {
+                    "input_value": int(input_metrics.get(metric_name, 0)),
+                    "global_value": int(global_metrics.get(metric_name, 0)),
+                }
+
+        return overview
+
+    def _build_database_aggregate_overview(
+        self,
+        database_overview: Dict[str, Dict[str, Dict[str, int]]],
+        matched_kos: int,
+        total_kos: int,
+    ) -> Dict[str, Any]:
+        """
+        Build hybrid aggregate overview for top results card.
+
+        Aggregation model:
+        - total_relations_input: sum of first input metric by database
+        - active_databases: databases with input_relations > 0
+        - ko_match_rate_pct: matched_kos / total_kos * 100
+        - per_database: input_relations + share_pct contribution
+        """
+        relation_metric_by_database = {
+            "biorempp": "enzyme_compound_relations",
+            "hadeg": "gene_pathway_relations",
+            "toxcsm": "environmental_compounds",
+            "kegg": "gene_pathway_associations",
+        }
+
+        per_database: Dict[str, Dict[str, Any]] = {}
+        total_relations_input = 0
+        active_databases = 0
+
+        for db_name, metric_name in relation_metric_by_database.items():
+            metric_data = database_overview.get(db_name, {}).get(metric_name, {})
+            input_relations = int(metric_data.get("input_value", 0))
+
+            per_database[db_name] = {
+                "input_relations": input_relations,
+                "share_pct": 0.0,
+            }
+            total_relations_input += input_relations
+            if input_relations > 0:
+                active_databases += 1
+
+        if total_relations_input > 0:
+            for db_name in per_database:
+                relations = int(per_database[db_name]["input_relations"])
+                per_database[db_name]["share_pct"] = round(
+                    (relations / total_relations_input) * 100, 2
+                )
+
+        ko_match_rate_pct = (
+            round((matched_kos / total_kos) * 100, 2) if total_kos > 0 else 0.0
+        )
+
+        return {
+            "total_relations_input": total_relations_input,
+            "active_databases": active_databases,
+            "total_databases": len(relation_metric_by_database),
+            "ko_match_rate_pct": ko_match_rate_pct,
+            "matched_kos": int(matched_kos),
+            "total_kos": int(total_kos),
+            "per_database": per_database,
+        }
 
     def parse_upload_content(self, content: str, filename: str) -> pd.DataFrame:
         """
@@ -107,7 +343,11 @@ class DataProcessingService:
                 if ko.startswith("K"):  # Validate KO format
                     data.append({"Sample": current_sample, "KO": ko})
 
-        return pd.DataFrame(data)
+        parsed_df = pd.DataFrame(data)
+        if parsed_df.empty:
+            return parsed_df
+        # Prevent artificial row multiplication from repeated KO lines in same sample.
+        return self._dedupe_rows(parsed_df, subset=["Sample", "KO"])
 
     def merge_with_biorempp(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -153,7 +393,7 @@ class DataProcessingService:
             "Enzyme_Activity",
         ]
 
-        return result
+        return self._dedupe_rows(result)
 
     def merge_with_hadeg(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -179,7 +419,7 @@ class DataProcessingService:
 
         result.columns = ["Sample", "KO", "Gene", "Pathway", "Compound"]
 
-        return result
+        return self._dedupe_rows(result)
 
     def merge_with_toxcsm(self, biorempp_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -222,7 +462,7 @@ class DataProcessingService:
 
         # Select compoundname + value_ columns and remove duplicates
         required_cols = ["compoundname"] + value_columns
-        df_tox = toxcsm_db[required_cols].drop_duplicates()
+        df_tox = self._dedupe_rows(toxcsm_db[required_cols])
 
         # Convert to long format (wide → long)
         df_long = df_tox.melt(
@@ -251,9 +491,7 @@ class DataProcessingService:
         df_long["endpoint"] = df_long["endpoint"].str.replace("value_", "", regex=False)
 
         # Keep unique compounds
-        result = df_long.drop_duplicates()
-
-        return result
+        return self._dedupe_rows(df_long)
 
     def merge_with_kegg(self, sample_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -280,7 +518,7 @@ class DataProcessingService:
 
         result.columns = ["Sample", "KO", "Pathway", "Gene_Symbol"]
 
-        return result
+        return self._dedupe_rows(result)
 
     def _get_toxcsm_wide_format(self, biorempp_df: pd.DataFrame) -> pd.DataFrame:
         """
@@ -315,7 +553,7 @@ class DataProcessingService:
             return pd.DataFrame()
 
         # Get unique Sample-compound pairs from BioRemPP (user's matches)
-        sample_compounds = biorempp_df[["Sample", "Compound_ID"]].drop_duplicates()
+        sample_compounds = self._dedupe_rows(biorempp_df[["Sample", "Compound_ID"]])
 
         # Rename to match ToxCSM database column name
         sample_compounds = sample_compounds.rename(columns={"Compound_ID": "cpd"})
@@ -332,9 +570,11 @@ class DataProcessingService:
 
         logger.info(f"  - ToxCSM wide merged shape: {toxcsm_wide.shape}")
 
-        return toxcsm_wide
+        return self._dedupe_rows(toxcsm_wide)
 
-    def process_upload(self, content: str, filename: str) -> Dict[str, any]:
+    def process_upload(
+        self, content: str, filename: str, job_id: Optional[str] = None
+    ) -> Dict[str, Any]:
         """
         Complete processing pipeline for uploaded file.
 
@@ -344,6 +584,8 @@ class DataProcessingService:
             File content
         filename : str
             Original filename
+        job_id : Optional[str]
+            Optional job identifier. If None, generated automatically.
 
         Returns
         -------
@@ -360,6 +602,8 @@ class DataProcessingService:
             - metadata: Processing metadata dict
         """
         start_time = time.time()
+        if not job_id:
+            job_id = self.generate_job_id()
 
         # 1. Parse uploaded file
         sample_df = self.parse_upload_content(content, filename)
@@ -397,8 +641,20 @@ class DataProcessingService:
         sample_count = sample_df["Sample"].nunique()
         total_kos = len(sample_df)
         matched_kos = len(biorempp_df["KO"].unique())
+        database_overview = self._build_database_overview_metadata(
+            biorempp_df=biorempp_df,
+            hadeg_df=hadeg_df,
+            toxcsm_raw_df=toxcsm_raw_df,
+            kegg_df=kegg_df,
+        )
+        database_aggregate_overview = self._build_database_aggregate_overview(
+            database_overview=database_overview,
+            matched_kos=matched_kos,
+            total_kos=total_kos,
+        )
 
         metadata = {
+            "job_id": job_id,
             "filename": filename,
             "sample_count": sample_count,
             "ko_count": total_kos,
@@ -407,6 +663,8 @@ class DataProcessingService:
             "total_kos": total_kos,
             "databases": ["BioRemPP", "HADEG", "ToxCSM", "KEGG"],
             "timestamp": datetime.now().isoformat(),
+            "database_overview": database_overview,
+            "database_aggregate_overview": database_aggregate_overview,
         }
 
         # Debug logging for ToxCSM data

@@ -1,6 +1,8 @@
 import dash_bootstrap_components as dbc
 from dash import html
 
+from src.presentation.routing import app_path
+
 
 def create_info_modal() -> dbc.Modal:
     """
@@ -102,16 +104,16 @@ def create_info_modal() -> dbc.Modal:
                             html.Ul(
                                 [
                                     html.Li(
-                                        "Module 1: Comparative Assessment of Databases, Samples, and Regulatory Frameworks (7 use cases)"
+                                        "Module 1: Comparative Assessment of Databases, Samples, and Regulatory Frameworks (6 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 2: Exploratory Analysis: Ranking the Functional Potential of Samples and Compounds (7 use cases)"
+                                        "Module 2: Exploratory Analysis: Ranking the Functional Potential of Samples and Compounds (5 use cases)"
                                     ),
                                     html.Li(
                                         "Module 3: System Structure: Clustering, Similarity, and Co-occurrence (7 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 4: Functional and Genetic Profiling (7 use cases)"
+                                        "Module 4: Functional and Genetic Profiling (13 use cases)"
                                     ),
                                 ],
                                 className="small",
@@ -124,10 +126,10 @@ def create_info_modal() -> dbc.Modal:
                             html.Ul(
                                 [
                                     html.Li(
-                                        "Module 5: Modeling Interactions among Samples, Genes, and Compounds (7 use cases)"
+                                        "Module 5: Modeling Interactions among Samples, Genes, and Compounds (6 use cases)"
                                     ),
                                     html.Li(
-                                        "Module 6: Hierarchical and Flow-based Functional Analysis (7 use cases)"
+                                        "Module 6: Hierarchical and Flow-based Functional Analysis (5 use cases)"
                                     ),
                                     html.Li(
                                         "Module 7: Toxicological Risk Assessment and Profiling (7 use cases)"
@@ -422,7 +424,7 @@ def create_info_modal() -> dbc.Modal:
                 ],
                 color="primary",
                 outline=True,
-                href="/methods",  # Link to methods page
+                href=app_path("/methods"),  # Link to methods page
                 className="mb-2",
             ),
             html.P(

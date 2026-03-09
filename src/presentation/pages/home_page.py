@@ -11,7 +11,7 @@ create_home_layout
 Notes
 -----
 - 5 sections: Header, Intro, Upload Workflow, Help, Footer
-- State managed via 4 dcc.Stores
+- State managed via 5 dcc.Stores
 - Clean separation from results page
 """
 
@@ -24,11 +24,18 @@ from ..components.base import create_footer, create_header, create_help_links
 from ..components.composite import (
     create_completion_panel,
     create_intro_card,
+    create_job_resume_panel,
     create_progress_panel,
+    create_sample_data_modal,
     create_upload_panel,
     create_validation_panel,
 )
-from ..pages.new_user import create_new_user_guide_button, create_new_user_guide_modal
+from ..pages.new_user import (
+    create_example_dataset_card,
+    create_new_user_guide_button,
+    create_new_user_guide_modal,
+)
+from ..pages.terms_of_use import create_terms_modal
 
 
 def create_home_layout(session_id: Optional[str] = None) -> html.Div:
@@ -60,20 +67,21 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
       - Validation Panel (Step 1 results)
       - Progress Panel (Step 2)
       - Completion Panel (Step 3)
-    - Section 4: Help & Guidance
+    - Section 4: Resume by Job ID + Help & Guidance
     - Section 5: Footer
 
-    State Management (4 dcc.Stores):
+    State Management (5 dcc.Stores):
     - upload-result: UploadResultDTO
     - processing-progress: ProcessingProgressDTO
     - processing-complete: bool flag
     - merged-result: MergedDataDTO
+    - resume-browser-token: local browser ownership token for job resume
 
     Workflow:
-    1. User uploads file → upload-result populated
-    2. User clicks Process → processing-progress updates
-    3. Processing completes → processing-complete = True
-    4. User clicks View Results → navigate to /results
+    1. User uploads file -> upload-result populated
+    2. User clicks Process -> processing-progress updates
+    3. Processing completes -> processing-complete = True
+    4. User clicks View Results -> navigate to /results
     """
     # Section 1: Header
     header = create_header(show_nav=True, logo_size="80px")
@@ -85,19 +93,29 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     upload_workflow = dbc.Container(
         [
             html.H1(
-                "Start Your Analysis", className="text-center text-success mb-4 mt-4"
+                "Understand BioRemPP", className="text-center text-success mb-4 mt-4"
             ),
             # New User Guide Card
             dbc.Row(
                 [
                     dbc.Col(
                         [create_new_user_guide_button()],
-                        md=8,
+                        md=6,
                         lg=6,
-                        className="mx-auto mb-4",
+                        className="mb-2 d-flex",
+                    ),
+                    dbc.Col(
+                        [create_example_dataset_card()],
+                        md=6,
+                        lg=6,
+                        className="mb-2 d-flex",
                     )
-                ]
+                ],
+                className="g-3 align-items-stretch mb-2",
             ),
+            html.H1(
+                "Start Your Analysis", className="text-center text-success mb-4 mt-4"
+            ),            
             # Step 1: Upload
             create_upload_panel(),
             # Validation feedback (appears after upload)
@@ -110,11 +128,25 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
         className="mb-5",
     )
 
-    # Section 4: Help & Guidance
-    help_section = dbc.Container([create_help_links()], className="mb-5")
+    # Section 4: Resume by Job ID + Help & Guidance
+    help_section = dbc.Container(
+        [
+            dbc.Row(
+                [
+                    dbc.Col(
+                        [create_job_resume_panel()],
+                        md=12,
+                        className="mb-3",
+                    )
+                ]
+            ),
+            create_help_links(),
+        ],
+        className="mb-5",
+    )
 
     # Section 5: Footer
-    footer = create_footer(version="2.0.0", year=2024)
+    footer = create_footer()
 
     # State Management Stores (Legacy stores only)
     stores = html.Div(
@@ -129,6 +161,8 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             ),
             # Session ID
             dcc.Store(id="session-id-store", storage_type="session", data=session_id),
+            # Resume ownership token (persists in same browser across sessions)
+            dcc.Store(id="resume-browser-token-store", storage_type="local"),
         ]
     )
 
@@ -141,7 +175,9 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
                 [intro, upload_workflow, help_section], fluid=False, className="px-4"
             ),
             footer,
-            create_new_user_guide_modal(),  # Add modal
+            create_sample_data_modal(),  # Example dataset info modal
+            create_new_user_guide_modal(),  # Guided tour modal
+            create_terms_modal(),  # Terms of use modal
         ]
     )
 

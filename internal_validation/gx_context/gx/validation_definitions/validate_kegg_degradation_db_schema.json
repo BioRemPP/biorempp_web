@@ -1,0 +1,22 @@
+{
+  "data": {
+    "asset": {
+      "id": "ab2865b5-8cc0-4b20-8443-8dbb25eb4fa0",
+      "name": "kegg_degradation_db"
+    },
+    "batch_definition": {
+      "id": "729c4de9-dc5a-4a78-a672-5e6085aa8726",
+      "name": "kegg_degradation_db_full"
+    },
+    "datasource": {
+      "id": "2da621c1-84b2-4806-8170-c36cad89fb91",
+      "name": "biorempp_databases"
+    }
+  },
+  "id": "0097555b-3fa4-4d84-b641-3016460f5e74",
+  "name": "validate_kegg_degradation_db_schema",
+  "suite": {
+    "id": "6a038378-661b-4c62-847d-bb7504e6f479",
+    "name": "kegg_degradation_db_schema_integrity_suite"
+  }
+}

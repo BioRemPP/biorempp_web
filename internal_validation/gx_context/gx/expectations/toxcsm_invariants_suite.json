@@ -1,0 +1,369 @@
+{
+  "expectations": [
+    {
+      "id": "7b737494-8c83-4a43-8b5d-e817844788f9",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "8b99fea3-e8fd-44f3-9bd2-f09c415b82a7",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "d8d0f1c2-e13b-4ac4-a357-62d268adbfd3",
+      "kwargs": {
+        "column": "value_Avian",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "2a6d5520-1ad0-4412-96ec-1df8ed83961e",
+      "kwargs": {
+        "column": "value_Biodegradation",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "3fa4f627-a861-4a75-902d-2cca48b0e89e",
+      "kwargs": {
+        "column": "value_Crustacean",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "2de7e883-18f5-44b5-96ae-f8af652ce49f",
+      "kwargs": {
+        "column": "value_Eye_Corrosion",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "f8f6947d-d7c7-454d-9af7-0a70c2013e2e",
+      "kwargs": {
+        "column": "value_Eye_Irritation",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "f63fb0da-54f7-4206-b89f-5f8613d609e4",
+      "kwargs": {
+        "column": "value_Fathead_Minnow",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "9e656e71-fe57-481a-a0eb-1b40429c4f96",
+      "kwargs": {
+        "column": "value_Genomic_AMES_Mutagenesis",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "3ed7c475-591f-4d6b-bcf6-edbb1b739331",
+      "kwargs": {
+        "column": "value_Genomic_Carcinogenesis",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "ea72198b-8702-4e45-9dfc-848e0ff45a5c",
+      "kwargs": {
+        "column": "value_Genomic_Micronucleus",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "c24a8203-b8fc-4145-b573-224791d3ca3e",
+      "kwargs": {
+        "column": "value_Honey_Bee",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "2e22721b-7d2f-4b28-bc73-607879fe1974",
+      "kwargs": {
+        "column": "value_Liver_Injury_I",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "0fd77369-6133-4a5d-ae4e-5754e539fdd6",
+      "kwargs": {
+        "column": "value_Liver_Injury_II",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "a2e67b0e-117c-4632-9f7d-4352b57ee7e9",
+      "kwargs": {
+        "column": "value_NR_AR",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "b49ffe5d-69b8-49e5-9015-450e41dea391",
+      "kwargs": {
+        "column": "value_NR_AR_LBD",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "5ca6a637-a8d7-42f9-889a-c1db921bbc2a",
+      "kwargs": {
+        "column": "value_NR_AhR",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "936361e6-d06f-4f89-b3d7-c2ab9c7ec48b",
+      "kwargs": {
+        "column": "value_NR_Aromatase",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "cbc8ff16-31fb-4799-973b-2f8a038a0292",
+      "kwargs": {
+        "column": "value_NR_ER",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "33fa92a1-938f-41de-bbe0-8801d22adbbb",
+      "kwargs": {
+        "column": "value_NR_ER_LBD",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "6bd1f45a-a947-4761-8672-4098ad9c4452",
+      "kwargs": {
+        "column": "value_NR_GR",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "9646e450-cbf7-4b2b-9ae5-90fc1d6384f1",
+      "kwargs": {
+        "column": "value_NR_PPAR_gamma",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "d9a17621-2474-4f0e-a91d-cbfd6c476419",
+      "kwargs": {
+        "column": "value_NR_TR",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "73da9b0b-aa93-4684-b91e-d1b7f04c3f11",
+      "kwargs": {
+        "column": "value_Respiratory_Disease",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "3c62594b-af3b-42db-b732-f8468f75631d",
+      "kwargs": {
+        "column": "value_SR_ARE",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "fc4b819e-567d-4d96-91b3-b4c55d63f245",
+      "kwargs": {
+        "column": "value_SR_ATAD5",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "ab17865b-5b5c-43d1-93f4-90433dc636e2",
+      "kwargs": {
+        "column": "value_SR_HSE",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "d0fc07fa-f284-4d68-a905-f349bde7a575",
+      "kwargs": {
+        "column": "value_SR_MMP",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "e3b34e49-3db7-4a7c-a716-7bf0ccb470ae",
+      "kwargs": {
+        "column": "value_SR_p53",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "1e9f805a-1a8a-4596-9613-7c2965a90aca",
+      "kwargs": {
+        "column": "value_Skin_Sensitisation",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "233af074-38e4-4899-9070-197bee5217c5",
+      "kwargs": {
+        "column": "value_T._Pyriformis",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "071871e3-5f53-424b-ae0f-96490d66706e",
+      "kwargs": {
+        "column": "value_hERG_II_Inhibitor",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    },
+    {
+      "id": "704eb7b2-66b1-4086-af46-65596d0196d5",
+      "kwargs": {
+        "column": "value_hERG_I_Inhibitor",
+        "max_value": 1.0,
+        "min_value": 0.0
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_be_between"
+    }
+  ],
+  "id": "8b043c57-e343-475d-ab9b-30c8f48fb52f",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "toxcsm_invariants_suite",
+  "notes": null
+}

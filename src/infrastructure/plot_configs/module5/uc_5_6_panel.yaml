@@ -1,20 +1,19 @@
-# UC-5.6: Compound-Compound Functional Similarity Network
+# UC-5.6: Compound-Compound Annotation Co-occurrence Network
 # Panel Configuration (YAML)
 
 use_case_id: "uc-5-6"
 
 scientific_question: >
-  Which chemical compounds are likely processed by similar enzymatic machinery,
-  as inferred by their shared interactions with the same genes, and what is the
-  structure of these chemically related groups?
+  Which chemical compounds share annotation co-occurrences with the same genes,
+  and what is the structure of these annotation-based groupings?
 
 description: >
-  This visualization constructs a network to map the functional relationships
-  between chemical compounds. In this graph, nodes represent individual compound
-  names. An edge (a connecting line) is drawn between two compounds if they are
-  both targeted by at least one common gene. This approach helps to identify
-  clusters of compounds that may be structurally similar or part of the same
-  degradation pathways.
+  This visualization constructs a network to map the annotation co-occurrence
+  relationships between chemical compounds. In this graph, nodes represent
+  individual compound names. An edge (a connecting line) is drawn between two
+  compounds if they are both co-annotated with at least one common gene in the
+  reference database. This approach helps to identify clusters of compounds
+  with shared gene annotation overlap in the dataset.
 
 visual_elements:
   - label: "Nodes (Points)"
@@ -24,52 +23,59 @@ visual_elements:
 
   - label: "Edges (Lines)"
     description: >
-      A line connecting two compounds indicates that they are targeted by at
-      least one common gene. The presence of an edge may suggest functional
-      similarity in their processing mechanisms.
+      A line connecting two compounds indicates that they share at least one
+      common gene annotation in the database. The presence of an edge reflects
+      annotation co-occurrence and does not imply confirmed similarity in
+      processing mechanisms.
 
   - label: "Edge Thickness"
     description: >
-      A thicker line signifies a stronger functional relationship, as the two
-      connected compounds are targeted by a larger number of common genes.
+      A thicker line indicates that the two connected compounds share a larger
+      number of common gene annotations in the database.
 
   - label: "Node Color"
     description: >
       The color of a node represents its degree - the number of other compounds
       it is connected to within this network. The color bar provides a
       quantitative scale, with brighter/warmer colors indicating "hub" compounds
-      that are functionally linked to many others.
+      with many annotation links to other compounds.
 
   - label: "Network Layout"
     description: >
-      The spring layout algorithm positions nodes so that connected compounds
-      are closer together, naturally revealing cluster structures in the network.
+      The spring layout algorithm positions nodes so that compounds with greater
+      annotation overlap are closer together, revealing cluster structures
+      based on shared gene annotations.
 
 interpretation_guidelines:
   - >
-    Chemical Clusters: Dense clusters of interconnected nodes represent groups
-    of compounds that are functionally related. These may be structurally
-    similar chemicals, co-contaminants, or compounds that are processed by a
-    common and versatile set of enzymes.
+    Annotation Clusters: Dense clusters of interconnected nodes represent groups
+    of compounds that share broad gene annotation overlap in the dataset. These
+    clusters may generate hypotheses about shared annotation contexts, but do
+    not confirm that the compounds are structurally similar or processed by
+    common enzymatic pathways.
 
   - >
-    Hub Compounds: Brightly colored nodes are highly connected "hubs" in the
-    network. These may represent central intermediates in degradation cascades
-    or versatile molecules that are targeted by a wide array of genetic machinery.
+    Hub Compounds: Brightly colored nodes are highly connected within the
+    annotation network, sharing gene annotations with many other compounds.
+    This reflects broad annotation co-occurrence in the database and may serve
+    as a starting point for further investigation, but does not confirm a role
+    as a central intermediate in any degradation cascade.
 
   - >
-    Bridge Compounds: A node that connects two otherwise distinct clusters can
-    be interpreted as a functional "bridge" compound, potentially linking two
-    different classes of chemicals via a shared set of enzymes.
+    Bridge Compounds: A node that connects two otherwise distinct annotation
+    clusters shares gene annotations with both groups. This is an
+    annotation-level observation and does not confirm that the compound links
+    different chemical classes via shared enzymatic processing.
 
   - >
-    Edge Weight: Thicker edges between compounds may indicate they share more genes,
-    potentially suggesting stronger functional relationships and potentially similar chemical
-    structures or biotransformation requirements.
+    Edge Weight: Thicker edges between compounds indicate they share more gene
+    annotations in the database. This reflects annotation overlap and may
+    generate hypotheses about shared annotation contexts, but does not confirm
+    similar chemical structures or processing requirements.
 
   - >
-    Isolated Compounds: Compounds with few or no connections may be unique
-    substrates processed by specialized enzymes not shared with other compounds
-    in the dataset.
+    Isolated Compounds: Compounds with few or no connections share little gene
+    annotation overlap with other compounds in the dataset. This may reflect
+    narrow annotation coverage rather than unique substrate properties.
 
 color_scheme: "success"

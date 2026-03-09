@@ -1,0 +1,59 @@
+{
+  "expectations": [
+    {
+      "id": "bfaaeebf-d3ce-4b99-a926-fe3085feb564",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "8248e555-802d-41df-b594-5598c968a179",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "e665daff-9115-49c8-8b06-dd27f43508f0",
+      "kwargs": {
+        "column": "cpd"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "cc80a98c-918e-4fe2-ae45-232775745248",
+      "kwargs": {
+        "column": "referenceAG",
+        "value_set": [
+          "EPA",
+          "ATSDR",
+          "IARC",
+          "IARC1",
+          "IARC2A",
+          "IARC2B",
+          "WFD",
+          "PSL",
+          "EPC",
+          "CONAMA"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_distinct_values_to_be_in_set"
+    }
+  ],
+  "id": "1c060efa-dea8-4444-9bef-0fde9ea2504a",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "biorempp_invariants_suite",
+  "notes": null
+}

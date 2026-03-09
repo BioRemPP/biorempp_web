@@ -1,21 +1,21 @@
-# UC-6.3: Chemical Hierarchy of Bioremediation
+# UC-6.3: Chemical Hierarchy of Annotation Coverage
 # Panel Configuration (YAML)
 
 use_case_id: "uc-6-3"
 
 scientific_question: >
-  Which chemical classes and specific compounds require the most diverse
-  genetic toolkit for their degradation, and which microbial samples are
-  the primary contributors to this diversity?
+  Which chemical classes and specific compounds are associated with the most
+  diverse set of gene annotations, and which biological samples contribute
+  most to this annotation diversity?
 
 description: >
-  This visualization provides a hierarchical, top-down view of the genetic
-  investment in bioremediation. The treemap illustrates how broad chemical
-  classes are composed of specific compounds, which are in turn targeted
-  by different microbial samples. The size of each rectangle is proportional
-  to the number of unique genes involved, highlighting the most genetically
-  complex interactions. The nested rectangles represent the hierarchical
-  path: Compound Class -> Compound Name -> Sample.
+  This visualization provides a hierarchical, top-down view of gene annotation
+  distribution across the dataset. The treemap illustrates how broad chemical
+  classes are composed of specific compounds, which are in turn co-annotated
+  with different biological samples. The size of each rectangle is proportional
+  to the number of unique gene annotations associated with it, highlighting
+  the categories with the broadest annotation coverage. The nested rectangles
+  represent the hierarchical path: Compound Class → Compound Name → Sample.
 
 visual_elements:
   - label: "Nested Rectangles"
@@ -27,15 +27,15 @@ visual_elements:
   - label: "Area (Values)"
     description: >
       The area of each rectangle is proportional to the total unique gene
-      count for that category and all categories nested within it. Larger
-      areas indicate greater genetic diversity.
+      annotation count for that category and all categories nested within it.
+      Larger areas indicate broader annotation coverage.
 
   - label: "Color"
     description: >
-      The color of each rectangle corresponds to its unique gene count,
-      with brighter/warmer green tones indicating a higher value. This
-      provides an additional visual cue for identifying genetically
-      demanding categories.
+      The color of each rectangle corresponds to its unique gene annotation
+      count, with brighter/warmer green tones indicating a higher value. This
+      provides an additional visual cue for identifying categories with higher
+      annotation counts.
 
   - label: "Interactivity"
     description: >
@@ -46,31 +46,40 @@ visual_elements:
   - label: "Hover Information"
     description: >
       Hovering over each rectangle displays the category name and its
-      exact unique gene count value.
+      exact unique gene annotation count value.
 
 interpretation_guidelines:
   - >
-    Genetically Demanding Chemical Classes: The largest rectangles at the
-    top level represent the compound class categories that are associated
-    with the most diverse set of degradation genes across the entire dataset.
+    Broadly Annotated Chemical Classes: The largest rectangles at the top
+    level represent compound class categories associated with the most diverse
+    set of gene annotations across the dataset. This reflects annotation
+    breadth and may generate hypotheses about annotation coverage, but does
+    not confirm that these classes require more complex genetic processing.
 
   - >
-    Complex Compounds: Within a given class, the largest compound name
-    rectangles represent the specific pollutants that appear to require
-    the most complex or varied genetic toolkit for their degradation.
+    Broadly Annotated Compounds: Within a given class, the largest compound
+    name rectangles represent specific compounds with the highest gene
+    annotation count in the dataset. This is an annotation-level observation
+    and does not confirm that these compounds require a more complex enzymatic
+    repertoire.
 
   - >
-    Key Microbial Players: At the lowest level, the largest sample
-    rectangles pinpoint the specific organisms that contribute the most
-    genetic diversity to the degradation of a particular compound.
+    Sample Annotation Contribution: At the lowest level, the largest sample
+    rectangles represent biological sources with the most gene annotations
+    associated with a particular compound. This reflects annotation coverage
+    per sample and does not confirm functional contribution to compound
+    processing.
 
   - >
-    Hierarchical Patterns: The overall structure can help identify how genetic
-    diversity is distributed across the functional landscape, helping assess
-    which branches are most genetically diverse and valuable.
+    Hierarchical Annotation Patterns: The overall structure can help identify
+    how gene annotation counts are distributed across compound classes and
+    compounds, guiding exploratory analyses of annotation coverage in the
+    dataset.
 
   - >
-    Consortium Design: Samples that appear prominently across multiple
-    compounds may be good candidates for bioremediation consortia.
+    Complementary Annotation Profiles: Samples that appear prominently across
+    multiple compounds show broad annotation overlap with those compounds.
+    Identifying such patterns can serve as a starting point for exploratory
+    analyses, though any functional inference requires experimental validation.
 
 color_scheme: "success"

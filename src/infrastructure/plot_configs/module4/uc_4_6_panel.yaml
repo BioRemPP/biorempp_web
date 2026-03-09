@@ -1,22 +1,20 @@
-# UC-4.6: Interactive Analysis of Functional Potential by Chemical Compound
+# UC-4.6: Interactive KO Annotation Coverage by Chemical Compound
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-6"
 
 scientific_question: >
-  For a given class of chemical compounds, which biological samples exhibit
-  the most significant functional potential (measured by KO diversity)
-  against which specific compounds?
+  For a given class of chemical compounds, which biological samples show
+  the highest KO annotation count co-occurring with which specific compounds?
 
 description: >
-  This interactive visualization maps the functional potential of each sample
+  This interactive visualization maps the KO annotation count of each sample
   against individual compounds, filterable by chemical class. The scatter plot
-  uses both size and color to represent the diversity of unique KEGG Orthology
-  (KO) identifiers associated with each sample-compound interaction. This
-  allows for the rapid identification of "hotspots" of high functional investment.
-  Functional potential is quantified as the number of unique KOs, serving as a
-  proxy for the complexity of the genetic machinery a sample deploys against
-  a compound.
+  uses both size and color to represent the count of unique KEGG Orthology (KO)
+  identifiers co-annotated with each sample-compound pair. This allows for the
+  rapid identification of sample-compound pairs with high annotation density.
+  KO annotation count per sample-compound pair is quantified as the number of
+  unique KOs, reflecting annotation breadth in the database for that pair.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -31,51 +29,53 @@ visual_elements:
 
   - label: "X-axis (Samples)"
     description: >
-      Represents the individual biological samples in your dataset. Each sample
+      Represents the individual biological samples in the dataset. Each sample
       is displayed on the horizontal axis.
 
   - label: "Point Size and Color"
     description: >
       Both the size and color intensity of each point correspond to the count
-      of unique KOs for that sample-compound interaction. Larger, brighter
-      points indicate a higher count of unique KOs, representing stronger
-      functional potential.
+      of unique KO annotations for that sample-compound pair. Larger, brighter
+      points indicate a higher count of unique KO annotations.
 
   - label: "Hover Information"
     description: >
       Hovering the cursor over a point reveals additional details, such as the
-      sample name, compound name, and the exact count of unique KOs associated
-      with that interaction.
+      sample name, compound name, and the exact count of unique KO annotations
+      associated with that pair.
 
 interpretation_guidelines:
   - >
-    Functional Hotspots: Large, brightly colored points may represent "hotspots"
-    of high functional potential—a strong and diverse genetic response from
-    a specific sample towards a specific compound. These may indicate areas where
-    the sample has invested significant genetic machinery for biotransformation.
+    Annotation Density Hotspots: Large, brightly colored points indicate
+    sample-compound pairs with a high count of unique KO annotations in the
+    database. These reflect annotation density and may generate hypotheses for
+    further investigation, but do not confirm a functional response or genetic
+    investment in biotransformation.
 
   - >
-    Sample Specialization: A sample (vertical column) with numerous large and
-    bright points may be identified as a potent candidate for that particular
-    chemical class. This can help identify samples with broad functional capabilities
-    within the compound class.
+    Sample Annotation Coverage per Class: A sample (vertical column) with
+    numerous large and bright points has broad KO annotation coverage across
+    compounds of that class in the database. This is an annotation-level
+    observation and does not confirm functional capabilities for those compounds.
 
   - >
-    Compound Complexity: A compound (horizontal row) that elicits a strong
-    response (large, bright points) from multiple different samples may be a
-    particularly complex or recalcitrant molecule that may require a diverse
-    enzymatic toolkit for its biotransformation.
+    Compound Annotation Breadth: A compound (horizontal row) with large, bright
+    points across multiple samples is broadly annotated with many KOs across
+    the dataset. This reflects annotation breadth in the database and does not
+    confirm that the compound is more complex or recalcitrant.
 
   - >
-    Comparative Functional Investment: By comparing vertical patterns (samples),
-    you can identify which biological sources invest the most genetic resources into
-    biotransforming compounds within the selected chemical class, potentially highlighting
-    potential bioaugmentation candidates.
+    Comparative Annotation Coverage: By comparing vertical patterns (samples),
+    you can identify which samples have the highest KO annotation counts for
+    compounds within the selected chemical class. These are annotation-level
+    observations and should not be interpreted as confirming biotransformation
+    capacity or prioritizing samples for bioaugmentation.
 
   - >
-    Specialized vs. Generalist Degraders: Samples with isolated large points
-    are specialists (effective against specific compounds), while samples with
-    many medium-sized points are generalists (broad but moderate capability
-    across many compounds).
+    Annotation Profile Patterns: Samples with isolated large points have
+    annotation concentrated in specific compounds, while samples with many
+    medium-sized points have more distributed annotation across compounds.
+    These are annotation-level patterns and do not confirm specialization or
+    generalist degradation capability.
 
 color_scheme: "success"

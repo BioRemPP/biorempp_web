@@ -24,6 +24,7 @@ import dash_bootstrap_components as dbc
 from dash import html
 
 from ..components.base import create_footer, create_header
+from ..routing import app_path
 
 
 def create_documentation_card(
@@ -92,7 +93,7 @@ def create_documentation_card(
                     html.Div(
                         [
                             html.Img(
-                                src="/assets/BIOREMPP_LOGO.png",
+                                src=app_path("/assets/BIOREMPP_LOGO.png"),
                                 alt="BioRemPP Logo",
                                 style={
                                     "maxWidth": "200px",
@@ -244,7 +245,7 @@ def create_documentation_page() -> html.Div:
         className="shadow-sm mb-5",
     )
 
-    # Documentation cards section
+    # Documentation card section (single centered card)
     documentation_cards = html.Div(
         [
             html.H2(
@@ -256,28 +257,7 @@ def create_documentation_page() -> html.Div:
             ),
             dbc.Row(
                 [
-                    # Database Documentation Card
-                    dbc.Col(
-                        [
-                            create_documentation_card(
-                                title="Database Documentation",
-                                description=(
-                                    "Comprehensive guide to the BioRemPP database structure, "
-                                    "data sources, schema design, and usage instructions. "
-                                    "Learn about chemical compounds, genes, enzymes, and "
-                                    "regulatory information integrated in our system."
-                                ),
-                                icon_class="fas fa-database",
-                                link_url="https://readthedocs.org",
-                                link_text="View Database Docs",
-                                card_color="success",
-                            )
-                        ],
-                        width=12,
-                        md=6,
-                        className="mb-4",
-                    ),
-                    # Webservice Documentation Card
+                    # Centered Webservice Documentation Card
                     dbc.Col(
                         [
                             create_documentation_card(
@@ -289,13 +269,14 @@ def create_documentation_page() -> html.Div:
                                     "the platform for your bioremediation research."
                                 ),
                                 icon_class="fas fa-server",
-                                link_url="https://readthedocs.org",
+                                link_url="https://biormepp-web.readthedocs.io/en/latest/",
                                 link_text="View Webservice Docs",
                                 card_color="primary",
                             )
                         ],
                         width=12,
-                        md=6,
+                        md=8,
+                        lg=6,
                         className="mb-4",
                     ),
                 ],
@@ -306,7 +287,7 @@ def create_documentation_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2024)
+    footer = create_footer()
 
     # Assemble complete layout
     layout = html.Div(

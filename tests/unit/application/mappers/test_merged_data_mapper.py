@@ -9,15 +9,16 @@ Tests cover:
 - DataFrame reference sharing
 """
 
-import pytest
 import pandas as pd
 
-from biorempp_web.src.application.mappers.merged_data_mapper import (
+from src.application.mappers.merged_data_mapper import (
     MergedDataMapper
 )
-from biorempp_web.src.domain.entities.merged_data import MergedData
-from biorempp_web.src.domain.entities.dataset import Dataset
-from biorempp_web.src.application.dto.merged_data_dto import MergedDataDTO
+from src.domain.entities.merged_data import MergedData
+from src.domain.entities.dataset import Dataset
+from src.domain.entities.sample import Sample
+from src.domain.value_objects.sample_id import SampleId
+from src.application.dto.merged_data_dto import MergedDataDTO
 
 
 class TestMergedDataMapperToDTO:
@@ -84,6 +85,23 @@ class TestMergedDataMapperToDTO:
         dto = MergedDataMapper.to_dto(entity, "key", 1.0)
 
         assert dto.biorempp_data is biorempp_df
+
+    def test_to_dto_uses_input_sample_count_as_total_records(self):
+        """Test total_records reflects original dataset size when larger."""
+        biorempp_df = pd.DataFrame({"KO": ["K00001"]})  # 1 matched record
+        dataset = Dataset(
+            [
+                Sample(id=SampleId("S1")),
+                Sample(id=SampleId("S2")),
+                Sample(id=SampleId("S3")),
+            ]
+        )
+        entity = MergedData(original_dataset=dataset, biorempp_data=biorempp_df)
+
+        dto = MergedDataMapper.to_dto(entity, "key")
+
+        assert dto.match_count == 1
+        assert dto.total_records == 3
 
 
 class TestMergedDataMapperFromDTO:

@@ -16,4 +16,4 @@ Notes
 - Type-safe with comprehensive documentation
 """
 
-__all__ = ["components", "pages", "callbacks"]
+__all__ = ["components", "pages", "callbacks", "errors"]

@@ -1,5 +1,19 @@
 """
-Unit tests for Dependency Injection Container module.
+Unit tests for DIContainer (Dependency Injection Container).
+
+This module tests the DIContainer class, which provides dependency injection
+functionality with support for singletons, factories, and type registrations.
+
+Test Coverage:
+- Singleton registration and resolution
+- Factory registration and resolution
+- Type registration and resolution
+- Instance registration
+- Unregistered dependency handling
+- Registration checking
+- Container clearing
+- Dependencies with other dependencies
+- Multiple registrations with same key
 """
 
 import pytest

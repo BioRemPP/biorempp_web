@@ -64,6 +64,34 @@ validate_env() {
     fi
 }
 
+is_insecure_secret_value() {
+    local value="$1"
+    local min_length=${2:-1}
+
+    if [ -z "$value" ]; then
+        return 0
+    fi
+
+    if [ "${#value}" -lt "${min_length}" ]; then
+        return 0
+    fi
+
+    case "$value" in
+        dev-secret-key-not-secure|\
+        dev-secret-key-not-secure-for-development-only|\
+        change-me-in-production-use-secrets-token-hex|\
+        REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS|\
+        REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX|\
+        change-this-redis-password|\
+        change-this-grafana-password|\
+        __SET_IN_PROD__)
+            return 0
+            ;;
+    esac
+
+    return 1
+}
+
 # Required variables
 validate_env "BIOREMPP_ENV" true
 validate_env "BIOREMPP_HOST" true
@@ -101,16 +129,20 @@ if [ "$BIOREMPP_ENV" = "production" ]; then
         export BIOREMPP_LOG_LEVEL=WARNING
     fi
     
-    # Check for default/insecure secret keys
-    if [ -n "$SECRET_KEY" ]; then
-        if [ "$SECRET_KEY" = "dev-secret-key-not-secure" ] || \
-           [ "$SECRET_KEY" = "dev-secret-key-not-secure-for-development-only" ] || \
-           [ "$SECRET_KEY" = "change-me-in-production-use-secrets-token-hex" ] || \
-           [ "$SECRET_KEY" = "REPLACE_WITH_REAL_SECRET_FROM_DOCKER_SECRETS" ] || \
-           [ "$SECRET_KEY" = "REPLACE_WITH_SECURE_KEY_MINIMUM_32_CHARS_HEX" ]; then
-            log_error "Insecure SECRET_KEY detected in production!"
-            log_error "Generate a secure key with: python -c \"import secrets; print(secrets.token_hex(32))\""
-            log_warn "Continuing anyway for testing purposes - DO NOT USE IN REAL PRODUCTION!"
+    if is_insecure_secret_value "${SECRET_KEY:-}" 32; then
+        log_error "Invalid SECRET_KEY for production (missing, placeholder, or too short)."
+        log_error "Set a secure value, e.g.: python -c \"import secrets; print(secrets.token_hex(32))\""
+        exit 1
+    fi
+
+    resume_backend_mode=$(echo "${BIOREMPP_RESUME_BACKEND:-diskcache}" | tr '[:upper:]' '[:lower:]')
+    cache_enabled_mode=$(echo "${ENABLE_CACHE:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$resume_backend_mode" = "redis" ] || [ "$cache_enabled_mode" = "true" ]; then
+        effective_redis_password="${BIOREMPP_RESUME_REDIS_PASSWORD:-${REDIS_PASSWORD:-}}"
+        if is_insecure_secret_value "${effective_redis_password}" 12; then
+            log_error "Redis password is required and must be secure in production."
+            log_error "Set REDIS_PASSWORD (and optionally BIOREMPP_RESUME_REDIS_PASSWORD)."
+            exit 1
         fi
     fi
     
@@ -130,8 +162,54 @@ if [ "$(id -u)" = "0" ]; then
     chown -R ${APP_USER:-biorempp}:${APP_USER:-biorempp} /app/logs /app/data /app/cache 2>/dev/null || true
 fi
 
+# Ensure cache root is writable for runtime components (Diskcache, callbacks).
+cache_root="${BIOREMPP_CACHE_DIR:-/app/cache}"
+if mkdir -p "$cache_root" 2>/dev/null && touch "$cache_root/.cache_write_test" 2>/dev/null; then
+    rm -f "$cache_root/.cache_write_test" 2>/dev/null || true
+    log_info "Cache directory writable: ${cache_root}"
+else
+    fallback_cache="/tmp/biorempp-cache"
+    mkdir -p "$fallback_cache"
+    export BIOREMPP_CACHE_DIR="$fallback_cache"
+    log_warn "Cache directory not writable (${cache_root}); fallback to ${fallback_cache}"
+    current_prom_dir="${PROMETHEUS_MULTIPROC_DIR:-}"
+    if [ -z "$current_prom_dir" ] || [[ "$current_prom_dir" == "$cache_root"* ]]; then
+        export PROMETHEUS_MULTIPROC_DIR="${fallback_cache}/prometheus_multiproc"
+        mkdir -p "${PROMETHEUS_MULTIPROC_DIR}"
+        log_warn "PROMETHEUS_MULTIPROC_DIR remapped to ${PROMETHEUS_MULTIPROC_DIR}"
+    fi
+fi
+
 log_info "Directories ready"
 echo ""
+
+# ============================================================================
+# OBSERVABILITY MULTIPROCESS DIRECTORY (Prometheus)
+# ============================================================================
+observability_enabled=$(echo "${BIOREMPP_OBSERVABILITY_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+observability_fail_fast=$(echo "${BIOREMPP_OBSERVABILITY_FAIL_FAST:-false}" | tr '[:upper:]' '[:lower:]')
+
+if [ "$observability_enabled" = "true" ]; then
+    multiproc_dir="${PROMETHEUS_MULTIPROC_DIR:-}"
+    if [ -z "$multiproc_dir" ]; then
+        multiproc_dir="${BIOREMPP_CACHE_DIR:-/app/cache}/prometheus_multiproc"
+        export PROMETHEUS_MULTIPROC_DIR="$multiproc_dir"
+        log_warn "PROMETHEUS_MULTIPROC_DIR not set; defaulting to ${multiproc_dir}"
+    fi
+
+    if mkdir -p "$multiproc_dir" 2>/dev/null && touch "$multiproc_dir/.prom_test" 2>/dev/null; then
+        rm -f "$multiproc_dir/.prom_test" 2>/dev/null || true
+        log_info "Prometheus multiprocess directory ready: ${multiproc_dir}"
+    else
+        if [ "$observability_fail_fast" = "true" ]; then
+            log_error "Observability enabled but PROMETHEUS_MULTIPROC_DIR is not writable: ${multiproc_dir}"
+            exit 1
+        fi
+        log_warn "Disabling observability: PROMETHEUS_MULTIPROC_DIR not writable (${multiproc_dir})"
+        export BIOREMPP_OBSERVABILITY_ENABLED=False
+    fi
+    echo ""
+fi
 
 # ============================================================================
 # DATABASE MIGRATIONS (if applicable)
@@ -145,30 +223,65 @@ echo ""
 # fi
 
 # ============================================================================
-# WAIT FOR DEPENDENCIES (if applicable)
+# RESUME BACKEND HEALTH GATE (optional fail-fast for Redis)
 # ============================================================================
-# Uncomment if need to wait for external services
-# if [ -n "$REDIS_HOST" ]; then
-#     log_step "Waiting for Redis at ${REDIS_HOST}:${REDIS_PORT}..."
-#     while ! nc -z $REDIS_HOST $REDIS_PORT; do
-#         sleep 1
-#     done
-#     log_info "Redis is available"
-#     echo ""
-# fi
+resume_backend=$(echo "${BIOREMPP_RESUME_BACKEND:-diskcache}" | tr '[:upper:]' '[:lower:]')
+resume_redis_healthcheck=$(echo "${BIOREMPP_RESUME_REDIS_HEALTHCHECK:-false}" | tr '[:upper:]' '[:lower:]')
 
-# ============================================================================
-# SSL CERTIFICATE CHECK (for HTTPS)
-# ============================================================================
-if [ "$BIOREMPP_ENV" = "production" ] && [ "$ENABLE_HTTPS" = "true" ]; then
-    log_step "Checking SSL certificates..."
-    
-    if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
-        log_info "SSL certificates found for ${DOMAIN}"
-    else
-        log_warn "SSL certificates not found. HTTPS will not be available."
-        log_warn "Run SSL setup: .scripts/docker/ssl-setup.sh ${DOMAIN}"
+if [ "$resume_backend" = "redis" ] && [ "$resume_redis_healthcheck" = "true" ]; then
+    log_step "Checking Redis resume backend availability..."
+
+    resume_redis_host=${BIOREMPP_RESUME_REDIS_HOST:-${REDIS_HOST:-redis}}
+    resume_redis_port=${BIOREMPP_RESUME_REDIS_PORT:-${REDIS_PORT:-6379}}
+    resume_redis_db=${BIOREMPP_RESUME_REDIS_DB:-${REDIS_DB:-0}}
+    resume_redis_password=${BIOREMPP_RESUME_REDIS_PASSWORD:-${REDIS_PASSWORD:-}}
+    resume_redis_timeout=${BIOREMPP_RESUME_REDIS_HEALTHCHECK_TIMEOUT_SECONDS:-20}
+
+    python - "$resume_redis_host" "$resume_redis_port" "$resume_redis_db" "$resume_redis_password" "$resume_redis_timeout" <<'PY'
+import sys
+import time
+
+host = sys.argv[1]
+port = int(sys.argv[2])
+db = int(sys.argv[3])
+password = sys.argv[4] or None
+timeout_seconds = float(sys.argv[5])
+
+try:
+    import redis
+except Exception as exc:  # pragma: no cover
+    print(f"redis dependency unavailable: {exc}", file=sys.stderr)
+    sys.exit(1)
+
+deadline = time.time() + timeout_seconds
+last_error = None
+while time.time() < deadline:
+    try:
+        client = redis.Redis(
+            host=host,
+            port=port,
+            db=db,
+            password=password,
+            socket_connect_timeout=2,
+            socket_timeout=2,
+            decode_responses=False,
+        )
+        if client.ping():
+            sys.exit(0)
+    except Exception as exc:  # pragma: no cover
+        last_error = exc
+        time.sleep(1)
+
+print(f"resume redis unavailable: {last_error}", file=sys.stderr)
+sys.exit(1)
+PY
+
+    if [ $? -ne 0 ]; then
+        log_error "Redis resume backend unavailable; aborting startup"
+        exit 1
     fi
+
+    log_info "Redis resume backend is available"
     echo ""
 fi
 
@@ -183,6 +296,7 @@ echo -e "  ${BLUE}Host:${NC}           ${BIOREMPP_HOST}:${BIOREMPP_PORT}"
 echo -e "  ${BLUE}Debug Mode:${NC}     ${BIOREMPP_DEBUG}"
 echo -e "  ${BLUE}Hot Reload:${NC}     ${BIOREMPP_HOT_RELOAD}"
 echo -e "  ${BLUE}Log Level:${NC}      ${BIOREMPP_LOG_LEVEL}"
+echo -e "  ${BLUE}Resume Backend:${NC} ${BIOREMPP_RESUME_BACKEND:-diskcache}"
 if [ -n "$BIOREMPP_WORKERS" ]; then
     echo -e "  ${BLUE}Workers:${NC}        ${BIOREMPP_WORKERS}"
     echo -e "  ${BLUE}Worker Class:${NC}   ${BIOREMPP_WORKER_CLASS:-gevent}"

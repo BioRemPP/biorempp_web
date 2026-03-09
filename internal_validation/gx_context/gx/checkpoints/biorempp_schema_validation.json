@@ -1,0 +1,34 @@
+{
+  "actions": [
+    {
+      "name": "update_data_docs",
+      "site_names": [],
+      "type": "update_data_docs"
+    }
+  ],
+  "id": "771848c8-e421-461f-8913-15b6bc3ce570",
+  "name": "biorempp_schema_validation",
+  "result_format": {
+    "include_unexpected_rows": true,
+    "partial_unexpected_count": 20,
+    "result_format": "COMPLETE"
+  },
+  "validation_definitions": [
+    {
+      "id": "33743685-e076-42d3-9757-1d6016209acb",
+      "name": "validate_biorempp_db_schema"
+    },
+    {
+      "id": "02c6adcc-3bed-4486-98e3-deabab540e44",
+      "name": "validate_hadeg_db_schema"
+    },
+    {
+      "id": "0097555b-3fa4-4d84-b641-3016460f5e74",
+      "name": "validate_kegg_degradation_db_schema"
+    },
+    {
+      "id": "9b959db1-9d6c-434a-9225-4ac331525f26",
+      "name": "validate_toxcsm_db_schema"
+    }
+  ]
+}

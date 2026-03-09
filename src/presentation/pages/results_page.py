@@ -7,22 +7,6 @@ Functions
 ---------
 create_results_layout
     Create complete results page layout with accordions
-
-Notes
------
-- Feed-style layout with sections
-- Accordion-based table rendering
-- Overview card with general information
-- 4 database results: BioRemPP, HADEG, ToxCSM, KEGG
-- Module 1: Comparative Assessment (Databases, Samples, Regulatory Frameworks)
-- Module 2: Exploratory Analysis (Gene Counts and Distributions)
-- Module 3: System Structure (Clustering, Similarity, Co-occurrence)
-- Module 4: Functional and Genetic Profiling
-- Module 5: Modeling Interactions (Samples, Genes, Compounds)
-- Module 6: Hierarchical and Flow-based Functional Analysis
-- Module 7: Toxicological Risk Assessment and Profiling
-- Module 8: Assembly of Functional Consortia
-- Modular components for maintainability
 """
 
 from typing import Any, Dict, Optional
@@ -47,6 +31,7 @@ from ..components.composite.analysis_suggestions import (
     create_suggestions_offcanvas,
     create_suggestions_trigger_button,
 )
+from ..pages.methods.workflow_modal import create_results_workflow_modal
 from ..layouts.module_layouts import (
     create_module1_section,
     create_module2_section,
@@ -59,7 +44,342 @@ from ..layouts.module_layouts import (
 )
 
 
-def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.Div:
+DATABASE_RELATION_METRIC_MAP = {
+    "biorempp": "enzyme_compound_relations",
+    "hadeg": "gene_pathway_relations",
+    "toxcsm": "environmental_compounds",
+    "kegg": "gene_pathway_associations",
+}
+
+DATABASE_LABELS = {
+    "biorempp": "BioRemPP",
+    "hadeg": "HADEG",
+    "toxcsm": "ToxCSM",
+    "kegg": "KEGG",
+}
+
+
+def _safe_int(value: Any) -> Optional[int]:
+    """Safely parse int values with None fallback."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return int(value)
+    try:
+        return int(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _safe_float(value: Any) -> Optional[float]:
+    """Safely parse float values with None fallback."""
+    if value is None:
+        return None
+    if isinstance(value, bool):
+        return float(int(value))
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return None
+
+
+def _extract_input_relation(
+    database_overview: Dict[str, Any], db_name: str, metric_name: str
+) -> Optional[int]:
+    """Extract relation metric from database_overview payload."""
+    metric = database_overview.get(db_name, {}).get(metric_name, {})
+    if not isinstance(metric, dict):
+        return None
+    return _safe_int(metric.get("input_value"))
+
+
+def _build_database_aggregate_overview_fallback(
+    database_overview: Dict[str, Any],
+    matched_kos: Any,
+    total_kos: Any,
+) -> Dict[str, Any]:
+    """Build aggregate overview from existing metadata when key is missing."""
+    per_database: Dict[str, Dict[str, Any]] = {}
+    relation_values = []
+
+    for db_name, metric_name in DATABASE_RELATION_METRIC_MAP.items():
+        input_relations = _extract_input_relation(database_overview, db_name, metric_name)
+        per_database[db_name] = {"input_relations": input_relations, "share_pct": None}
+        if input_relations is not None:
+            relation_values.append(input_relations)
+
+    total_relations_input = sum(relation_values) if relation_values else None
+    active_databases = (
+        sum(1 for value in relation_values if value > 0) if relation_values else None
+    )
+    total_databases = len(DATABASE_RELATION_METRIC_MAP)
+
+    if total_relations_input and total_relations_input > 0:
+        for db_name, stats in per_database.items():
+            input_relations = stats.get("input_relations")
+            if input_relations is None:
+                continue
+            stats["share_pct"] = round((input_relations / total_relations_input) * 100, 2)
+
+    matched = _safe_int(matched_kos)
+    total = _safe_int(total_kos)
+    ko_match_rate_pct = None
+    if matched is not None and total is not None and total > 0:
+        ko_match_rate_pct = round((matched / total) * 100, 2)
+
+    return {
+        "total_relations_input": total_relations_input,
+        "active_databases": active_databases,
+        "total_databases": total_databases,
+        "ko_match_rate_pct": ko_match_rate_pct,
+        "matched_kos": matched,
+        "total_kos": total,
+        "per_database": per_database,
+    }
+
+
+def _resolve_database_aggregate_overview(
+    metadata: Dict[str, Any], database_overview: Dict[str, Any]
+) -> Dict[str, Any]:
+    """Resolve aggregate overview from metadata with resilient fallback."""
+    fallback = _build_database_aggregate_overview_fallback(
+        database_overview=database_overview,
+        matched_kos=metadata.get("matched_kos"),
+        total_kos=metadata.get("total_kos"),
+    )
+    aggregate = metadata.get("database_aggregate_overview")
+    if not isinstance(aggregate, dict):
+        return fallback
+
+    result = {
+        "total_relations_input": fallback["total_relations_input"],
+        "active_databases": fallback["active_databases"],
+        "total_databases": fallback["total_databases"],
+        "ko_match_rate_pct": fallback["ko_match_rate_pct"],
+        "matched_kos": fallback["matched_kos"],
+        "total_kos": fallback["total_kos"],
+        "per_database": {
+            db_name: {
+                "input_relations": stats.get("input_relations"),
+                "share_pct": stats.get("share_pct"),
+            }
+            for db_name, stats in fallback["per_database"].items()
+        },
+    }
+
+    total_relations_input = _safe_int(aggregate.get("total_relations_input"))
+    active_databases = _safe_int(aggregate.get("active_databases"))
+    total_databases = _safe_int(aggregate.get("total_databases"))
+    ko_match_rate_pct = _safe_float(aggregate.get("ko_match_rate_pct"))
+    matched_kos = _safe_int(aggregate.get("matched_kos"))
+    total_kos = _safe_int(aggregate.get("total_kos"))
+
+    if total_relations_input is not None:
+        result["total_relations_input"] = total_relations_input
+    if active_databases is not None:
+        result["active_databases"] = active_databases
+    if total_databases is not None:
+        result["total_databases"] = total_databases
+    if ko_match_rate_pct is not None:
+        result["ko_match_rate_pct"] = round(ko_match_rate_pct, 2)
+    if matched_kos is not None:
+        result["matched_kos"] = matched_kos
+    if total_kos is not None:
+        result["total_kos"] = total_kos
+
+    aggregate_per_database = aggregate.get("per_database", {})
+    if isinstance(aggregate_per_database, dict):
+        for db_name in DATABASE_RELATION_METRIC_MAP:
+            db_stats = aggregate_per_database.get(db_name, {})
+            if not isinstance(db_stats, dict):
+                continue
+            input_relations = _safe_int(db_stats.get("input_relations"))
+            share_pct = _safe_float(db_stats.get("share_pct"))
+            if input_relations is not None:
+                result["per_database"][db_name]["input_relations"] = input_relations
+            if share_pct is not None:
+                result["per_database"][db_name]["share_pct"] = round(share_pct, 2)
+
+    if result["active_databases"] is None:
+        relations = [
+            stats.get("input_relations")
+            for stats in result["per_database"].values()
+            if stats.get("input_relations") is not None
+        ]
+        if relations:
+            result["active_databases"] = sum(1 for value in relations if value > 0)
+
+    if result["total_relations_input"] is None:
+        relations = [
+            stats.get("input_relations")
+            for stats in result["per_database"].values()
+            if stats.get("input_relations") is not None
+        ]
+        if relations:
+            result["total_relations_input"] = sum(relations)
+
+    total_relations = result.get("total_relations_input")
+    if total_relations and total_relations > 0:
+        for db_name in DATABASE_RELATION_METRIC_MAP:
+            db_stats = result["per_database"].get(db_name, {})
+            input_relations = db_stats.get("input_relations")
+            if input_relations is None:
+                continue
+            if db_stats.get("share_pct") is None:
+                db_stats["share_pct"] = round((input_relations / total_relations) * 100, 2)
+
+    if result["ko_match_rate_pct"] is None:
+        matched = result.get("matched_kos")
+        total = result.get("total_kos")
+        if matched is not None and total is not None and total > 0:
+            result["ko_match_rate_pct"] = round((matched / total) * 100, 2)
+
+    return result
+
+
+def _format_integer(value: Optional[int]) -> str:
+    """Format integer metrics with placeholder."""
+    if value is None:
+        return "--"
+    return f"{value:,}"
+
+
+def _format_ratio(numerator: Optional[int], denominator: Optional[int]) -> str:
+    """Format ratio metrics with placeholder."""
+    if numerator is None or denominator is None:
+        return "--"
+    return f"{numerator:,}/{denominator:,}"
+
+
+def _format_percentage(value: Optional[float]) -> str:
+    """Format percentage metrics with placeholder."""
+    if value is None:
+        return "--"
+    return f"{value:.2f}%"
+
+
+RESULTS_MODULE_DEFINITIONS = (
+    {
+        "value": 1,
+        "short_label": "M1",
+        "full_label": "Module 1 - Comparative Assessment",
+    },
+    {
+        "value": 2,
+        "short_label": "M2",
+        "full_label": "Module 2 - Exploratory Analysis",
+    },
+    {"value": 3, "short_label": "M3", "full_label": "Module 3 - System Structure"},
+    {
+        "value": 4,
+        "short_label": "M4",
+        "full_label": "Module 4 - Functional and Genetic Profiling",
+    },
+    {
+        "value": 5,
+        "short_label": "M5",
+        "full_label": "Module 5 - Modeling Interactions",
+    },
+    {
+        "value": 6,
+        "short_label": "M6",
+        "full_label": "Module 6 - Hierarchical and Flow-based Analysis",
+    },
+    {
+        "value": 7,
+        "short_label": "M7",
+        "full_label": "Module 7 - Toxicological Risk Assessment",
+    },
+    {
+        "value": 8,
+        "short_label": "M8",
+        "full_label": "Module 8 - Assembly of Functional Consortia",
+    },
+)
+
+
+def _normalize_module_index(module_value: Any) -> int:
+    """Normalize module selector value to valid integer index [1..8]."""
+    try:
+        module_index = int(module_value)
+    except (TypeError, ValueError):
+        return 1
+    if module_index < 1 or module_index > 8:
+        return 1
+    return module_index
+
+
+def create_results_module_layout(module_value: Any = 1) -> html.Div:
+    """Create layout for one selected analysis module."""
+    module_index = _normalize_module_index(module_value)
+    module_factories = {
+        1: create_module1_section,
+        2: create_module2_section,
+        3: create_module3_section,
+        4: create_module4_section,
+        5: create_module5_section,
+        6: create_module6_section,
+        7: create_module7_section,
+        8: create_module8_section,
+    }
+    return module_factories[module_index]()
+
+
+def _build_results_module_selector(default_module: int) -> html.Div:
+    """Build segmented module selector with contextual guidance."""
+    module_tabs = [
+        dcc.Tab(
+            label=module["short_label"],
+            value=str(module["value"]),
+            className="results-module-tab",
+            selected_className="results-module-tab--selected",
+        )
+        for module in RESULTS_MODULE_DEFINITIONS
+    ]
+
+    return html.Div(
+        [
+            dbc.Card(
+                [
+                    dbc.CardHeader(
+                        html.H5(
+                            [
+                                html.I(
+                                    className="fas fa-layer-group me-2 text-primary"
+                                ),
+                                "Analysis Modules",
+                            ],
+                            className="mb-0",
+                        ),
+                        className="py-2",
+                    ),
+                    dbc.CardBody(
+                        [
+                            html.P(
+                                "Choose a module to load its use cases.",
+                                className="text-muted mb-3",
+                            ),
+                            dcc.Tabs(
+                                id="results-module-selector",
+                                value=str(default_module),
+                                parent_className="results-module-tabs-parent",
+                                className="results-module-tabs",
+                                children=module_tabs,
+                            ),
+                        ]
+                    ),
+                ],
+                className="results-module-tabs-card mb-3 shadow-sm",
+            )
+        ]
+    )
+
+
+def create_results_layout(
+    merged_data: Optional[Dict[str, Any]] = None,
+    include_modules: bool = True,
+    initial_module: int = 1,
+) -> html.Div:
     """
     Create results page layout with feed-style accordions.
 
@@ -70,6 +390,11 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         Expected keys: biorempp_df, biorempp_raw_df, hadeg_df, hadeg_raw_df,
         toxcsm_df (processed), toxcsm_raw_df (complete 66 columns),
         kegg_df, kegg_raw_df, metadata
+    include_modules : bool, optional
+        If True, render all modules 1..8 in initial layout.
+        If False, render shell + module selector with dynamic container.
+    initial_module : int, optional
+        Default selected module value for lazy render shell.
 
     Returns
     -------
@@ -87,18 +412,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         - Download button
         - Analytical highlight
         - Accordion with on-demand table
-      - Module 2 overview header (guiding questions)
-      - Module 2 exploratory analysis section
-      - Module 3 overview header (guiding questions)
-      - Module 3 system structure analysis section
-      - Module 4 overview header (guiding questions)
-      - Module 4 functional and genetic profiling section
-      - Module 5 overview header (guiding questions)
-      - Module 5 interaction modeling section
-      - Module 6 overview header (guiding questions)
-      - Module 6 hierarchical and flow-based analysis section
-      - Module 7 overview header (guiding questions)
-      - Module 7 toxicological risk assessment section
+        - Analytical Modules (8 modules)
     """
     # Default empty data
     if merged_data is None:
@@ -115,6 +429,38 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
         }
 
     metadata = merged_data.get("metadata", {})
+    job_id = metadata.get("job_id")
+    if not isinstance(job_id, str) or not job_id.strip():
+        job_id = "--"
+    database_overview = metadata.get("database_overview", {})
+    if not isinstance(database_overview, dict):
+        database_overview = {}
+    aggregate_overview = _resolve_database_aggregate_overview(
+        metadata=metadata,
+        database_overview=database_overview,
+    )
+
+    contributions = []
+    for db_name, db_label in DATABASE_LABELS.items():
+        db_stats = aggregate_overview.get("per_database", {}).get(db_name, {})
+        input_relations = _safe_int(db_stats.get("input_relations"))
+        share_pct = _safe_float(db_stats.get("share_pct"))
+
+        if input_relations is None:
+            badge_text = f"{db_label}: --"
+        elif share_pct is None:
+            badge_text = f"{db_label}: {input_relations:,}"
+        else:
+            badge_text = f"{db_label}: {input_relations:,} ({share_pct:.1f}%)"
+
+        contributions.append(
+            dbc.Badge(
+                badge_text,
+                color="light",
+                text_color="dark",
+                className="border me-2 mb-2",
+            )
+        )
 
     # Header
     header = create_header(show_nav=True, logo_size="80px")
@@ -244,6 +590,186 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
                         ],
                         className="mt-2",
                     ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-fingerprint text-secondary me-2"
+                                                ),
+                                                "Job ID",
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.Div(
+                                            [
+                                                html.Code(
+                                                    job_id,
+                                                    id="results-job-id-copy-target",
+                                                    className="text-dark",
+                                                    style={
+                                                        "fontSize": "0.9rem",
+                                                        "cursor": "pointer",
+                                                    },
+                                                ),
+                                                (
+                                                    dcc.Clipboard(
+                                                        target_id="results-job-id-copy-target",
+                                                        title="Copy Job ID",
+                                                        className="ms-2",
+                                                        style={
+                                                            "display": "inline-flex",
+                                                            "alignItems": "center",
+                                                            "cursor": "pointer",
+                                                            "color": "#6c757d",
+                                                            "fontSize": "1rem",
+                                                        },
+                                                    )
+                                                    if job_id != "--"
+                                                    else html.Span()
+                                                ),
+                                            ],
+                                            className="d-inline-flex align-items-center justify-content-center",
+                                        ),
+                                    ],
+                                    className="text-center mt-3",
+                                ),
+                                width=12,
+                            )
+                        ]
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.Hr(className="my-3"),
+                                width=12,
+                            )
+                        ]
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-link text-success me-2"
+                                                ),
+                                                "Integrated Relations",
+                                                html.I(
+                                                    className="fas fa-info-circle ms-2 text-muted",
+                                                    title=(
+                                                        "Sum of input relations across the first metric "
+                                                        "of each database; overlap may exist."
+                                                    ),
+                                                    style={"fontSize": "0.75rem"},
+                                                ),
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.H5(
+                                            _format_integer(
+                                                _safe_int(
+                                                    aggregate_overview.get(
+                                                        "total_relations_input"
+                                                    )
+                                                )
+                                            ),
+                                            className="mb-0 text-dark",
+                                        ),
+                                    ],
+                                    className="text-center",
+                                ),
+                                md=4,
+                                className="mb-3 mb-md-0",
+                            ),
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-database text-primary me-2"
+                                                ),
+                                                "Databases with Matches",
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.H5(
+                                            _format_ratio(
+                                                _safe_int(
+                                                    aggregate_overview.get(
+                                                        "active_databases"
+                                                    )
+                                                ),
+                                                _safe_int(
+                                                    aggregate_overview.get("total_databases")
+                                                ),
+                                            ),
+                                            className="mb-0 text-dark",
+                                        ),
+                                    ],
+                                    className="text-center",
+                                ),
+                                md=4,
+                                className="mb-3 mb-md-0",
+                            ),
+                            dbc.Col(
+                                html.Div(
+                                    [
+                                        html.Small(
+                                            [
+                                                html.I(
+                                                    className="fas fa-percentage text-info me-2"
+                                                ),
+                                                "KO Match Rate",
+                                            ],
+                                            className="text-muted d-block",
+                                        ),
+                                        html.H5(
+                                            _format_percentage(
+                                                _safe_float(
+                                                    aggregate_overview.get("ko_match_rate_pct")
+                                                )
+                                            ),
+                                            className="mb-0 text-dark",
+                                        ),
+                                    ],
+                                    className="text-center",
+                                ),
+                                md=4,
+                            ),
+                        ]
+                    ),
+                    dbc.Row(
+                        [
+                            dbc.Col(
+                                [
+                                    html.Small(
+                                        [
+                                            html.I(
+                                                className="fas fa-layer-group me-2 text-muted"
+                                            ),
+                                            "Per-database contribution",
+                                        ],
+                                        className="text-muted d-block mt-3 mb-2 text-center",
+                                    ),
+                                    html.Div(
+                                        contributions,
+                                        className=(
+                                            "d-flex flex-wrap justify-content-center "
+                                            "align-items-center"
+                                        ),
+                                    ),
+                                ],
+                                width=12,
+                            )
+                        ]
+                    ),
                 ]
             ),
         ],
@@ -251,58 +777,85 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
     )
 
     # Modular Database Sections
-    biorempp_section = create_biorempp_section()
-    hadeg_section = create_hadeg_section()
-    toxcsm_section = create_toxcsm_section()
-    kegg_section = create_kegg_section()
+    biorempp_section = create_biorempp_section(
+        overview_stats=database_overview.get("biorempp", {})
+    )
+    hadeg_section = create_hadeg_section(
+        overview_stats=database_overview.get("hadeg", {})
+    )
+    toxcsm_section = create_toxcsm_section(
+        overview_stats=database_overview.get("toxcsm", {})
+    )
+    kegg_section = create_kegg_section(
+        overview_stats=database_overview.get("kegg", {})
+    )
 
-    # Module 1: Comparative Assessment
-    module1_section = create_module1_section()
+    content_children = [
+        overview_card,
+        biorempp_section,
+        hadeg_section,
+        toxcsm_section,
+        kegg_section,
+    ]
 
-    # Module 2: Exploratory Analysis
-    module2_section = create_module2_section()
+    if include_modules:
+        # Module 1: Comparative Assessment
+        module1_section = create_module1_section()
 
-    # Module 3: System Structure
-    module3_section = create_module3_section()
+        # Module 2: Exploratory Analysis
+        module2_section = create_module2_section()
 
-    # Module 4: Functional and Genetic Profiling
-    module4_section = create_module4_section()
+        # Module 3: System Structure
+        module3_section = create_module3_section()
 
-    # Module 5: Modeling Interactions
-    module5_section = create_module5_section()
+        # Module 4: Functional and Genetic Profiling
+        module4_section = create_module4_section()
 
-    # Module 6: Hierarchical and Flow-based Analysis
-    module6_section = create_module6_section()
+        # Module 5: Modeling Interactions
+        module5_section = create_module5_section()
 
-    # Module 7: Toxicological Risk Assessment
-    module7_section = create_module7_section()
+        # Module 6: Hierarchical and Flow-based Analysis
+        module6_section = create_module6_section()
 
-    # Module 8: Assembly of Functional Consortia
-    module8_section = create_module8_section()
+        # Module 7: Toxicological Risk Assessment
+        module7_section = create_module7_section()
+
+        # Module 8: Assembly of Functional Consortia
+        module8_section = create_module8_section()
+        content_children.extend(
+            [
+                module1_section,
+                module2_section,
+                module3_section,
+                module4_section,
+                module5_section,
+                module6_section,
+                module7_section,
+                module8_section,
+            ]
+        )
+    else:
+        default_module = _normalize_module_index(initial_module)
+        content_children.append(_build_results_module_selector(default_module))
+        content_children.append(
+            html.Div(
+                html.Div(
+                    id="results-module-container",
+                    children=[],
+                ),
+                className="mb-4",
+            )
+        )
 
     # Main Content Container
     main_content = dbc.Container(
-        [
-            overview_card,
-            biorempp_section,
-            hadeg_section,
-            toxcsm_section,
-            kegg_section,
-            module1_section,
-            module2_section,
-            module3_section,
-            module4_section,
-            module5_section,
-            module6_section,
-            module7_section,
-            module8_section,
-        ],
+        content_children,
         fluid=False,
         className="my-4",
     )
 
     # Footer
-    footer = create_footer(version="1.0.0", year=2025)
+    footer = create_footer()
 
     # Navigation components
     nav_button = create_navigation_button()
@@ -311,6 +864,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
     # Analytical Suggestions components
     suggestions_button = create_suggestions_trigger_button()
     suggestions_offcanvas = create_suggestions_offcanvas()
+    results_workflow_modal = create_results_workflow_modal()
 
     # Complete Layout (NO dcc.Location here - already in main app)
     return html.Div(
@@ -322,6 +876,7 @@ def create_results_layout(merged_data: Optional[Dict[str, Any]] = None) -> html.
             nav_button,  # Right side
             suggestions_offcanvas,
             nav_offcanvas,
+            results_workflow_modal,
         ]
     )
 
@@ -341,3 +896,20 @@ def get_results_layout(merged_data: Optional[Dict[str, Any]] = None):
         Complete results page layout
     """
     return create_results_layout(merged_data)
+
+
+def get_results_shell_layout(
+    merged_data: Optional[Dict[str, Any]] = None,
+    initial_module: int = 1,
+):
+    """Get lightweight /results shell layout with lazy module container."""
+    return create_results_layout(
+        merged_data=merged_data,
+        include_modules=False,
+        initial_module=initial_module,
+    )
+
+
+def get_results_module_layout(module_value: Any = 1):
+    """Get selected module layout for dynamic /results rendering."""
+    return create_results_module_layout(module_value=module_value)

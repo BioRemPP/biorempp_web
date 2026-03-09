@@ -1,5 +1,5 @@
 """
-FAQ Page - BioRemPP v1.0.
+FAQ Page - BioRemPP v1.0.0.
 
 Comprehensive Frequently Asked Questions page.
 
@@ -19,6 +19,8 @@ Notes
 import dash_bootstrap_components as dbc
 from dash import html
 
+from config.settings import APP_VERSION, get_settings
+
 from ..components.base import create_footer, create_header
 from ..components.composite.faq_item import (
     create_code_block,
@@ -29,6 +31,26 @@ from ..components.composite.faq_section import (
     create_faq_quick_links,
     create_faq_section,
 )
+from ..routing import app_path
+
+# ==================== FAQ CONSTANTS ====================
+# Version and contact information (now from centralized settings)
+FAQ_APP_VERSION = APP_VERSION
+FAQ_SUPPORT_EMAIL = "biorempp@gmail.com"
+FAQ_CANONICAL_URL = "https://bioinfo.imd.ufrn.br/biorempp/"
+
+# Technical limits (derived from runtime settings to avoid drift)
+_FAQ_SETTINGS = get_settings()
+FAQ_SESSION_TIMEOUT_HOURS = max(
+    1, (int(_FAQ_SETTINGS.RESUME_TTL_SECONDS) + 3599) // 3600
+)
+FAQ_MAX_SAMPLES = max(int(_FAQ_SETTINGS.UPLOAD_SAMPLE_LIMIT), 1)
+FAQ_MAX_TOTAL_KOS = max(int(_FAQ_SETTINGS.UPLOAD_KO_LIMIT), 1)
+FAQ_MAX_UPLOAD_MB = max(int(_FAQ_SETTINGS.UPLOAD_MAX_SIZE_MB), 1)
+
+# DOI metadata (database DOI assigned; web service DOI still pending)
+FAQ_ZENODO_WEB_SERVICE_DOI = "[Zenodo DOI pending]"
+FAQ_ZENODO_DATABASE_DOI = "https://doi.org/10.5281/zenodo.18905195"
 
 
 def create_faq_page() -> html.Div:
@@ -51,10 +73,13 @@ def create_faq_page() -> html.Div:
     2. File Upload & Validation
     3. Data Processing
     4. Results & Visualization
-    5. Technical Questions
-    6. Troubleshooting
-    7. Data Privacy & Security
-    8. Export & Download
+    5. Scientific Validity & Limitations
+    6. Technical Questions
+    7. Troubleshooting
+    8. Data Privacy & Security
+    9. Reproducibility, Versioning & Citation
+    10. Licensing & Third-Party Data
+    11. Export & Download
     """
     # Header
     header = create_header(show_nav=True, logo_size="60px")
@@ -85,9 +110,12 @@ def create_faq_page() -> html.Div:
         {"title": "File Upload & Validation", "id": "faq-file-upload"},
         {"title": "Data Processing", "id": "faq-data-processing"},
         {"title": "Results & Visualization", "id": "faq-results"},
+        {"title": "Scientific Validity & Limitations", "id": "faq-scientific-validity"},
         {"title": "Technical Questions", "id": "faq-technical"},
         {"title": "Troubleshooting", "id": "faq-troubleshooting"},
         {"title": "Data Privacy & Security", "id": "faq-privacy"},
+        {"title": "Reproducibility, Versioning & Citation", "id": "faq-reproducibility"},
+        {"title": "Licensing & Third-Party Data", "id": "faq-licensing"},
         {"title": "Export & Download", "id": "faq-export"},
     ]
     quick_links = create_faq_quick_links(section_list)
@@ -100,7 +128,7 @@ def create_faq_page() -> html.Div:
                 [
                     html.P(
                         "BioRemPP (Bioremediation Potential Profile) is a "
-                        "comprehensive web-based tool designed to analyze "
+                        "comprehensive web service designed to analyze "
                         "bioremediation potential based on genomic "
                         "data."
                     ),
@@ -146,14 +174,20 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Yes, BioRemPP is completely free for academic and "
-                        "research purposes. The tool is developed as part of "
-                        "scientific research to support the bioremediation "
-                        "community."
+                        "Yes. BioRemPP is free and open to all users, and no login is required."
+                    ),
+                    html.P(
+                        [
+                            "BioRemPP is not usable for commercial product claims without experimental confirmation. "
+                            "Please review the ",
+                            html.A("Terms of Use", href=app_path("/terms-of-use"), className="text-decoration-underline"),
+                            " for detailed usage conditions.",
+                        ]
                     ),
                     create_faq_note(
-                        "For commercial use or high-throughput analyses, "
-                        "please contact our team.",
+                        "To ensure fair usage and stable availability, the server may enforce practical limits "
+                        "(request size, concurrency, and runtime). For high-throughput workloads, consider local "
+                        "or institutional deployment.",
                         note_type="info",
                     ),
                 ]
@@ -162,12 +196,19 @@ def create_faq_page() -> html.Div:
         ),
         create_faq_item(
             question="Do I need to create an account?",
-            answer=(
-                "No account creation is required! BioRemPP works with "
-                "session-based storage. Your data is processed in real-time "
-                "and stored temporarily for the duration of your session. "
-                "Once you close your browser or the session expires, all "
-                "data is automatically deleted."
+            answer=html.Div(
+                [
+                    html.P(
+                        "No account creation is required. BioRemPP runs directly in the browser workflow."
+                    ),
+                    html.P(
+                        "After processing, a Job ID is generated for each execution. "
+                        f"You can resume results in the same browser profile for up to {FAQ_SESSION_TIMEOUT_HOURS} hours without reprocessing."
+                    ),
+                    html.P(
+                        "Data remains in temporary server-side cache and is automatically removed after expiration."
+                    ),
+                ]
             ),
             item_id="faq-need-account",
         ),
@@ -217,7 +258,9 @@ def create_faq_page() -> html.Div:
                     ),
                     create_faq_note(
                         "Access the New User Guide from the homepage by clicking "
-                        "'Start Guided Tour' below the 'Start Your Analysis' title.",
+                        "'Start Quick Walkthrough' below the 'Start Your Analysis' title. "
+                        "If browser extensions hide this button, use the direct "
+                        "'Open User Guide' link in the same card.",
                         note_type="success",
                     ),
                 ]
@@ -265,7 +308,7 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Module 6: "), "KEGG Pathway Completeness"]
+                                [html.Strong("Module 6: "), "Hierarchical and Flow-based Functional Analysis"]
                             ),
                             html.Li(
                                 [
@@ -375,17 +418,26 @@ def create_faq_page() -> html.Div:
                 [
                     html.P(
                         [
-                            "Maximum limits: ",
-                            html.Strong("100 samples"),
+                            "Current upload limit: ",
+                            html.Strong(f"{FAQ_MAX_UPLOAD_MB} MB per file"),
+                        ]
+                    ),
+                    html.P(
+                        [
+                            "Input validation limits: ",
+                            html.Strong(f"{FAQ_MAX_SAMPLES} samples"),
                             " or ",
-                            html.Strong("500.000 KO numbers total"),
+                            html.Strong(f"{FAQ_MAX_TOTAL_KOS:,} KO numbers total"),
                             " (whichever comes first)",
                         ]
                     ),
+                    html.P(
+                        "These limits protect server stability and ensure responsive performance "
+                        "for all users. Typical datasets are smaller and process quickly."
+                    ),
                     create_faq_note(
-                        "For larger datasets, consider splitting into "
-                        "multiple files or contact us for batch processing "
-                        "options.",
+                        "For larger projects, split inputs into batches or contact the team "
+                        f"at {FAQ_SUPPORT_EMAIL} to discuss alternatives.",
                         note_type="warning",
                     ),
                 ]
@@ -494,6 +546,11 @@ def create_faq_page() -> html.Div:
                         "your data size and accuracy requirements.",
                         note_type="info",
                     ),
+                    create_faq_note(
+                        "Quick start: use the 'Need a KO Input Example?' card on the homepage "
+                        "to open input instructions (View Info) or download an example dataset.",
+                        note_type="success",
+                    ),
                 ]
             ),
             item_id="faq-annotation-tools",
@@ -586,6 +643,36 @@ def create_faq_page() -> html.Div:
                 ]
             ),
             item_id="faq-databases",
+        ),
+        create_faq_item(
+            question="What is the Job ID generated after processing?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Each successful processing run generates a unique Job ID "
+                        "(execution identifier)."
+                    ),
+                    html.P(html.Strong("Why it matters:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "You can resume the same analysis without reprocessing."
+                            ),
+                            html.Li(
+                                f"Resume is available for up to {FAQ_SESSION_TIMEOUT_HOURS} hours (temporary cache TTL)."
+                            ),
+                            html.Li(
+                                "Resume is restricted to the same browser profile for security."
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Store the Job ID in your notes. You can also copy it from the Results page overview.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-job-id-generated",
         ),
         create_faq_item(
             question="What if processing fails or gets stuck?",
@@ -797,7 +884,7 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Module 6: "), "KEGG Pathway Completeness"]
+                                [html.Strong("Module 6: "), "Hierarchical and Flow-based Functional Analysis"]
                             ),
                             html.Li(
                                 [
@@ -873,6 +960,33 @@ def create_faq_page() -> html.Div:
                 ]
             ),
             item_id="faq-visualizations",
+        ),
+        create_faq_item(
+            question="Where can I find and copy my Job ID?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Open the Results page and check the top overview card. "
+                        "The Job ID appears in the 'Job ID' field."
+                    ),
+                    html.P(html.Strong("How to copy:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Use the copy icon next to the Job ID in the overview card."
+                            ),
+                            html.Li(
+                                "Save the identifier in your methods notes or analysis log."
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "This ID allows you to resume the same run without reprocessing (same browser profile, within TTL).",
+                        note_type="success",
+                    ),
+                ]
+            ),
+            item_id="faq-job-id-copy",
         ),
         create_faq_item(
             question="Can I customize the visualizations?",
@@ -1046,39 +1160,7 @@ def create_faq_page() -> html.Div:
                 ]
             ),
             item_id="faq-regulatory-frameworks",
-        ),
-        create_faq_item(
-            question="How many analytical use cases are available?",
-            answer=html.Div(
-                [
-                    html.P(
-                        "BioRemPP provides 56 specialized use cases across 8 modules, "
-                        "each designed for specific analytical purposes."
-                    ),
-                    html.P(html.Strong("Use case distribution:")),
-                    html.Ul(
-                        [
-                            html.Li("Module 1: 7 use cases - Comparative assessments"),
-                            html.Li("Module 2: 6 use cases - Exploratory ranking"),
-                            html.Li(
-                                "Module 3: 8 use cases - System structure analysis"
-                            ),
-                            html.Li("Module 4: 13 use cases - Functional profiling"),
-                            html.Li("Module 5: 7 use cases - Interaction modeling"),
-                            html.Li("Module 6: 4 use cases - Pathway completeness"),
-                            html.Li("Module 7: 6 use cases - Toxicological assessment"),
-                            html.Li("Module 8: 5 use cases - Consortia assembly"),
-                        ]
-                    ),
-                    create_faq_note(
-                        "Each use case has interactive parameters and generates "
-                        "specific visualizations. See Methods page for complete catalog.",
-                        note_type="success",
-                    ),
-                ]
-            ),
-            item_id="faq-use-case-count",
-        ),
+        )
     ]
 
     section_results = create_faq_section(
@@ -1088,7 +1170,349 @@ def create_faq_page() -> html.Div:
         section_id="faq-results",
     )
 
-    # ================ SECTION 5: Technical Questions =================
+    # ======= SECTION 5: Scientific Validity & Limitations ===========
+    scientific_validity_items = [
+        create_faq_item(
+            question="What does 'bioremediation potential' mean in BioRemPP?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "BioRemPP provides functional inference based on KO "
+                        "(KEGG Orthology) annotation evidence and curated mappings "
+                        "to bioremediation-relevant pathways and enzymes."
+                    ),
+                    html.P(html.Strong("Important clarifications:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Analysis are based on genomic potential (presence of genes)"
+                            ),
+                            html.Li(
+                                "Do NOT prove actual in situ degradation activity"
+                            ),
+                            html.Li(
+                                "Do NOT indicate gene expression levels or enzyme activity"
+                            ),
+                            html.Li(
+                                "Do NOT account for environmental factors (pH, temperature, etc.)"
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "BioRemPP identifies genetic capacity for bioremediation, "
+                        "not actual degradation performance. Wet-lab or field validation "
+                        "is required to confirm functional activity.",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-what-is-bioremediation-potential",
+        ),
+        create_faq_item(
+            question="Does BioRemPP experimentally validate degradation or enzyme activity?",
+            answer=html.Div(
+                [
+                    html.P(
+                        [
+                            html.Strong("No."),
+                            " BioRemPP is a computational inference tool that predicts "
+                            "bioremediation potential based on genomic annotations.",
+                        ]
+                    ),
+                    html.P("What BioRemPP does:"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Identifies genes/enzymes potentially involved in degradation pathways"
+                            ),
+                            html.Li(
+                                "Maps KO annotations to known bioremediation functions"
+                            ),
+                            html.Li(
+                                "Assesses pathway completeness based on gene presence"
+                            ),
+                        ]
+                    ),
+                    html.P("What BioRemPP does NOT do:"),
+                    html.Ul(
+                        [
+                            html.Li("Measure actual enzyme activity"),
+                            html.Li("Confirm gene expression"),
+                            html.Li("Validate degradation in laboratory or field conditions"),
+                            html.Li("Account for regulatory mechanisms or metabolic flux"),
+                        ]
+                    ),
+                    create_faq_note(
+                        "All predictions require experimental validation through "
+                        "wet-lab studies, field trials, or direct enzymatic assays.",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-experimental-validation",
+        ),
+        create_faq_item(
+            question="What are common sources of false positives and false negatives?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Like all bioinformatics tools, BioRemPP predictions are subject "
+                        "to several sources of error:"
+                    ),
+                    html.P(html.Strong("False Positives (over-prediction):")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Annotation errors: "),
+                                    "Incorrect KO assignments from annotation tools",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Contamination: "),
+                                    "Contaminant sequences in MAGs/metagenomes",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Pathway redundancy: "),
+                                    "Alternative pathways with overlapping KOs",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Non-expressed genes: "),
+                                    "Genes present but not expressed in specific conditions",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("False Negatives (under-prediction):")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Incomplete genomes/MAGs: "),
+                                    "Missing genes due to assembly/binning gaps",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Annotation sensitivity: "),
+                                    "KO annotation tools miss divergent homologs",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Novel enzymes: "),
+                                    "Undiscovered or poorly characterized degradation pathways",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Database coverage: "),
+                                    "KEGG/HADEG may not cover all known pathways",
+                                ]
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Interpret results cautiously. Cross-validate predictions with "
+                        "multiple annotation tools and literature evidence when possible.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-false-positives-negatives",
+        ),
+        create_faq_item(
+            question="Can BioRemPP be used for metagenomes, MAGs, or incomplete assemblies?",
+            answer=html.Div(
+                [
+                    html.P(
+                        [
+                            html.Strong("Yes, with important caveats."),
+                            " BioRemPP accepts any KO annotations, regardless of source.",
+                        ]
+                    ),
+                    html.P(html.Strong("Recommended practices:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Completeness assessment: "),
+                                    "Check genome/MAG completeness (CheckM, BUSCO) before interpretation",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Contamination filtering: "),
+                                    "Remove contaminants to reduce false positives",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Pathway completeness interpretation: "),
+                                    "Incomplete genomes will show lower pathway completeness",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Conservative thresholds: "),
+                                    "Use higher confidence thresholds for incomplete data",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Quality guidelines:")),
+                    html.Ul(
+                        [
+                            html.Li("MAGs: ≥70% completeness, <10% contamination recommended"),
+                            html.Li("Metagenomes: Consider coverage and assembly quality"),
+                            html.Li(
+                                "Incomplete assemblies: Interpret pathway completeness with extreme caution"
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Lower genome completeness = higher risk of false negatives. "
+                        "Always report genome quality metrics alongside BioRemPP results.",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-metagenomes-mags",
+        ),
+        create_faq_item(
+            question="How should toxCSM predictions be interpreted?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "toxCSM provides machine learning-based toxicity predictions "
+                        "for compounds. These are computational estimates, not experimental measurements."
+                    ),
+                    html.P(html.Strong("Key limitations:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Predictions vs. measurements: "),
+                                    "toxCSM predicts toxicity; does not replace experimental assays",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Endpoint specificity: "),
+                                    "66 endpoints across 5 categories; each has different reliability",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Model applicability domain: "),
+                                    "Predictions less reliable for compounds outside training data",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Species/context specificity: "),
+                                    "Toxicity varies by organism, dose, exposure route",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Safe usage guidelines:")),
+                    html.Ul(
+                        [
+                            html.Li("Use for prioritization and screening, not definitive assessment"),
+                            html.Li("Cross-reference with experimental toxicity databases (EPA, ECHA)"),
+                            html.Li("Consider multiple endpoints, not just one"),
+                            html.Li("Report confidence scores and model versions"),
+                        ]
+                    ),
+                    create_faq_note(
+                        "NEVER use toxCSM predictions for clinical decisions, "
+                        "regulatory submissions, or risk assessment without experimental validation.",
+                        note_type="danger",
+                    ),
+                ]
+            ),
+            item_id="faq-toxcsm-interpretation",
+        ),
+        create_faq_item(
+            question="How is pathway completeness defined and what are the caveats?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Pathway completeness in BioRemPP is calculated based on "
+                        "presence/absence of KO annotations mapped to KEGG pathway definitions."
+                    ),
+                    html.P(html.Strong("Calculation method:")),
+                    html.Ul(
+                        [
+                            html.Li("Identify required KOs for each pathway (from KEGG)"),
+                            html.Li("Check which KOs are present in your sample"),
+                            html.Li("Calculate: (KOs present / Total KOs required) × 100%"),
+                        ]
+                    ),
+                    html.P(html.Strong("Important caveats:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Presence ≠ Activity: "),
+                                    "Gene presence does not guarantee expression or enzymatic flux",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Binary logic: "),
+                                    "Does not account for gene copy number, expression levels, or regulation",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("KEGG pathway definitions: "),
+                                    "May not reflect all biological pathway variants or alternatives",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Essential vs. optional steps: "),
+                                    "All KOs weighted equally; critical bottlenecks not distinguished",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Interpretation guidelines:")),
+                    html.Ul(
+                        [
+                            html.Li("100% completeness: All genes present (potential capacity)"),
+                            html.Li("70-99%: Likely functional, but missing steps may limit activity"),
+                            html.Li("<70%: Incomplete; interpret with caution"),
+                            html.Li("Consider alternative pathways and redundancy"),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Pathway completeness indicates genetic potential, not metabolic flux. "
+                        "Experimental validation (e.g., metabolomics, enzyme assays) required to "
+                        "confirm functional activity.",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-pathway-completeness",
+        ),
+    ]
+
+    section_scientific_validity = create_faq_section(
+        title="Scientific Validity & Limitations",
+        items=scientific_validity_items,
+        section_icon="fa-flask",
+        section_id="faq-scientific-validity",
+    )
+
+    # ================ SECTION 6: Technical Questions =================
     technical_items = [
         create_faq_item(
             question="What browsers are supported?",
@@ -1194,7 +1618,7 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "All data processing happens server-side in a secure cloud environment. "
+                        "All data processing happens server-side in a secure environment. "
                         "Your browser never processes or stores sensitive data."
                     ),
                     html.P(html.Strong("Data flow:")),
@@ -1203,7 +1627,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Upload: "),
-                                    "File transmitted via HTTPS encryption to server",
+                                    "File transmitted to the server over secure web transport (HTTPS in production deployments)",
                                 ]
                             ),
                             html.Li(
@@ -1215,7 +1639,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Caching: "),
-                                    "Results stored in Redis (in-memory cache) for 4-hour session",
+                                    f"Results stored in temporary server-side cache for up to {FAQ_SESSION_TIMEOUT_HOURS} hours",
                                 ]
                             ),
                             html.Li(
@@ -1227,7 +1651,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Deletion: "),
-                                    "Automatic purge when session ends",
+                                    "Automatic purge when the temporary retention window expires",
                                 ]
                             ),
                         ]
@@ -1235,7 +1659,6 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Why server-side processing?")),
                     html.Ul(
                         [
-                            html.Li("Access to large integrated databases (GB-scale)"),
                             html.Li("Consistent performance across all devices"),
                             html.Li("No need to download/install software"),
                             html.Li("Centralized security and privacy controls"),
@@ -1243,7 +1666,8 @@ def create_faq_page() -> html.Div:
                     ),
                     create_faq_note(
                         "Your browser only displays results - no genomic data is stored "
-                        "client-side. All processing happens on secure servers.",
+                        "client-side. All processing happens on secure servers. "
+                        "Deployments may use different cache backends while keeping the same user-facing resume behavior.",
                         note_type="success",
                     ),
                 ]
@@ -1276,13 +1700,13 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Command-line tool: "),
-                                    "❌ Not available (under consideration)",
+                                    "Under Development ",
                                 ]
                             ),
                             html.Li(
                                 [
                                     html.Strong("Python package: "),
-                                    "❌ Not available (under consideration)",
+                                    "Under Development",
                                 ]
                             ),
                         ]
@@ -1300,11 +1724,6 @@ def create_faq_page() -> html.Div:
                                 "Export data tables and process with custom scripts"
                             ),
                         ]
-                    ),
-                    create_faq_note(
-                        "Interested in API access? Contact our team to express interest "
-                        "and discuss your use case. User demand helps prioritize features.",
-                        note_type="info",
                     ),
                 ]
             ),
@@ -1326,7 +1745,7 @@ def create_faq_page() -> html.Div:
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Dash 2.x: "),
+                                    html.Strong("Dash 3.x: "),
                                     "Interactive web framework (built on Flask)",
                                 ]
                             ),
@@ -1342,12 +1761,6 @@ def create_faq_page() -> html.Div:
                                     "Data manipulation and numerical analysis",
                                 ]
                             ),
-                            html.Li(
-                                [
-                                    html.Strong("BioPython: "),
-                                    "Genomic data handling and sequence processing",
-                                ]
-                            ),
                         ]
                     ),
                     html.P(html.Strong("Infrastructure:")),
@@ -1355,8 +1768,8 @@ def create_faq_page() -> html.Div:
                         [
                             html.Li(
                                 [
-                                    html.Strong("Redis: "),
-                                    "In-memory session caching (4-hour timeout)",
+                                    html.Strong("Temporary cache layer: "),
+                                    "Deployment-dependent backend used for short-lived result persistence",
                                 ]
                             ),
                             html.Li(
@@ -1372,34 +1785,6 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                         ]
-                    ),
-                    html.P(html.Strong("Architecture:")),
-                    html.Ul(
-                        [
-                            html.Li(
-                                [
-                                    html.Strong("Clean Architecture: "),
-                                    "Separation of concerns (Domain, Application, Presentation layers)",
-                                ]
-                            ),
-                            html.Li(
-                                [
-                                    html.Strong("Factory Pattern: "),
-                                    "Dynamic panel generation for 56 use cases",
-                                ]
-                            ),
-                            html.Li(
-                                [
-                                    html.Strong("Service Layer: "),
-                                    "Business logic isolation and reusability",
-                                ]
-                            ),
-                        ]
-                    ),
-                    html.P(
-                        "The application follows SOLID principles and Clean Architecture "
-                        "for maintainability, testability, and scalability.",
-                        className="text-muted small mt-2",
                     ),
                 ]
             ),
@@ -1448,8 +1833,7 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     create_faq_note(
-                        "Processing time depends on dataset size. Large files (>1000 KOs) "
-                        "may take 2-3 minutes. Wait for the spinner to complete.",
+                        "Processing time depends on dataset size.",
                         note_type="info",
                     ),
                 ]
@@ -1479,12 +1863,6 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [html.Strong("Zoom level: "), "Reset to 100% (CTRL+0)"]
                             ),
-                            html.Li(
-                                [
-                                    html.Strong("Extensions: "),
-                                    "Disable script blockers, privacy extensions",
-                                ]
-                            ),
                         ]
                     ),
                     html.P(html.Strong("Advanced troubleshooting:")),
@@ -1510,16 +1888,30 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Results are session-based and automatically deleted for privacy. "
-                        "This is by design, not a bug."
+                        "Results are stored in temporary server-side cache and may still be recoverable."
                     ),
                     html.P(html.Strong("Why this happens:")),
                     html.Ul(
                         [
-                            html.Li("Session timeout: 4 hours of inactivity"),
-                            html.Li("Browser closed: Immediate deletion"),
-                            html.Li("Session cleared: Manual or automatic cleanup"),
-                            html.Li("Server restart: Rare, scheduled maintenance"),
+                            html.Li(
+                                f"Resume window expired ({FAQ_SESSION_TIMEOUT_HOURS} hours)"
+                            ),
+                            html.Li(
+                                "Different browser/profile than the one used during processing"
+                            ),
+                            html.Li(
+                                "Cache cleanup or operational restart removed temporary data"
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("What to do first:")),
+                    html.Ol(
+                        [
+                            html.Li("Use Resume Analysis by Job ID on the homepage."),
+                            html.Li("Confirm the Job ID format and exact value."),
+                            html.Li(
+                                "Retry in the same browser profile where the run was created."
+                            ),
                         ]
                     ),
                     html.P(html.Strong("Best practices to preserve results:")),
@@ -1546,19 +1938,59 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Set reminders: "),
-                                    "4-hour timeout - download before taking long breaks",
+                                    f"Temporary cache expires after {FAQ_SESSION_TIMEOUT_HOURS} hours - download before long breaks",
                                 ]
                             ),
                         ]
                     ),
                     create_faq_note(
-                        "Data cannot be recovered after session ends. Always download "
-                        "important results before closing your browser.",
+                        "If resume is unavailable (expired or different browser context), process the file again to generate a new Job ID.",
                         note_type="warning",
                     ),
                 ]
             ),
             item_id="faq-lost-results",
+        ),
+        create_faq_item(
+            question="Why does Resume by Job ID fail?",
+            answer=html.Div(
+                [
+                    html.P("Common causes and fixes:"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Invalid format: "),
+                                    "Use BRP-YYYYMMDD-HHMMSS-XXXXXX.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Expired job: "),
+                                    f"Temporary cache keeps runs for about {FAQ_SESSION_TIMEOUT_HOURS} hours.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Different browser context: "),
+                                    "Resume is restricted to the same browser profile.",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Too many attempts: "),
+                                    "A temporary anti-enumeration lock may request waiting before retry.",
+                                ]
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "If resume keeps failing, run processing again to generate a fresh Job ID.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-resume-job-id-fails",
         ),
         create_faq_item(
             question="Error: 'No KO annotations found'",
@@ -1659,11 +2091,6 @@ def create_faq_page() -> html.Div:
                             html.Li("Try incognito/private mode"),
                         ]
                     ),
-                    create_faq_note(
-                        "If downloads work in incognito mode, the issue is likely a "
-                        "browser extension. Disable extensions one by one to identify the culprit.",
-                        note_type="info",
-                    ),
                 ]
             ),
             item_id="faq-download-not-working",
@@ -1732,16 +2159,10 @@ def create_faq_page() -> html.Div:
                     html.Ul(
                         [
                             html.Li(
-                                "Small dataset (< 100 KOs, 1-2 samples): 10-30 seconds"
+                                "Small dataset (< 250.000 KOs): 10-30 seconds"
                             ),
                             html.Li(
-                                "Medium dataset (100-500 KOs, 3-5 samples): 30-90 seconds"
-                            ),
-                            html.Li(
-                                "Large dataset (500-1000 KOs, 5-10 samples): 1-3 minutes"
-                            ),
-                            html.Li(
-                                "Very large dataset (> 1000 KOs, 10+ samples): 3-5 minutes"
+                                "Medium dataset (> 250.000 KOs): 1 - 2 minutes"
                             ),
                         ]
                     ),
@@ -1909,10 +2330,12 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Session Management:")),
                     html.Ul(
                         [
-                            html.Li("Redis-based session caching (in-memory storage)"),
-                            html.Li("Unique session IDs for complete isolation"),
-                            html.Li("Automatic 4-hour session timeout"),
-                            html.Li("No cross-session data access"),
+                            html.Li("Temporary server-side cache with automatic expiration"),
+                            html.Li("Job-bound context validation for resume access"),
+                            html.Li(
+                                f"Automatic expiration after ~{FAQ_SESSION_TIMEOUT_HOURS} hours"
+                            ),
+                            html.Li("No cross-context data access"),
                         ]
                     ),
                     html.P(html.Strong("Data Handling:")),
@@ -1938,9 +2361,9 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "Your data is stored temporarily only during your active session:"
+                        "Your data is stored temporarily in server-side cache for resumable access:"
                     ),
-                    html.P(html.Strong("Session Lifecycle:")),
+                    html.P(html.Strong("Retention lifecycle:")),
                     html.Ol(
                         [
                             html.Li(
@@ -1952,35 +2375,34 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Processing: "),
-                                    "Data is processed and results cached in Redis",
+                                    "Data is processed and results stored in temporary server-side cache",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Active Session: "),
-                                    "Results available for 4 hours of activity",
+                                    html.Strong("Retention Window: "),
+                                    f"Results available for up to {FAQ_SESSION_TIMEOUT_HOURS} hours",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Session End: "),
-                                    "All data automatically deleted",
+                                    html.Strong("Expiration/Cleanup: "),
+                                    "Data is automatically deleted after TTL or operational cache cleanup",
                                 ]
                             ),
                         ]
                     ),
-                    html.P(html.Strong("Session ends when:")),
+                    html.P(html.Strong("Resume becomes unavailable when:")),
                     html.Ul(
                         [
-                            html.Li("You close your browser"),
-                            html.Li("4 hours of inactivity passes"),
-                            html.Li("You explicitly clear your session"),
-                            html.Li("Server restarts (rare, scheduled maintenance)"),
+                            html.Li(f"{FAQ_SESSION_TIMEOUT_HOURS}-hour TTL expires"),
+                            html.Li("A different browser profile tries to load the Job ID"),
+                            html.Li("Browser/site storage is cleared"),
+                            html.Li("Server-side cache is purged during maintenance"),
                         ]
                     ),
                     create_faq_note(
-                        "Session timeout: 4 hours. Download important results before "
-                        "closing your browser or taking long breaks.",
+                        f"Resume by Job ID is temporary ({FAQ_SESSION_TIMEOUT_HOURS} hours). Download important results for long-term retention.",
                         note_type="warning",
                     ),
                 ]
@@ -2012,8 +2434,8 @@ def create_faq_page() -> html.Div:
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Session Metadata: "),
-                                    "Session ID, timestamp, file size (not file contents)",
+                                    html.Strong("Operational Metadata: "),
+                                    "Timestamp, request metrics, and file size (not file contents)",
                                 ]
                             ),
                         ]
@@ -2021,16 +2443,17 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Data We DO NOT Collect:")),
                     html.Ul(
                         [
-                            html.Li("Your uploaded files or their contents"),
-                            html.Li("Analysis results or processed data"),
+                            html.Li("Your uploaded files or their contents (not stored persistently)"),
+                            html.Li("Analysis results or processed data (beyond session lifetime)"),
                             html.Li("Personal information (name, email, institution)"),
-                            html.Li("IP addresses or location data"),
-                            html.Li("Browser fingerprints or tracking cookies"),
+                            html.Li("Tracking cookies or persistent identifiers"),
                         ]
                     ),
                     create_faq_note(
-                        "We are GDPR-compliant. No personal data is collected or stored. "
-                        "All usage statistics are anonymous and aggregated.",
+                        "BioRemPP is designed to minimize personal data collection and "
+                        "follows privacy-by-design principles. Operational logs may include "
+                        "technical metadata for security and reliability. See Terms/Privacy "
+                        "policy for details.",
                         note_type="success",
                     ),
                 ]
@@ -2049,20 +2472,20 @@ def create_faq_page() -> html.Div:
                         [
                             html.Li(
                                 [
-                                    html.Strong("Unique Session IDs: "),
-                                    "Each session has a cryptographically secure unique identifier",
+                                    html.Strong("Per-run Job IDs: "),
+                                    "Each processing execution has its own identifier",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("Redis Namespacing: "),
-                                    "Session data is stored in isolated Redis keys",
+                                    html.Strong("Browser-context binding: "),
+                                    "Resume checks ownership in the same browser profile",
                                 ]
                             ),
                             html.Li(
                                 [
-                                    html.Strong("No Cross-Session Access: "),
-                                    "Server-side validation prevents accessing other sessions",
+                                    html.Strong("No Cross-Context Access: "),
+                                    "Server-side validation prevents loading another browser context",
                                 ]
                             ),
                             html.Li(
@@ -2074,14 +2497,13 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     html.P(
-                        "Your results are only accessible to you during your session. "
-                        "Even if someone knows your session ID, server-side validation "
-                        "prevents unauthorized access.",
+                        "Your results are only accessible within your browser context "
+                        "during the temporary retention window. Job ID alone is not sufficient "
+                        "for unauthorized access.",
                         className="text-muted mt-2",
                     ),
                     create_faq_note(
-                        "Session IDs are not shareable. Each browser session is "
-                        "completely isolated from all others.",
+                        "Resume by Job ID is intentionally restricted to the originating browser profile.",
                         note_type="info",
                     ),
                 ]
@@ -2093,7 +2515,7 @@ def create_faq_page() -> html.Div:
             answer=html.Div(
                 [
                     html.P(
-                        "All session data is automatically and permanently deleted:"
+                        "Temporary analysis data is automatically purged after the retention window:"
                     ),
                     html.P(html.Strong("Deletion Process:")),
                     html.Ol(
@@ -2107,7 +2529,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Processed results: "),
-                                    "Removed from Redis cache",
+                                    "Removed from temporary server-side cache",
                                 ]
                             ),
                             html.Li(
@@ -2117,7 +2539,10 @@ def create_faq_page() -> html.Div:
                                 ]
                             ),
                             html.Li(
-                                [html.Strong("Session cache: "), "Purged from Redis"]
+                                [
+                                    html.Strong("Resume cache: "),
+                                    "Purged automatically after expiration or maintenance cleanup",
+                                ]
                             ),
                             html.Li(
                                 [
@@ -2130,9 +2555,9 @@ def create_faq_page() -> html.Div:
                     html.P(html.Strong("Important Notes:")),
                     html.Ul(
                         [
-                            html.Li("Deletion is immediate and irreversible"),
-                            html.Li("No backup copies are kept"),
-                            html.Li("Data cannot be recovered after session ends"),
+                            html.Li("Deletion after expiration is irreversible"),
+                            html.Li("No persistent backup copies are kept for user uploads"),
+                            html.Li("Data cannot be recovered after cache expiration"),
                             html.Li(
                                 "Download results before closing if you want to keep them"
                             ),
@@ -2151,8 +2576,9 @@ def create_faq_page() -> html.Div:
             question="Is BioRemPP GDPR compliant?",
             answer=html.Div(
                 [
-                    html.P("Yes. BioRemPP is designed with GDPR compliance in mind:"),
-                    html.P(html.Strong("GDPR Principles Implemented:")),
+                    html.P("BioRemPP is designed to minimize personal data collection and "
+                           "support privacy-by-design principles:"),
+                    html.P(html.Strong("Privacy Principles Implemented:")),
                     html.Ul(
                         [
                             html.Li(
@@ -2170,7 +2596,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Storage Limitation: "),
-                                    "Data deleted after 4-hour session timeout",
+                                    f"Data deleted after approximately {FAQ_SESSION_TIMEOUT_HOURS} hours (temporary retention)",
                                 ]
                             ),
                             html.Li(
@@ -2203,70 +2629,13 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     create_faq_note(
-                        "No account creation required. No personal data collected. "
-                        "Complete data deletion after session ends.",
+                        "No account creation required. Personal data collection is minimized. "
+                        "Session data deleted after timeout. See Terms/Privacy policy for complete details.",
                         note_type="success",
                     ),
                 ]
             ),
             item_id="faq-gdpr-compliance",
-        ),
-        create_faq_item(
-            question="Where is my data processed?",
-            answer=html.Div(
-                [
-                    html.P(
-                        "All data processing happens server-side in a secure environment:"
-                    ),
-                    html.P(html.Strong("Processing Infrastructure:")),
-                    html.Ul(
-                        [
-                            html.Li(
-                                [
-                                    html.Strong("Server Location: "),
-                                    "Hosted on secure cloud infrastructure",
-                                ]
-                            ),
-                            html.Li(
-                                [
-                                    html.Strong("Processing: "),
-                                    "All computations run server-side (not in your browser)",
-                                ]
-                            ),
-                            html.Li(
-                                [
-                                    html.Strong("Session Storage: "),
-                                    "Redis in-memory cache (no disk persistence)",
-                                ]
-                            ),
-                            html.Li(
-                                [
-                                    html.Strong("Network: "),
-                                    "Isolated network environment with firewall protection",
-                                ]
-                            ),
-                        ]
-                    ),
-                    html.P(html.Strong("Data Flow:")),
-                    html.Ol(
-                        [
-                            html.Li("Upload: HTTPS encrypted transmission to server"),
-                            html.Li(
-                                "Processing: Server-side analysis with integrated databases"
-                            ),
-                            html.Li("Storage: Temporary Redis cache (in-memory only)"),
-                            html.Li("Results: Sent to your browser via HTTPS"),
-                            html.Li("Deletion: Automatic purge after session ends"),
-                        ]
-                    ),
-                    create_faq_note(
-                        "Your browser never stores sensitive data. All processing and "
-                        "temporary storage happens on secure servers.",
-                        note_type="info",
-                    ),
-                ]
-            ),
-            item_id="faq-data-processing-location",
         ),
     ]
 
@@ -2277,7 +2646,517 @@ def create_faq_page() -> html.Div:
         section_id="faq-privacy",
     )
 
-    # ============== SECTION 8: Export & Download ===================
+    # ===== SECTION 8: Reproducibility, Versioning & Citation ========
+    reproducibility_items = [
+        create_faq_item(
+            question="How do I report BioRemPP in Methods (minimum required metadata)?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "To ensure reproducibility, report the following information in your "
+                        "Methods section when using BioRemPP:"
+                    ),
+                    html.P(html.Strong("Required metadata:")),
+                    html.Ol(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("BioRemPP version: "),
+                                    f"e.g., BioRemPP v{FAQ_APP_VERSION}",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Access date: "),
+                                    "Date when analysis was performed",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Input type: "),
+                                    "Genomes, MAGs, metagenomes, or mixed",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Annotation pipeline: "),
+                                    "Tool used for KO annotation (BlastKOALA, KofamKOALA, eggNOG-mapper, etc.)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Modules/use cases: "),
+                                    "Specific analytical modules used (e.g., Module 2, UC-2.1)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Key parameters: "),
+                                    "Any non-default thresholds, top N values, or filters applied",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Example Methods statement:")),
+                    create_code_block(
+                        f"Bioremediation potential was assessed using BioRemPP v{FAQ_APP_VERSION} "
+                        "(accessed [DATE], {FAQ_CANONICAL_URL}). KO annotations were obtained "
+                        "using eggNOG-mapper v2.1.12. We applied Module 2 (Exploratory Analysis) "
+                        "with default parameters to rank degradation potential across samples.",
+                        language="text",
+                    ),
+                    create_faq_note(
+                        "Always report annotation tool and version, as KO assignment quality "
+                        "directly impacts BioRemPP results.",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-methods-reporting",
+        ),
+        create_faq_item(
+            question="Where can I find the exact BioRemPP version used?",
+            answer=html.Div(
+                [
+                    html.P("BioRemPP version information is displayed in multiple locations:"),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Footer: "),
+                                    f"Bottom of every page shows 'BioRemPP v{FAQ_APP_VERSION}'",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("About page: "),
+                                    "Detailed version and build information",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Documentation: "),
+                                    "Technical documentation includes version history",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong(f"Current version: {FAQ_APP_VERSION}"), className="mt-3"),
+                    create_faq_note(
+                        "Screenshot the footer or About page during your analysis to preserve "
+                        "version information for future reference.",
+                        note_type="success",
+                    ),
+                ]
+            ),
+            item_id="faq-version-info",
+        ),
+        create_faq_item(
+            question="Are databases versioned? What snapshot should I cite?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "BioRemPP integrates multiple databases, each with different versioning practices:"
+                    ),
+                    html.P(html.Strong("Database versioning:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("BioRemPP curated database: "),
+                                    "Versioned with the web service; deposited on Zenodo",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("KEGG: "),
+                                    "Updated regularly; cite access date",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("HADEG: "),
+                                    "Cite original publication and BioRemPP integration version",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("toxCSM: "),
+                                    "Cite original toxCSM publication",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Zenodo deposition:")),
+                    html.P(
+                        f"BioRemPP Database DOI (Zenodo): {FAQ_ZENODO_DATABASE_DOI}",
+                        className="text-muted",
+                    ),
+                    create_faq_note(
+                        "Database DOI is available. For the web service, keep citing version and access date "
+                        "until a dedicated web-service DOI is assigned. Check 'How to Cite' for the latest templates.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-database-versions",
+        ),
+        create_faq_item(
+            question="How do I cite BioRemPP using current templates?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Use the citation templates below as placeholders and replace metadata "
+                        "fields (authors, year, access date, version) before submission."
+                    ),
+                    html.P(html.Strong("Web service citation template:")),
+                    create_code_block(
+                        f"BioRemPP: Bioremediation Potential Profile Analysis Tool.\n"
+                        f"Version {FAQ_APP_VERSION} (2025).\n"
+                        f"Available at: {FAQ_CANONICAL_URL}\n"
+                        "Accessed: [DATE]",
+                        language="text",
+                    ),
+                    html.P(html.Strong("Database citation template:")),
+                    create_code_block(
+                        "BioRemPP Database: A Curated Compound-Centric Resource for Bioremediation Potential Profiling.\n"
+                        f"Version {FAQ_APP_VERSION} (2025).\n"
+                        f"Zenodo DOI: {FAQ_ZENODO_DATABASE_DOI}",
+                        language="text",
+                    ),
+                    html.P(html.Strong("Third-party databases (always cite):")),
+                    html.Ul(
+                        [
+                            html.Li("KEGG: Kanehisa et al. (cite latest KEGG paper)"),
+                            html.Li("HADEG: [HADEG original publication]"),
+                            html.Li("toxCSM: [toxCSM original publication]"),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Keep DOI + version together for database citation. For web service, keep version + access date "
+                        "until the DOI is assigned.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-citation-templates",
+        ),
+        create_faq_item(
+            question="Can I export parameters and analysis configuration for reproducibility?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "Currently, BioRemPP does not automatically export a full configuration "
+                        "file with all parameters used during analysis."
+                    ),
+                    html.P(html.Strong("Current reproducibility workflow:")),
+                    html.Ol(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Record parameters manually: "),
+                                    "Note use case IDs, top N values, thresholds, filters",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Download raw data: "),
+                                    "Export database tables (CSV/Excel/JSON)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Save input file: "),
+                                    "Keep original TXT file with KO annotations",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Recommended documentation:")),
+                    html.Ul(
+                        [
+                            html.Li("BioRemPP version (from footer)"),
+                            html.Li("Analysis date"),
+                            html.Li("Module and use case IDs (e.g., UC-2.1, UC-7.3)"),
+                            html.Li("Parameter values (top N, thresholds, filters)"),
+                            html.Li("Downloaded data files with timestamps"),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Future versions may include automated parameter export. For now, "
+                        "maintain detailed lab notebooks or analysis logs.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-export-config",
+        ),
+    ]
+
+    section_reproducibility = create_faq_section(
+        title="Reproducibility, Versioning & Citation",
+        items=reproducibility_items,
+        section_icon="fa-file-alt",
+        section_id="faq-reproducibility",
+    )
+
+    # ========= SECTION 9: Licensing & Third-Party Data =============
+    licensing_items = [
+        create_faq_item(
+            question="How does BioRemPP use KEGG and what are licensing constraints?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "BioRemPP uses KEGG Orthology (KO) identifiers and pathway metadata "
+                        "to support bioremediation analysis."
+                    ),
+                    html.P(html.Strong("How KEGG is used:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "KO identifiers serve as functional annotation standard for input data"
+                            ),
+                            html.Li(
+                                "KEGG pathway definitions used for pathway completeness calculations"
+                            ),
+                            html.Li(
+                                "KEGG compound IDs mapped to toxicity and regulatory databases"
+                            ),
+                            html.Li(
+                                "Reaction and enzyme metadata support degradation pathway analysis"
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("KEGG licensing constraints:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Academic/non-profit use: "),
+                                    "KEGG data accessible for research purposes under KEGG terms",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Commercial use: "),
+                                    "Organizations using BioRemPP for commercial purposes may "
+                                    "require a KEGG license from the KEGG organization",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Redistribution: "),
+                                    "BioRemPP does not redistribute KEGG database files; "
+                                    "integrates curated mappings and references",
+                                ]
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Users are responsible for compliance with KEGG license terms. "
+                        "For commercial use, contact KEGG directly: "
+                        "https://www.kegg.jp/kegg/legal.html",
+                        note_type="warning",
+                    ),
+                ]
+            ),
+            item_id="faq-kegg-licensing",
+        ),
+        create_faq_item(
+            question="Do I need to cite HADEG and toxCSM separately?",
+            answer=html.Div(
+                [
+                    html.P(
+                        [
+                            html.Strong("Yes."),
+                            " BioRemPP integrates third-party databases, and proper attribution "
+                            "is required for all data sources.",
+                        ]
+                    ),
+                    html.P(html.Strong("Required citations:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("BioRemPP: "),
+                                    f"Cite the web service (v{FAQ_APP_VERSION}) and database",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("KEGG: "),
+                                    "Cite the latest KEGG publication (Kanehisa et al.)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("HADEG: "),
+                                    "Cite the original HADEG publication",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("toxCSM: "),
+                                    "Cite the original toxCSM publication",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Citation best practices:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "Cite all databases used in your specific analysis"
+                            ),
+                            html.Li(
+                                "If using Module 7 (toxicity), cite toxCSM"
+                            ),
+                            html.Li(
+                                "If using HADEG-specific features, cite HADEG"
+                            ),
+                            html.Li(
+                                "Always cite KEGG and BioRemPP"
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "See 'How to Cite' page for complete citation list with DOIs "
+                        "and formatted references.",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-cite-third-party",
+        ),
+        create_faq_item(
+            question="Does BioRemPP redistribute third-party datasets?",
+            answer=html.Div(
+                [
+                    html.P(
+                        "No. BioRemPP does not redistribute complete third-party database files."
+                    ),
+                    html.P(html.Strong("What BioRemPP provides:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Curated mappings: "),
+                                    "Relationships between KOs, compounds, and bioremediation functions",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Integrated queries: "),
+                                    "Server-side queries to reference databases",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("User-specific results: "),
+                                    "Only data matching your input KO annotations",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Value-added annotations: "),
+                                    "BioRemPP-curated bioremediation-specific metadata",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("Third-party data constraints:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                "KEGG: Used under KEGG terms; not redistributed"
+                            ),
+                            html.Li(
+                                "HADEG: Cited and integrated; original data from publication"
+                            ),
+                            html.Li(
+                                "toxCSM: Predictions accessed via integration; cite original tool"
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "Downloaded results contain only matched data for your samples, "
+                        "not complete database dumps. All third-party terms apply.",
+                        note_type="success",
+                    ),
+                ]
+            ),
+            item_id="faq-redistribution",
+        ),
+        create_faq_item(
+            question="What is BioRemPP's software license?",
+            answer=html.Div(
+                [
+                    html.P("BioRemPP components use open-source and permissive licenses:"),
+                    html.P(html.Strong("Software license:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Web service code: "),
+                                    "Apache License 2.0 (permissive, commercial-friendly)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("BioRemPP curated database: "),
+                                    "Creative Commons Attribution 4.0 (CC BY 4.0)",
+                                ]
+                            ),
+                        ]
+                    ),
+                    html.P(html.Strong("What this means for users:")),
+                    html.Ul(
+                        [
+                            html.Li(
+                                [
+                                    html.Strong("Academic use: "),
+                                    "Free to use; cite BioRemPP and third-party databases",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Commercial use: "),
+                                    "Permitted under Apache 2.0, but verify third-party constraints (e.g., KEGG)",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Redistribution: "),
+                                    "Software can be modified/redistributed; database under CC BY 4.0",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Attribution: "),
+                                    "Always provide proper citations",
+                                ]
+                            ),
+                        ]
+                    ),
+                    create_faq_note(
+                        "BioRemPP is open for research and commercial use, but users must "
+                        "comply with third-party database licenses (especially KEGG).",
+                        note_type="info",
+                    ),
+                ]
+            ),
+            item_id="faq-biorempp-license",
+        ),
+    ]
+
+    section_licensing = create_faq_section(
+        title="Licensing & Third-Party Data",
+        items=licensing_items,
+        section_icon="fa-balance-scale",
+        section_id="faq-licensing",
+    )
+
+    # ============== SECTION 10: Export & Download ===================
     export_items = [
         create_faq_item(
             question="What export formats are available?",
@@ -2316,10 +3195,22 @@ def create_faq_page() -> html.Div:
                         [
                             html.Li(
                                 [
-                                    html.Strong("TSV (Tab-Separated Values): "),
-                                    "Data tables from specific use case visualizations",
+                                    html.Strong("CSV: "),
+                                    "Excel-compatible format, best for spreadsheet analysis",
                                 ]
-                            )
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("Excel (.xlsx): "),
+                                    "Native Excel format with preserved formatting",
+                                ]
+                            ),
+                            html.Li(
+                                [
+                                    html.Strong("JSON: "),
+                                    "Structured data format for programmatic access (Python, R, JavaScript)",
+                                ]
+                            ),
                         ]
                     ),
                     html.P(html.Strong("3. Chart Image Exports:")),
@@ -2407,7 +3298,6 @@ def create_faq_page() -> html.Div:
                 [
                     html.P(
                         "Each use case (analytical module) provides downloadable data tables "
-                        "in TSV format."
                     ),
                     html.P(html.Strong("To download:")),
                     html.Ol(
@@ -2418,19 +3308,8 @@ def create_faq_page() -> html.Div:
                             html.Li("Generate the visualization by setting parameters"),
                             html.Li("Look for the data table below the chart"),
                             html.Li(
-                                "Click the download button (TSV format) below the table"
+                                "Click the download button below the table"
                             ),
-                        ]
-                    ),
-                    html.P(html.Strong("TSV format benefits:")),
-                    html.Ul(
-                        [
-                            html.Li("Opens directly in Excel"),
-                            html.Li("Compatible with R (read.table, read.delim)"),
-                            html.Li(
-                                "Works with Python pandas (pd.read_csv with sep='\\t')"
-                            ),
-                            html.Li("Human-readable plain text format"),
                         ]
                     ),
                     create_faq_note(
@@ -2499,7 +3378,7 @@ def create_faq_page() -> html.Div:
                         "Understanding the difference helps you choose the right download "
                         "for your needs:"
                     ),
-                    html.P(html.Strong("Database Downloads (CSV/Excel/JSON):")),
+                    html.P(html.Strong("Database Downloads:")),
                     html.Ul(
                         [
                             html.Li("Complete merged results for entire database"),
@@ -2513,7 +3392,7 @@ def create_faq_page() -> html.Div:
                             ),
                         ]
                     ),
-                    html.P(html.Strong("Use Case Downloads (TSV):")),
+                    html.P(html.Strong("Use Case Downloads:")),
                     html.Ul(
                         [
                             html.Li("Specific data for that particular visualization"),
@@ -2621,7 +3500,7 @@ def create_faq_page() -> html.Div:
                             html.Li(
                                 [
                                     html.Strong("Use Case Data: "),
-                                    "Download TSV files from specific use cases you analyzed",
+                                    "Download files from specific use cases you analyzed",
                                 ]
                             ),
                             html.Li(
@@ -2640,7 +3519,7 @@ def create_faq_page() -> html.Div:
                         className="text-muted",
                     ),
                     create_faq_note(
-                        "Session timeout is 4 hours. Download all important results "
+                        f"Session timeout is {FAQ_SESSION_TIMEOUT_HOURS} hours. Download all important results "
                         "before closing your browser or taking a long break.",
                         note_type="warning",
                     ),
@@ -2654,10 +3533,9 @@ def create_faq_page() -> html.Div:
                 [
                     html.P("If you use BioRemPP in your research, please cite:"),
                     create_code_block(
-                        "BioRemPP: Bioremediation Potential Profile "
-                        "Analysis Tool\\n"
-                        "Version 1.0 (2025)\\n"
-                        "Available at: [URL]\\n"
+                        f"BioRemPP: Bioremediation Potential Profile Analysis Tool.\n"
+                        f"Version {FAQ_APP_VERSION} (2025).\n"
+                        f"Available at: {FAQ_CANONICAL_URL}\n"
                         "Accessed: [Date]",
                         language="text",
                     ),
@@ -2667,16 +3545,17 @@ def create_faq_page() -> html.Div:
                     ),
                     html.Ul(
                         [
-                            html.Li("BioRemPP version (1.0)"),
-                            html.Li("Databases used (BioRemPP, KEGG, HADEG, ToxCSM)"),
+                            html.Li(f"BioRemPP version ({FAQ_APP_VERSION})"),
+                            html.Li("Databases used (BioRemPP, KEGG, HADEG, toxCSM)"),
                             html.Li("Specific modules/use cases applied"),
                             html.Li("Date of analysis"),
-                            html.Li("Any parameter modifications"),
+                            html.Li("Annotation tool and version used"),
+                            html.Li("Any non-default parameter modifications"),
                         ]
                     ),
                     create_faq_note(
-                        "A formal publication is in preparation. Check our "
-                        "homepage for updated citation information.",
+                        "For detailed citation information, templates, and reproducibility "
+                        "guidelines, see the 'Reproducibility, Versioning & Citation' section above.",
                         note_type="info",
                     ),
                 ]
@@ -2693,7 +3572,7 @@ def create_faq_page() -> html.Div:
     )
 
     # Footer
-    footer = create_footer(version="2.0.0", year=2024)
+    footer = create_footer()
 
     # Assemble complete layout
     layout = html.Div(
@@ -2711,9 +3590,12 @@ def create_faq_page() -> html.Div:
                                     section_upload,
                                     section_processing,
                                     section_results,
+                                    section_scientific_validity,
                                     section_technical,
                                     section_troubleshooting,
                                     section_privacy,
+                                    section_reproducibility,
+                                    section_licensing,
                                     section_export,
                                 ],
                                 md=8,

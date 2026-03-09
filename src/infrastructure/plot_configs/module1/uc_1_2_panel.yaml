@@ -5,16 +5,15 @@ use_case_id: "uc-1-2"
 
 scientific_question: >
   To what extent do the lists of monitored chemical compounds overlap between
-  different environmental regulatory agencies, and which compounds are of
-  consensual concern?
+  different environmental regulatory agencies, and which compounds appear in
+  multiple regulatory lists?
 
 description: >
   This interactive UpSet visualization quantifies the overlap and uniqueness
   of compound names across different regulatory agencies (referenceAG) cited
-  in the BioRemPP dataset. The plot provides a clear view of which compounds
-  are unique to a single agency's focus versus those that are shared concerns
-  across multiple regulatory bodies, revealing patterns of harmonization and
-  agency-specific priorities in environmental monitoring.
+  in the BioRemPP dataset. The plot shows which compounds appear exclusively
+  in one agency's list versus those present in multiple lists, allowing
+  exploration of overlap and divergence patterns across regulatory frameworks.
 
 visual_elements:
   - label: "Set Size (Left Bar Chart)"
@@ -29,8 +28,8 @@ visual_elements:
       The connected dots define specific intersections between regulatory agencies.
       For example, dots connected for "EPC" and "WFD" represent the set of
       compounds monitored by both agencies. Single dots represent agency-exclusive
-      compounds, while multiple connected dots represent consensus across several
-      regulatory frameworks.
+      compounds, while multiple connected dots represent compounds present in
+      several regulatory lists simultaneously.
   
   - label: "Intersection Size (Top Bar Chart)"
     description: >
@@ -47,36 +46,36 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Consensus Compounds: A large bar above an intersection of multiple agencies
-    represents a set of "consensus compounds" that are of broad regulatory
-    concern. These are likely well-studied and widely recognized pollutants
-    with established environmental or health risks across different jurisdictions.
-  
+    Shared Regulatory Focus: A large bar above an intersection of multiple agencies
+    represents compounds monitored by more than one regulatory body. Presence in
+    multiple lists may reflect broader regulatory recognition, though inclusion
+    criteria and risk frameworks vary across jurisdictions and should be consulted
+    directly for context.
+
   - >
     Agency-Specific Focus: Bars above single, unconnected dots represent
-    compounds unique to one agency's list. This highlights the specialized
-    scope of that agency, such as focusing on specific pesticides, industrial
-    chemicals, or regional pollutants not covered by other regulatory frameworks.
-  
+    compounds unique to one agency's list. These highlight the specialized
+    scope of that regulatory body — such as region-specific pollutants or
+    particular chemical classes — that may not appear in other frameworks.
+
   - >
-    Harmonization and Gaps: The size and nature of the overlaps can provide
-    insights into the degree of harmonization between different regulatory
-    frameworks. Large overlaps suggest coordinated monitoring strategies, while
-    small overlaps may indicate different regional priorities, scientific focuses,
-    or stages of regulatory development.
-  
+    Harmonization Patterns: The size and distribution of overlaps can indicate
+    the degree of alignment between regulatory frameworks. Large overlaps may
+    suggest coordinated monitoring approaches, while limited overlaps may reflect
+    different regional priorities, risk assessment methodologies, or stages of
+    regulatory development.
+
   - >
-    Assessing Coverage: By comparing the heights of agency-specific bars with
-    consensus bars, researchers can assess whether regulatory agencies provide
-    complementary monitoring coverage (many unique compounds) or redundant
-    coverage (mostly shared compounds). Complementary coverage may support
-    integrated multi-agency monitoring strategies.
-  
+    Coverage Comparison: Comparing the heights of agency-specific and shared-
+    compound bars provides a view of whether monitoring scope is predominantly
+    distinct or overlapping across agencies, contextualizing the breadth and
+    uniqueness of each framework's coverage within this dataset.
+
   - >
-    Prioritization Strategy: Compounds appearing in multiple regulatory lists
-    offer cross-validation of environmental concern and may be prioritized in
-    bioremediation research. Unique compounds may represent emerging contaminants
-    or region-specific concerns requiring further investigation and potential
-    inclusion in broader monitoring programs.
+    Exploratory Prioritization: Compounds present in multiple regulatory lists
+    can serve as a starting point for exploring their representation in the dataset.
+    Compounds unique to a single agency may reflect region-specific or emerging
+    concerns and may warrant further investigation of their regulatory context
+    and environmental relevance.
 
 color_scheme: "primary"

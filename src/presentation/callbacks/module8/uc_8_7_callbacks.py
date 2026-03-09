@@ -469,7 +469,7 @@ def register_uc_8_7_callbacks(app, plot_service):
                         "displaylogo": False,
                         "modeBarButtonsToRemove": ["lasso2d", "select2d"],
                         "toImageButtonOptions": {
-                            "format": "png",
+                            "format": "svg",
                             "filename": base_filename,
                             "height": 800,
                             "width": 1000,

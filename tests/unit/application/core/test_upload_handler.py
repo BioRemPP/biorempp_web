@@ -1,88 +1,12 @@
 """
-Unit Tests for Application Layer Core Components.
-
-This module tests the application layer core components including
-UploadHandler, SampleParser, and DataProcessor.
+Unit tests for UploadHandler.
 """
 
 import base64
 import pytest
+from unittest.mock import Mock
+
 from src.application.core.upload_handler import UploadHandler
-from src.application.core.sample_parser import SampleParser, ParsingMetrics
-from src.domain.value_objects.sample_id import SampleId
-from src.domain.value_objects.kegg_orthology import KO
-from src.shared.exceptions import InvalidFormatError
-
-
-class TestSampleParser:
-    """Test SampleParser functionality."""
-
-    def test_parse_valid_fasta(self):
-        """Test parsing valid FASTA content."""
-        parser = SampleParser()
-        content = ">Sample1\nK00001\nK00002\n>Sample2\nK00003"
-
-        dataset, metrics = parser.parse(content)
-
-        assert dataset.total_samples == 2
-        assert dataset.total_kos == 3
-
-    def test_parse_single_sample(self):
-        """Test parsing single sample."""
-        parser = SampleParser()
-        content = ">Sample1\nK00001\nK00002"
-
-        dataset, metrics = parser.parse(content)
-
-        assert dataset.total_samples == 1
-        assert dataset.total_kos == 2
-
-    def test_parse_empty_content_raises_error(self):
-        """Test that empty content raises ValueError."""
-        parser = SampleParser()
-
-        with pytest.raises(ValueError, match="Content cannot be empty"):
-            parser.parse("")
-
-    def test_parse_no_header_raises_error(self):
-        """Test that content without headers raises InvalidFormatError."""
-        parser = SampleParser()
-        content = "K00001\nK00002"
-
-        with pytest.raises(InvalidFormatError, match="No sample headers found"):
-            parser.parse(content)
-
-    def test_validate_format_valid(self):
-        """Test format validation with valid content."""
-        parser = SampleParser()
-        content = ">Sample1\nK00001"
-
-        is_valid, msg = parser.validate_format(content)
-
-        assert is_valid is True
-        assert msg == ""
-
-    def test_validate_format_no_header(self):
-        """Test format validation with no header."""
-        parser = SampleParser()
-        content = "K00001\nK00002"
-
-        is_valid, msg = parser.validate_format(content)
-
-        assert is_valid is False
-        assert "No sample headers found" in msg
-
-    def test_parse_samples_multiple(self):
-        """Test parsing multiple samples."""
-        parser = SampleParser()
-        content = ">S1\nK00001\n>S2\nK00002\nK00003"
-
-        metrics = ParsingMetrics()
-        samples = parser.parse_samples(content, metrics)
-
-        assert len(samples) == 2
-        assert samples[0].ko_count == 1
-        assert samples[1].ko_count == 2
 
 
 class TestUploadHandler:
@@ -131,12 +55,38 @@ class TestUploadHandler:
 
         assert decoded == "Hello World"
 
+    def test_decode_content_without_data_uri_prefix(self):
+        """Test content decoding accepts plain base64 payloads."""
+        handler = UploadHandler()
+        encoded = base64.b64encode(b"Plain content").decode("utf-8")
+
+        decoded = handler.decode_content(encoded)
+
+        assert decoded == "Plain content"
+
     def test_decode_content_empty_raises_error(self):
         """Test that empty content raises ValueError."""
         handler = UploadHandler()
 
         with pytest.raises(ValueError, match="Content is empty"):
             handler.decode_content("")
+
+    def test_decode_content_invalid_base64_raises_error(self):
+        """Test invalid base64 payload raises a decode error."""
+        handler = UploadHandler()
+
+        with pytest.raises(ValueError, match="Failed to decode content"):
+            handler.decode_content("not-base64!")
+
+    def test_process_upload_handles_decode_error(self):
+        """Test process_upload returns error DTO when decode fails."""
+        handler = UploadHandler()
+
+        result = handler.process_upload("not-base64!", "invalid.txt")
+
+        assert result.success is False
+        assert result.has_errors() is True
+        assert "Failed to decode content" in result.errors[0]
 
     def test_validate_and_parse_valid(self):
         """Test validation and parsing with valid content."""
@@ -160,3 +110,37 @@ class TestUploadHandler:
         assert is_valid is False
         assert dataset is None
         assert len(errors) > 0
+
+    def test_validate_and_parse_handles_parser_value_error(self):
+        """Test parser ValueError is returned as parsing error."""
+        parser = Mock()
+        parser.parse.side_effect = ValueError("bad payload")
+        validation_service = Mock()
+        validation_service.validate_raw_input.return_value = (True, "")
+        handler = UploadHandler(parser=parser, validation_service=validation_service)
+
+        is_valid, dataset, metrics, errors = handler.validate_and_parse(">Sample1\nK00001")
+
+        assert is_valid is False
+        assert dataset is None
+        assert metrics is None
+        assert errors == ["Parsing error: bad payload"]
+
+    def test_validate_and_parse_handles_dataset_validation_error(self):
+        """Test dataset.validate errors are returned as validation errors."""
+        parser = Mock()
+        dataset = Mock()
+        dataset.validate.side_effect = ValueError("invalid dataset state")
+        parser.parse.return_value = (dataset, Mock())
+        validation_service = Mock()
+        validation_service.validate_raw_input.return_value = (True, "")
+        handler = UploadHandler(parser=parser, validation_service=validation_service)
+
+        is_valid, parsed_dataset, metrics, errors = handler.validate_and_parse(
+            ">Sample1\nK00001"
+        )
+
+        assert is_valid is False
+        assert parsed_dataset is None
+        assert metrics is None
+        assert errors == ["Validation error: invalid dataset state"]

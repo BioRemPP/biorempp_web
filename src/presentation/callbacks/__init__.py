@@ -7,6 +7,7 @@ Dash callbacks for UI interactivity and backend integration.
 import logging
 
 from .info_modal_callbacks import register_info_modal_callbacks
+from .job_resume_callbacks import register_job_resume_callbacks
 from .module_callbacks import (
     register_module1_callbacks,
     register_module2_callbacks,
@@ -21,6 +22,7 @@ from .processing_callbacks import register_processing_callbacks
 from .real_processing_callbacks import register_real_processing_callbacks
 from .real_upload_callbacks import register_real_upload_callbacks
 from .results_callbacks import register_results_callbacks
+from .results_workflow_modal_callbacks import register_results_workflow_modal_callbacks
 from .upload_callbacks import register_upload_callbacks
 
 # Configure logging
@@ -39,7 +41,9 @@ __all__ = [
     "register_processing_callbacks",
     "register_real_upload_callbacks",
     "register_real_processing_callbacks",
+    "register_job_resume_callbacks",
     "register_results_callbacks",
+    "register_results_workflow_modal_callbacks",
     "register_module1_callbacks",
     "register_module2_callbacks",
     "register_module3_callbacks",
@@ -97,40 +101,46 @@ def register_all_callbacks(
     logger.info("=" * 80)
 
     # Always register real callbacks (they work standalone)
-    logger.info("\n[1/10] Registering REAL UPLOAD callbacks...")
+    logger.info("\n[1/14] Registering REAL UPLOAD callbacks...")
     register_real_upload_callbacks(app)
 
-    logger.info("\n[2/10] Registering REAL PROCESSING callbacks...")
+    logger.info("\n[2/14] Registering REAL PROCESSING callbacks...")
     register_real_processing_callbacks(app)
 
-    logger.info("\n[3/10] Registering RESULTS callbacks...")
+    logger.info("\n[3/14] Registering JOB RESUME callbacks...")
+    register_job_resume_callbacks(app)
+
+    logger.info("\n[4/14] Registering RESULTS callbacks...")
     register_results_callbacks(app)
 
-    logger.info("\n[4/10] Registering MODULE 1 callbacks...")
+    logger.info("\n[5/14] Registering RESULTS WORKFLOW MODAL callbacks...")
+    register_results_workflow_modal_callbacks(app)
+
+    logger.info("\n[6/14] Registering MODULE 1 callbacks...")
     register_module1_callbacks(app, plot_service)
 
-    logger.info("\n[5/10] Registering MODULE 2 callbacks...")
+    logger.info("\n[7/14] Registering MODULE 2 callbacks...")
     register_module2_callbacks(app, plot_service)
 
-    logger.info("\n[6/10] Registering MODULE 3 callbacks...")
+    logger.info("\n[8/14] Registering MODULE 3 callbacks...")
     register_module3_callbacks(app, plot_service)
 
-    logger.info("\n[7/11] Registering MODULE 4 callbacks...")
+    logger.info("\n[9/14] Registering MODULE 4 callbacks...")
     register_module4_callbacks(app, plot_service)
 
-    logger.info("\n[8/11] Registering MODULE 5 callbacks...")
+    logger.info("\n[10/14] Registering MODULE 5 callbacks...")
     register_module5_callbacks(app, plot_service)
 
-    logger.info("\n[9/11] Registering MODULE 6 callbacks...")
+    logger.info("\n[11/14] Registering MODULE 6 callbacks...")
     register_module6_callbacks(app, plot_service)
 
-    logger.info("\n[10/11] Registering MODULE 7 callbacks...")
+    logger.info("\n[12/14] Registering MODULE 7 callbacks...")
     register_module7_callbacks(app, plot_service)
 
-    logger.info("\n[11/11] Registering MODULE 8 callbacks...")
+    logger.info("\n[13/14] Registering MODULE 8 callbacks...")
     register_module8_callbacks(app, plot_service)
 
-    logger.info("\n[12/12] Registering INFO MODAL callbacks...")
+    logger.info("\n[14/14] Registering INFO MODAL callbacks...")
     register_info_modal_callbacks(app)
 
     logger.info("\n" + "=" * 80)

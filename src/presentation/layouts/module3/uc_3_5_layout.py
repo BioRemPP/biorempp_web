@@ -10,7 +10,7 @@ Notes
 """
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
 from src.presentation.components.composite.use_cases import create_panel_by_id
 from src.presentation.components.download_component import (
@@ -58,12 +58,37 @@ def create_uc_3_5_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-3.5",
-                                        button_id="uc-3-5-download-btn",
-                                        download_id="uc-3-5-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={
+                                                        "type": "results-methods-link",
+                                                        "index": "UC-3.5",
+                                                    },
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-3.5",
+                                                button_id="uc-3-5-download-btn",
+                                                download_id="uc-3-5-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -91,8 +116,16 @@ def create_uc_3_5_layout() -> dbc.Card:
                         [
                             dbc.AccordionItem(
                                 [
-                                    # Chart Container (Correlogram)
-                                    html.Div(id="uc-3-5-chart", className="mt-3")
+                                    # Chart Container with Loading Spinner
+                                    dcc.Loading(
+                                        id="uc-3-5-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-3-5-chart",
+                                            className="mt-3",
+                                        ),
+                                    )
                                 ],
                                 title="View Results",
                                 item_id="uc-3-5-accordion",

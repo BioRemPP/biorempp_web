@@ -1,0 +1,315 @@
+# BioRemPP Database Schema Configuration
+# Formal specification extracted from docs/database_schemas/biorempp-schema.md
+
+schema_id: "biorempp"
+title: "BioRemPP Database Schema"
+version: "1.0.0"
+last_updated: "2026-01-17"
+color: "success"
+
+# Overview section
+overview:
+  description: >
+    The BioRemPP Database uses a flat, denormalized schema optimized for 
+    analytical queries and data integration workflows. The schema consists 
+    of a single table with 8 columns representing compound-gene-enzyme-agency 
+    relationships.
+  design_rationale:
+    - title: "Simplicity"
+      description: "Single tidy table structure facilitates direct import into R, Python, and spreadsheet tools"
+    - title: "Analytical optimization"
+      description: "Denormalized design enables efficient filtering, grouping, and aggregation operations"
+    - title: "Interoperability"
+      description: "Standard CSV format ensures compatibility with bioinformatics pipelines"
+    - title: "FAIR compliance"
+      description: "Structured schema with controlled vocabularies supports findability and reusability"
+
+# Schema definition
+schema_definition:
+  format: "CSV (Comma-Separated Values)"
+  alternative_format: "Excel (.xlsx)"
+  rows: 10869
+  columns: 8
+  encoding: "UTF-8"
+  delimiter: "Semicolon (;)"
+  text_qualifier: 'Double quote (")'
+  header: true
+  completeness: "100% — Zero missing values across all fields"
+
+# Column specifications
+columns:
+  - name: "ko"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "K##### (capital K followed by exactly 5 digits)"
+    regex: "^K\\d{5}$"
+    example: "K07408"
+    description: "KEGG Orthology identifier"
+    purpose: "Identifies functional gene groups (ortholog clusters) representing enzymatic or functional roles abstracted across organisms"
+    uniqueness: "Not unique — KO groups may appear in multiple rows"
+    cardinality: 1541
+    cross_references:
+      - name: "KEGG Orthology"
+        url_pattern: "https://www.kegg.jp/entry/{value}"
+      - name: "KEGG Pathway maps"
+      - name: "UniProt, NCBI Gene"
+
+  - name: "cpd"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "C##### (capital C followed by exactly 5 digits)"
+    regex: "^C\\d{5}$"
+    example: "C06790"
+    description: "KEGG Compound identifier"
+    purpose: "Unique identifier for chemical compounds of environmental interest"
+    uniqueness: "Not unique — Compounds may appear in multiple rows"
+    cardinality: 384
+    cross_references:
+      - name: "KEGG Compound"
+        url_pattern: "https://www.kegg.jp/entry/{value}"
+      - name: "PubChem, ChEBI, CAS Registry"
+
+  - name: "referenceAG"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Agency code (uppercase)"
+    example: "EPA"
+    description: "Environmental regulatory agency code"
+    purpose: "Indicates which environmental regulatory reference has classified the compound as a priority pollutant"
+    uniqueness: "Not unique — Multiple compounds are listed by the same agency"
+    cardinality: 9
+    valid_values:
+      - code: "ATSDR"
+        full_name: "Agency for Toxic Substances and Disease Registry"
+        jurisdiction: "USA"
+        focus: "Public health hazards"
+      - code: "EPA"
+        full_name: "U.S. Environmental Protection Agency"
+        jurisdiction: "USA"
+        focus: "Priority pollutants"
+      - code: "IARC1"
+        full_name: "IARC Group 1"
+        jurisdiction: "International"
+        focus: "Carcinogenic to humans"
+      - code: "IARC2A"
+        full_name: "IARC Group 2A"
+        jurisdiction: "International"
+        focus: "Probably carcinogenic"
+      - code: "IARC2B"
+        full_name: "IARC Group 2B"
+        jurisdiction: "International"
+        focus: "Possibly carcinogenic"
+      - code: "PSL"
+        full_name: "Priority Substances List"
+        jurisdiction: "Canada"
+        focus: "Canadian priority chemicals"
+      - code: "EPC"
+        full_name: "Environmental Priority Chemicals"
+        jurisdiction: "Europe"
+        focus: "EU priority substances"
+      - code: "WFD"
+        full_name: "Water Framework Directive"
+        jurisdiction: "EU"
+        focus: "Water quality standards"
+      - code: "CONAMA"
+        full_name: "Conselho Nacional do Meio Ambiente"
+        jurisdiction: "Brazil"
+        focus: "Brazilian environmental regulations"
+
+  - name: "compoundclass"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Free text (standardized categories)"
+    example: "Aromatic"
+    description: "Chemical structural classification"
+    purpose: "Classifies compounds by chemical structural features for filtering and analysis"
+    uniqueness: "Not unique — Multiple compounds share the same class"
+    cardinality: 12
+    valid_values:
+      - class: "Aromatic"
+        description: "Benzene ring-containing compounds"
+        count: 123
+      - class: "Chlorinated"
+        description: "Halogenated with chlorine"
+        count: 117
+      - class: "Nitrogen-containing"
+        description: "Nitrogen functional groups"
+        count: 115
+      - class: "Polyaromatic"
+        description: "Multiple fused aromatic rings (PAHs)"
+        count: 98
+      - class: "Aliphatic"
+        description: "Straight-chain or branched hydrocarbons"
+        count: 94
+      - class: "Metal"
+        description: "Metal-containing compounds"
+        count: 29
+      - class: "Inorganic"
+        description: "Inorganic compounds"
+        count: 26
+      - class: "Sulfur-containing"
+        description: "Sulfur functional groups"
+        count: 20
+      - class: "Organophosphorus"
+        description: "Phosphorus-containing organic compounds"
+        count: 13
+      - class: "Organometallic"
+        description: "Metal-carbon bonds"
+        count: 9
+      - class: "Halogenated"
+        description: "Halogenated compounds (general)"
+        count: 8
+      - class: "Organosulfur"
+        description: "Organic sulfur compounds"
+        count: 1
+
+  - name: "compoundname"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Free text (KEGG standard nomenclature)"
+    example: "Trichloroethene"
+    description: "Human-readable compound name"
+    purpose: "Provides IUPAC name for the compound"
+    uniqueness: "Quasi-unique — 383 unique names corresponding to 384 unique compounds(one compound has no name)"
+    cardinality: 383
+    notes:
+      - "Primary KEGG compound name only (synonyms removed)"
+      - "May contain special characters (Greek letters, numbers, parentheses)"
+      - "IUPAC names preferred when available"
+
+  - name: "genesymbol"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Standard gene nomenclature"
+    example: "CYP2E1"
+    description: "Standard gene abbreviation"
+    purpose: "Gene symbols from KEGG Orthology (KO) available from NCBI RefSeq and GenBank, and annotated by KEGG in the form of KO (KEGG Orthology) assignment"
+    uniqueness: "Not unique — Multiple KO groups may share the same gene symbol"
+    cardinality: 1515
+    notes:
+      - "HUGO nomenclature for human genes (e.g., CYP2E1)"
+      - "Organism-specific symbols for microbial genes (e.g., dmpN)"
+      - "May contain commas for KO groups with multiple gene symbols"
+
+  - name: "genename"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Free text (KEGG functional description)"
+    example: "cytochrome P450 family 2 subfamily E polypeptide 1"
+    description: "Expanded functional gene description"
+    purpose: "Provides expanded functional description of the gene, including enzyme class or biochemical role"
+    uniqueness: "Not unique — 1,420 unique gene names"
+    cardinality: 1420
+    notes:
+      - "Full protein/enzyme name"
+      - "May include EC numbers in brackets: [EC:X.X.X.X]"
+      - "Variable length"
+
+  - name: "enzyme_activity"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Standardized enzyme terms"
+    example: "cytochrome P450"
+    description: "Simplified enzyme classification"
+    purpose: "Enzyme Nomenclature produced by the IUBMB/IUPAC Biochemical Nomenclature Committee"
+    uniqueness: "Not unique — Multiple genes share the same enzyme activity type"
+    cardinality: 205
+    top_families:
+      - name: "cytochrome P450"
+        count: 2166
+      - name: "dioxygenase"
+        count: 1093
+      - name: "monooxygenase"
+        count: 872
+      - name: "dehydrogenase"
+        count: 822
+      - name: "reductase"
+        count: 438
+
+# Schema constraints
+constraints:
+  primary_key: null
+  primary_key_note: "Database uses a flat structure without explicit primary key"
+  conceptual_key: ["cpd", "ko", "referenceAG"]
+  duplicate_rows: "Minimal — Same compound-KO pair may appear under multiple agencies"
+  foreign_keys:
+    - column: "cpd"
+      references: "KEGG Compound database"
+    - column: "ko"
+      references: "KEGG Orthology database"
+  cardinality_relationships:
+    - name: "Compound-to-KO"
+      type: "Many-to-Many"
+      description: "One compound can be degraded by multiple genes"
+      example: "Trichloroethene (C06790) → 37 unique KO groups"
+    - name: "Compound-to-Agency"
+      type: "Many-to-Many"
+      description: "One compound can be listed by multiple agencies"
+      example: "Benzene (C00180) → 5 agencies"
+    - name: "KO-to-Enzyme"
+      type: "Many-to-One"
+      description: "Multiple KO groups may share the same enzyme activity"
+      example: "43 unique KO groups → cytochrome P450"
+
+# Data quality
+data_quality:
+  completeness:
+    status: "100%"
+    description: "Zero missing values (NA, NULL, empty strings) across all 8 columns"
+  consistency:
+    - "All cpd values match ^C\\d{5}$"
+    - "All ko values match ^K\\d{5}$"
+    - "All referenceAG values match one of 9 valid codes"
+  accuracy:
+    - column: "cpd, compoundname"
+      source: "KEGG Compound database"
+    - column: "ko, genesymbol, genename"
+      source: "KEGG Orthology database"
+    - column: "compoundclass"
+      source: "KEGG compound database and ChEBI"
+    - column: "referenceAG"
+      source: "Manual compilation from agency databases"
+    - column: "enzyme_activity"
+      source: "Automated extraction with manual validation"
+  validation_date: "KEGG Release Dec,23"
+
+# Version history
+version_history:
+  - version: "v1.0.0"
+    date: "December 2025"
+    rows: 10869
+    changes: "Initial release"
+
+# Usage examples
+usage_examples:
+  r: |
+    # Load database
+    library(readr)
+    db <- read_csv("path/biorempp_db.csv")
+    
+    # Inspect schema
+    str(db)
+    # tibble [10,869 × 8]
+  python: |
+    import pandas as pd
+    
+    # Load database
+    db = pd.read_csv("path/biorempp_db.csv", sep=";")
+    
+    # Inspect schema
+    db.info()
+    # RangeIndex: 10869 entries
+    # Data columns (total 8 columns)
+
+# Contact
+contact:
+  github_issues: "https://github.com/BioRemPP/biorempp_db/issues"
+  email: "biorempp@gmail.com"

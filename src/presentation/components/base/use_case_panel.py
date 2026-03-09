@@ -31,11 +31,133 @@ Date: 2025-11-17
 """
 
 from pathlib import Path
+import json
+import os
+from copy import deepcopy
+from dataclasses import dataclass
+from threading import RLock
 from typing import Any, Dict, List, Optional
 
 import dash_bootstrap_components as dbc
 import yaml
 from dash import html
+
+from src.shared.logging import get_logger
+from src.shared.metrics import (
+    CACHE_ENTRY_SIZE_BYTES,
+    CACHE_HIT_RATIO,
+    CACHE_OPERATIONS_TOTAL,
+    CACHE_SIZE_ITEMS,
+)
+
+
+logger = get_logger(__name__)
+
+_UC_PANEL_CACHE_TYPE = "uc_panel_yaml"
+_UC_PANEL_CACHE_ENABLED_ENV = "BIOREMPP_UC_PANEL_CACHE_ENABLED"
+_UC_PANEL_CACHE_VALIDATE_MTIME_ENV = "BIOREMPP_UC_PANEL_CACHE_VALIDATE_MTIME"
+
+
+@dataclass(frozen=True)
+class _UseCaseCacheEntry:
+    """In-process cache entry for one use case YAML config."""
+
+    mtime_ns: int
+    config: Dict[str, Any]
+
+
+_USE_CASE_CONFIG_CACHE: Dict[str, _UseCaseCacheEntry] = {}
+_USE_CASE_CONFIG_CACHE_LOCK = RLock()
+_USE_CASE_CONFIG_CACHE_HITS = 0
+_USE_CASE_CONFIG_CACHE_MISSES = 0
+
+
+def _get_bool_env(name: str, default: bool) -> bool:
+    """Parse boolean environment variable using common truthy values."""
+    value = os.getenv(name)
+    if value is None:
+        return default
+    return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+def _is_uc_panel_cache_enabled() -> bool:
+    """Return whether UC panel YAML cache is enabled for this process."""
+    return _get_bool_env(_UC_PANEL_CACHE_ENABLED_ENV, True)
+
+
+def _should_validate_cache_mtime() -> bool:
+    """Return whether cached entry should validate file mtime before hit."""
+    return _get_bool_env(_UC_PANEL_CACHE_VALIDATE_MTIME_ENV, True)
+
+
+def _observe_cache_operation(operation: str, outcome: str) -> None:
+    """Emit cache operation metric without raising on observability failures."""
+    try:
+        CACHE_OPERATIONS_TOTAL.labels(
+            cache_type=_UC_PANEL_CACHE_TYPE,
+            operation=operation,
+            outcome=outcome,
+        ).inc()
+    except Exception:
+        return
+
+
+def _estimate_cache_entry_size_bytes(config: Dict[str, Any]) -> float:
+    """Estimate serialized cache entry size in bytes."""
+    try:
+        serialized = json.dumps(config, ensure_ascii=False, sort_keys=True)
+        return float(len(serialized.encode("utf-8")))
+    except Exception:
+        return 0.0
+
+
+def _update_cache_snapshot_metrics(config: Optional[Dict[str, Any]] = None) -> None:
+    """Update cache gauges/hit ratio and optional entry-size histogram."""
+    try:
+        CACHE_SIZE_ITEMS.labels(cache_type=_UC_PANEL_CACHE_TYPE).set(
+            float(len(_USE_CASE_CONFIG_CACHE))
+        )
+        total = _USE_CASE_CONFIG_CACHE_HITS + _USE_CASE_CONFIG_CACHE_MISSES
+        ratio = (
+            float(_USE_CASE_CONFIG_CACHE_HITS) / float(total)
+            if total > 0
+            else 0.0
+        )
+        CACHE_HIT_RATIO.labels(cache_type=_UC_PANEL_CACHE_TYPE).set(ratio)
+        if config is not None:
+            CACHE_ENTRY_SIZE_BYTES.labels(cache_type=_UC_PANEL_CACHE_TYPE).observe(
+                _estimate_cache_entry_size_bytes(config)
+            )
+    except Exception:
+        return
+
+
+def clear_use_case_config_cache() -> None:
+    """Clear in-memory cache used by UC panel YAML loader."""
+    global _USE_CASE_CONFIG_CACHE_HITS, _USE_CASE_CONFIG_CACHE_MISSES
+    with _USE_CASE_CONFIG_CACHE_LOCK:
+        _USE_CASE_CONFIG_CACHE.clear()
+        _USE_CASE_CONFIG_CACHE_HITS = 0
+        _USE_CASE_CONFIG_CACHE_MISSES = 0
+    _observe_cache_operation("clear", "ok")
+    _update_cache_snapshot_metrics()
+
+
+def get_use_case_config_cache_stats() -> Dict[str, Any]:
+    """Return lightweight cache stats for diagnostics/tests."""
+    with _USE_CASE_CONFIG_CACHE_LOCK:
+        entries = len(_USE_CASE_CONFIG_CACHE)
+        hits = _USE_CASE_CONFIG_CACHE_HITS
+        misses = _USE_CASE_CONFIG_CACHE_MISSES
+    total = hits + misses
+    hit_ratio = float(hits) / float(total) if total > 0 else 0.0
+    return {
+        "enabled": _is_uc_panel_cache_enabled(),
+        "entries": entries,
+        "hits": hits,
+        "misses": misses,
+        "hit_ratio": hit_ratio,
+    }
 
 
 def load_use_case_config(config_path: str) -> Dict[str, Any]:
@@ -57,14 +179,70 @@ def load_use_case_config(config_path: str) -> Dict[str, Any]:
     >>> config = load_use_case_config('configs/uc_2_1.yaml')
     >>> panel = create_use_case_panel(**config)
     """
-    config_file = Path(config_path)
+    global _USE_CASE_CONFIG_CACHE_HITS, _USE_CASE_CONFIG_CACHE_MISSES
+    config_file = Path(config_path).expanduser().resolve()
     if not config_file.exists():
+        _observe_cache_operation("get", "error")
         raise FileNotFoundError(f"Config file not found: {config_path}")
 
-    with open(config_file, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
+    cache_enabled = _is_uc_panel_cache_enabled()
+    validate_mtime = _should_validate_cache_mtime()
+    cache_key = str(config_file)
 
-    return config
+    # Resolve file mtime once for this read attempt and compare with cached entry.
+    mtime_ns = config_file.stat().st_mtime_ns
+
+    if cache_enabled:
+        with _USE_CASE_CONFIG_CACHE_LOCK:
+            cached = _USE_CASE_CONFIG_CACHE.get(cache_key)
+            if cached is not None:
+                is_valid = (not validate_mtime) or (cached.mtime_ns == mtime_ns)
+                if is_valid:
+                    _USE_CASE_CONFIG_CACHE_HITS += 1
+                    _observe_cache_operation("get", "hit")
+                    _update_cache_snapshot_metrics()
+                    logger.debug(
+                        "UC panel YAML cache hit",
+                        extra={
+                            "cache_key": cache_key,
+                            "cache_entries": len(_USE_CASE_CONFIG_CACHE),
+                        },
+                    )
+                    return deepcopy(cached.config)
+
+    try:
+        with open(config_file, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+    except yaml.YAMLError as exc:
+        _observe_cache_operation("get", "error")
+        raise ValueError(f"Invalid YAML config file: {config_path}") from exc
+
+    if not isinstance(config, dict):
+        _observe_cache_operation("get", "error")
+        raise ValueError(f"Invalid YAML content (expected mapping): {config_path}")
+
+    if not cache_enabled:
+        _observe_cache_operation("get", "disabled")
+        return deepcopy(config)
+
+    with _USE_CASE_CONFIG_CACHE_LOCK:
+        _USE_CASE_CONFIG_CACHE[cache_key] = _UseCaseCacheEntry(
+            mtime_ns=mtime_ns,
+            config=deepcopy(config),
+        )
+        _USE_CASE_CONFIG_CACHE_MISSES += 1
+        _observe_cache_operation("get", "miss")
+        _update_cache_snapshot_metrics(config=config)
+        logger.debug(
+            "UC panel YAML cache miss",
+            extra={
+                "cache_key": cache_key,
+                "cache_entries": len(_USE_CASE_CONFIG_CACHE),
+                "validate_mtime": validate_mtime,
+            },
+        )
+
+    return deepcopy(config)
 
 
 def create_use_case_panel(

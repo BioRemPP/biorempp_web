@@ -1,4 +1,4 @@
-﻿ko;pathname;genesymbol
+ko;pathname;genesymbol
 K00001;Naphthalene;E1.1.1.1
 K00001;Cytochrome P450;E1.1.1.1
 K00001;Aromatic;E1.1.1.1
@@ -75,7 +75,6 @@ K00531;Cl. alkane and Cl.alkene;anfG
 K00622;Nitrotoluene;nat
 K00626;Benzoate;ACAT
 K00632;Benzoate;fadA
-K00632;Ethylbenzene;fadA
 K00632;Ethylbenzene;fadA
 K00699;Cytochrome P450;UGT
 K00799;Cytochrome P450;GST
@@ -380,10 +379,8 @@ K10678;Nitrotoluene;nfsA
 K10679;Nitrotoluene;nfnB
 K10680;Nitrotoluene;nemA
 K10700;Ethylbenzene;ebdA
-K10700;Ethylbenzene;ebdA
 K10700;Aromatic;ebdA
 K10701;Aromatic;apc
-K10701;Ethylbenzene;apc
 K10701;Ethylbenzene;apc
 K10702;Xylene;todF
 K10702;Aromatic;todF
@@ -438,7 +435,6 @@ K14578;Ethylbenzene;nahAb
 K14578;Aminobenzoate;nahAb
 K14578;Nitrotoluene;nahAb
 K14578;PAH;nahAb
-K14578;Ethylbenzene;nahAb
 K14578;Aromatic;nahAb
 K14578;Naphthalene;nahAb
 K14579;PAH;nahAc
@@ -447,17 +443,14 @@ K14579;Aromatic;nahAc
 K14579;Ethylbenzene;nahAc
 K14579;Nitrotoluene;nahAc
 K14579;Naphthalene;nahAc
-K14579;Ethylbenzene;nahAc
 K14580;Naphthalene;nahAd
 K14580;Aminobenzoate;nahAd
 K14580;Ethylbenzene;nahAd
 K14580;PAH;nahAd
-K14580;Ethylbenzene;nahAd
 K14580;Nitrotoluene;nahAd
 K14580;Aromatic;nahAd
 K14581;Nitrotoluene;nahAa
 K14581;Aminobenzoate;nahAa
-K14581;Ethylbenzene;nahAa
 K14581;Ethylbenzene;nahAa
 K14581;Naphthalene;nahAa
 K14581;PAH;nahAa
@@ -488,20 +481,14 @@ K14731;Aromatic;mlhB
 K14731;Caprolactam;mlhB
 K14746;Ethylbenzene;ped
 K14746;Aromatic;ped
-K14746;Ethylbenzene;ped
 K14747;Ethylbenzene;bal
 K14747;Aromatic;bal
-K14747;Ethylbenzene;bal
-K14748;Ethylbenzene;etbAa
 K14748;Ethylbenzene;etbAa
 K14748;Aromatic;etbAa
 K14749;Ethylbenzene;etbAb
 K14749;Aromatic;etbAb
-K14749;Ethylbenzene;etbAb
 K14750;Aromatic;etbAc
 K14750;Ethylbenzene;etbAc
-K14750;Ethylbenzene;etbAc
-K14751;Ethylbenzene;etbC
 K14751;Ethylbenzene;etbC
 K14751;Aromatic;etbC
 K15054;Aminobenzoate;mdlB
@@ -673,10 +660,8 @@ K16880;Furfural;hmfE
 K16901;Aromatic;K16901
 K17048;Ethylbenzene;ebdB
 K17048;Aromatic;ebdB
-K17048;Ethylbenzene;ebdB
 K17049;Ethylbenzene;ebdC
 K17049;Aromatic;ebdC
-K17049;Ethylbenzene;ebdC
 K17067;Cl. alkane and Cl.alkene;mdo
 K17068;Cl. alkane and Cl.alkene;fdm
 K17070;Cl. alkane and Cl.alkene;dcmA
@@ -719,7 +704,6 @@ K18090;Toluene;todA
 K18090;Benzoate;todA
 K18092;Ethylbenzene;etbD
 K18092;Aromatic;etbD
-K18092;Ethylbenzene;etbD
 K18199;Caprolactam;inhA
 K18227;Aromatic;cmtAa
 K18227;Xylene;cmtAa

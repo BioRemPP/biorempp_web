@@ -1,19 +1,19 @@
-# UC-5.4: Gene-Compound Interaction Network
+# UC-5.4: Gene-Compound Annotation Network
 # Panel Configuration (YAML)
 
 use_case_id: "uc-5-4"
 
 scientific_question: >
-  What is the overall structure of the interaction network between genes and
-  chemical compounds, and which entities act as central "hubs" connecting
-  disparate functions?
+  What is the overall structure of the annotation network between genes and
+  chemical compounds, and which entities act as central "hubs" with the highest
+  number of annotation links in the dataset?
 
 description: >
   This visualization constructs a bipartite network graph to map the
-  relationships between all identified gene symbols and compound names.
-  The resulting plot reveals the complex web of interactions, allowing for
-  the identification of key nodes (genes or compounds) that are highly
-  connected within the system.
+  annotation relationships between all identified gene symbols and compound
+  names. The resulting plot reveals the structure of annotation co-occurrences,
+  allowing for the identification of key nodes (genes or compounds) that are
+  highly connected within the annotation network.
 
 visual_elements:
   - label: "Nodes"
@@ -25,9 +25,9 @@ visual_elements:
 
   - label: "Edges"
     description: >
-      The lines connecting the nodes represent observed interactions between
+      The lines connecting the nodes represent annotation links between
       a gene and a compound. Each edge indicates that the gene has been
-      associated with the compound in the bioremediation database.
+      co-annotated with the compound in the reference database.
 
   - label: "Node Colors"
     description: >
@@ -38,40 +38,46 @@ visual_elements:
   - label: "Hover Information"
     description: >
       Hovering the cursor over any node reveals its name (e.g., "Gene: gstA")
-      and its total number of connections (e.g., "Interactions: 15").
+      and its total number of annotation connections (e.g., "Connections: 15").
 
   - label: "Network Structure"
     description: >
-      The spatial arrangement of the nodes reflects the network's structure.
-      Dense clusters represent groups of highly interconnected genes and
-      compounds that form functional modules.
+      The spatial arrangement of the nodes reflects the annotation network's
+      structure. Dense clusters represent groups of genes and compounds with
+      many shared annotation links in the dataset.
 
 interpretation_guidelines:
   - >
-    Identifying Hubs: Nodes located in the dense central part of the graph
-    with a high number of interactions are considered "hubs." A gene hub is
-    a versatile gene that interacts with many different compounds. A compound
-    hub is a chemical that is targeted by many different genes, potentially suggesting
-    a complex biotransformation process.
+    Identifying Hubs: Nodes with a high number of annotation connections are
+    considered "hubs." A gene hub is broadly annotated across many different
+    compounds. A compound hub is associated with many different genes in the
+    database. High connectivity reflects annotation breadth and does not
+    confirm confirmed enzymatic versatility or biotransformation complexity.
 
   - >
-    Functional Modules: Tightly clustered groups of genes and compounds can
-    represent functional modules, where a specific set of genes works together
-    to process a related group of chemicals.
+    Annotation Clusters: Tightly clustered groups of genes and compounds
+    share many annotation links with each other. These clusters may generate
+    hypotheses about annotation co-occurrence patterns, but do not confirm
+    that a specific set of genes works together to process a related group
+    of chemicals.
 
   - >
     Peripheral Nodes: Nodes on the outskirts of the graph with few connections
-    represent more specialized or less frequently observed interactions within
-    the dataset. These may indicate rare but specific gene-compound associations.
+    represent less frequently annotated gene-compound pairs in the dataset.
+    These may indicate narrower annotation coverage rather than biological
+    specialization.
 
   - >
-    Bioremediation Potential: The degree of connectivity of compound nodes
-    may indicate how many genetic resources are available for its biotransformation.
-    Highly connected compounds may be more accessible targets for bioremediation.
+    Annotation Connectivity of Compounds: The degree of connectivity of compound
+    nodes reflects how broadly annotated those compounds are across the gene
+    set in the database. Highly connected compounds have more annotation links,
+    which may guide further investigation into their annotation sources.
 
   - >
-    Consortium Design: This visualization can help identify key genes that could
-    be targeted for enhancing bioremediation capabilities or understanding
-    the metabolic versatility of different biological sources in the consortium.
+    Annotation Network Context: This visualization can help identify which
+    genes and compounds have the broadest annotation overlap, providing a
+    starting point for exploratory analyses of the dataset's annotation
+    structure. Any inference about metabolic function requires experimental
+    validation beyond annotation data.
 
 color_scheme: "success"

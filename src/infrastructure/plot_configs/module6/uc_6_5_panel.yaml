@@ -1,21 +1,22 @@
-# UC-6.5: Chemical-Enzymatic Landscape by Substrate Scope
+# UC-6.5: Chemical-Enzymatic Annotation Landscape
 # Panel Configuration (YAML)
 
 use_case_id: "uc-6-5"
 
 scientific_question: >
-  For each class of chemical compounds, which enzymatic functions are most
-  commonly employed, and which specific genes are the most versatile in
-  targeting the widest range of substrates within that class?
+  For each class of chemical compounds, which enzyme activity annotations are
+  most broadly represented, and which specific genes show the widest compound
+  annotation coverage within each enzyme activity and class combination?
 
 description: >
-  This visualization provides a hierarchical, top-down view of the functional
-  landscape, starting from broad chemical classes. The treemap illustrates how
-  these classes are targeted by different enzymatic activities, which are in
-  turn carried out by specific genes. The size of each rectangle is proportional
-  to the number of unique compounds targeted, highlighting the functions and
-  genes with the broadest substrate scope. The nested rectangles represent the
-  hierarchical path: Compound Class -> Enzyme Activity -> Gene Symbol.
+  This visualization provides a hierarchical, top-down view of the annotation
+  distribution, starting from broad chemical classes. The treemap illustrates
+  how these classes are associated with different enzyme activity annotations,
+  which are in turn linked to specific genes. The size of each rectangle is
+  proportional to the number of unique compound annotations, highlighting the
+  enzyme activity annotations and genes with the broadest compound annotation
+  coverage within each class. The nested rectangles represent the hierarchical
+  path: Compound Class → Enzyme Activity → Gene Symbol.
 
 visual_elements:
   - label: "Nested Rectangles (Hierarchy)"
@@ -28,14 +29,16 @@ visual_elements:
   - label: "Area (Values)"
     description: >
       The area of each rectangle is proportional to the total unique compound
-      count for that category and all categories nested within it. Larger areas
-      indicate a broader substrate scope and more versatile biotransformation capacity.
+      annotation count for that category and all categories nested within it.
+      Larger areas indicate broader compound annotation coverage within
+      that category.
 
   - label: "Color Scale (Greens)"
     description: >
-      The color of each rectangle corresponds to its unique compound count,
-      with darker/more intense greens indicating higher values. This provides
-      immediate visual identification of the most versatile categories.
+      The color of each rectangle corresponds to its unique compound annotation
+      count, with darker/more intense greens indicating higher values. This
+      provides immediate visual identification of categories with broader
+      annotation coverage.
 
   - label: "Interactive Zoom"
     description: >
@@ -46,32 +49,41 @@ visual_elements:
   - label: "Hover Information"
     description: >
       Hovering over each rectangle displays the category name and its exact
-      unique compound count value.
+      unique compound annotation count value.
 
 interpretation_guidelines:
   - >
-    Chemical Class Importance: The largest rectangles at the top level represent
-    the compound classes that are targeted by the most versatile enzymatic
-    machinery, indicating classes with the broadest degradation support.
+    Broadly Annotated Chemical Classes: The largest rectangles at the top
+    level represent compound classes with the most compound annotations
+    co-occurring with diverse enzyme activity annotations in the dataset.
+    This reflects annotation coverage and may guide further exploration, but
+    does not confirm that these classes have broader enzymatic support in vivo.
 
   - >
-    Dominant Enzymatic Functions: Within a given compound class, the largest
-    Enzyme Activity rectangles can help identify which enzymatic functions are most
-    promiscuous in terms of the number of different compounds they can process.
+    Enzyme Activity Annotation Distribution: Within a given compound class,
+    the largest Enzyme Activity rectangles show which enzyme activity
+    annotations have the most compound annotation overlap with that class.
+    This is an annotation-level observation and does not confirm which enzymatic
+    functions are most commonly used to process those compounds.
 
   - >
-    Key Genetic Contributors: At the lowest level, the largest Gene Symbol
-    rectangles represent the most versatile genes within each enzyme-class
-    combination. These are prime candidates for biotechnological applications.
+    Gene Annotation Breadth: At the lowest level, the largest Gene Symbol
+    rectangles represent genes with the broadest compound annotation coverage
+    within each enzyme activity and class combination. This reflects annotation
+    breadth in the database and does not confirm in vivo substrate range or
+    functional priority.
 
   - >
-    Cross-Class Versatility: Genes that appear prominently across multiple
-    compound classes may represent broadly useful degradation machinery with
-    potential for engineered bioremediation solutions.
+    Cross-Class Annotation Patterns: Genes that appear prominently across
+    multiple compound classes in the dataset show broad annotation overlap.
+    Identifying such patterns can serve as a starting point for exploratory
+    analyses, though any functional inference requires experimental validation
+    beyond annotation data.
 
   - >
-    Hierarchical Patterns: The overall structure can help identify how biotransformation
-    capacity is distributed across the functional landscape, helping assess
-    which branches are most promiscuous and valuable.
+    Hierarchical Annotation Structure: The overall structure can help identify
+    how compound annotation counts are distributed across chemical classes and
+    enzyme activity annotations, guiding exploratory analyses of annotation
+    coverage patterns in the dataset.
 
 color_scheme: "success"

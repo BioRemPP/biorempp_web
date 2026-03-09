@@ -1,18 +1,18 @@
-# UC-4.4: Interactive Functional Fingerprint of Samples by Pathway (KEGG)
+# UC-4.4: Interactive KO Annotation Profile of Samples by Pathway (KEGG)
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-4"
 
 scientific_question: >
-  What is the specific functional fingerprint of each biological sample, as
-  defined by the distribution and richness of its annotated metabolic pathways?
+  What is the KO annotation profile of each biological sample, as defined
+  by the distribution and count of unique KO identifiers across its annotated
+  metabolic pathways?
 
 description: >
-  This interactive visualization allows for the detailed functional profiling
-  of individual samples. By selecting a sample from the dropdown menu, the
-  radar chart dynamically updates to display its "functional fingerprint"—the
-  richness of each metabolic pathway it possesses, measured by the count of
-  unique KEGG Orthology (KO) identifiers.
+  This interactive visualization allows for the detailed KO annotation profiling
+  of individual samples. By selecting a sample from the dropdown menu, the radar
+  chart dynamically updates to display its KO annotation profile — the count of
+  unique KEGG Orthology (KO) identifiers annotated for each metabolic pathway.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -28,31 +28,33 @@ visual_elements:
   - label: "Value (r)"
     description: >
       The distance of a point from the center along a pathway's axis indicates
-      the count of unique KOs that the selected sample possesses for that
+      the count of unique KO annotations that the selected sample has for that
       pathway.
 
   - label: "Shape"
     description: >
       The blue shape connecting the points represents the sample's overall
-      "functional fingerprint," showing its strengths across different
-      metabolic functions.
+      KO annotation profile, showing how annotation counts are distributed
+      across different metabolic pathways.
 
 interpretation_guidelines:
   - >
-    Functional Specialization: The shape of the radar plot can help
-    identify a sample's functional specializations. A shape that is heavily
-    skewed towards a particular set of related pathways (e.g., several for
-    hydrocarbon biotransformation) may indicate a strong specialization in that area.
+    Annotation Concentration Patterns: The shape of the radar plot can help
+    identify which pathways have higher KO annotation counts for a given sample.
+    A shape skewed towards a particular set of pathways indicates annotation
+    concentration in those pathways. This is an annotation-level observation
+    and does not confirm functional specialization or active metabolic processes.
 
   - >
-    Metabolic Breadth: A more balanced, circular shape may suggest a functional
-    "generalist" with a broad and evenly distributed metabolic potential
-    across many different types of pathways.
+    Annotation Breadth: A more balanced, circular shape may suggest broad KO
+    annotation coverage across many different pathways. This reflects annotation
+    distribution in the database and does not confirm broad or evenly distributed
+    metabolic activity.
 
   - >
-    Comparative Profiling: By switching between samples in the dropdown, one
-    can directly compare their functional fingerprints, quickly identifying
-    key differences in their metabolic strategies and potential ecological
-    niches.
+    Comparative Annotation Profiling: By switching between samples in the dropdown,
+    one can directly compare their KO annotation profiles across pathways. Differences
+    in profile shapes reflect annotation structure and may generate hypotheses for
+    further investigation, but do not confirm metabolic strategies or ecological roles.
 
 color_scheme: "success"

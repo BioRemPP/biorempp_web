@@ -6,11 +6,12 @@ and ProgressTracker.
 """
 
 import time
+from unittest.mock import patch
 
 import pytest
 
-from biorempp_web.src.application.services.cache_service import CacheService
-from biorempp_web.src.application.services.progress_tracker import ProgressTracker
+from src.application.services.cache_service import CacheService
+from src.application.services.progress_tracker import ProgressTracker
 
 
 class TestCacheService:
@@ -109,3 +110,73 @@ class TestCacheService:
 
         # Should be expired
         assert cache.get("key1") is None
+
+
+class TestProgressTracker:
+    """Test ProgressTracker functionality."""
+
+    def test_initial_state(self):
+        """Tracker should start in not-started state."""
+        tracker = ProgressTracker("session-1")
+
+        progress = tracker.get_progress()
+
+        assert progress.current_stage == "Not Started"
+        assert progress.stage_number == 1
+        assert progress.progress_percentage == 0.0
+        assert progress.error is None
+
+    def test_start_stage_and_update_progress(self):
+        """Progress should reflect weighted stage completion."""
+        tracker = ProgressTracker("session-2")
+        tracker.start_stage(3, "BioRemPP Database Merge", "Starting merge")
+        tracker.update_progress(50.0, "Halfway")
+
+        progress = tracker.get_progress()
+
+        assert progress.current_stage == "BioRemPP Database Merge"
+        assert progress.message == "Halfway"
+        # Stage1+2 complete = 15%, plus 50% of stage3 (30%) = 15%
+        assert progress.progress_percentage == pytest.approx(30.0)
+
+    def test_start_stage_invalid_number_raises(self):
+        """Invalid stage numbers should raise ValueError."""
+        tracker = ProgressTracker("session-3")
+
+        with pytest.raises(ValueError, match="Invalid stage number"):
+            tracker.start_stage(9, "Invalid Stage")
+
+    def test_complete_sets_final_state(self):
+        """complete() should move tracker to 100% finalization."""
+        tracker = ProgressTracker("session-4")
+        tracker.complete()
+
+        progress = tracker.get_progress()
+
+        assert progress.current_stage == "Finalization"
+        assert progress.stage_number == 8
+        assert progress.progress_percentage == 100.0
+        assert progress.message == "Processing complete"
+
+    def test_set_error_records_error_state(self):
+        """set_error should store error and expose it in DTO."""
+        tracker = ProgressTracker("session-5")
+        tracker.set_error("database unavailable")
+
+        progress = tracker.get_progress()
+
+        assert progress.error == "database unavailable"
+        assert progress.message == "Error: database unavailable"
+
+    def test_estimated_time_is_computed_after_enough_elapsed_time(self):
+        """Estimated time should be available when elapsed >= 1s and progress > 0."""
+        tracker = ProgressTracker("session-6")
+        tracker.start_stage(4, "KEGG Database Merge")
+        tracker.update_progress(50.0)
+        tracker._start_time = 0.0
+
+        with patch("src.application.services.progress_tracker.time.time", return_value=10.0):
+            progress = tracker.get_progress()
+
+        assert progress.estimated_time_remaining is not None
+        assert progress.estimated_time_remaining > 0

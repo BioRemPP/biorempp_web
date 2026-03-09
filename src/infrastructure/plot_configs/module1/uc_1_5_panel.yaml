@@ -3,98 +3,95 @@
 use_case_id: "uc-1-5"
 
 scientific_question: >
-  How "compliant" is the functional potential of each biological sample with
-  the priorities of different regulatory bodies, as measured by the percentage
-  of monitored compounds they can target?
+  To what extent does the annotated KO repertoire of each biological sample
+  overlap with the compound lists of different regulatory agencies, as measured
+  by the percentage of monitored compounds associated with KOs present in
+  each sample's annotation?
 
 description: >
-  This visualization provides a practical, application-oriented "scorecard"
-  that quantifies how well each sample's degradation capabilities align with
-  the priorities of major regulatory agencies. The heatmap displays a calculated
-  Compliance Score, which represents the percentage of an agency's target
-  compounds that a sample is equipped to interact with. The scorecard is
-  presented as a heatmap matrix comparing Samples (rows) against Regulatory
-  Agencies (columns), with cell values representing the compliance score (0-100%).
+  This visualization quantifies the annotation-level overlap between each
+  biological sample and major regulatory agency compound lists. The heatmap
+  displays a calculated Overlap Score, which represents the percentage of an
+  agency's listed compounds that are associated with KOs present in a sample's
+  annotation. The matrix compares Samples (rows) against Regulatory Agencies
+  (columns), with cell values representing the overlap score (0-100%).
 
 visual_elements:
   - label: "Heatmap Matrix"
     description: >
       The visualization is structured as a matrix where rows represent individual
       biological samples and columns represent different regulatory agencies
-      (e.g., EPA, EPC, ATSDR). Each cell in the matrix displays a compliance
-      score as both color intensity and numerical value, creating an intuitive
-      visual scorecard of regulatory alignment and application readiness.
+      (e.g., EPA, EPC, ATSDR). Each cell displays an annotation overlap score
+      as both color intensity and numerical value, enabling comparison of
+      KO-compound co-occurrence across samples and regulatory contexts.
   
   - label: "Color Gradient (Blue Scale)"
     description: >
-      Cell colors range from light blue (low compliance, 0-20%) through
-      medium blue (moderate compliance, 40-60%) to dark blue (high compliance,
-      80-100%). The color intensity provides an immediate visual indicator of
-      a sample's alignment with each agency's priorities. Brighter/darker cells
-      represent "hotspots" of regulatory compliance excellence, identifying
-      samples with strong application potential for specific regulatory contexts.
+      Cell colors range from light blue (low overlap, 0-20%) through medium blue
+      (moderate overlap, 40-60%) to dark blue (high overlap, 80-100%). The color
+      intensity provides an immediate visual indicator of annotation overlap between
+      a sample's KO repertoire and each agency's compound list. Darker cells
+      highlight sample-agency combinations with the highest functional co-occurrence
+      in the dataset.
   
   - label: "Compliance Score Labels"
     description: >
-      Each cell displays the compliance percentage (e.g., "95.0%") directly
-      within the cell. A score of 100% indicates the sample can target every
-      single compound monitored by that agency, making it a comprehensive
-      solution for that regulatory framework. Scores above 80% suggest strong
-      alignment and application readiness for agency-specific bioremediation.
+      Each cell displays the score (e.g., "95.0%") directly within the cell.
+      A score of 100% indicates that all compounds monitored by that agency are
+      associated with KOs present in the sample's annotation. Higher scores
+      reflect greater annotation overlap; they do not imply operational readiness
+      or confirmed degradation activity.
   
   - label: "Sample Rows (Y-axis)"
     description: >
-      Each row represents a biological sample and shows its compliance scores
-      across all regulatory agencies. Reading across a row allows assessment
-      of a sample's regulatory versatility - multiple high scores (>70%)
-      indicate a broad-spectrum regulatory compliance profile, while selective
-      high scores suggest specialization for specific agency priorities.
+      Each row represents a biological sample and shows its annotation overlap
+      scores across all regulatory agencies. Reading across a row allows comparison
+      of a sample's functional overlap with different agency compound lists, and
+      can help identify whether a sample shows broad or more context-specific
+      functional representation.
   
   - label: "Regulatory Agency Columns (X-axis)"
     description: >
       Each column represents a regulatory agency (e.g., EPA, EPC, ATSDR) and
-      shows compliance scores across all samples. Reading down a column reveals
-      which samples are best equipped for that agency's environmental standards
-      and can indicate the feasibility of achieving comprehensive compliance
-      with available biological resources.
+      shows annotation overlap scores across all samples. Reading down a column
+      reveals which samples have the greatest KO overlap with that agency's
+      compound list, providing a comparative view of functional representation
+      within the dataset for that regulatory context.
 
 interpretation_guidelines:
   - >
-    Identifying High-Compliance Specialists: Brightly colored cells (dark blue,
-    >80% compliance) identify samples that may be potent "specialists" for specific
-    regulatory contexts. A score of 95% for Sample A and the EPA means Sample A
-    can target 95% of the EPA's priority pollutants, suggesting it as a candidate
-    for EPA-focused bioremediation applications. These high-compliance specialists
-    may be prioritized for regulatory approval pathways and field deployment.
-  
+    High-Score Intersections: Cells with high scores (dark blue) indicate samples
+    whose annotated KO repertoire overlaps substantially with compounds listed by
+    that regulatory agency. This reflects annotation-level co-occurrence and may
+    suggest functional relevance worth investigating, but does not confirm actual
+    degradation capability or regulatory compliance in any operational sense.
+
   - >
-    Discovering Versatile Generalists: A sample with consistently high scores
-    across multiple agency columns (>70% across all agencies) may be a functional
-    "generalist" with broad regulatory relevance. Such samples can be valuable
-    for multi-jurisdictional applications or contamination scenarios that must
-    meet multiple regulatory standards simultaneously.
-  
+    Broad Functional Profiles: Samples with consistently elevated scores across
+    multiple agency columns show broad overlap between their annotated functional
+    potential and compound lists from several frameworks. This pattern may indicate
+    functional generalism and can help prioritize samples for further multi-context
+    investigation.
+
   - >
-    Consortium Design for Regulatory Compliance: To achieve comprehensive
-    compliance across all relevant agencies, select a combination of samples
-    that together achieve high scores across all agency columns. For example,
-    if Sample A scores 90% for EPA but 40% for ATSDR, while Sample B scores
-    50% for EPA but 95% for ATSDR, combining them creates a consortium with
-    broad regulatory coverage.
-  
+    Complementary Coverage: Comparing score profiles across samples can reveal
+    complementary patterns — samples with higher scores in different agency columns
+    may together cover a broader functional space. This observation may generate
+    hypotheses about multi-sample analysis strategies, though any consortium design
+    requires experimental validation beyond annotation data.
+
   - >
-    Strategic Sample Selection: For regulatory-driven bioremediation projects,
-    samples may be selected based on the governing agency's standards. For EPA-
-    regulated sites, consider choosing the sample with the highest compliance score
-    for EPA (darkest cell in EPA column). For sites under multiple jurisdictions,
-    samples with balanced high scores or complementary consortia may be explored.
-  
+    Exploratory Sample Selection: The heatmap can help orient the selection of
+    samples for further investigation within a specific regulatory context. Samples
+    with higher scores for a given agency have greater annotation overlap with that
+    agency's compound list, which may inform, but should not alone determine,
+    prioritization in research workflows.
+
   - >
-    Compliance Gap Analysis: Cells with low scores (<30%, light blue) represent
-    compliance gaps where samples lack the functional capacity to address
-    agency priorities. These gaps can guide research priorities, bioprospecting
-    efforts, or genetic engineering strategies to develop samples with better
-    regulatory alignment. Identifying which specific compounds are missing can
-    inform targeted capability enhancement.
+    Low-Score Areas: Cells with low scores indicate limited overlap between a
+    sample's annotated KOs and an agency's compound-associated functions. These
+    areas may guide hypothesis generation about functional gaps and serve as a
+    starting point for identifying which compounds or pathways are
+    underrepresented for a given sample.
 
 color_scheme: "primary"

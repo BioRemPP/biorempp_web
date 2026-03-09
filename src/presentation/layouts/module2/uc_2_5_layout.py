@@ -10,7 +10,7 @@ Notes
 """
 
 import dash_bootstrap_components as dbc
-from dash import html
+from dash import dcc, html
 
 from src.presentation.components.composite.use_cases import create_panel_by_id
 
@@ -54,18 +54,49 @@ def create_uc_2_5_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    html.Span(
+                                    dbc.Row(
                                         [
-                                            html.I(
-                                                className="fas fa-info-circle text-info",
-                                                id="uc-2-5-info-icon",
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={
+                                                        "type": "results-methods-link",
+                                                        "index": "UC-2.5",
+                                                    },
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
                                             ),
-                                            dbc.Tooltip(
-                                                "ℹ️ Same data as UC-2.1",
-                                                target="uc-2-5-info-icon",
-                                                placement="left",
+                                            dbc.Col(
+                                                html.Span(
+                                                    [
+                                                        html.I(
+                                                            className=(
+                                                                "fas fa-info-circle "
+                                                                "text-info"
+                                                            ),
+                                                            id="uc-2-5-info-icon",
+                                                        ),
+                                                        dbc.Tooltip(
+                                                            "Info: Same data as UC-2.1",
+                                                            target="uc-2-5-info-icon",
+                                                            placement="left",
+                                                        ),
+                                                    ]
+                                                ),
+                                                width="auto",
                                             ),
-                                        ]
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -132,8 +163,14 @@ def create_uc_2_5_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Selection)
                                     # ========================================
-                                    html.Div(
-                                        id="uc-2-5-chart-container", className="mt-4"
+                                    dcc.Loading(
+                                        id="uc-2-5-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-2-5-chart-container",
+                                            className="mt-4",
+                                        ),
                                     ),
                                 ],
                                 title="View Results",

@@ -54,18 +54,43 @@ def create_uc_8_6_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    html.Span(
+                                    dbc.Row(
                                         [
-                                            html.I(
-                                                className="fas fa-exclamation-triangle text-warning",
-                                                id="uc-8-6-info-icon",
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={"type": "results-methods-link", "index": "UC-8.6"},
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
                                             ),
-                                            dbc.Tooltip(
-                                                "⚠️ Currently unavailable",
-                                                target="uc-8-6-info-icon",
-                                                placement="left",
+                                            dbc.Col(
+                                                html.Span(
+                                                    [
+                                                        html.I(
+                                                            className="fas fa-exclamation-triangle text-warning",
+                                                            id="uc-8-6-info-icon",
+                                                        ),
+                                                        dbc.Tooltip(
+                                                            "Currently unavailable",
+                                                            target="uc-8-6-info-icon",
+                                                            placement="left",
+                                                        ),
+                                                    ]
+                                                ),
+                                                width="auto",
                                             ),
-                                        ]
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -147,14 +172,19 @@ def create_uc_8_6_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Selection)
                                     # ========================================
-                                    html.Div(
-                                        html.P(
-                                            "Please select a pathway from the dropdown to "
-                                            "generate the UpSet plot.",
-                                            className="text-muted text-center p-5",
+                                    dcc.Loading(
+                                        id="uc-8-6-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            html.P(
+                                                "Please select a pathway from the dropdown to "
+                                                "generate the UpSet plot.",
+                                                className="text-muted text-center p-5",
+                                            ),
+                                            id="uc-8-6-chart",
+                                            className="mt-4 border rounded p-3",
                                         ),
-                                        id="uc-8-6-chart",
-                                        className="mt-4 border rounded p-3",
                                     ),
                                 ],
                                 title="View Results",

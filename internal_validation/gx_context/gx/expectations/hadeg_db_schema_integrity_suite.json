@@ -1,0 +1,132 @@
+{
+  "expectations": [
+    {
+      "id": "91c4bff8-c263-4961-8e5e-d7aff433af79",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "1c981299-d3bf-4b27-8952-05e83d97577c",
+      "kwargs": {
+        "column": "ko",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "dd6630f7-f1ae-4e40-97ef-0a9e76863298",
+      "kwargs": {
+        "column": "Gene"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "504510ac-7874-4f48-b363-e962cfd975e4",
+      "kwargs": {
+        "column": "Gene",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "d997d572-8c9a-49c3-bfad-0f21dda20233",
+      "kwargs": {
+        "column": "Pathway"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "20be6f0e-fcd5-4286-98d9-e29fa0f7eea6",
+      "kwargs": {
+        "column": "Pathway",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "202f2ef8-8385-4242-8ef2-d05c323c6f5d",
+      "kwargs": {
+        "column": "compound_pathway"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "b8b06d96-f4fe-444f-9802-4e5f5a28ef49",
+      "kwargs": {
+        "column": "compound_pathway",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "aadfbcd1-87d9-40af-93d1-20ad1538598e",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "9c546f7a-8e7b-43d8-954f-17eebe8d0e1a",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "8eaff305-39cb-4d8c-8aa1-36a704b5384f",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "afe480c6-21b4-4f0e-aab0-03c21697d4a5",
+      "kwargs": {
+        "column_list": [
+          "ko",
+          "Gene",
+          "Pathway",
+          "compound_pathway"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "34045e8b-3de5-4a8f-b733-602fe7f16cae",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "hadeg_db_schema_integrity_suite",
+  "notes": null
+}

@@ -19,7 +19,8 @@ metadata:
     represents the confirmed presence of a gene symbol within a sample.
     Flexible dual-filter dropdown menus allow sample-centric (genetic inventory),
     gene-centric (sample distribution), or hypothesis-testing views. Supports
-    three filtering modes: sample only, gene only, or both filters combined.
+    multiselect filtering modes: one-or-more samples, one-or-more genes,
+    or both filters combined.
   version: "1.0.0"
   author: "BioRemPP Development Team"
   created_date: "2025-12-03"
@@ -132,12 +133,12 @@ interactivity:
     - component_id: "uc-4-8-sample-dropdown"
       property: "value"
       trigger_type: "dropdown_selection"
-      description: "Filter by sample (optional)"
+      description: "Filter by one or more samples (optional)"
     
     - component_id: "uc-4-8-gene-dropdown"
       property: "value"
       trigger_type: "dropdown_selection"
-      description: "Filter by gene (optional)"
+      description: "Filter by one or more genes (optional)"
   
   outputs:
     - component_id: "uc-4-8-chart-container"
@@ -153,15 +154,15 @@ interactivity:
   controls:
     - component_id: "uc-4-8-sample-dropdown"
       type: "dropdown"
-      label: "Select Sample (Optional)"
+      label: "Select Sample(s) (Optional)"
       options_source: "dynamic"
-      description: "Filter by specific sample"
+      description: "Filter by one or more samples (full stable catalog)"
     
     - component_id: "uc-4-8-gene-dropdown"
       type: "dropdown"
-      label: "Select Gene (Optional)"
+      label: "Select Gene(s) (Optional)"
       options_source: "dynamic"
-      description: "Filter by specific gene"
+      description: "Filter by one or more genes (full stable catalog)"
   
   filtering_modes:
     - mode: "no_selection"
@@ -169,16 +170,20 @@ interactivity:
       behavior: "Show informative message"
     
     - mode: "sample_only"
-      description: "Sample selected, gene not selected"
-      behavior: "Show all genes in selected sample (genetic inventory)"
+      description: "One or more samples selected, genes not selected"
+      behavior: "Show all genes in selected samples (genetic inventory)"
     
     - mode: "gene_only"
-      description: "Gene selected, sample not selected"
-      behavior: "Show all samples possessing selected gene (sample distribution)"
+      description: "One or more genes selected, samples not selected"
+      behavior: "Show all samples possessing selected genes (sample distribution)"
     
     - mode: "both_selected"
-      description: "Both sample and gene selected"
-      behavior: "Show specific gene presence in specific sample"
+      description: "One or more samples and one or more genes selected"
+      behavior: "Show only intersection of selected samples and genes"
+
+  option_catalog_behavior:
+    strategy: "stable_full_catalog"
+    description: "Dropdown options are not recalculated from current selections."
 
 # ============================================================================
 # SECTION 5: Validation Configuration (REQUIRED)
@@ -200,7 +205,7 @@ validation:
       message: "This use case requires BioRemPP database"
     
     - rule: "at_least_one_filter"
-      message: "Please select at least one filter (sample or gene)"
+      message: "Please select at least one filter (sample(s) or gene(s))"
 
 # ============================================================================
 # SECTION 6: Performance Configuration (REQUIRED)
@@ -248,11 +253,11 @@ error_handling:
     
     no_gene_presence_found:
       action: "display_message"
-      message: "No gene presence found for {filter_description}. Try a different combination."
+      message: "No gene presence found for selected filters ({filter_description}). Try a different combination."
     
     no_filter_selected:
       action: "display_info"
-      message: "Please select a sample and/or a gene from the dropdown menus above to explore genetic inventory."
+      message: "Please select one or more samples and/or genes from the dropdown menus above to explore genetic inventory."
     
     biorempp_data_missing:
       action: "display_message"

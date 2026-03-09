@@ -15,15 +15,19 @@ Notes
 - Links to external resources
 """
 
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 import dash_bootstrap_components as dbc
 from dash import html
 
+from config.settings import APP_VERSION
+from src.presentation.routing import app_path
+
 
 def create_footer(
-    version: str = "1.0.0",
-    year: int = 2022,
+    version: str = APP_VERSION,
+    year: int = datetime.now().year,
     show_links: bool = True,
     additional_links: Optional[List[Dict[str, str]]] = None,
 ) -> html.Footer:
@@ -78,7 +82,7 @@ def create_footer(
     )
 
     default_links = [
-        {"label": "Documentation", "url": "/documentation"},
+        {"label": "Documentation", "url": app_path("/documentation")},
     ]
 
     if additional_links:

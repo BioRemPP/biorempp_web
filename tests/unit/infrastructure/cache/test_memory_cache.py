@@ -1,5 +1,24 @@
 """
-Unit tests for Memory Cache.
+Unit tests for MemoryCache.
+
+This module tests the MemoryCache class, which provides a generic
+in-memory cache with TTL support and LRU eviction policy.
+
+Test Coverage:
+- Cache initialization
+- Basic set and get operations
+- Non-existent key handling
+- TTL-based expiration
+- Entry deletion
+- Cache clearing
+- LRU eviction when max size reached
+- LRU ordering after access
+- Size tracking
+- Existence checking
+- Cache statistics
+- Different data types storage
+- Key override behavior
+- TTL=0 (no expiration) behavior
 """
 
 import pytest

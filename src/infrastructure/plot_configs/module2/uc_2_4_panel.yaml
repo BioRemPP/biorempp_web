@@ -10,10 +10,9 @@ scientific_question: >
 
 description: >
   This interactive visualization ranks compounds based on the number of unique
-  genes that interact with them, filterable by the compound's chemical class.
-  The resulting bar chart highlights which compounds elicit the most diverse
-  genetic response for a selected category, potentially indicating complex
-  biotransformation pathways.
+  genes associated with them, filterable by the compound's chemical class.
+  The resulting bar chart highlights which compounds show the greatest gene
+  diversity in their annotations for a selected category.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -35,21 +34,23 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Complex Biotransformation Targets: Taller bars represent compounds that are
-    associated with a larger and more diverse set of genes. This may suggest
-    a complex, multi-step biotransformation pathway involving numerous different
-    enzymes, transporters, or regulatory genes.
-  
+    High Gene Diversity: Taller bars represent compounds associated with a larger
+    and more diverse set of genes in the annotation data. This may suggest the
+    involvement of multiple functional roles in related pathways, though the
+    annotation diversity does not confirm the complexity or number of steps in
+    any biotransformation process.
+
   - >
-    Simple Biotransformation Targets: Shorter bars, especially those with a count of
-    '1', may suggest compounds that are targeted by a smaller, more specific, or
-    perhaps a single enzymatic pathway.
-  
+    Low Gene Diversity: Shorter bars, especially those with a count of '1',
+    indicate compounds associated with fewer annotated genes. This may reflect
+    a narrower annotation profile or more limited co-occurrence data, rather
+    than confirmed enzymatic simplicity.
+
   - >
-    Comparing Chemical Classes: The dropdown allows for direct comparison of
-    genetic interaction patterns between chemical classes. This can help assess,
-    for example, whether compounds in the "Aromatics" class generally involve
-    a greater diversity of genetic machinery for biotransformation than those in
-    the "Aliphatics" class.
+    Comparing Chemical Classes: The dropdown allows comparison of gene-association
+    patterns across chemical classes. This can help explore whether certain classes
+    show broader gene diversity in their annotations — generating hypotheses about
+    functional complexity differences that would require experimental follow-up
+    to validate.
 
 color_scheme: "success"

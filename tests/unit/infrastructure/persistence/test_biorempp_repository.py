@@ -1,5 +1,16 @@
 """
-Unit tests for BioRemPP Repository.
+Unit tests for BioRemPPRepository.
+
+This module tests the BioRemPPRepository class, which provides data access
+to the BioRemPP database containing compound and KO annotations.
+
+Test Coverage:
+- Initialization with default and custom paths
+- Required columns validation
+- Real database loading
+- KO column presence verification
+- Repository caching behavior
+- Column name retrieval
 """
 
 import pytest

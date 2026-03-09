@@ -1,5 +1,18 @@
 """
-Unit tests for KEGG Repository.
+Unit tests for KEGGRepository.
+
+This module tests the KEGGRepository class, which provides data access
+to the KEGG degradation pathway database.
+
+Test Coverage:
+- Initialization with default and custom paths
+- Required columns validation (ko, pathname)
+- Real database loading
+- KO column verification
+- Repository caching behavior
+- Pathway column existence
+- Column name retrieval
+- Database schema validation
 """
 
 import pytest

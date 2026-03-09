@@ -120,7 +120,7 @@ def create_panel_by_id(
         # Create panel
         panel = create_use_case_panel(**config)
 
-        logger.info("Panel created successfully", extra={"use_case_id": use_case_id})
+        logger.info(f"Panel '{use_case_id}' created successfully")
 
         return panel
 

@@ -4,9 +4,9 @@
 use_case_id: "uc-3-1"
 
 scientific_question: >
-  How do biological samples cluster in functional space based on their
-  KEGG Orthology (KO) profiles? Which samples exhibit similar metabolic
-  potentials, and which represent distinct functional strategies?
+  How do biological samples cluster based on the similarity of their
+  KEGG Orthology (KO) annotation profiles? Which samples show similar
+  KO composition, and which present distinct annotation patterns?
 
 description: >
   This visualization employs Principal Component Analysis (PCA) to reduce the
@@ -46,9 +46,9 @@ visual_elements:
 
   - label: "Clustering"
     description: >
-      Samples that appear close together in the plot have similar KO profiles,
-      indicating functional similarity. Distinct clusters may suggest different
-      functional groups or metabolic strategies within the community.
+      Samples that appear close together in the plot have similar KO annotation
+      profiles. Distinct clusters may suggest different KO annotation patterns
+      across biological sources within the dataset.
 
   - label: "Hover Information"
     description: >
@@ -57,34 +57,37 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Clusters: Tight groups of samples indicate shared metabolic
-    profiles. These clusters may represent biological sources with similar
-    ecological niches, phylogenetic relationships, or bioremediation strategies.
+    KO Profile Clusters: Tight groups of samples indicate similar KO annotation
+    profiles. These clusters may reflect shared annotation patterns across
+    biological sources and can generate hypotheses about shared ecological or
+    functional contexts, though KO co-occurrence does not confirm shared function.
 
   - >
-    Outliers: Samples positioned far from others possess unique or rare
-    functional repertoires. These may be specialists with distinctive
-    metabolic capabilities worth investigating further.
+    Outliers: Samples positioned far from others have KO annotation profiles
+    that differ substantially from the rest. These may warrant further
+    investigation to understand what annotation features drive their separation.
 
   - >
     Variance Explained: The percentages on the axes indicate how much of the
-    total functional diversity is captured. Higher values (>50% combined)
-    suggest the 2D plot faithfully represents the major patterns. Lower values
-    indicate more complexity in the dataset that isn't fully visualized in 2D.
+    total KO profile variance is captured by the 2D projection. Higher combined
+    values suggest the 2D plot preserves more of the original variation; lower
+    values indicate that relevant structure may remain in dimensions not shown.
 
   - >
     Gradient Patterns: If samples form a gradient rather than discrete clusters,
-    this may suggest a continuum of functional variation rather than distinct
-    functional types.
+    this may suggest a continuum of KO annotation variation rather than distinct
+    groupings in the dataset.
 
   - >
-    Sample Diversity: The overall spread of points reflects the functional
-    diversity of the community. Tightly packed samples may indicate functional
-    redundancy, while widely dispersed samples may indicate high functional diversity.
+    Spread of Points: The overall spread of points reflects KO annotation
+    diversity across samples. Tightly packed samples share more similar
+    annotation profiles, while widely dispersed samples show greater annotation
+    heterogeneity.
 
   - >
-    Bioremediation Applications: Functionally similar samples (clustering together)
-    may have redundant bioremediation capabilities. Dissimilar samples may offer
-    complementary functions for consortium design.
+    Complementary Annotation Profiles: Samples that cluster separately have
+    more distinct KO annotation profiles. This observation may serve as a
+    starting point for exploring annotation complementarity, though any
+    functional inference requires experimental validation.
 
 color_scheme: "primary"

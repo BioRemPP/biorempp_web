@@ -1,18 +1,19 @@
-# UC-4.2: Interactive Ranking of Samples by Pathway Richness (KEGG)
+# UC-4.2: Interactive Ranking of Samples by Pathway KO Annotation Count (KEGG)
 # Informative Panel Configuration
 
 use_case_id: "uc-4-2"
 
 scientific_question: >
-  For any given metabolic pathway, which biological samples possess the highest
-  functional richness or completeness, as measured by their unique KO count?
+  For any given metabolic pathway, which biological samples have the highest
+  KO annotation count, and how does this annotation coverage vary across
+  samples?
 
 description: >
-  This interactive visualization allows for the comparative analysis of
-  functional potential at the pathway level. By selecting a metabolic pathway
+  This interactive visualization allows for the comparative analysis of KO
+  annotation coverage at the pathway level. By selecting a metabolic pathway
   from the dropdown menu, the bar chart dynamically updates to rank each sample
-  based on the number of unique KEGG Orthology (KO) identifiers it possesses
-  for that specific pathway.
+  based on the number of unique KEGG Orthology (KO) identifiers annotated for
+  that specific pathway.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -26,31 +27,36 @@ visual_elements:
 
   - label: "Y-axis"
     description: >
-      Represents the count of unique KOs associated with the selected pathway.
+      Represents the count of unique KO annotations associated with the
+      selected pathway for each sample.
 
   - label: "Bar Height and Label"
     description: >
-      The height of each bar and its corresponding numerical label explicitly
-      state the total number of unique KOs for that sample within the chosen
-      pathway.
+      The height of each bar and its corresponding numerical label indicate the
+      total number of unique KO annotations for that sample within the chosen
+      pathway, reflecting annotation density for that pathway per sample.
 
 interpretation_guidelines:
   - >
-    **Pathway Completeness/Richness**: Taller bars may indicate that a sample
-    possesses a greater number of unique KOs for the selected pathway. This
-    can serve as a proxy for the completeness or functional complexity of
-    that pathway within the biological source.
+    Annotation Count per Pathway: Taller bars indicate that a sample has more
+    unique KO annotations for the selected pathway in the database. This reflects
+    annotation coverage and may guide further exploratory analyses, but does not
+    confirm functional completeness or the number of active enzymatic steps for
+    that pathway.
 
   - >
-    **Identifying Functional Specialists**: By selecting a specific pathway
-    (e.g., "Toluene biotransformation"), the chart can help identify which
-    samples are the most potent "specialists" for that function.
+    Comparing Annotation Coverage Across Samples: By selecting a specific pathway,
+    the chart can help identify which samples show higher KO annotation counts for
+    that pathway. These samples have broader annotation coverage for that pathway
+    in the database, which may generate hypotheses for further investigation but
+    does not confirm functional specialization.
 
   - >
-    **Comparative Functional Genomics**: The tool enables rapid comparative
-    functional genomics, allowing the user to explore how different biological sources
-    are equipped to handle various metabolic tasks. A sample that consistently
-    ranks high across many biotransformation pathways may be considered a versatile
-    "generalist."
+    Comparative Annotation Profiles: The tool enables rapid comparison of KO
+    annotation counts across samples for different pathways. A sample that
+    consistently shows high annotation counts across many pathways has broader
+    overall annotation coverage. These are annotation-level observations and do
+    not confirm metabolic versatility or the ability to perform specific metabolic
+    tasks.
 
 color_scheme: "success"

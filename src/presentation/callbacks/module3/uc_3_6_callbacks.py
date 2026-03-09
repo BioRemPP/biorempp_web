@@ -1,7 +1,7 @@
 """
 UC-3.6 Callbacks - Gene Co-occurrence Patterns Across Samples.
 
-This module implements callback functions for visualizing gene-gene co-occurrence
+This module implements callback functions for visualizing gene-gene co-annotation
 patterns through correlation analysis based on shared presence across samples.
 
 Functions
@@ -340,7 +340,7 @@ def register_uc_3_6_callbacks(app, plot_service) -> None:
                     "displaylogo": False,
                     "modeBarButtonsToRemove": ["pan2d", "lasso2d", "select2d"],
                     "toImageButtonOptions": {
-                        "format": "png",
+                        "format": "svg",
                         "filename": base_filename,
                         "height": 600,
                         "width": 600,

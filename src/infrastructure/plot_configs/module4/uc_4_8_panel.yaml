@@ -1,77 +1,77 @@
-# UC-4.8: Interactive Gene Inventory Explorer by Sample and Gene Symbol
+# UC-4.8: Interactive Gene Annotation Inventory Explorer by Sample and Gene Symbol
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-8"
 
 scientific_question: >
-  What is the specific genetic inventory (gene symbols) of each biological
-  sample, and which samples possess a particular gene of interest?
+  What is the gene annotation inventory of each biological sample, and which
+  samples contain annotations for a particular gene of interest?
 
 description: >
-  This interactive visualization serves as a query tool to explore the genetic
-  composition of each sample. By using one or both dropdown menus, a user can
-  dynamically filter the entire dataset to visualize specific relationships.
-  The resulting scatter plot maps the presence of genes within samples,
-  providing a powerful tool for comparative genomics and hypothesis testing.
-  Each point in the plot represents the confirmed presence of a gene symbol
-  within a sample.
+  This interactive visualization serves as a query tool to explore the gene
+  annotation content of each sample. By using one or both dropdown menus, a user
+  can dynamically filter the dataset to visualize specific annotation relationships.
+  The resulting scatter plot maps the presence of gene annotations within samples,
+  providing a tool for comparative annotation analysis and exploratory investigation.
+  Each point in the plot represents the presence of a gene annotation within a
+  sample in the database.
 
 visual_elements:
   - label: "Dropdown Menus"
     description: >
       Use the "Select Sample" and "Select Gene Symbol" menus to filter the
       data. The plot updates automatically based on your selection(s). You can
-      select one or both filters to explore different genomic perspectives.
+      select one or more values in either filter to explore different annotation
+      perspectives. Both dropdowns keep a stable full catalog while the chart
+      updates incrementally.
 
   - label: "Y-axis (Samples)"
     description: >
-      Represents the individual biological samples in your dataset. Each sample
+      Represents the individual biological samples in the dataset. Each sample
       is displayed on the vertical axis.
 
   - label: "X-axis (Gene Symbols)"
     description: >
-      Represents the gene symbols identified in the analysis. Each unique gene
+      Represents the gene symbols annotated in the analysis. Each unique gene
       is displayed on the horizontal axis.
 
-  - label: "Points (Gene Presence)"
+  - label: "Points (Gene Annotation Presence)"
     description: >
       A point at the intersection of a sample and a gene symbol indicates that
-      the sample possesses that gene. The presence of a point confirms this
-      genetic feature exists in the biological source.
+      the sample has an annotation for that gene in the database.
 
   - label: "Hover Information"
     description: >
       Hovering the cursor over a point reveals the specific compound name and
-      KO identifier associated with that gene in that sample, providing
-      functional context for the genetic inventory.
+      KO identifier associated with that gene annotation in that sample, providing
+      annotation context.
 
 interpretation_guidelines:
   - >
-    Single Filter (Sample-centric view): Selecting a single sample can help identify its
-    "genetic inventory"—the complete set of genes identified for it in this
-    dataset. This is useful for characterizing the functional potential of a
-    specific biological source and understanding its metabolic capabilities.
+    Sample-centric Annotation View: Selecting one or more samples can help identify
+    their combined gene annotation inventory — the set of gene annotations found
+    across the selected samples in the database.
 
   - >
-    Single Filter (Gene-centric view): Selecting a single gene can help identify its
-    "sample distribution"—the complete set of samples that possess this gene.
-    This is useful for tracking the prevalence of important functional genes
-    across the consortium and potentially identifying redundancy.
+    Gene-centric Annotation View: Selecting one or more genes can help identify
+    which samples contain annotations for those genes — the distribution of those
+    gene annotations across the dataset.
 
   - >
-    Dual Filter (Hypothesis Testing): Selecting both a sample and a gene
-    allows for direct confirmation of a gene's presence in a specific biological source.
-    The hover data can help identify which compounds this gene is linked to in that
-    context, providing functional validation.
+    Dual Filter (Intersection Exploration): Selecting values in both filters
+    returns only the intersection between selected samples and selected genes,
+    allowing focused exploration of specific gene annotation co-occurrences.
 
   - >
-    Comparative Genomics: By exploring different samples, you can identify
-    core genes (present across many samples) versus accessory genes (present
-    in few samples), potentially revealing the genetic structure of your consortium.
+    Comparative Annotation Patterns: By exploring different samples, you can
+    identify gene annotations present across many samples versus those present
+    in fewer samples. These annotation patterns may generate hypotheses for
+    further investigation but do not confirm core versus accessory functional roles.
 
   - >
-    Bioaugmentation Screening: Samples with extensive genetic inventories
-    (many horizontal points) may be excellent candidates for bioaugmentation,
-    as they possess diverse functional capabilities for pollutant biotransformation.
+    Annotation Breadth: Samples with gene annotations across many genes (many
+    horizontal points) have broader annotation coverage in the database. This
+    is an annotation-level observation and does not confirm diverse functional
+    capabilities or suitability for specific applications.
 
 color_scheme: "success"

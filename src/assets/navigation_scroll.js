@@ -1,355 +1,272 @@
 /**
- * Navigation Scroll Handler - BioRemPP v1.0
- * ==========================================
- * 
- * Implements smooth scroll navigation for offcanvas navigation links.
- * Works around Dash's hash-based navigation limitations by intercepting
- * clicks and scrolling programmatically.
- * 
- * Features:
- * - Smooth scroll to target sections
- * - Respects header offset (scroll-padding-top)
- * - Keeps offcanvas open during navigation
- * - Works with Dash's dynamic rendering
- * 
- * @version 1.1.0
- * @date 2025-11-17
+ * Navigation Scroll Handler - BioRemPP v1.2
+ *
+ * Hash-driven navigation that cooperates with lazy /results module loading.
+ * - Supports canonical and legacy UC targets
+ * - Retries while module content is mounting
+ * - Falls back to module overview target when UC anchor is unavailable
  */
 
 (function () {
-    'use strict';
+    "use strict";
 
-    console.log('[SCROLL-NAV] 🚀 Navigation scroll handler v1.1.0 loaded');
-
-    // Configuration
     const CONFIG = {
-        scrollBehavior: 'smooth',
-        scrollOffset: 100,  // Offset for fixed header (matches CSS scroll-padding-top)
-        scrollDuration: 800, // Fallback duration in ms
-        retryAttempts: 10,   // How many times to retry finding elements
-        retryDelay: 500      // Delay between retries in ms
+        scrollBehavior: "smooth",
+        scrollOffset: 100,
+        retryDelayMs: 100,
+        maxAttempts: 50,
     };
 
-    /**
-     * Smooth scroll to element with offset
-     * @param {HTMLElement} element - Target element to scroll to
-     */
+    const UC_TARGET_RE = /^#uc-([1-8])-(\d+)-(?:card|info-panel)$/;
+    const MODULE_TARGET_RE = /^#module([1-8])-section$/;
+    const DB_TARGETS = new Set([
+        "#biorempp-section",
+        "#hadeg-section",
+        "#toxcsm-section",
+        "#kegg-section",
+    ]);
+
+    let pending = null;
+    let lastPathname = window.location.pathname || "";
+
+    function normalizeHash(rawHash) {
+        if (typeof rawHash !== "string") {
+            return null;
+        }
+        let value = rawHash.trim();
+        if (!value) {
+            return null;
+        }
+        if (!value.startsWith("#")) {
+            value = "#" + value;
+        }
+        const ucMatch = value.match(UC_TARGET_RE);
+        if (ucMatch) {
+            return "#uc-" + ucMatch[1] + "-" + ucMatch[2] + "-card";
+        }
+        if (value.match(MODULE_TARGET_RE) || DB_TARGETS.has(value)) {
+            return value;
+        }
+        return null;
+    }
+
+    function resolveModuleFromHash(hash) {
+        if (typeof hash !== "string") {
+            return null;
+        }
+        const ucMatch = hash.match(UC_TARGET_RE);
+        if (ucMatch) {
+            return Number.parseInt(ucMatch[1], 10);
+        }
+        const moduleMatch = hash.match(MODULE_TARGET_RE);
+        if (moduleMatch) {
+            return Number.parseInt(moduleMatch[1], 10);
+        }
+        return null;
+    }
+
+    function resolveFallbackHash(hash) {
+        const moduleIndex = resolveModuleFromHash(hash);
+        if (moduleIndex && moduleIndex >= 1 && moduleIndex <= 8) {
+            return "#module" + moduleIndex + "-section";
+        }
+        if (DB_TARGETS.has(hash)) {
+            return hash;
+        }
+        return "#module1-section";
+    }
+
     function scrollToElement(element) {
         if (!element) {
-            console.error('[SCROLL-NAV] ❌ Target element not found');
             return;
         }
-
         const elementPosition = element.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - CONFIG.scrollOffset;
-
-        console.log('[SCROLL-NAV] 📍 Scroll calculation:', {
-            elementId: element.id,
-            currentScroll: window.pageYOffset,
-            elementTop: elementPosition,
-            targetScroll: offsetPosition,
-            offset: CONFIG.scrollOffset
+        window.scrollTo({
+            top: offsetPosition,
+            behavior: CONFIG.scrollBehavior,
         });
+    }
 
-        // Use native smooth scroll if supported
-        if ('scrollBehavior' in document.documentElement.style) {
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: CONFIG.scrollBehavior
-            });
-            console.log('[SCROLL-NAV] ✅ Smooth scroll initiated to:', offsetPosition);
-        } else {
-            // Fallback for older browsers
-            window.scrollTo(0, offsetPosition);
-            console.log('[SCROLL-NAV] ✅ Fallback scroll to:', offsetPosition);
+    function showFallbackNotice(targetHash, fallbackHash) {
+        const node = document.createElement("div");
+        node.className = "alert alert-warning shadow-sm";
+        node.style.position = "fixed";
+        node.style.right = "20px";
+        node.style.bottom = "20px";
+        node.style.zIndex = "2000";
+        node.style.maxWidth = "420px";
+        node.style.margin = "0";
+        node.style.padding = "10px 14px";
+        node.innerText =
+            "We couldn't open the exact section yet. You were taken to the related module section.";
+
+        document.body.appendChild(node);
+        window.setTimeout(function () {
+            if (node.parentNode) {
+                node.parentNode.removeChild(node);
+            }
+        }, 2500);
+    }
+
+    function setHashSilently(hash) {
+        // Use native hash assignment so Dash dcc.Location consistently detects changes.
+        if (window.location.hash !== hash) {
+            window.location.hash = hash;
         }
     }
 
-    /**
-     * Handle navigation link click
-     * @param {Event} event - Click event
-     */
-    function handleNavigationClick(event) {
-        const link = event.currentTarget;
+    function clearPending() {
+        if (!pending) {
+            return;
+        }
+        if (pending.timerId) {
+            window.clearTimeout(pending.timerId);
+        }
+        pending = null;
+    }
 
-        console.log('='.repeat(80));
-        console.log('[SCROLL-NAV] 🖱️ CLICK EVENT DETAILS:');
-        console.log('[SCROLL-NAV]   - Element ID:', link.id || '(no id)');
-        console.log('[SCROLL-NAV]   - Element class:', link.className);
-        console.log('[SCROLL-NAV]   - Element tag:', link.tagName);
+    function isResultsPathname(pathname) {
+        return typeof pathname === "string" && pathname.indexOf("/results") !== -1;
+    }
 
-        // Extract target ID from href attribute (e.g., "#biorempp-section")
-        const href = link.getAttribute('href');
-        console.log('[SCROLL-NAV]   - href attribute:', href);
+    function scrollToTop() {
+        window.scrollTo({
+            top: 0,
+            behavior: "auto",
+        });
+    }
 
-        if (!href || !href.startsWith('#')) {
-            console.warn('[SCROLL-NAV] ⚠️ No valid href attribute found');
-            console.log('='.repeat(80));
+    function processPending() {
+        if (!pending) {
+            return;
+        }
+        const targetModule = resolveModuleFromHash(pending.hash);
+        const targetId = pending.hash.slice(1);
+        const target = document.getElementById(targetId);
+        if (target) {
+            scrollToElement(target);
+            clearPending();
             return;
         }
 
-        const targetId = href.substring(1); // Remove '#'
-        console.log('[SCROLL-NAV] 🎯 TARGET EXTRACTION:');
-        console.log('[SCROLL-NAV]   - Raw href:', href);
-        console.log('[SCROLL-NAV]   - Extracted target ID:', targetId);
+        // If this is a UC target and the module container is still mounting,
+        // allow extra retries before fallback.
+        if (targetModule !== null) {
+            const moduleSectionId = "module" + String(targetModule) + "-section";
+            const moduleSection = document.getElementById(moduleSectionId);
+            if (!moduleSection && pending.attempt < CONFIG.maxAttempts) {
+                pending.attempt += 1;
+                pending.timerId = window.setTimeout(processPending, CONFIG.retryDelayMs);
+                return;
+            }
+        }
 
-        // CRITICAL: Prevent ALL default behaviors
+        pending.attempt += 1;
+        if (pending.attempt >= CONFIG.maxAttempts) {
+            const fallbackHash = resolveFallbackHash(pending.hash);
+            const fallbackTarget = document.getElementById(fallbackHash.slice(1));
+            if (fallbackTarget) {
+                scrollToElement(fallbackTarget);
+            }
+            showFallbackNotice(pending.hash, fallbackHash);
+            clearPending();
+            return;
+        }
+
+        pending.timerId = window.setTimeout(processPending, CONFIG.retryDelayMs);
+    }
+
+    function queueScroll(hash) {
+        const normalized = normalizeHash(hash);
+        if (!normalized) {
+            return;
+        }
+        clearPending();
+        pending = {
+            hash: normalized,
+            attempt: 0,
+            timerId: null,
+        };
+        processPending();
+    }
+
+    function handleHashChange() {
+        queueScroll(window.location.hash || "");
+    }
+
+    function handlePathnameChange() {
+        const currentPathname = window.location.pathname || "";
+        if (currentPathname === lastPathname) {
+            return;
+        }
+
+        const previousPathname = lastPathname;
+        lastPathname = currentPathname;
+
+        if (!isResultsPathname(currentPathname)) {
+            clearPending();
+            return;
+        }
+
+        // Entering /results route:
+        // - If hash exists, navigation should be hash-driven.
+        // - If hash is empty, force top to avoid carrying old scroll position.
+        const activeHash = window.location.hash || "";
+        if (activeHash) {
+            queueScroll(activeHash);
+            return;
+        }
+
+        // Avoid unnecessary jumps when already inside /results.
+        if (!isResultsPathname(previousPathname)) {
+            scrollToTop();
+        }
+    }
+
+    function handleLinkClick(event) {
+        const link = event.target && event.target.closest
+            ? event.target.closest("[id^='nav-'], .suggestion-uc-link")
+            : null;
+        if (!link) {
+            return;
+        }
+        const href = link.getAttribute("href");
+        const normalized = normalizeHash(href || "");
+        if (!normalized) {
+            return;
+        }
         event.preventDefault();
         event.stopPropagation();
-        event.stopImmediatePropagation();
-        console.log('[SCROLL-NAV] 🛑 Default behavior prevented');
-
-        // Find target element
-        const targetElement = document.getElementById(targetId);
-
-        if (targetElement) {
-            console.log('[SCROLL-NAV] ✓ TARGET ELEMENT FOUND:');
-            console.log('[SCROLL-NAV]   - Element ID:', targetElement.id);
-            console.log('[SCROLL-NAV]   - Element tag:', targetElement.tagName);
-            console.log('[SCROLL-NAV]   - Element class:', targetElement.className);
-            console.log('[SCROLL-NAV]   - Element position:', targetElement.getBoundingClientRect());
-
-            // Small delay to ensure Dash doesn't interfere
-            setTimeout(() => {
-                console.log('[SCROLL-NAV] ⏱️ Executing scroll after delay...');
-                scrollToElement(targetElement);
-
-                // Update URL hash WITHOUT triggering scroll
-                // This prevents browser's default hash navigation
-                if (history.replaceState) {
-                    history.replaceState(null, null, '#' + targetId);
-                    console.log('[SCROLL-NAV] 📝 URL hash updated to:', '#' + targetId);
-                }
-                console.log('='.repeat(80));
-            }, 50);
-
-        } else {
-            console.error('[SCROLL-NAV] ❌ TARGET ELEMENT NOT FOUND:');
-            console.error('[SCROLL-NAV]   - Looking for ID:', targetId);
-            console.log('[SCROLL-NAV] 🔍 AVAILABLE IDs ON PAGE (first 50):');
-            const allIds = Array.from(document.querySelectorAll('[id]')).map(el => el.id);
-            console.log('[SCROLL-NAV]   Total IDs found:', allIds.length);
-            allIds.slice(0, 50).forEach((id, index) => {
-                console.log(`[SCROLL-NAV]   ${index + 1}. ${id}`);
-            });
-
-            // Check for similar IDs
-            const similarIds = allIds.filter(id => id.includes(targetId.split('-')[1]));
-            if (similarIds.length > 0) {
-                console.log('[SCROLL-NAV] 💡 SIMILAR IDs FOUND:');
-                similarIds.forEach(id => console.log(`[SCROLL-NAV]   - ${id}`));
-            }
-            console.log('='.repeat(80));
-        }
-
-        // Return false to ensure no default action
-        return false;
+        setHashSilently(normalized);
+        queueScroll(normalized);
     }
 
-    /**
-     * Attach click handlers to all navigation links
-     */
-    function attachNavigationHandlers() {
-        // Find all navigation links (they have IDs starting with "nav-")
-        const navLinks = document.querySelectorAll('[id^="nav-"]');
-
-        console.log(`[SCROLL-NAV] 🔍 Found ${navLinks.length} navigation link(s)`);
-
-        let attachedCount = 0;
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                // Remove old listeners to prevent duplicates
-                link.removeEventListener('click', handleNavigationClick);
-
-                // Add new listener with capture phase to intercept early
-                link.addEventListener('click', handleNavigationClick, true);
-
-                console.log('[SCROLL-NAV] ✓ Handler attached to:', link.id, '→', href);
-                attachedCount++;
-            } else {
-                console.log('[SCROLL-NAV] ⊘ Skipped (no hash href):', link.id);
+    function observeDomUpdates() {
+        const observer = new MutationObserver(function () {
+            if (pending) {
+                processPending();
             }
         });
-
-        console.log(`[SCROLL-NAV] 📊 Handlers attached: ${attachedCount}/${navLinks.length}`);
-        return attachedCount;
-    }
-
-    /**
-     * Attach click handlers to suggestion UC links
-     */
-    function attachSuggestionHandlers() {
-        // Find all suggestion links (they have class "suggestion-uc-link")
-        const suggestionLinks = document.querySelectorAll('.suggestion-uc-link');
-
-        console.log(`[SCROLL-NAV] 🔍 Found ${suggestionLinks.length} suggestion link(s)`);
-
-        let attachedCount = 0;
-        suggestionLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (href && href.startsWith('#')) {
-                // Remove old listeners to prevent duplicates
-                link.removeEventListener('click', handleNavigationClick);
-
-                // Add new listener with capture phase
-                link.addEventListener('click', handleNavigationClick, true);
-
-                console.log('[SCROLL-NAV] ✓ Suggestion handler attached:', href);
-                attachedCount++;
-            }
-        });
-
-        console.log(`[SCROLL-NAV] 📊 Suggestion handlers attached: ${attachedCount}/${suggestionLinks.length}`);
-        return attachedCount;
-    }
-
-    function preventDefaultHashScroll() {
-        // Intercept all hash changes to prevent auto-scroll
-        let isManualScroll = false;
-
-        window.addEventListener('hashchange', function (event) {
-            console.log('[SCROLL-NAV] 🔔 Hash change event detected');
-
-            if (!isManualScroll) {
-                console.log('[SCROLL-NAV] 🛑 Preventing default hash scroll');
-                event.preventDefault();
-            }
-
-            isManualScroll = false;
-        }, false);
-
-        console.log('[SCROLL-NAV] 🛡️ Global hash scroll prevention active');
-    }
-
-    /**
-     * Initialize navigation with retry logic
-     */
-    function initializeNavigation(attempt = 1) {
-        console.log(`[SCROLL-NAV] 🔄 Initializing navigation (attempt ${attempt}/${CONFIG.retryAttempts})...`);
-
-        const navLinksFound = attachNavigationHandlers();
-        const suggestionLinksFound = attachSuggestionHandlers();
-        const totalLinksFound = navLinksFound + suggestionLinksFound;
-
-        if (totalLinksFound > 0) {
-            console.log('[SCROLL-NAV] ✅ Navigation initialized successfully');
-            return true;
-        }
-
-        if (attempt < CONFIG.retryAttempts) {
-            console.log(`[SCROLL-NAV] ⏳ No links found, retrying in ${CONFIG.retryDelay}ms...`);
-            setTimeout(() => initializeNavigation(attempt + 1), CONFIG.retryDelay);
-        } else {
-            console.warn('[SCROLL-NAV] ⚠️ Failed to find navigation links after all retries');
-        }
-
-        return false;
-    }
-
-    /**
-     * Monitor DOM changes to catch Dash re-renders
-     */
-    function observeDOMChanges() {
-        const observer = new MutationObserver((mutations) => {
-            // Check if offcanvas was added/modified
-            const offcanvasAdded = mutations.some(mutation => {
-                return Array.from(mutation.addedNodes).some(node => {
-                    return node.id === 'navigation-offcanvas' ||
-                        node.id === 'suggestions-offcanvas' ||
-                        (node.querySelector && (
-                            node.querySelector('#navigation-offcanvas') ||
-                            node.querySelector('#suggestions-offcanvas')
-                        ));
-                });
-            });
-
-            // Check if suggestions tab content changed (tab switch)
-            const tabContentChanged = mutations.some(mutation => {
-                // Check if mutation affects suggestions-tab-content or its children
-                if (mutation.target.id === 'suggestions-tab-content') {
-                    return true;
-                }
-                // Check if any added nodes are inside suggestions-tab-content
-                return Array.from(mutation.addedNodes).some(node => {
-                    if (node.nodeType === 1) { // Element node
-                        return node.closest && node.closest('#suggestions-tab-content');
-                    }
-                    return false;
-                });
-            });
-
-            if (offcanvasAdded || tabContentChanged) {
-                console.log('[SCROLL-NAV] 🔄 Content change detected, re-initializing...');
-                setTimeout(() => initializeNavigation(), 100);
-            }
-        });
-
         observer.observe(document.body, {
             childList: true,
-            subtree: true
+            subtree: true,
         });
-
-        console.log('[SCROLL-NAV] 👀 DOM observer started');
     }
 
-    // ========================================
-    // INITIALIZATION
-    // ========================================
+    function initialize() {
+        document.addEventListener("click", handleLinkClick, true);
+        window.addEventListener("hashchange", handleHashChange);
+        observeDomUpdates();
+        window.setInterval(handlePathnameChange, 120);
+        if (window.location.hash) {
+            queueScroll(window.location.hash);
+        }
+    }
 
-    // Wait for DOM to be ready
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('[SCROLL-NAV] 📄 DOM ready, initializing...');
-            preventDefaultHashScroll();
-            initializeNavigation();
-            observeDOMChanges();
-        });
+    if (document.readyState === "loading") {
+        document.addEventListener("DOMContentLoaded", initialize);
     } else {
-        // DOM already loaded
-        console.log('[SCROLL-NAV] 📄 DOM already ready, initializing...');
-        preventDefaultHashScroll();
-        initializeNavigation();
-        observeDOMChanges();
+        initialize();
     }
-
-    // Listen for page visibility changes (tab switch)
-    document.addEventListener('visibilitychange', function () {
-        if (!document.hidden) {
-            console.log('[SCROLL-NAV] 👁️ Page visible, checking navigation...');
-            initializeNavigation();
-        }
-    });
-
-    // Expose API for manual triggering (useful for debugging)
-    window.BioRemPP = window.BioRemPP || {};
-    window.BioRemPP.navigation = {
-        scrollTo: function (targetId) {
-            console.log('[SCROLL-NAV] 🎯 Manual scroll requested to:', targetId);
-            const element = document.getElementById(targetId);
-            if (element) {
-                scrollToElement(element);
-            } else {
-                console.error('[SCROLL-NAV] ❌ Element not found:', targetId);
-            }
-        },
-        reinitialize: function () {
-            console.log('[SCROLL-NAV] 🔄 Manual reinitialization requested');
-            return initializeNavigation();
-        },
-        getConfig: function () {
-            return CONFIG;
-        },
-        debug: function () {
-            console.log('[SCROLL-NAV] 🐛 Debug info:');
-            console.log('- Navigation links:', document.querySelectorAll('[id^="nav-"]').length);
-            console.log('- All IDs on page:', Array.from(document.querySelectorAll('[id]')).map(el => el.id));
-            console.log('- Current scroll:', window.pageYOffset);
-            console.log('- Config:', CONFIG);
-        }
-    };
-
-    console.log('[SCROLL-NAV] 🎮 API available at window.BioRemPP.navigation');
-    console.log('[SCROLL-NAV] 💡 Try: window.BioRemPP.navigation.debug()');
-
 })();

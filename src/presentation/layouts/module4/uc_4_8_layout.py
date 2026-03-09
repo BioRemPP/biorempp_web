@@ -61,12 +61,34 @@ def create_uc_4_8_layout() -> dbc.Card:
                             ),
                             dbc.Col(
                                 [
-                                    create_download_button(
-                                        use_case_id="UC-4.8",
-                                        button_id="uc-4-8-download-btn",
-                                        download_id="uc-4-8-download",
-                                        formats=["csv", "excel", "json"],
-                                        button_text="Download Data",
+                                    dbc.Row(
+                                        [
+                                            dbc.Col(
+                                                dbc.Button(
+                                                    "Methods",
+                                                    id={"type": "results-methods-link", "index": "UC-4.8"},
+                                                    color="primary",
+                                                    outline=False,
+                                                    size="sm",
+                                                    className="me-1",
+                                                    n_clicks=0,
+                                                    title=(
+                                                        "View analytical workflow "
+                                                        "for this use case"
+                                                    ),
+                                                ),
+                                                width="auto",
+                                            ),
+                                            create_download_button(
+                                                use_case_id="UC-4.8",
+                                                button_id="uc-4-8-download-btn",
+                                                download_id="uc-4-8-download",
+                                                formats=["csv", "excel", "json"],
+                                                button_text="Download Data",
+                                            ),
+                                        ],
+                                        align="center",
+                                        className="g-1 flex-nowrap",
                                     )
                                 ],
                                 width="auto",
@@ -101,9 +123,11 @@ def create_uc_4_8_layout() -> dbc.Card:
                                             html.Span(
                                                 (
                                                     "Use one or both dropdown menus to filter genetic inventory. "
-                                                    "Select a sample to see all its genes, a gene to see all "
-                                                    "samples that possess it, or both to validate a specific "
-                                                    "gene's presence in a sample."
+                                                    "Select one or more samples to see all associated genes, "
+                                                    "one or more genes to see all matching samples, or use both "
+                                                    "to validate specific gene presence conditions. Dropdown "
+                                                    "option catalogs remain stable while the chart updates "
+                                                    "incrementally."
                                                 ),
                                                 className="text-muted",
                                             ),
@@ -122,10 +146,11 @@ def create_uc_4_8_layout() -> dbc.Card:
                                                     ),
                                                     dcc.Dropdown(
                                                         id="uc-4-8-sample-dropdown",
-                                                        placeholder="Choose a sample to filter...",
+                                                        placeholder="Choose one or more samples to filter...",
                                                         className="mb-3",
                                                         clearable=True,
                                                         searchable=True,
+                                                        multi=True,
                                                         style={"width": "100%"},
                                                     ),
                                                 ],
@@ -140,10 +165,11 @@ def create_uc_4_8_layout() -> dbc.Card:
                                                     ),
                                                     dcc.Dropdown(
                                                         id="uc-4-8-gene-dropdown",
-                                                        placeholder="Choose a gene to filter...",
+                                                        placeholder="Choose one or more genes to filter...",
                                                         className="mb-3",
                                                         clearable=True,
                                                         searchable=True,
+                                                        multi=True,
                                                         style={"width": "100%"},
                                                     ),
                                                 ],
@@ -156,8 +182,14 @@ def create_uc_4_8_layout() -> dbc.Card:
                                     # ========================================
                                     # Chart Container (Rendered on Selection)
                                     # ========================================
-                                    html.Div(
-                                        id="uc-4-8-chart-container", className="mt-4"
+                                    dcc.Loading(
+                                        id="uc-4-8-loading",
+                                        type="circle",
+                                        color="#0d6efd",
+                                        children=html.Div(
+                                            id="uc-4-8-chart-container",
+                                            className="mt-4",
+                                        ),
                                     ),
                                 ],
                                 title="View Results",

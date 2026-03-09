@@ -1,5 +1,19 @@
 """
-Unit tests for ToxCSM Repository.
+Unit tests for ToxCSMRepository.
+
+This module tests the ToxCSMRepository class, which provides data access
+to the ToxCSM database containing compound toxicity predictions.
+
+Test Coverage:
+- Initialization with default and custom paths
+- Required columns validation (cpd)
+- Real database loading
+- Compound column verification
+- Repository caching behavior
+- Toxicity columns existence
+- Database schema validation
+- Compound data merging
+- Unique compounds handling
 """
 
 import pytest

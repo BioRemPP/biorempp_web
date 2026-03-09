@@ -4,42 +4,43 @@
 use_case_id: "uc-8-1"
 
 scientific_question: >
-  How can biological samples be grouped by their compound biotransformation profiles
-  to identify functionally redundant isolates and select a minimal set of
-  representative samples that maximize compound coverage?
+  How can biological samples be grouped by their compound annotation profiles
+  to identify samples with identical annotation coverage and select a minimal
+  set of representative groups that spans all compound annotations in the dataset?
 
 description: >
   This visualization addresses the challenge of sample selection from large
-  biological collections. By grouping samples based on their compound profiles
-  (the set of compounds each sample can potentially biotransform), this analysis
-  identifies functionally equivalent isolates and applies a set cover algorithm
-  to select the minimal number of groups needed to cover all compounds. Each
-  scatter subplot represents a sample group, with markers colored by KO
-  diversity per compound, highlighting functional complexity.
+  biological collections. By grouping samples based on their compound annotation
+  profiles (the set of compounds each sample is co-annotated with), this analysis
+  identifies samples with identical annotation coverage and applies a set cover
+  algorithm to select the minimal number of groups needed to span all annotated
+  compounds. Each scatter subplot represents a sample group, with markers colored
+  by KO count per compound, reflecting annotation density.
 
 visual_elements:
   - label: "Sample Group Subplots"
     description: >
       The visualization is organized as a series of side-by-side subplots, each
       representing a minimized sample group. Samples within the same group share
-      identical compound profiles (frozenset), meaning they can biotransform exactly
-      the same set of compounds. The set cover algorithm selects the fewest
-      groups needed to cover all compounds in the dataset.
+      identical compound annotation profiles (frozenset), meaning they are
+      co-annotated with exactly the same set of compounds in the database. The
+      set cover algorithm selects the fewest groups needed to span all annotated
+      compounds in the dataset.
 
   - label: "Scatter Markers"
     description: >
-      Each marker represents a sample-compound pair. The X-axis shows sample
-      identifiers within each group, while the Y-axis shows compound names.
-      Markers are positioned at the intersection of sample and compound,
-      indicating that the sample contains genes for biotransforming that compound.
+      Each marker represents a sample-compound annotation pair. The X-axis shows
+      sample identifiers within each group, while the Y-axis shows compound names.
+      Markers are positioned at the intersection of sample and compound, indicating
+      that the sample has at least one gene annotation co-occurring with that
+      compound in the database.
 
-  - label: "Color Scale (KO Diversity)"
+  - label: "Color Scale (KO Count)"
     description: >
-      Marker colors follow a green scale based on the unique KO count per
-      compound within the selected compound class. Darker green markers
-      may indicate compounds with higher KO diversity (more distinct enzymes
-      involved in biotransformation), potentially suggesting more complex or versatile
-      biotransformation pathways.
+      Marker colors follow a green scale based on the unique KO annotation count
+      per compound within the selected compound class. Darker green markers
+      indicate compounds with higher KO annotation counts for that sample,
+      reflecting greater annotation density in the database.
 
   - label: "Compound Class Filter"
     description: >
@@ -53,48 +54,51 @@ visual_elements:
       All subplots share the same Y-axis (compound names), allowing direct
       visual comparison across groups. This can help identify which compounds are
       unique to certain groups versus shared across multiple groups,
-      highlighting functional redundancy and specialization patterns.
+      highlighting annotation overlap and distinctiveness patterns.
 
 interpretation_guidelines:
   - >
-    Understanding Sample Grouping: Samples in the same subplot (group) have
-    identical compound profiles - they can biotransform exactly the same set of
-    compounds. This grouping can help identify functional redundancy: any sample within
-    a group can substitute for another in terms of compound coverage. This is
-    valuable for selecting representative strains from large culture collections.
+    Understanding Sample Grouping: Samples in the same subplot (group) share
+    identical compound annotation profiles — they are co-annotated with exactly
+    the same set of compounds in the database. This grouping reflects annotation
+    equivalence, not confirmed functional equivalence. Any sample within a group
+    has the same annotation coverage; whether they would perform identically in
+    practice requires experimental validation.
 
   - >
-    Set Cover Minimization: The displayed groups represent the minimal set
-    needed to cover all compounds. If the original data contained 50 samples
-    but only 4 groups are shown, this may indicate that 4 strategically selected
-    representatives can collectively cover all biotransformation capabilities,
-    dramatically simplifying consortium design or experimental validation.
+    Set Cover Minimization: The displayed groups represent the minimal number of
+    annotation profile groups needed to span all compound annotations. If the
+    original data contained 50 samples but only 4 groups are shown, this indicates
+    that 4 distinct annotation profiles collectively cover all compound annotations
+    in the dataset. This is an annotation-level observation and does not confirm
+    that those groups cover all biotransformation needs.
 
   - >
-    Interpreting KO Diversity Colors: Darker markers may indicate compounds with
-    higher KO diversity. A compound with many unique KOs may have multiple
-    enzymatic routes for biotransformation (metabolic flexibility) or require a
-    complex multi-step pathway. Lighter markers may suggest simpler biotransformation
-    mechanisms with fewer enzymatic requirements.
+    Interpreting KO Count Colors: Darker markers indicate compounds with higher
+    KO annotation counts for that sample in the database. A compound with many
+    unique KO annotations has broader annotation coverage in the database for that
+    sample. This is an annotation-level pattern and does not confirm the number of
+    enzymatic routes or pathway complexity in vivo.
 
   - >
-    Identifying Group Characteristics: Compare groups horizontally. Some groups
-    may specialize in specific compounds (markers clustered on certain Y values),
-    while others may show broader coverage. Groups with more vertical scatter
-    may indicate generalist capabilities, valuable for mixed contamination scenarios.
+    Identifying Group Annotation Patterns: Compare groups horizontally. Some groups
+    may have annotation links concentrated on specific compounds, while others show
+    broader coverage. Groups with more vertical scatter show annotation links across
+    more compounds within the selected class. These are annotation-level patterns
+    and may guide further exploratory analyses.
 
   - >
-    Strategic Consortium Design: For comprehensive bioremediation, select one
-    representative sample from each displayed group. This minimal consortium
-    will collectively possess the genetic potential to biotransform all compounds
-    in the selected class while minimizing redundancy and potentially reducing
-    inter-organism competition.
+    Complementary Annotation Profiles: Selecting one representative sample from
+    each displayed group would span all compound annotations in the selected class.
+    This is an annotation-based observation about coverage complementarity in the
+    dataset, and does not constitute a confirmed functional consortium design.
+    Experimental validation is required before any application.
 
   - >
-    Exploring Class-Specific Patterns: Use the compound class filter to explore
-    different chemical categories. Some classes may have fewer minimized groups
-    (many samples share similar profiles), while others may require more groups
-    (higher functional diversity). This can help identify class-specific patterns in
-    biological biotransformation capabilities.
+    Exploring Class-Specific Annotation Patterns: Use the compound class filter
+    to explore different chemical categories. Some classes may have fewer minimized
+    groups (many samples share similar annotation profiles), while others may require
+    more groups (higher annotation diversity). This can help identify class-specific
+    patterns in annotation coverage across the dataset.
 
 color_scheme: "success"

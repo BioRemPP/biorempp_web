@@ -19,12 +19,28 @@ from src.presentation.components.composite.upload_feedback import (
     create_file_info_card,
 )
 from src.shared.logging import get_logger
+from src.shared.metrics import (
+    UPLOAD_OPERATIONS_TOTAL,
+    UPLOAD_SIZE_BYTES,
+    instrument_callback,
+)
 
 # Get application settings
 settings = get_settings()
 
 # Configure logging
 logger = get_logger(__name__)
+
+
+def _record_upload_metrics(
+    source: str,
+    status: str,
+    size_bytes: int | None = None,
+) -> None:
+    """Emit upload instrumentation without sensitive labels."""
+    UPLOAD_OPERATIONS_TOTAL.labels(source=source, status=status).inc()
+    if size_bytes is not None and size_bytes >= 0:
+        UPLOAD_SIZE_BYTES.labels(source=source, status=status).observe(float(size_bytes))
 
 
 def register_real_upload_callbacks(app):
@@ -50,6 +66,7 @@ def register_real_upload_callbacks(app):
         State("upload-component", "filename"),
         prevent_initial_call=True,
     )
+    @instrument_callback("upload.handle_upload")
     def handle_upload(contents, filename):
         """
         Handle file upload with comprehensive validation.
@@ -86,6 +103,7 @@ def register_real_upload_callbacks(app):
                 decoded = base64.b64decode(content_string)
             except (ValueError, Exception) as e:
                 logger.error(f"Base64 decode failed: {e}")
+                _record_upload_metrics("upload", "decode_failed")
                 return (
                     create_error_alert(
                         "Invalid File Format",
@@ -108,6 +126,11 @@ def register_real_upload_callbacks(app):
 
             if not is_valid:
                 logger.warning(f"File size validation failed: {error_msg}")
+                _record_upload_metrics(
+                    "upload",
+                    "file_size_exceeded",
+                    size_bytes=len(decoded),
+                )
                 return (
                     create_error_alert(
                         "File Size Exceeded",
@@ -131,6 +154,11 @@ def register_real_upload_callbacks(app):
 
             if not is_valid:
                 logger.error(f"Encoding validation failed: {error_msg}")
+                _record_upload_metrics(
+                    "upload",
+                    "encoding_failed",
+                    size_bytes=len(decoded),
+                )
                 return (
                     create_error_alert(
                         "Encoding Error",
@@ -157,6 +185,11 @@ def register_real_upload_callbacks(app):
 
             if not is_valid:
                 logger.warning(f"Content validation failed: {error_msg}")
+                _record_upload_metrics(
+                    "upload",
+                    "content_invalid",
+                    size_bytes=len(decoded),
+                )
                 return (
                     create_error_alert(
                         "Invalid File Format",
@@ -187,6 +220,11 @@ def register_real_upload_callbacks(app):
 
             if not is_valid:
                 logger.warning(f"Sample count limit exceeded: {error_msg}")
+                _record_upload_metrics(
+                    "upload",
+                    "sample_limit_exceeded",
+                    size_bytes=len(decoded),
+                )
                 return (
                     create_error_alert(
                         "Sample Limit Exceeded",
@@ -210,6 +248,11 @@ def register_real_upload_callbacks(app):
 
             if not is_valid:
                 logger.warning(f"KO count limit exceeded: {error_msg}")
+                _record_upload_metrics(
+                    "upload",
+                    "ko_limit_exceeded",
+                    size_bytes=len(decoded),
+                )
                 return (
                     create_error_alert(
                         "KO Entry Limit Exceeded",
@@ -237,6 +280,11 @@ def register_real_upload_callbacks(app):
                     if not is_valid:
                         logger.warning(
                             f"Invalid sample name on line {idx}: {sample_name}"
+                        )
+                        _record_upload_metrics(
+                            "upload",
+                            "sample_name_invalid",
+                            size_bytes=len(decoded),
                         )
                         return (
                             create_error_alert(
@@ -279,6 +327,7 @@ def register_real_upload_callbacks(app):
                     "warnings": len(warnings),
                 },
             )
+            _record_upload_metrics("upload", "success", size_bytes=len(decoded))
 
             # ============================================================
             # STEP 11: Create File Info Display (includes success state)
@@ -300,6 +349,7 @@ def register_real_upload_callbacks(app):
         except Exception as e:
             # Generic error - log full traceback, show generic message
             logger.exception(f"Unexpected error during upload: {e}", exc_info=True)
+            _record_upload_metrics("upload", "unexpected_error")
             return (
                 create_error_alert(
                     "Unexpected Error",
@@ -323,6 +373,7 @@ def register_real_upload_callbacks(app):
         Input("load-example-btn", "n_clicks"),
         prevent_initial_call=True,
     )
+    @instrument_callback("upload.load_example_data")
     def load_example_data(n_clicks):
         """
         Load example dataset from file.
@@ -361,6 +412,7 @@ def register_real_upload_callbacks(app):
                     f"Example dataset file not found: {example_file}",
                     extra={"expected_path": str(example_file)},
                 )
+                _record_upload_metrics("example", "file_missing")
                 return (
                     no_update,
                     create_error_alert(
@@ -385,6 +437,7 @@ def register_real_upload_callbacks(app):
                     "Example dataset encoding error",
                     extra={"file_path": str(example_file)},
                 )
+                _record_upload_metrics("example", "encoding_failed")
                 return (
                     no_update,
                     create_error_alert(
@@ -422,6 +475,11 @@ def register_real_upload_callbacks(app):
                     "size_bytes": example_data["file_size_bytes"],
                 },
             )
+            _record_upload_metrics(
+                "example",
+                "success",
+                size_bytes=example_data["file_size_bytes"],
+            )
 
             # ============================================================
             # STEP 5: Create File Info Display (includes success message)
@@ -443,6 +501,7 @@ def register_real_upload_callbacks(app):
         except Exception as e:
             # Generic error - log full details, show generic message
             logger.exception("Unexpected error loading example dataset", exc_info=True)
+            _record_upload_metrics("example", "unexpected_error")
             return (
                 no_update,
                 create_error_alert(

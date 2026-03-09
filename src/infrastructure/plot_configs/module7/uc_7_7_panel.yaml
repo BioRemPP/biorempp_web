@@ -1,19 +1,21 @@
-# UC-7.7: Sample Risk Mitigation Depth Profile by Genetic Investment
+# UC-7.7: Sample Gene Annotation Depth for High Predicted-Risk Compounds
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-7-7"
 
 scientific_question: >
-  Which biological samples invest the most significant genetic resources
-  (number of gene-compound interactions) in mitigating high-risk compounds?
+  Which biological samples have the highest gene annotation counts co-occurring
+  with high predicted-risk compounds, and how is this annotation depth distributed
+  across toxicological categories and specific compounds?
 
 description: >
-  This visualization creates a "Risk Mitigation Depth Profile" for each sample.
-  In contrast to measuring the variety of compounds, this treemap quantifies
-  the depth or intensity of the functional response. The size of each rectangle
-  is proportional to the total number of gene-compound interactions, highlighting
-  where each sample focuses its genetic machinery against high-risk compounds.
-  The hierarchy follows: Sample -> Toxicity Category -> Compound Name.
+  This visualization creates a gene annotation depth profile for each sample
+  relative to high predicted-risk compounds. In contrast to measuring the variety
+  of compounds covered, this treemap quantifies the total gene annotation count
+  per sample for those compounds. The size of each rectangle is proportional to
+  the total number of gene-compound annotation links for high predicted-risk
+  compounds, highlighting where each sample has the greatest annotation depth.
+  The hierarchy follows: Sample → Toxicity Category → Compound Name.
 
 visual_elements:
   - label: "Nested Rectangles (Hierarchy)"
@@ -26,8 +28,8 @@ visual_elements:
   - label: "Rectangle Area (Values)"
     description: >
       The area of each rectangle is proportional to the total number of
-      gene-compound interactions, which serves as a proxy for the genetic
-      investment in mitigating risk. Larger areas indicate deeper genetic response.
+      gene-compound annotation links for that category. Larger areas indicate
+      greater annotation depth for those high predicted-risk compounds.
 
   - label: "Color (Toxicity Category)"
     description: >
@@ -42,24 +44,28 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    High Genetic Investment: Large rectangles represent a significant genetic
-    investment from a sample towards a specific risk category or compound. This
-    may indicate a deep, multi-gene response.
+    High Annotation Count: Large rectangles represent a high gene annotation
+    count for a sample within a specific risk category or compound. This reflects
+    annotation depth in the reference database and does not confirm a confirmed
+    functional response or multi-gene biotransformation capacity.
 
   - >
-    Sample Specialization: By observing the second level of the hierarchy, one
-    can help identify a sample's specialization. A sample with a large rectangle for
-    the "High Predicted Risk" category may be investing heavily in mitigating
-    the most hazardous compounds.
+    Category-Level Annotation Depth: By observing the second level of the
+    hierarchy, one can identify which toxicological categories have more
+    gene annotations for a given sample. This is an annotation-level
+    observation and does not confirm functional specialization.
 
   - >
-    Complex Targets: A compound that forms a large rectangle may suggest it is a
-    complex target that requires a diverse, multi-gene response for its
-    biotransformation.
+    Broadly Annotated Compounds: A compound that forms a large rectangle within
+    a sample-category combination has many gene annotations co-occurring with it
+    for that sample. This reflects annotation breadth in the database and does
+    not confirm that the compound requires a diverse enzymatic response.
 
   - >
-    Consortium Design: Combine samples with complementary depth profiles -
-    one with deep genetic investment in "Environmental" toxins and another
-    in "Genomic" toxins - to create a robust remediation consortium.
+    Complementary Annotation Depth Profiles: Samples with annotation depth
+    concentrated in different toxicological categories show complementary
+    annotation depth profiles. Identifying such patterns can serve as a
+    starting point for exploratory analyses, though any functional inference
+    requires experimental validation beyond annotation and prediction data.
 
 color_scheme: "success"

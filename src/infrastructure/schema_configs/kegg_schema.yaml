@@ -1,0 +1,183 @@
+# KEGG Degradation Database Schema Configuration
+# Formal specification extracted from docs/database_schemas/kegg-schema.md
+
+schema_id: "kegg"
+title: "KEGG Degradation Database Schema"
+version: "1.0.0"
+last_updated: "2026-01-17"
+color: "warning"
+
+# Overview section
+overview:
+  description: >
+    The KEGG Degradation Database uses a flat, denormalized schema optimized 
+    for gene-pathway queries. The schema consists of a single table with 
+    3 columns representing KO-pathway-genesymbol associations for 
+    xenobiotic/pollutant degradation pathways.
+  design_rationale:
+    - title: "Simplicity"
+      description: "Minimal 3-column structure for focused pathway analysis"
+    - title: "KEGG-sourced"
+      description: "All data extracted from official KEGG pathways"
+    - title: "Interoperability"
+      description: "Standard CSV format ensures compatibility with bioinformatics pipelines"
+    - title: "Cross-reference ready"
+      description: "KO identifiers enable integration with BioRemPP and HADEG databases"
+
+# Schema definition
+schema_definition:
+  format: "CSV (Comma-Separated Values)"
+  rows: 855
+  columns: 3
+  encoding: "UTF-8"
+  delimiter: "Semicolon (;)"
+  text_qualifier: 'Double quote (")'
+  header: true
+  completeness: "100% — Zero missing values across all fields"
+
+# Column specifications
+columns:
+  - name: "ko"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "K##### (capital K followed by exactly 5 digits)"
+    regex: "^K\\d{5}$"
+    example: "K00001"
+    description: "KEGG Orthology identifier"
+    purpose: "Links genes to functional orthologs in KEGG for cross-database integration"
+    uniqueness: "Not unique — 517 unique KO entries, some appear in multiple pathways"
+    cardinality: 517
+    cross_references:
+      - name: "KEGG Orthology"
+        url_pattern: "https://www.kegg.jp/entry/{value}"
+      - name: "BioRemPP Database"
+      - name: "HADEG Database"
+
+  - name: "pathname"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: true
+    pattern: "Pathway name (human-readable)"
+    example: "Naphthalene"
+    description: "KEGG degradation pathway name"
+    purpose: "Categorizes genes by their KEGG degradation pathway"
+    uniqueness: "Not unique — Multiple genes belong to each pathway"
+    cardinality: 20
+    valid_values:
+      - name: "Naphthalene"
+        description: "Naphthalene degradation"
+      - name: "Cytochrome P450"
+        description: "Cytochrome P450 metabolism"
+      - name: "Aromatic"
+        description: "General aromatic degradation"
+      - name: "Benzoate"
+        description: "Benzoate degradation (map00362)"
+      - name: "Aminobenzoate"
+        description: "Aminobenzoate degradation"
+      - name: "Chloroalkane"
+        description: "Chloroalkane/chloroalkene degradation"
+      - name: "Chlorocyclohexane"
+        description: "Chlorocyclohexane/chlorobenzene"
+      - name: "Toluene"
+        description: "Toluene degradation"
+      - name: "Xylene"
+        description: "Xylene degradation"
+      - name: "Styrene"
+        description: "Styrene degradation"
+      - name: "Fluorobenzoate"
+        description: "Fluorobenzoate degradation"
+      - name: "Dioxin"
+        description: "Dioxin degradation"
+      - name: "Nitrotoluene"
+        description: "Nitrotoluene degradation"
+      - name: "Ethylbenzene"
+        description: "Ethylbenzene degradation"
+      - name: "Caprolactam"
+        description: "Caprolactam degradation"
+      - name: "Atrazine"
+        description: "Atrazine degradation"
+      - name: "Bisphenol"
+        description: "Bisphenol degradation"
+      - name: "Polycyclic"
+        description: "Polycyclic aromatic degradation"
+      - name: "Furfural"
+        description: "Furfural degradation"
+
+  - name: "genesymbol"
+    type: "Character"
+    nullable: false
+    controlled_vocabulary: false
+    pattern: "Standard gene nomenclature"
+    example: "E1.1.1.1"
+    description: "Gene abbreviation"
+    purpose: "Gene symbols from KEGG Orthology (KO) available from NCBI RefSeq and GenBank, and annotated by KEGG in the form of KO (KEGG Orthology) assignment"
+    uniqueness: "Not unique — 513 unique symbols, some shared across pathways"
+    cardinality: 513
+    notes:
+      - "EC number format for enzymes (e.g., E1.1.1.1)"
+      - "HUGO nomenclature for human genes (e.g., AKR1A1)"
+      - "Organism-specific symbols for microbial genes (e.g., nahAc)"
+
+# Schema constraints
+constraints:
+  primary_key: null
+  conceptual_key: ["ko", "pathname"]
+  foreign_keys:
+    - column: "ko"
+      references: "KEGG Orthology database"
+    - column: "ko"
+      references: "BioRemPP Database"
+    - column: "ko"
+      references: "HADEG Database"
+  cardinality_relationships:
+    - name: "KO-to-Pathway"
+      type: "Many-to-Many"
+      description: "One KO can participate in multiple pathways"
+      example: "K00001 → 3 different pathways"
+
+# Data quality
+data_quality:
+  completeness:
+    status: "100%"
+    description: "Zero missing values across all 3 columns"
+  consistency:
+    - "All ko values match ^K\\d{5}$"
+  accuracy:
+    - column: "ko"
+      source: "KEGG Orthology database"
+    - column: "pathname"
+      source: "KEGG Pathway database"
+    - column: "genesymbol"
+      source: "KEGG KO annotations"
+  source: "KEGG Pathway Database — Metabolism → Xenobiotics biodegradation and metabolism"
+
+# Usage examples
+usage_examples:
+  r: |
+    # Load database
+    library(readr)
+    db <- read_delim("path/kegg_degradation_db.csv", delim=";")
+    
+    # Inspect schema
+    str(db)
+    # tibble [855 × 3]
+  python: |
+    import pandas as pd
+    
+    # Load database
+    db = pd.read_csv("path/kegg_degradation_db.csv", sep=";")
+    
+    # Inspect schema
+    db.info()
+    # RangeIndex: 855 entries
+  common_queries:
+    - description: "Find all genes in naphthalene degradation"
+      code: 'naphthalene_genes <- db[db$pathname == "Naphthalene", ]'
+    - description: "Count genes per pathway"
+      code: "table(db$pathname)"
+
+# Contact
+contact:
+  github_issues: "https://github.com/BioRemPP/biorempp_db/issues"
+  email: "biorempp@gmail.com"

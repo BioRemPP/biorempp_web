@@ -1,0 +1,111 @@
+{
+  "expectations": [
+    {
+      "id": "fcea58a9-7293-49e3-93e7-655f395aaf7a",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "6c29ea29-ab86-425a-bf40-e6396513b762",
+      "kwargs": {
+        "column": "ko",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "6dd02bec-2240-480f-afc7-bf214687d16b",
+      "kwargs": {
+        "column": "pathname"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "f8e73d16-0bca-4cf9-8d1e-0c7d5f3fe9e2",
+      "kwargs": {
+        "column": "pathname",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "c048c6a4-456c-41e0-a670-d146b1f45f51",
+      "kwargs": {
+        "column": "genesymbol"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_to_exist"
+    },
+    {
+      "id": "186fff0d-ab97-46be-b762-23ca14ff91f6",
+      "kwargs": {
+        "column": "genesymbol",
+        "max_value": 1.0,
+        "min_value": 0.5
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_proportion_of_non_null_values_to_be_between"
+    },
+    {
+      "id": "f7d9f0c2-e898-426c-827a-708cb8d7abde",
+      "kwargs": {
+        "min_value": 1
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_table_row_count_to_be_between"
+    },
+    {
+      "id": "00fb3c88-3a1e-4e16-85b3-5fb633686ece",
+      "kwargs": {
+        "column": "ko",
+        "regex": "^K\\d{5}$"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_match_regex"
+    },
+    {
+      "id": "e280ce2e-6e1b-4d9d-8b34-4d89572ab3d3",
+      "kwargs": {
+        "column": "ko"
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_column_values_to_not_be_null"
+    },
+    {
+      "id": "1da2d0fe-a454-442e-ade9-9af365bdae2f",
+      "kwargs": {
+        "column_list": [
+          "ko",
+          "pathname",
+          "genesymbol"
+        ]
+      },
+      "meta": {},
+      "severity": "critical",
+      "type": "expect_compound_columns_to_be_unique"
+    }
+  ],
+  "id": "6a038378-661b-4c62-847d-bb7504e6f479",
+  "meta": {
+    "great_expectations_version": "1.12.3"
+  },
+  "name": "kegg_degradation_db_schema_integrity_suite",
+  "notes": null
+}

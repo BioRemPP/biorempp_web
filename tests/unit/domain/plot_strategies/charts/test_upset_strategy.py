@@ -399,6 +399,10 @@ class TestFigureCreation:
                 fig = strategy.create_figure(df)
 
         assert isinstance(fig, go.Figure)
+        mock_upset_instance.plot.assert_called_once_with(fig=mock_fig)
+        mock_fig.savefig.assert_called_once_with(mock_buf, format="png", dpi=150)
+        mock_close.assert_any_call(mock_fig)
+        assert fig.layout.images[0].sizing == "contain"
 
     def test_build_annotation_text_formats_correctly(self):
         """Test annotation text formatting."""
@@ -671,3 +675,22 @@ class TestEdgeCases:
 
         # Width should not be set when autosize is True
         assert isinstance(fig, go.Figure)
+
+    def test_layout_uses_nested_margin_config(self):
+        """Test that layout.margin.{l,r,t,b} is supported."""
+        config = get_minimal_config()
+        config['visualization']['plotly']['layout'] = {
+            'margin': {'l': 111, 'r': 112, 't': 113, 'b': 114},
+            'height': 650,
+            'autosize': True,
+        }
+        strategy = UpSetStrategy(config)
+        fig = go.Figure()
+
+        strategy._apply_layout(fig)
+
+        assert fig.layout.margin.l == 111
+        assert fig.layout.margin.r == 112
+        assert fig.layout.margin.t == 113
+        assert fig.layout.margin.b == 114
+        assert fig.layout.height == 650

@@ -33,28 +33,28 @@ def create_module2_overview_header() -> html.Div:
     Notes
     -----
     Module 2 Focus:
-    - Quantitative overview of the functional landscape
-    - Ranking of samples and compounds by functional potential
-    - Baseline characterization of system-wide functional distribution
+    - Quantitative overview of the KO annotation landscape
+    - Ranking by annotation coverage of samples and compounds
+    - Baseline characterization of system-wide KO annotation distribution
 
     Guiding Questions:
-    - 2.1: Key performance characteristics of input samples
-    - 2.2: Biological definition of high-priority chemical targets
-    - 2.3: System-wide distribution of functional potential
+    - 2.1: Key annotation characteristics of input samples
+    - 2.2: Compounds with broadest sample and gene co-annotation
+    - 2.3: System-wide distribution of KO annotation counts
     """
     # Module 2 configuration
     module_id = "2"
-    title = "Exploratory Analysis: Ranking the Functional Potential of Samples and Compounds"
+    title = "Exploratory Analysis: Ranking the KO Annotation Coverage of Samples and Compounds"
 
     overview_text = (
-        "This module provides a quantitative overview of the functional "
+        "This module provides a quantitative overview of the annotation "
         "landscape captured by BioRemPP. Before interrogating higher-order "
-        "relationships, it is necessary to characterize how functional "
-        "potential is distributed across samples and chemical targets. Here, "
+        "relationships, it is necessary to characterize how KO annotation "
+        "counts are distributed across samples and chemical compounds. Here, "
         "we focus on ranking and describing both sides of the system: the "
-        "input samples (as biological sources of functions) and the compounds "
-        "(as substrates, pollutants, or intermediates that drive selective "
-        "pressure). Together, these analyses define a baseline from which "
+        "input samples (by their KO annotation counts) and the compounds "
+        "(by the number of samples and genes co-annotated with them in the "
+        "database). Together, these analyses define a baseline from which "
         "more complex network- and pathway-level interpretations can be "
         "derived."
     )
@@ -63,54 +63,51 @@ def create_module2_overview_header() -> html.Div:
     guiding_questions = [
         {
             "id": "2.1",
-            "subtitle": "Sample performance",
+            "subtitle": "Sample annotation coverage",
             "question": (
-                "What are the key performance characteristics of the input "
+                "What are the key annotation characteristics of the input "
                 "samples? We begin by profiling and ranking each sample using "
-                "two core metrics: (i) the diversity of unique functional "
-                "identifiers (KOs) and (ii) the breadth of compound "
-                "interactions inferred from those functions. These metrics "
-                "jointly capture the versatility of a sample—its potential to "
-                "encode and express a wide range of bioremediation-relevant "
-                "activities. The resulting ranking highlights the most "
-                "functionally potent 'generalist' samples, which combine high "
-                "functional richness with broad compound coverage and "
-                "therefore represent prime candidates for deeper experimental "
-                "or computational follow-up."
+                "two core metrics: (i) the count of unique KO identifiers "
+                "annotated per sample and (ii) the breadth of compound "
+                "co-annotations in the database. These metrics "
+                "jointly capture the annotation coverage of a sample—the "
+                "range of KO identifiers and compounds co-annotated with it "
+                "in BioRemPP. The resulting ranking highlights samples with "
+                "broad annotation coverage and compound co-annotation, "
+                "which may represent useful starting points for deeper "
+                "computational or experimental follow-up."
             ),
         },
         {
             "id": "2.2",
-            "subtitle": "High-priority chemical targets",
+            "subtitle": "Compound co-annotation breadth",
             "question": (
-                "What defines a high-priority chemical target from a "
-                "biological perspective? In parallel, we invert the "
+                "Which compounds show the broadest co-annotation with samples "
+                "and genes in the dataset? In parallel, we invert the "
                 "perspective and focus on the chemical scope. We rank "
-                "compounds according to the breadth and intensity of the "
-                "biological response they elicit, quantified by the number of "
-                "unique samples and genes that interact with each compound. "
-                "This procedure distinguishes compounds that function as "
-                "widely accessible substrates from those that pose more "
-                "stringent or complex metabolic challenges. High-ranking "
-                "compounds in this dimension may represent critical "
-                "bottlenecks, key pollutants of concern, or central hubs in "
-                "the bioremediation landscape."
+                "compounds according to the number of unique samples and genes "
+                "co-annotated with each compound in the database. "
+                "This procedure distinguishes compounds that are widely "
+                "co-annotated across many samples from those that appear "
+                "in fewer co-annotations. High-ranking compounds in this "
+                "dimension may represent well-annotated targets in BioRemPP "
+                "and could be prioritized for further investigation."
             ),
         },
         {
             "id": "2.3",
             "subtitle": "System-wide distribution",
             "question": (
-                "What is the overall distribution of functional potential? "
+                "What is the overall distribution of KO annotation counts? "
                 "Finally, we examine the statistical distribution of these "
-                "performance metrics across the full dataset. By visualizing "
-                "the variance, skewness, and range of functional diversity and "
-                "compound coverage, we move beyond individual rankings to "
-                "characterize global system properties—for example, whether "
-                "functional potential is concentrated in a few highly "
-                "versatile samples or more evenly distributed. This baseline "
+                "annotation metrics across the full dataset. By visualizing "
+                "the variance, skewness, and range of KO annotation counts and "
+                "compound co-annotation breadth, we move beyond individual "
+                "rankings to characterize global dataset properties—for "
+                "example, whether KO annotation counts are concentrated in a "
+                "few samples or more evenly distributed. This baseline "
                 "characterization is essential for interpreting downstream "
-                "analyses of metabolic networks and pathways."
+                "analyses of annotation networks and pathways."
             ),
         },
     ]
@@ -122,7 +119,7 @@ def create_module2_overview_header() -> html.Div:
         overview_text=overview_text,
         guiding_questions=guiding_questions,
         section_id="module2-overview-header",
-        num_use_cases=7,
+        num_use_cases=5,
     )
 
 

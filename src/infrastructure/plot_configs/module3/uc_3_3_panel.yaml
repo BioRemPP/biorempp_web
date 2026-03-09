@@ -65,40 +65,41 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Clusters: Tightly clustered samples (those joined by short branches)
-    represent groups of biological sources with highly similar functional repertoires.
-    These clusters may correspond to shared ecological niches, metabolic strategies,
-    or similar roles in pollutant biotransformation.
+    KO Profile Clusters: Tightly clustered samples (those joined by short branches)
+    represent groups of biological sources with highly similar KO annotation profiles.
+    These clusters may reflect shared annotation patterns and can generate hypotheses
+    about functional or ecological similarities, but do not confirm shared metabolic
+    activity without experimental evidence.
 
   - >
-    Hierarchical Relationships: The overall tree structure can help identify higher-order
-    functional relationships among samples. Distinct clusters that only merge far
-    to the right (at large distances on the X-axis) are functionally very different
-    from each other, potentially suggesting divergent functional strategies.
+    Hierarchical Relationships: The overall tree structure can help identify
+    higher-order grouping patterns among samples. Distinct clusters that only merge
+    far to the right (at large distances on the X-axis) have more dissimilar KO
+    profiles, which may suggest divergent annotation coverage worth exploring.
 
   - >
     Exploring Robustness: By changing the distance metrics and clustering methods,
-    you can assess the robustness of observed clusters. Groupings that persist
-    across multiple metric–method combinations are more likely to represent strong,
-    biologically meaningful associations rather than artifacts of a particular
-    parameter choice.
+    you can assess the robustness of observed groupings. Clusters that persist
+    across multiple metric–method combinations are analytically more stable and
+    less likely to be artifacts of a particular parameter choice.
 
   - >
     Metric–Method Compatibility: The Ward linkage method is only appropriate with
     the Euclidean distance metric, because it relies on variance calculations.
     For binary presence/absence KO data, the Jaccard metric is often the most
-    appropriate choice, as it focuses on shared functions rather than their absence.
+    appropriate choice, as it focuses on shared KO presence rather than shared absence.
 
   - >
     Interpreting Branch Lengths: Longer horizontal branches indicate greater
-    functional dissimilarity between clusters. Always consider the scale of the
-    X-axis when comparing branch lengths, as it provides context for how large
-    the functional differences are between samples or groups.
+    KO profile dissimilarity between clusters. Always consider the scale of the
+    X-axis when comparing branch lengths, as it provides context for the magnitude
+    of annotation differences between samples or groups.
 
   - >
     Identifying Outliers: Samples that join the dendrogram at very long branch
-    lengths or form single-sample branches before merging with others may
-    represent functional outliers. These biological sources can be of special
-    interest for unique metabolic capabilities or specialized ecological roles.
+    lengths or form single-sample branches before merging with others have KO
+    profiles that differ substantially from others in the dataset. These may
+    warrant further investigation to understand what annotation features
+    distinguish them.
 
 color_scheme: "success"

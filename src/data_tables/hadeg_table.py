@@ -10,13 +10,61 @@ create_hadeg_section
     Create complete HADEG section with enhanced description and accordion
 """
 
+from typing import Any, Dict, Optional
+
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
 from src.presentation.components.composite import create_database_description
 
 
-def create_hadeg_section() -> html.Div:
+def _format_stat_value(value: Any) -> str:
+    """Format stat values with fallback placeholder."""
+    if value is None:
+        return "--"
+    if isinstance(value, bool):
+        return str(value)
+    if isinstance(value, int):
+        return f"{value:,}"
+    if isinstance(value, float):
+        return f"{int(value):,}" if value.is_integer() else f"{value:,.2f}"
+    return str(value)
+
+
+def _get_stat_value(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]],
+    metric_key: str,
+    value_key: str,
+) -> Any:
+    """Safely get nested overview stat value."""
+    if not overview_stats:
+        return None
+    metric = overview_stats.get(metric_key)
+    if not isinstance(metric, dict):
+        return None
+    return metric.get(value_key)
+
+
+def _create_reference_value_indicator(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]], metric_key: str
+) -> html.Small:
+    """Render compact database reference indicator (icon + value)."""
+    return html.Small(
+        [
+            html.I(
+                className="fas fa-database me-1",
+                title="Refrence database value",
+                style={"fontSize": "0.7rem"},
+            ),
+            _format_stat_value(_get_stat_value(overview_stats, metric_key, "global_value")),
+        ],
+        className="text-muted d-block",
+    )
+
+
+def create_hadeg_section(
+    overview_stats: Optional[Dict[str, Dict[str, Any]]] = None,
+) -> html.Div:
     """
     Create HADEG results table section with enhanced metadata.
 
@@ -48,7 +96,13 @@ def create_hadeg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "1,168",
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "gene_pathway_relations",
+                                                            "input_value",
+                                                        )
+                                                    ),
                                                     className="text-success mb-0",
                                                 ),
                                                 html.Small(
@@ -66,7 +120,18 @@ def create_hadeg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "339", className="text-primary mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "unique_ko_numbers",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-primary mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "unique_ko_numbers",
                                                 ),
                                                 html.Small(
                                                     "Unique KO Numbers",
@@ -83,7 +148,18 @@ def create_hadeg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "71", className="text-info mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "degradation_pathways",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-info mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "degradation_pathways",
                                                 ),
                                                 html.Small(
                                                     "Degradation Pathways",
@@ -100,7 +176,18 @@ def create_hadeg_section() -> html.Div:
                                         html.Div(
                                             [
                                                 html.H4(
-                                                    "5", className="text-warning mb-0"
+                                                    _format_stat_value(
+                                                        _get_stat_value(
+                                                            overview_stats,
+                                                            "compound_categories",
+                                                            "input_value",
+                                                        )
+                                                    ),
+                                                    className="text-warning mb-0",
+                                                ),
+                                                _create_reference_value_indicator(
+                                                    overview_stats,
+                                                    "compound_categories",
                                                 ),
                                                 html.Small(
                                                     "Compound Categories",
@@ -135,6 +222,19 @@ def create_hadeg_section() -> html.Div:
         show_spinner=True,
     )
 
+    # Create Database Info button that opens schema page in new tab
+    # Using html.A instead of dbc.Button to bypass Dash router and open in new tab
+    info_button = html.A(
+        [
+            html.I(className="fas fa-info-circle me-2"),
+            "Database Info",
+        ],
+        href="/schemas/hadeg",
+        target="_blank",
+        rel="noopener noreferrer",
+        className="btn btn-outline-info btn-sm",
+    )
+
     # Enhanced database description
     description_component = create_database_description(
         title="HADEG Pathway Analysis",
@@ -142,15 +242,10 @@ def create_hadeg_section() -> html.Div:
             "Integrates your data with the HADEG database (Hydrocarbon Aerobic Degrading Enzymes and Genes), "
             "linking KO numbers to genes, degradation pathways, and target compounds."
         ),
-        insights=(
-            "Aerobic Pathways: 71 distinct degradation routes for environmental hydrocarbons\n"
-            "Compound Types: Polymers (598 genes), Aromatics (361), Alkanes (107), Biosurfactants (52), Alkenes (50)\n"
-            "Gene-Pathway Links: Connects genes to specific degradation mechanisms\n"
-            "Specialization: Focused on aerobic hydrocarbon bioremediation"
-        ),
         section_id="hadeg-results-table",
         custom_components=custom_components,
-        download_button=download_button,  # Add download button to header
+        download_button=download_button,
+        info_button=info_button,
     )
 
     # Accordion with on-demand table and enhanced title
@@ -171,77 +266,6 @@ def create_hadeg_section() -> html.Div:
                     ),
                     # Table container
                     html.Div(id="hadeg-container", className="chart-container"),
-                    # Column descriptions
-                    dbc.Card(
-                        [
-                            dbc.CardHeader(
-                                [
-                                    html.I(className="fas fa-table me-2"),
-                                    html.Strong("Column Descriptions"),
-                                ],
-                                className="bg-light",
-                            ),
-                            dbc.CardBody(
-                                [
-                                    dbc.Row(
-                                        [
-                                            dbc.Col(
-                                                [
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "Gene: "
-                                                                    ),
-                                                                    "Gene symbol or identifier (e.g., alkB, benA)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong("ko: "),
-                                                                    "KEGG Orthology identifier (e.g., K00496)",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="mb-0",
-                                                    )
-                                                ],
-                                                md=6,
-                                            ),
-                                            dbc.Col(
-                                                [
-                                                    html.Ul(
-                                                        [
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "Pathway: "
-                                                                    ),
-                                                                    "Degradation pathway name (e.g., A_Terminal/biterminal_oxidation)",
-                                                                ]
-                                                            ),
-                                                            html.Li(
-                                                                [
-                                                                    html.Strong(
-                                                                        "compound_pathway: "
-                                                                    ),
-                                                                    "Target compound category (Polymers, Aromatics, Alkanes, etc.)",
-                                                                ]
-                                                            ),
-                                                        ],
-                                                        className="mb-0",
-                                                    )
-                                                ],
-                                                md=6,
-                                            ),
-                                        ]
-                                    )
-                                ]
-                            ),
-                        ],
-                        className="mt-3",
-                    ),
                 ],
                 title="View HADEG Pathway Analysis Table",
             )
@@ -255,7 +279,8 @@ def create_hadeg_section() -> html.Div:
 
     # Complete section with enhanced styling
     section = html.Div(
-        [description_component, accordion, download, html.Hr(className="my-4")]
+        [description_component, accordion, download, html.Hr(className="my-4")],
+        id="hadeg-section",
     )
 
     return section

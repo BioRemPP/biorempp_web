@@ -1,0 +1,62 @@
+Docker Compose - Guia rapido para TI
+
+Pre-condicao de ambiente
+- Usar apenas os arquivos versionados de referencia:
+  - .env/env.example (template)
+  - .env/env.production (producao)
+
+Antes de subir
+1) Copiar valores necessarios de .env/env.example para .env/env.production e preencher segredos.
+2) Ajustar obrigatorios em .env/env.production:
+   - SECRET_KEY
+   - DOMAIN
+   - BIOREMPP_TRUST_PROXY_HEADERS
+   - BIOREMPP_TRUSTED_PROXY_CIDRS
+   - BIOREMPP_URL_BASE_PATH
+
+Fase 1 - Baseline (app + nginx)
+docker compose --env-file .env/env.production --profile prod down --remove-orphans
+docker compose --env-file .env/env.production --profile prod up -d --build
+docker compose --env-file .env/env.production --profile prod ps
+curl -f http://localhost/health
+
+Esperado:
+- biorempp-volume-init, biorempp, biorempp-nginx
+- biorempp e nginx healthy
+
+Fase 2 - Adicionar cache (Redis)
+docker compose --env-file .env/env.production --profile prod --profile cache up -d --build
+docker compose --env-file .env/env.production --profile prod --profile cache ps
+
+Esperado:
+- biorempp-redis healthy
+- sem erro recorrente de conexao redis no log do app
+
+Fase 3 - Adicionar observability
+docker compose --env-file .env/env.production --profile prod --profile cache --profile observability up -d --build
+docker compose --env-file .env/env.production --profile prod --profile cache --profile observability ps
+curl -f http://localhost:9090/-/healthy
+curl -f http://localhost:3300/api/health
+
+Esperado:
+- biorempp-prometheus e biorempp-grafana healthy
+- /metrics bloqueado externamente e disponivel internamente
+
+Validacao de composicao
+- Baseline:
+  docker compose --env-file .env/env.production --profile prod config --services
+- Full stack:
+  docker compose --env-file .env/env.production --profile prod --profile cache --profile observability config --services
+
+Check de estabilidade (sem loop)
+docker inspect biorempp --format '{{.RestartCount}}'
+docker inspect biorempp-nginx --format '{{.RestartCount}}'
+docker inspect biorempp-redis --format '{{.RestartCount}}'
+docker inspect biorempp-prometheus --format '{{.RestartCount}}'
+docker inspect biorempp-grafana --format '{{.RestartCount}}'
+
+Esperado:
+- RestartCount sem crescimento continuo
+
+Parar ambiente
+docker compose --env-file .env/env.production --profile prod --profile cache --profile observability down --remove-orphans

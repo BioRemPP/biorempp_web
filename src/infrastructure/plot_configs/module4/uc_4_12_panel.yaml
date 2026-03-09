@@ -4,16 +4,16 @@
 use_case_id: "uc-4-12"
 
 scientific_question: >
-  For any given biological sample, what is the functional relationship between
-  its broader metabolic pathways (Pathway) and the specific chemical classes
+  For any given biological sample, what is the KO annotation distribution across
+  its specific metabolic pathways (Pathway) and the broader chemical classes
   (compound_pathway) they belong to?
 
 description: >
-  This interactive visualization provides a functional map of a selected
-  sample's metabolic architecture. By choosing a sample from the dropdown menu,
-  the heatmap dynamically updates to show the functional richness—measured by
-  the count of unique KEGG Orthology (KO) identifiers—at the intersection of
-  each specific Pathway and its corresponding compound_pathway.
+  This interactive visualization provides a KO annotation map of a selected
+  sample's pathway structure. By choosing a sample from the dropdown menu,
+  the heatmap dynamically updates to show the count of unique KEGG Orthology
+  (KO) identifiers at the intersection of each specific Pathway and its
+  corresponding compound_pathway.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -31,9 +31,9 @@ visual_elements:
 
   - label: "Cell Color Intensity"
     description: >
-      The color intensity of each cell indicates the count of unique KOs,
-      showing how functionally rich a specific pathway is within a broader
-      chemical context for that sample.
+      The color intensity of each cell indicates the count of unique KOs
+      annotated at the intersection of a specific pathway and a broader
+      chemical class for that sample.
 
   - label: "Hover Information"
     description: >
@@ -42,30 +42,36 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Hotspots: Brightly colored cells (hotspots) may identify a strong
-    functional link. This may indicate that a particular metabolic pathway is a
-    major contributor to the biotransformation of a broader class of compounds within
-    that specific biological source.
+    Annotation Hotspots: Brightly colored cells indicate a higher KO annotation
+    count at the intersection of a specific metabolic pathway and a broader
+    compound class within that sample. This reflects annotation density and may
+    generate hypotheses for further investigation, but does not confirm that
+    these pathways are major contributors to biotransformation of those compounds.
 
   - >
-    Sample's Metabolic Strategy: By examining the overall pattern for a
-    selected sample, one can infer its metabolic strategy. A sample with many
-    hotspots in the "Alkanes" column, for example, may be specialized in
-    alkane biotransformation.
+    Sample KO Annotation Profile: By examining the overall pattern for a
+    selected sample, one can explore its KO annotation distribution across
+    pathways and compound classes. A sample with many high-count cells in the
+    "Alkanes" column, for example, has a higher density of KO annotations
+    associated with alkane-related pathways. This is an annotation-level
+    observation and does not confirm specialization in alkane biotransformation.
 
   - >
-    Comparative Profiling: Switching between samples in the dropdown allows
-    for direct comparison of their metabolic maps, potentially highlighting key differences
-    in how each biological source organizes its biotransformation capabilities.
+    Comparative Annotation Profiling: Switching between samples in the dropdown
+    allows for direct comparison of their KO annotation maps, highlighting
+    differences in annotation distribution across pathways and compound classes.
 
   - >
-    Pathway Organization: The matrix can help identify how different chemical compound
-    classes are associated with distinct metabolic pathways within a single
-    sample, showing the biological source's functional organization.
+    Pathway-Compound Annotation Structure: The matrix can help identify how
+    KO annotations are distributed across compound classes and specific pathways
+    within a single sample, providing an annotation-level view of the sample's
+    database coverage.
 
   - >
-    Metabolic Breadth vs. Specialization: A sample with many bright cells
-    across multiple compound pathway columns has broad metabolic capabilities,
-    while one with hotspots concentrated in few columns is a specialist.
+    Annotation Breadth vs. Concentration: A sample with many high-count cells
+    across multiple compound pathway columns has broader KO annotation coverage
+    across the database, while one with high counts concentrated in few columns
+    has more focused annotation coverage. These are annotation patterns and do
+    not confirm metabolic breadth or specialization.
 
 color_scheme: "success"

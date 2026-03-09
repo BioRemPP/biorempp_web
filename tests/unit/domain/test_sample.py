@@ -1,14 +1,28 @@
 """
-Unit Tests for Sample Entity
+Unit tests for Sample Entity.
+
+This module tests the Sample entity, which represents a biological sample
+containing a set of KEGG Orthology (KO) annotations with metadata.
+
+Test Coverage:
+- Sample creation and initialization
+- KO addition and removal
+- Duplicate KO handling
+- KO presence checking
+- Sample validation
+- Metadata handling
+- String representation
+- Sample equality and hashability
+- Business rules (timestamp, many KOs)
 """
 
 from datetime import datetime
 
 import pytest
 
-from biorempp_web.src.domain.entities.sample import Sample
-from biorempp_web.src.domain.value_objects.kegg_orthology import KO
-from biorempp_web.src.domain.value_objects.sample_id import SampleId
+from src.domain.entities.sample import Sample
+from src.domain.value_objects.kegg_orthology import KO
+from src.domain.value_objects.sample_id import SampleId
 
 
 class TestSample:
