@@ -304,7 +304,7 @@ See [License](../about/license.md) and [Terms of Use](../about/terms-of-use.md) 
 ### Current Version
 
 - **Database version:** 1.0.0
-- **Application version:** 1.0.3-beta (status: beta until article publication)
+- **Application version:** 1.0.0 (status: under peer review until official article publication)
 - **Release date:** December 15, 2025
 - **Database snapshot date:** December 2025
 

@@ -111,7 +111,7 @@ Regulatory frameworks: IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA.
 
 When using BioRemPP, please cite:
 
-> BioRemPP Web Service v1.0.3-beta. Available at: https://bioinfo.imd.ufrn.br/biorempp/ (accessed [DATE]).
+> BioRemPP Web Service v1.0.0. Available at: https://bioinfo.imd.ufrn.br/biorempp/ (accessed [DATE]).
 
 > Full citation guidelines: [How to Cite](https://biorempp-web.readthedocs.io/en/stable/)
 
@@ -143,4 +143,4 @@ BioRemPP is a research tool for hypothesis generation. Results represent **genet
 
 ---
 
-**BioRemPP v1.0.3-beta** | [Documentation](https://biorempp-web.readthedocs.io/en/stable/) | [GitHub](https://github.com/BioRemPP/biorempp_web)
+**BioRemPP v1.0.0** | [Documentation](https://biorempp-web.readthedocs.io/en/stable/) | [GitHub](https://github.com/BioRemPP/biorempp_web)

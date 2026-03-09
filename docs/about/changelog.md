@@ -15,6 +15,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.0] - 2026-03-09
+##### Zenodo-deposited release for DOI citation; official article publication is still under peer review.
+
+### Added
+
+#### DOI and Archival Release Note
+
+- **Zenodo deposition note for citation and archival tracking**.
+- **Official DOI reference included:** https://doi.org/10.5281/zenodo.18905195
+
+### Changed
+
+#### Release Versioning
+
+- **Project version updated from `1.0.9-beta` to `1.0.0`** in package metadata and public-facing documentation version labels.
+
+---
+
 ## [1.0.9-beta] - 2026-03-07
 ##### The application will remain in beta until the article is officially released.
 
