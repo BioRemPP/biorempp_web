@@ -11,7 +11,7 @@ build:
   jobs:
     post_install:
       # Install project dependencies if needed for mkdocstrings
-      - pip install -e .
+      - pip install -e .[docs]
 
 # MkDocs configuration
 mkdocs:
@@ -24,7 +24,7 @@ python:
     # Install project with documentation dependencies from pyproject.toml
     - method: pip
       path: .
-      extra_requirements:
+      extras:
         - docs
 
 # Formats to build (HTML is default, PDF optional)
