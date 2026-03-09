@@ -202,7 +202,7 @@ flowchart LR
 
 | Resource | Link |
 |----------|------|
-| :material-web: **Web Service** | [https://biorempp.cloud](https://biorempp.cloud) |
+| :material-web: **Web Service** | [https://bioinfo.imd.ufrn.br/biorempp/](https://bioinfo.imd.ufrn.br/biorempp/) |
 | :material-github: **Source Code** | [github.com/BioRemPP/biorempp_web](https://github.com/BioRemPP/biorempp_web) |
 | :material-docker: **Docker Image** | Available for local/institutional deployment |
 | :material-license: **License** | Apache-2.0 (code) / CC BY 4.0 (database) |
@@ -227,7 +227,7 @@ flowchart LR
 
 ```text
 BioRemPP Development Team (2026). BioRemPP: Bioremediation Potential Profile 
-Web Service (v1.0.9-beta). Available at: https://biorempp.cloud
+Web Service (v1.0.9-beta). Available at: https://bioinfo.imd.ufrn.br/biorempp/
 ```
 
 ??? note "BibTeX Format"
@@ -236,7 +236,7 @@ Web Service (v1.0.9-beta). Available at: https://biorempp.cloud
       title={BioRemPP: Bioremediation Potential Profile Web Service},
       author={BioRemPP Development Team},
       year={2025},
-      url={https://biorempp.cloud},
+      url={https://bioinfo.imd.ufrn.br/biorempp/},
       note={Version 1.0.9-beta}
     }
     ```

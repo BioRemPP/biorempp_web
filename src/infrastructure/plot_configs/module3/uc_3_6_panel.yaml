@@ -54,24 +54,22 @@ interpretation_guidelines:
     metabolic pathway, an operon, or a co-regulated system.
 
   - >
-    Core Functional Cassettes: A gene that shows strong positive correlation
-    with many other genes might be part of a core, widely distributed
-    functional cassette that is essential for a common metabolic process.
+    Broadly Co-occurring Genes: A gene that shows strong positive correlation
+    with many other genes is widely co-distributed across samples. This may
+    suggest broad annotation coverage and could be consistent with involvement
+    in common functional contexts, though co-occurrence alone does not confirm
+    essentiality or functional role.
 
   - >
-    Mutually Exclusive Patterns: While less common with presence/absence
-    data, strong negative correlations (if observed) could suggest that
-    the presence of one gene is associated with the absence of another,
-    potentially suggesting alternative or redundant metabolic strategies.
+    Mutually Exclusive Patterns: While less common with presence/absence data,
+    strong negative correlations (if observed) indicate that two genes tend not
+    to co-occur in the same samples. This pattern may suggest alternative
+    annotation profiles across samples, warranting further investigation.
 
   - >
     Pathway Inference: Co-occurring genes may participate in the same
     biochemical pathway, providing clues for functional annotation of
     uncharacterized genes based on their association patterns.
 
-  - >
-    Horizontal Gene Transfer: Clusters of co-occurring genes across
-    diverse samples may suggest mobile genetic elements or horizontally
-    transferred gene cassettes.
 
 color_scheme: "primary"

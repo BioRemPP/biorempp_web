@@ -1,17 +1,18 @@
-# UC-4.1: Interactive Functional Profiling of Samples by Metabolic Pathway (KEGG)
+# UC-4.1: Interactive KO Annotation Profile of Samples by Metabolic Pathway (KEGG)
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-1"
 
 scientific_question: >
-  What is the specific functional profile of each biological sample, as defined
-  by the richness of its annotated metabolic pathways?
+  What is the KO annotation profile of each biological sample, as defined
+  by the number of unique KO identifiers associated with each annotated
+  metabolic pathway?
 
 description: >
-  This interactive visualization allows for the detailed functional profiling
+  This interactive visualization allows for the detailed KO annotation profiling
   of individual samples. By selecting a sample from the dropdown menu, the bar
   chart dynamically updates to display and rank all the metabolic pathways
-  present in that sample based on the number of unique KEGG Orthology (KO)
+  annotated for that sample based on the number of unique KEGG Orthology (KO)
   identifiers associated with each pathway.
 
 visual_elements:
@@ -22,33 +23,37 @@ visual_elements:
 
   - label: "Y-axis"
     description: >
-      Represents the individual KEGG Pathways found in the selected sample.
+      Represents the individual KEGG Pathways annotated for the selected sample.
 
   - label: "X-axis"
     description: >
-      Represents the count of unique KOs associated with each pathway.
+      Represents the count of unique KO annotations associated with each pathway.
 
   - label: "Bar Length and Label"
     description: >
-      The length of each bar and its corresponding numerical label explicitly
-      state the total number of unique KOs, potentially indicating the functional richness
-      of that pathway for the selected sample.
+      The length of each bar and its corresponding numerical label indicate the
+      total number of unique KO annotations for that pathway in the selected sample,
+      reflecting annotation density per pathway.
 
 interpretation_guidelines:
   - >
-    Dominant Pathways: The longest bars represent the most prominent or
-    functionally rich metabolic pathways for that specific biological source. This can
-    help identify its primary metabolic capabilities or specializations.
+    Highly Annotated Pathways: The longest bars represent the pathways with the
+    highest KO annotation counts for that specific sample. This can help identify
+    which pathways have broader annotation coverage, but does not confirm primary
+    metabolic activity or functional specialization.
 
   - >
-    Comparative Profiling: By switching between samples in the dropdown, one
-    can directly compare their functional profiles. For example, this may
-    highlight if one sample is enriched in hydrocarbon biotransformation pathways
-    while another is specialized in amino acid metabolism.
+    Comparative Annotation Profiles: By switching between samples in the dropdown,
+    one can directly compare their KO annotation profiles across pathways. Differences
+    in annotation counts may generate hypotheses about annotation coverage patterns,
+    but do not confirm that one sample is enriched in specific metabolic activity
+    relative to another.
 
   - >
-    Pathway Presence/Absence: The chart provides a clear inventory of which
-    metabolic pathways are encoded in each sample's genome, allowing for quick
-    identification of key functional differences.
+    Pathway Annotation Inventory: The chart provides an overview of which KEGG
+    pathways have KO annotations in each sample and how many unique KOs are
+    annotated per pathway. This is an annotation-level inventory and does not
+    confirm which metabolic pathways are actively expressed or functionally
+    complete in the sample.
 
 color_scheme: "success"

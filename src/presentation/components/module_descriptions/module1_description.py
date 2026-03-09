@@ -42,8 +42,8 @@ def create_module1_overview_header() -> html.Div:
 
     Guiding Questions:
     - 1.1: Data source reliability (BioRemPP validation vs. HADEG and KEGG)
-    - 1.2: Regulatory relevance landscape (priority targets)
-    - 1.3: Functional candidate identification (regulatory compliance scoring)
+    - 1.2: Regulatory relevance landscape (compound list overlaps)
+    - 1.3: Sample annotation overlap with regulatory compound lists
     """
     # Module 1 configuration
     module_id = "1"
@@ -55,11 +55,10 @@ def create_module1_overview_header() -> html.Div:
         "biological or ecological inferences, it is essential to: (i) evaluate "
         "the reliability and complementarity of the reference databases; "
         "(ii) align the resulting annotations with environmentally relevant "
-        "regulatory frameworks; and (iii) position the input samples within "
+        "regulatory frameworks; and (iii) characterize the input samples within "
         "this validated and regulation-aware landscape. Together, these "
-        "analyses ensure that subsequent results are not only biologically "
-        "plausible but also interpretable in terms of compliance, priority, "
-        "and practical applicability to bioremediation scenarios."
+        "analyses can help ensure that subsequent results are biologically "
+        "plausible and interpretable within regulatory and annotation contexts."
     )
 
     # Guiding questions for Module 1
@@ -74,11 +73,11 @@ def create_module1_overview_header() -> html.Div:
                 "from the HADEG and Degradation pathways from KEGG databases, "
                 "we quantify both the agreement between sources and the unique "
                 "contribution of the BioRemPP compound-centric approach. This "
-                "comparative assessment enables us to identify shared and "
+                "comparative assessment can enable us to identify shared and "
                 "exclusive signals, highlighting how much novel or refined "
                 "information is gained by our strategy. The impact of this step "
-                "is twofold: it reinforces the robustness of the pipeline and "
-                "supports the originality of the resulting bioremediation-focused "
+                "is twofold: it may reinforce the robustness of the pipeline and "
+                "can support the originality of the resulting bioremediation-focused "
                 "database and analyses."
             ),
         },
@@ -90,31 +89,29 @@ def create_module1_overview_header() -> html.Div:
                 "characterize the regulatory landscape associated with the "
                 "annotated compounds. We do so by examining the overlap and "
                 "coverage between compound lists from key environmental agencies "
-                "and regulatory frameworks. This transforms raw lists of "
-                "compounds into a structured set of 'priority targets', defined "
-                "by their regulatory status, environmental concern, or monitoring "
-                "requirements. In practice, this step directs the analytical "
-                "focus toward compounds with the greatest potential impact on "
-                "environmental policy, risk assessment, and regulatory "
-                "decision-making."
+                "and regulatory frameworks. This provides a structured view of "
+                "which compounds appear across multiple regulatory lists and "
+                "which are unique to specific agencies. In practice, this step "
+                "can direct the analytical focus toward compounds with broader "
+                "regulatory recognition and monitoring requirements."
             ),
         },
         {
             "id": "1.3",
-            "subtitle": "Functional candidate identification",
+            "subtitle": "Sample annotation overlap with regulatory compound lists",
             "question": (
-                "Which input samples represent the most valuable functional "
-                "candidates? Finally, we situate each input sample within this "
-                "validated and regulation-aware context. We assess both their "
-                "functional repertoire — measured by KO Richness and Compound "
-                "Richness — and their composite 'regulatory compliance score', "
-                "derived from the presence and relevance of compounds tied to "
-                "environmental regulations. Rather than merely describing the "
-                "samples, this step ranks them according to their potential to "
-                "address real-world bioremediation challenges and regulatory "
-                "demands, thereby identifying the most promising candidates for "
-                "follow-up studies, pilot interventions, and environmental "
-                "compliance strategies."
+                "Which input samples show the broadest annotation overlap with "
+                "regulatory compound lists? Finally, we situate each input sample "
+                "within this validated and regulation-aware context. We assess "
+                "both their KO annotation richness and compound annotation "
+                "richness, and compute an annotation-level overlap score that "
+                "reflects the percentage of an agency's listed compounds "
+                "associated with KOs present in each sample's annotation. "
+                "Rather than implying operational readiness, this step "
+                "characterizes samples according to their annotation-level "
+                "representation within regulatory compound spaces, providing a "
+                "basis for prioritizing samples for further exploration and "
+                "hypothesis generation."
             ),
         },
     ]

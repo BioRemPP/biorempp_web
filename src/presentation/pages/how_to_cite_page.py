@@ -12,7 +12,7 @@ create_how_to_cite_page
 Notes
 -----
 - Static informational page (no callbacks)
-- Pre-DOI citation templates with placeholders
+- Mixed citation status: database DOI assigned, web service DOI pending
 - BibTeX templates for both software and database
 - Third-party resource citation guidelines
 """
@@ -199,9 +199,8 @@ def create_post_doi_section() -> html.Div:
                             html.P(
                                 [
                                     "Use the citation records below as the baseline for manuscripts, reports, "
-                                    "and supplementary materials. The entries are intentionally provided as ",
-                                    html.Strong("mock placeholders"),
-                                    " and must be replaced with your final metadata.",
+                                    "and supplementary materials. Update author/year/version/access-date fields before submission. "
+                                    "The database DOI is already assigned.",
                                 ],
                                 className="mb-3",
                             ),
@@ -222,7 +221,10 @@ def create_post_doi_section() -> html.Div:
                                         "Replace placeholders for authors, year, access date, and version before submission",
                                     ]),
                                     html.Li([
-                                        "When DOI is assigned, update the records and keep DOI + version together",
+                                        "For database citation, keep DOI + version together (DOI assigned: 10.5281/zenodo.18905195)",
+                                    ]),
+                                    html.Li([
+                                        "For web service citation, keep version + access date until a dedicated DOI is assigned",
                                     ]),
                                 ],
                                 className="mb-0",
@@ -293,13 +295,14 @@ def create_bibtex_section() -> html.Div:
                             html.Pre(
                                 "@misc{biorempp_db_[YEAR],\n"
                                 "  author       = {[Author Names]},\n"
-                                "  title        = {BioRemPP Database: Curated enzyme-compound associations "
-                                "for bioremediation research},\n"
+                                "  title        = {BioRemPP Database: A Curated Compound-Centric Resource for "
+                                "Bioremediation Potential Profiling},\n"
                                 "  year         = {[YEAR]},\n"
                                 "  version      = {[X.Y.Z]},\n"
                                 "  license      = {CC BY 4.0},\n"
-                                "  howpublished = {\\url{https://biorempp.org/database}},\n"
-                                "  note         = {Accessed: [DD-Month-YEAR]. Zenodo DOI pending}\n"
+                                "  doi          = {10.5281/zenodo.18905195},\n"
+                                "  url          = {https://doi.org/10.5281/zenodo.18905195},\n"
+                                "  note         = {Accessed: [DD-Month-YEAR]}\n"
                                 "}",
                                 style={
                                     "backgroundColor": "#282c34",

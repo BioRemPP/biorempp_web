@@ -37,7 +37,7 @@ from ..routing import app_path
 # Version and contact information (now from centralized settings)
 FAQ_APP_VERSION = APP_VERSION
 FAQ_SUPPORT_EMAIL = "biorempp@gmail.com"
-FAQ_CANONICAL_URL = "https://biorempp.cloud/"
+FAQ_CANONICAL_URL = "https://bioinfo.imd.ufrn.br/biorempp/"
 
 # Technical limits (derived from runtime settings to avoid drift)
 _FAQ_SETTINGS = get_settings()
@@ -48,9 +48,9 @@ FAQ_MAX_SAMPLES = max(int(_FAQ_SETTINGS.UPLOAD_SAMPLE_LIMIT), 1)
 FAQ_MAX_TOTAL_KOS = max(int(_FAQ_SETTINGS.UPLOAD_KO_LIMIT), 1)
 FAQ_MAX_UPLOAD_MB = max(int(_FAQ_SETTINGS.UPLOAD_MAX_SIZE_MB), 1)
 
-# Zenodo placeholders (to be updated when DOIs are assigned)
+# DOI metadata (database DOI assigned; web service DOI still pending)
 FAQ_ZENODO_WEB_SERVICE_DOI = "[Zenodo DOI pending]"
-FAQ_ZENODO_DATABASE_DOI = "[Zenodo DOI pending]"
+FAQ_ZENODO_DATABASE_DOI = "https://doi.org/10.5281/zenodo.18905195"
 
 
 def create_faq_page() -> html.Div:
@@ -2789,12 +2789,12 @@ def create_faq_page() -> html.Div:
                     ),
                     html.P(html.Strong("Zenodo deposition:")),
                     html.P(
-                        f"BioRemPP database and web service will be deposited on Zenodo with DOI: {FAQ_ZENODO_DATABASE_DOI}",
+                        f"BioRemPP Database DOI (Zenodo): {FAQ_ZENODO_DATABASE_DOI}",
                         className="text-muted",
                     ),
                     create_faq_note(
-                        "Until Zenodo DOI is assigned, cite BioRemPP version and access date. "
-                        "Check 'How to Cite' page for updated citation information.",
+                        "Database DOI is available. For the web service, keep citing version and access date "
+                        "until a dedicated web-service DOI is assigned. Check 'How to Cite' for the latest templates.",
                         note_type="info",
                     ),
                 ]
@@ -2819,7 +2819,7 @@ def create_faq_page() -> html.Div:
                     ),
                     html.P(html.Strong("Database citation template:")),
                     create_code_block(
-                        f"BioRemPP Curated Database for Bioremediation Analysis.\n"
+                        "BioRemPP Database: A Curated Compound-Centric Resource for Bioremediation Potential Profiling.\n"
                         f"Version {FAQ_APP_VERSION} (2025).\n"
                         f"Zenodo DOI: {FAQ_ZENODO_DATABASE_DOI}",
                         language="text",
@@ -2833,7 +2833,8 @@ def create_faq_page() -> html.Div:
                         ]
                     ),
                     create_faq_note(
-                        "These are mock templates. Keep DOI + version together when DOI is assigned.",
+                        "Keep DOI + version together for database citation. For web service, keep version + access date "
+                        "until the DOI is assigned.",
                         note_type="info",
                     ),
                 ]

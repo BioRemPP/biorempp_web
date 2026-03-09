@@ -1,111 +1,96 @@
-# UC-8.3: Compound-Specific KO Completeness Scorecard
+# UC-8.3: Compound-Specific KO Annotation Overlap Scorecard
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-8-3"
 
 scientific_question: >
-  For any given chemical compound, which biological sample possesses the most
-  "complete" genetic toolkit (KO profile) for its biotransformation?
+  For any given chemical compound, which biological sample shows the highest
+  KO annotation overlap with the KOs associated with that compound in the database?
 
 description: >
-  This visualization provides a highly granular "scorecard" that ranks each
-  sample's functional potential against every individual compound in the
-  BioRemPP database. The analysis calculates a KO Completeness Score, which
-  represents the percentage of all known KOs associated with a specific
-  compound (within this dataset) that a particular sample possesses. The
-  scorecard is presented as a heatmap matrix comparing Samples (rows) against
-  individual Compound Names (columns), with cell values representing the
-  completeness score (0-100%).
+  This visualization provides a granular scorecard that ranks each sample's
+  KO annotation overlap against every individual compound in the BioRemPP
+  database. The analysis calculates a KO Annotation Overlap Score, which
+  represents the percentage of all KOs co-annotated with a specific compound
+  (within this dataset) that are also present in a particular sample's
+  annotation. The scorecard is presented as a heatmap matrix comparing Samples
+  (rows) against individual Compound Names (columns), with cell values
+  representing the overlap score (0-100%).
 
 visual_elements:
   - label: "Heatmap Matrix"
     description: >
       The visualization is structured as a matrix where rows represent individual
-      biological samples (isolates/genomes) and columns represent specific
-      chemical compounds from the BioRemPP database. Each cell in the matrix
-      displays a completeness score as both color intensity and numerical value,
-      creating an intuitive visual scorecard of compound-specific functional
-      capabilities.
-  
+      biological samples and columns represent specific chemical compounds from
+      the BioRemPP database. Each cell displays a KO annotation overlap score
+      as both color intensity and numerical value, enabling comparison of
+      annotation coverage across samples and compounds.
+
   - label: "Color Gradient (Green Scale)"
     description: >
-      Cell colors range from light green (low completeness, 0-20%) through
-      medium green (moderate completeness, 40-60%) to dark green (high
-      completeness, 80-100%). The color intensity provides an immediate visual
-      indicator of a sample's genetic toolkit completeness for each specific
-      compound. Brighter/darker cells represent "hotspots" where a sample is
-      an elite specialist for biotransforming that particular compound.
-  
-  - label: "Completeness Score Labels"
+      Cell colors range from light green (low overlap, 0-20%) through medium
+      green (moderate overlap, 40-60%) to dark green (high overlap, 80-100%).
+      The color intensity provides an immediate visual indicator of a sample's
+      KO annotation overlap for each specific compound.
+
+  - label: "Overlap Score Labels"
     description: >
-      Each cell displays the completeness percentage (e.g., "85.5%") directly
-      within the cell. A score of 100% indicates the sample possesses every
-      single KO associated with that compound found in the entire dataset,
-      making it a complete functional specialist for that specific pollutant.
-      Scores below 50% may suggest the sample has an incomplete genetic toolkit
-      for that compound.
-  
+      Each cell displays the overlap percentage (e.g., "85.5%") directly within
+      the cell. A score of 100% indicates the sample has all KOs co-annotated
+      with that compound in the dataset. Scores below 50% indicate partial
+      annotation overlap for that compound.
+
   - label: "Sample Rows (Y-axis)"
     description: >
-      Each row represents a biological sample and shows its completeness scores
-      across all individual compounds. Reading across a row allows assessment
-      of a sample's compound-specific capabilities. Multiple high scores (>70%)
-      may indicate a multi-target specialist with broad compound coverage, while
-      scattered high scores may suggest selective specialization for particular
-      pollutants.
-  
+      Each row represents a biological sample and shows its KO annotation overlap
+      scores across all individual compounds. Reading across a row allows
+      assessment of a sample's compound-level annotation coverage. Multiple high
+      scores indicate broad annotation overlap across compounds, while scattered
+      high scores suggest annotation concentration in particular compounds.
+
   - label: "Compound Columns (X-axis)"
     description: >
-      Each column represents a specific chemical compound (individual pollutant)
-      and shows completeness scores across all samples. Reading down a column
-      can help identify which samples are best equipped for biotransforming that specific
-      compound and may indicate the genetic complexity of its biotransformation
-      pathway based on overall score distribution across all samples.
+      Each column represents a specific chemical compound and shows KO annotation
+      overlap scores across all samples. Reading down a column can help identify
+      which samples show the highest annotation overlap for that compound and how
+      coverage is distributed across samples.
 
 interpretation_guidelines:
   - >
-    Identifying Elite Specialists for Specific Targets: Brightly colored cells
-    (dark green, >80% completeness) may identify a sample that is a potent
-    "specialist" for biotransforming a specific compound. A score of 100% may indicate
-    that the sample possesses every single KO associated with that compound in
-    the entire dataset, suggesting it as a candidate for targeted biotransformation
-    of that pollutant. These elite specialists may be prioritized for
-    experimental validation and bioremediation applications targeting that
-    specific contaminant.
-  
+    High Annotation Overlap for Specific Compounds: Brightly colored cells (dark
+    green, >80% overlap) indicate samples with a high proportion of the KOs
+    co-annotated with that specific compound in the dataset. This reflects
+    annotation coverage and may generate hypotheses about annotation breadth per
+    compound, but does not confirm that the sample can process that compound.
+    Experimental validation is required before any functional inference.
+
   - >
-    Profiling Sample Capabilities: Reading horizontally across a sample's row
-    can help identify its detailed biotransformation profile. This can distinguish a
-    "multi-target specialist" (a sample with high scores for several specific
-    compounds) from a "niche specialist" (high score for only one or two
-    compounds). Such profiling enables strategic sample selection based on
-    contamination scenarios and can help identify versatile candidates versus
-    highly specialized biological sources.
-  
+    Sample Annotation Profile Across Compounds: Reading horizontally across a
+    sample's row can help identify its compound-level annotation coverage pattern.
+    This can distinguish samples with broad annotation overlap across many compounds
+    from those with annotation concentrated in a few. These are annotation-level
+    observations and do not confirm biotransformation profiles or specialization.
+
   - >
-    Assessing Compound Biotransformation Complexity: Reading vertically down a
-    compound column can help assess the genetic challenge posed by that specific
-    compound. A compound with generally low scores across all samples (<50%
-    average) may require a consortium of multiple biological sources, each contributing
-    different parts of the necessary genetic toolkit, for its complete
-    biotransformation. This may indicate a complex biotransformation pathway that is not
-    fully encoded by any single biological source in the dataset.
-  
+    Compound Annotation Coverage Distribution: Reading vertically down a compound
+    column can help identify how KO annotation overlap for that compound is
+    distributed across samples. A compound with generally low scores across all
+    samples indicates that few samples have broad KO annotation overlap for it in
+    the dataset. This is an annotation-level pattern and should not be interpreted
+    as confirming pathway complexity or biotransformation difficulty.
+
   - >
-    Strategic Sample Selection for Targeted Bioremediation: For single-compound
-    contamination scenarios, select the sample with the highest completeness
-    score for that specific compound (darkest cell in the column). For
-    multi-compound contamination, evaluate samples with high scores across
-    relevant compounds or design consortia combining complementary specialists
-    to achieve comprehensive biotransformation coverage.
-  
+    Annotation-Based Sample Comparison per Compound: For exploratory purposes,
+    samples with higher overlap scores for a specific compound have greater KO
+    annotation coverage for that compound in the database. This may guide
+    prioritization of further investigation, but does not establish confirmed
+    functional capacity for that compound.
+
   - >
-    Functional Gap Analysis and Pathway Engineering: Cells with low scores
-    (<30%, light green) represent functional gaps where samples lack critical
-    biotransformation genes for specific compounds. These gaps can guide genetic
-    engineering efforts, horizontal gene transfer studies, or consortium
-    design to achieve complete functional pathways. Identifying which specific
-    KOs are missing for a given compound can inform targeted gene acquisition
-    strategies or synthetic biology approaches.
+    Low Annotation Overlap: Cells with low scores (light green) indicate limited
+    KO annotation overlap between a sample and a specific compound. This reflects
+    annotation coverage in the dataset and should not be interpreted as confirming
+    absence of functional capacity. Annotation gaps may reflect database coverage
+    rather than true biological absence.
 
 color_scheme: "success"

@@ -4,15 +4,16 @@
 use_case_id: "uc-1-6"
 
 scientific_question: >
-  To what extent does the functional potential, measured by unique KO diversity,
-  of different samples align with the priorities of various environmental
-  regulatory agencies?
+  To what extent does the KO annotation breadth of different samples overlap
+  with the compound lists of various environmental regulatory agencies,
+  as measured by unique KO counts at each sample-agency intersection?
 
 description: >
-  This heatmap visualizes the distribution of functional potential across
+  This heatmap visualizes the distribution of KO annotation coverage across
   biological samples within different regulatory contexts. It quantifies the
   number of unique KEGG Orthology (KO) identifiers at the intersection of
-  each sample and reference agency, providing a matrix of functional relevance.
+  each sample and reference agency, providing a matrix of annotation co-occurrence
+  counts per sample-agency combination.
 
 visual_elements:
   - label: "Y-Axis (Reference Agencies)"
@@ -24,14 +25,14 @@ visual_elements:
   - label: "X-Axis (Samples)"
     description: >
       Represents the individual biological samples in the dataset. Each column
-      corresponds to a unique sample with its own functional gene repertoire.
+      corresponds to a unique sample with its own annotated gene repertoire.
 
   - label: "Cell Color and Values"
     description: >
       The color intensity of each cell (and the number within it) indicates
       the count of unique KOs found for that specific Sample-Agency combination.
       The color bar on the right provides the quantitative scale. Darker/brighter
-      colors indicate higher KO counts, representing stronger functional potential.
+      colors indicate higher KO co-occurrence counts for that sample-agency pair.
 
   - label: "Color Bar"
     description: >
@@ -41,33 +42,33 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Hotspots: Brightly colored cells ("hotspots") may identify a strong
-    alignment between a sample's functional capabilities and a specific agency's
-    focus, suggesting potential relevance for interacting with compounds monitored
-    by that agency. These samples may be candidates for targeted bioremediation
-    applications.
+    Functional Hotspots: Brightly colored cells indicate a higher count of unique
+    KOs at the intersection of a sample and a regulatory agency context. This
+    suggests greater annotation overlap and may indicate functional relevance
+    worth exploring; it does not confirm degradation capability without
+    experimental evidence.
 
   - >
     Agency-Level Patterns: Rows with consistently high values may indicate that
-    an agency's target compounds are associated with widely distributed metabolic
-    functions. This may suggest that the monitored compounds require common
-    enzymatic pathways present across multiple samples.
+    an agency's target compounds are associated with broadly distributed metabolic
+    functions across samples. This pattern may reflect the commonality of pathways
+    involved in processing those compounds within the annotated dataset.
 
   - >
     Sample-Level Profiles: Columns with consistently high values may suggest a
-    functional "generalist" sample with broad metabolic potential capable of
-    addressing multiple regulatory concerns. Conversely, a sample with hotspots
-    in only one or two rows could be considered a "specialist" with targeted
-    capabilities.
+    sample with broad annotated functional representation across multiple regulatory
+    contexts. Columns with elevated values in only a few rows may indicate more
+    context-specific functional annotation coverage.
 
   - >
-    Regulatory Coverage Assessment: By comparing values across rows, researchers
-    can identify which regulatory frameworks have the strongest representation
-    in their sample collection and where functional gaps may exist.
+    Coverage Gaps: Comparing values across rows can help identify regulatory
+    frameworks that are less well-represented in the sample collection, which
+    may highlight annotation gaps or areas for further functional characterization.
 
   - >
-    Consortium Design Insights: Samples with complementary patterns (different
-    hotspot locations) can be combined to create biological consortia with
-    comprehensive functional coverage across multiple regulatory frameworks.
+    Complementary Patterns: Samples with different hotspot distributions may
+    cover distinct functional spaces across regulatory contexts. Identifying such
+    complementary profiles can generate hypotheses about multi-sample functional
+    coverage, to be examined with further analysis.
 
 color_scheme: "primary"

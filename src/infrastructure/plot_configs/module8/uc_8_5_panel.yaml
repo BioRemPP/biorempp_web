@@ -1,110 +1,99 @@
-# UC-8.5: KEGG Pathway Completeness Scorecard
+# UC-8.5: KEGG Pathway KO Annotation Overlap Scorecard
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-8-5"
 
 scientific_question: >
-  Which biological samples possess the most "complete" genetic toolkit for
-  a given KEGG metabolic pathway, and how can this be used to identify
-  elite functional specialists?
+  Which biological samples show the highest KO annotation overlap with each
+  KEGG metabolic pathway in the dataset, and how does this annotation coverage
+  vary across samples and pathways?
 
 description: >
-  This visualization provides a quantitative "scorecard" that ranks each
-  sample's functional potential for every metabolic pathway in the KEGG
-  dataset. Instead of a simple presence/absence metric, this analysis
-  calculates a Pathway Completeness Score. This score represents the
-  percentage of all known KOs for a given pathway (within this dataset)
-  that a specific sample possesses. The scorecard is presented as a heatmap
-  matrix comparing Samples (rows) against KEGG Pathways (columns), with
-  cell colors (without numerical labels) representing the completeness score
-  gradient (0-100%).
+  This visualization provides a quantitative scorecard that ranks each sample's
+  KO annotation overlap for every metabolic pathway in the KEGG dataset. Instead
+  of a simple presence/absence metric, this analysis calculates a Pathway KO
+  Annotation Overlap Score. This score represents the percentage of all KOs
+  annotated for a given pathway (within this dataset) that are also present in
+  a specific sample's annotation. The scorecard is presented as a heatmap matrix
+  comparing Samples (rows) against KEGG Pathways (columns), with cell colors
+  (without numerical labels) representing the overlap score gradient (0-100%).
 
 visual_elements:
   - label: "Heatmap Scorecard Matrix"
     description: >
       The visualization is structured as a matrix where rows represent individual
-      biological samples (isolates/genomes) and columns represent KEGG metabolic
-      pathways. Each cell's color intensity creates an intuitive visual scorecard
-      of functional capabilities. Unlike other scorecards, this visualization uses
-      only color gradients without displaying numerical values in the cells,
-      emphasizing visual pattern recognition for comparative analysis.
-  
+      biological samples and columns represent KEGG metabolic pathways. Each cell's
+      color intensity represents the KO annotation overlap score. Unlike other
+      scorecards, this visualization uses only color gradients without displaying
+      numerical values in the cells, emphasizing visual pattern recognition for
+      comparative analysis.
+
   - label: "Color Gradient (Intensity Scale)"
     description: >
-      Cell colors range from light tones (low completeness, 0-20%) through
-      medium intensity (moderate completeness, 40-60%) to dark/saturated colors
-      (high completeness, 80-100%). The color intensity provides an immediate
-      visual indicator of a sample's genetic toolkit completeness for each KEGG
-      pathway. Brighter/darker cells represent "hotspots" of functional excellence,
-      enabling rapid identification of elite specialists through visual pattern
-      recognition alone.
-  
+      Cell colors range from light tones (low overlap, 0-20%) through medium
+      intensity (moderate overlap, 40-60%) to dark/saturated colors (high overlap,
+      80-100%). The color intensity provides an immediate visual indicator of a
+      sample's KO annotation overlap for each KEGG pathway.
+
   - label: "Sample Rows (Y-axis)"
     description: >
-      Each row represents a biological sample and shows its completeness profile
-      across all KEGG pathways through color patterns. Reading across a row allows
-      visual assessment of a sample's metabolic versatility - multiple dark cells
-      may indicate a generalist with broad pathway coverage, while scattered dark cells
-      may suggest selective specialization. The color-only approach facilitates rapid
-      comparative scanning across multiple samples.
-  
+      Each row represents a biological sample and shows its KO annotation overlap
+      profile across all KEGG pathways through color patterns. Reading across a
+      row allows visual assessment of a sample's annotation breadth — multiple dark
+      cells indicate broad annotation overlap across pathways, while scattered dark
+      cells suggest annotation concentrated in particular pathways.
+
   - label: "KEGG Pathway Columns (X-axis)"
     description: >
       Each column represents a KEGG metabolic pathway (e.g., glycolysis, TCA cycle,
-      amino acid biosynthesis) and shows completeness patterns across all samples
-      through color distribution. Reading down a column      can help identify which samples are
-      best equipped for that pathway and may indicate the complexity of the pathway
-      based on overall color intensity distribution. Pathways with predominantly
-      light colors may require consortium approaches.
-  
+      amino acid biosynthesis) and shows annotation overlap patterns across all
+      samples through color distribution. Reading down a column can help identify
+      which samples show the highest annotation overlap for that pathway. Pathways
+      with predominantly light colors across samples have low annotation overlap
+      in the dataset.
+
   - label: "Interactive Hover Information"
     description: >
       While cell values are not displayed directly in the heatmap, hovering over
-      any cell reveals detailed information including the exact completeness
-      percentage, sample name, pathway name, and functional interpretation. This
-      design balances clean visual presentation with access to precise quantitative
-      data when needed, preventing visual clutter while maintaining analytical depth.
+      any cell reveals detailed information including the exact overlap percentage,
+      sample name, and pathway name. This design balances clean visual presentation
+      with access to precise quantitative data when needed.
 
 interpretation_guidelines:
   - >
-    Identifying Elite Specialists: Darkly colored cells (high intensity, representing
-    >80% completeness) may identify samples that are potent "specialists" for specific
-    KEGG pathways. A cell with maximum color intensity may indicate the sample possesses
-    every single KO for that pathway in the dataset, suggesting it as a candidate for
-    applications requiring that specific metabolic capability. These elite specialists
-    may be prioritized for experimental validation and metabolic engineering efforts.
-  
-  - >
-    Comparing Functional Potential: Reading horizontally across a sample's row allows
-    comprehensive assessment of its overall metabolic capabilities through color
-    patterns. A sample with multiple darkly colored cells may be a versatile "generalist,"
-    potent across several different types of pathways. Such generalists are valuable
-    for complex biotechnological applications requiring broad metabolic coverage.
-    Conversely, samples with few dark cells may be highly specialized organisms.
-  
-  - >
-    Assessing Pathway Complexity: Reading vertically down a pathway column can help assess
-    metabolic pathway difficulty and distribution across samples. A pathway with
-    generally light colors across all samples (<50% average completeness) may indicate
-    a complex metabolic function that is not fully encoded by any single biological source
-    in the dataset. Such pathways may require consortium approaches, metabolic
-    engineering, or horizontal gene transfer to achieve complete functionality.
-  
-  - >
-    Visual Pattern Recognition: The color-only design enables rapid identification
-    of functional patterns without numerical distraction. Look for "hot rows"
-    (samples with many dark cells = versatile generalists), "hot columns" (pathways
-    with many dark cells = common/essential pathways), and "cold spots" (light cells
-    = functional gaps or rare capabilities). These patterns guide strategic decisions
-    for biotechnology applications and metabolic engineering targets.
-  
-  - >
-    Strategic Sample and Pathway Selection: For metabolic engineering or synthetic
-    biology applications, select samples based on the target pathway profile. For
-    single-pathway applications, choose the sample with the darkest cell in that
-    pathway's column (highest completeness). For multi-pathway applications, select
-    samples with consistently dark cells across relevant pathways or design consortia
-    combining complementary specialists. The visual clarity facilitates rapid
-    decision-making in experimental design.
+    High Pathway Annotation Overlap: Darkly colored cells (high intensity,
+    representing >80% overlap) indicate samples with a high proportion of the
+    KOs annotated for that KEGG pathway in the dataset. This reflects annotation
+    coverage and may generate hypotheses about annotation breadth per pathway, but
+    does not confirm that the sample can execute that metabolic pathway. Experimental
+    validation is required before any functional inference.
 
-color_scheme: "success" 
+  - >
+    Annotation Breadth Across Pathways: Reading horizontally across a sample's row
+    allows assessment of its KO annotation coverage across KEGG pathways through
+    color patterns. A sample with multiple darkly colored cells shows broad
+    annotation overlap across pathways. These are annotation-level observations
+    and do not confirm metabolic versatility or functional capacity.
+
+  - >
+    Pathway Annotation Coverage: Reading vertically down a pathway column can help
+    identify how annotation overlap for that pathway is distributed across samples.
+    A pathway with generally light colors across all samples indicates low annotation
+    overlap in the dataset. This is an annotation-level observation and should not
+    be interpreted as confirming pathway complexity or metabolic difficulty.
+
+  - >
+    Visual Annotation Pattern Recognition: The color-only design facilitates rapid
+    visual assessment of annotation overlap patterns. Look for rows with many dark
+    cells (broad annotation overlap across pathways) and columns with many dark cells
+    (pathways broadly represented in the dataset). These patterns reflect the
+    annotation structure of the dataset and may guide further exploratory analyses.
+
+  - >
+    Annotation-Based Comparison: For exploratory purposes, samples with darker
+    cells for a specific pathway have greater KO annotation overlap for that pathway
+    in the database. This may guide prioritization of further investigation, but
+    does not establish confirmed metabolic capacity. Any application inference
+    requires experimental validation.
+
+color_scheme: "success"

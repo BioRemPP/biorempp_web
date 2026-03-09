@@ -9,9 +9,9 @@
 
 ## Scientific Question and Rationale
 
-**Question:** For each class of chemical compounds, which enzymatic functions are most commonly employed, and which specific genes are the most versatile in targeting the widest range of substrates within that class?
+**Question:** For each class of chemical compounds, which enzymatic functions are most frequently co-annotated, and which specific genes show the broadest compound co-annotation coverage within that class?
 
-This use case provides a **chemical-first, top-down view** of the **functional landscape**. Starting from broad **compound classes**, it traces how these classes are processed by different **enzyme activities**, which are in turn implemented by specific **genes** encoded in the available biological samples. By quantifying, for each branch, the number of **unique compounds** involved, the treemap may highlight which combinations of chemical class, enzymatic function, and gene correspond to the **broadest substrate scope** and thus could represent **dominant degradation strategies** in the system.
+This use case provides a **chemical-first, top-down view** of the **compound co-annotation landscape**. Starting from broad **compound classes**, it traces how these classes are co-annotated with different **enzyme activities**, which are in turn associated with specific **genes** found in the available biological samples. By quantifying, for each branch, the number of **unique compounds** involved, the treemap may highlight which combinations of chemical class, enzymatic function, and gene correspond to the **broadest compound co-annotation coverage** and thus could represent **prominent annotation patterns** in the dataset.
 
 ---
 
@@ -43,15 +43,15 @@ This use case provides a **chemical-first, top-down view** of the **functional l
    - **Level 2:** `enzyme_activity` (nested within each class)  
    - **Level 3:** `genesymbol` (nested within each enzyme activity)
 
-3. **Aggregation of Substrate Scope**  
+3. **Aggregation of Compound Co-annotation Breadth**
    The data is grouped by each unique `(compoundclass, enzyme_activity, genesymbol)` path:
-   - for each group, the number of **distinct `compoundname`** entries is computed (e.g., via `nunique()`),  
-   - this count represents the **substrate scope** (number of unique compounds) associated with that gene under that class–activity context.
+   - for each group, the number of **distinct `compoundname`** entries is computed (e.g., via `nunique()`),
+   - this count represents the **compound co-annotation breadth** (number of unique compounds co-annotated) associated with that gene under that class–activity context.
 
-4. **Value Propagation for Treemap**  
+4. **Value Propagation for Treemap**
    The unique compound counts at the lowest level (per gene) are used as the basic **values**:
-   - higher-level values for `enzyme_activity` and `compoundclass` nodes are obtained by **summing** the values of all nested nodes,  
-   - this yields total substrate scope at each level of the hierarchy.
+   - higher-level values for `enzyme_activity` and `compoundclass` nodes are obtained by **summing** the values of all nested nodes,
+   - this yields total compound co-annotation breadth at each level of the hierarchy.
 
 5. **Rendering**  
    The aggregated data is rendered as an **interactive treemap**:
@@ -69,16 +69,16 @@ This use case provides a **chemical-first, top-down view** of the **functional l
   - within each class, **inner rectangles:** **enzyme activities** (`enzyme_activity`),  
   - within each activity, the smallest rectangles: **genes** (`genesymbol`).
 
-- **Area (Values)**  
+- **Area (Values)**
   The **area** of each rectangle is proportional to the **total number of unique compounds**:
-  - for a **gene node**, area reflects how many distinct compounds that gene is associated with within a specific class and activity,  
-  - for an **enzyme activity node**, area reflects the total unique compounds targeted by all genes under that activity in that class,  
-  - for a **compound class node**, area reflects the full substrate scope across all activities and genes.
+  - for a **gene node**, area reflects how many distinct compounds that gene is co-annotated with within a specific class and activity,
+  - for an **enzyme activity node**, area reflects the total unique compounds co-annotated with all genes under that activity in that class,
+  - for a **compound class node**, area reflects the full compound co-annotation breadth across all activities and genes.
 
-- **Color Encoding**  
+- **Color Encoding**
   Rectangle color also encodes the unique compound count:
-  - brighter or warmer colors indicate **broader substrate scope**,  
-  - cooler colors indicate a more limited set of compounds.
+  - brighter or warmer colors indicate **broader compound co-annotation coverage**,
+  - cooler colors indicate a more limited set of co-annotated compounds.
 
 - **Interactivity**  
   In the interactive view:
@@ -101,26 +101,26 @@ The image below illustrates a representative output generated by this use case u
 
 ## Interpretation and Key Messages
 
-- **Dominant Degradation Strategies by Class**  
+- **Broadly Co-annotated Compound Classes**
   The largest top-level rectangles may identify **compound classes** that:
-  - are associated with the broadest enzymatic and genetic coverage,  
-  - could represent **major bioremediation targets** in the dataset.
+  - are associated with the broadest enzymatic and genetic co-annotation coverage,
+  - could represent **widely annotated compound groups** in the dataset.
 
-- **Key Enzymatic Functions within Classes**  
+- **Prominent Enzymatic Co-annotation Patterns within Classes**
   Within each compound class, the largest **enzyme activity** rectangles may highlight:
-  - the **primary functional mechanisms** employed to process that class,  
-  - for example, whether oxidation, hydrolysis, or other activities dominate.
+  - the **primary co-annotation patterns** observed for that class,
+  - for example, whether oxidation, hydrolysis, or other activities are most frequently co-annotated.
 
-- **Versatile "Powerhouse" Genes**  
-  At the lowest level, large **gene** rectangles may identify **versatile genes**:
-  - genes that target many distinct compounds within a given class–activity context,  
-  - potential **core genetic components** to prioritize when designing or engineering consortia for specific chemical classes.
+- **Broadly Co-annotated Genes**
+  At the lowest level, large **gene** rectangles may identify **genes with broad co-annotation coverage**:
+  - genes co-annotated with many distinct compounds within a given class–activity context,
+  - candidates for prioritization in further investigation based on their annotation breadth (experimental validation required to confirm functional roles).
 
-- **Comparative Functional Architecture**  
+- **Comparative Co-annotation Architecture**
   Overall, the treemap may reveal:
-  - how enzymatic and genetic functions are distributed across chemical classes,  
-  - which combinations of class, activity, and gene are most central to **substrate coverage**,  
-  - and where there may be **gaps** (small or absent rectangles) indicating limited functional coverage for certain combinations.
+  - how enzymatic and genetic co-annotations are distributed across chemical classes,
+  - which combinations of class, activity, and gene are most prominent in terms of **compound co-annotation coverage**,
+  - and where there may be **gaps** (small or absent rectangles) indicating limited annotation coverage for certain combinations.
 
 ---
 
@@ -134,9 +134,9 @@ The image below illustrates a representative output generated by this use case u
   - The fundamental value driving the visualization is the **count of unique compound names** per `(compoundclass, enzyme_activity, genesymbol)` group.  
   - Higher-level node values are computed as **sums** of these counts across nested nodes.
 
-- **Interpretation Scope**  
-  - Unique-compound count is used as a **proxy for functional versatility or substrate scope**; it does not encode enzyme kinetics, expression levels, or in situ performance.  
-  - The treemap should be interpreted as a **structural and comparative map** of where enzymatic and genetic breadth is concentrated within the chemical space of interest.
+- **Interpretation Scope**
+  - Unique-compound count is used as a **measure of compound co-annotation breadth**; it does not encode enzyme kinetics, expression levels, or confirmed in situ functional capacity.
+  - The treemap should be interpreted as a **structural and comparative map** of where co-annotation coverage is concentrated within the chemical space of interest, not as direct evidence of enzymatic or degradation capability.
 
 
  

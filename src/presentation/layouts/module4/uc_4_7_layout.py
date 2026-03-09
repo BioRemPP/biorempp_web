@@ -122,9 +122,11 @@ def create_uc_4_7_layout() -> dbc.Card:
                                             html.Span(
                                                 (
                                                     "Use one or both dropdown menus to filter associations. "
-                                                    "Select a compound to see all its associated genes, "
-                                                    "a gene to see all its target compounds, or both to "
-                                                    "test a specific interaction hypothesis."
+                                                    "Select one or more compounds to see all associated genes, "
+                                                    "one or more genes to see all associated compounds, or use "
+                                                    "both to test specific interaction hypotheses. "
+                                                    "Dropdown option catalogs remain stable while the chart "
+                                                    "updates incrementally."
                                                 ),
                                                 className="text-muted",
                                             ),
@@ -143,10 +145,11 @@ def create_uc_4_7_layout() -> dbc.Card:
                                                     ),
                                                     dcc.Dropdown(
                                                         id="uc-4-7-compound-dropdown",
-                                                        placeholder="Choose a compound to filter...",
+                                                        placeholder="Choose one or more compounds to filter...",
                                                         className="mb-3",
                                                         clearable=True,
                                                         searchable=True,
+                                                        multi=True,
                                                         style={"width": "100%"},
                                                     ),
                                                 ],
@@ -161,10 +164,11 @@ def create_uc_4_7_layout() -> dbc.Card:
                                                     ),
                                                     dcc.Dropdown(
                                                         id="uc-4-7-gene-dropdown",
-                                                        placeholder="Choose a gene to filter...",
+                                                        placeholder="Choose one or more genes to filter...",
                                                         className="mb-3",
                                                         clearable=True,
                                                         searchable=True,
+                                                        multi=True,
                                                         style={"width": "100%"},
                                                     ),
                                                 ],

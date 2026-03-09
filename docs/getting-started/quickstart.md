@@ -39,7 +39,7 @@ For complete format specification, see [Input Format](input-format.md). If you e
 
 ### 1. Open BioRemPP
 
-Navigate to: **https://biorempp.cloud**
+Navigate to: **https://bioinfo.imd.ufrn.br/biorempp/**
 
 ### 2. Upload Your File
 

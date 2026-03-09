@@ -1,19 +1,20 @@
-# UC-4.5: Interactive Gene Presence Map by Metabolic Pathway (KEGG)
+# UC-4.5: Interactive Gene Annotation Presence Map by Metabolic Pathway (KEGG)
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-5"
 
 scientific_question: >
-  For a given metabolic pathway, which specific genes are present in which
-  biological samples, identifying the core and accessory genetic components of
-  the pathway across the consortium?
+  For a given metabolic pathway, which specific genes are annotated in which
+  biological samples, and how does gene annotation presence vary across
+  samples for that pathway?
 
 description: >
-  This interactive visualization provides a detailed genetic inventory for any
-  selected metabolic pathway. By choosing a pathway from the dropdown menu,
-  the scatter plot dynamically updates to map the presence of each associated
-  gene across all biological samples. This allows for a direct comparison of
-  how completely or variably a pathway is encoded in each biological source.
+  This interactive visualization provides a detailed gene annotation inventory
+  for any selected metabolic pathway. By choosing a pathway from the dropdown
+  menu, the scatter plot dynamically updates to map the presence of each
+  associated gene annotation across all biological samples. This allows for a
+  direct comparison of how gene annotations for a pathway are distributed across
+  biological sources.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -23,56 +24,59 @@ visual_elements:
 
   - label: "Y-axis (Gene Symbols)"
     description: >
-      Represents the individual Gene Symbols belonging to the selected pathway.
-      Each unique gene associated with the pathway is displayed on the vertical axis.
+      Represents the individual Gene Symbols annotated for the selected pathway.
+      Each unique gene associated with the pathway in the database is displayed
+      on the vertical axis.
 
   - label: "X-axis (Samples)"
     description: >
-      Represents the individual biological samples in your dataset. Each sample
+      Represents the individual biological samples in the dataset. Each sample
       is displayed on the horizontal axis.
 
   - label: "Points (Scatter Markers)"
     description: >
       A point at the intersection of a sample and a gene symbol indicates that
-      the sample possesses that gene within the context of the selected pathway.
-      The presence of a point signifies genetic content.
+      the sample has an annotation for that gene within the context of the
+      selected pathway in the database.
 
   - label: "Hover Information"
     description: >
       Hovering the cursor over a point reveals additional details, such as the
-      sample name, gene symbol, and the number of unique KOs (KEGG Orthology
-      identifiers) associated with that gene in that sample.
+      sample name, gene symbol, and the number of unique KO annotations
+      associated with that gene in that sample.
 
 interpretation_guidelines:
   - >
-    Core vs. Accessory Genes: Genes that form a complete horizontal line of
-    points across most or all samples may be considered core genes of the
-    pathway for this consortium. These are universally present and likely
-    essential for the pathway function. Genes with only one or a few points
-    are accessory genes, present only in specific samples, potentially indicating
-    specialized or complementary capabilities.
+    Broadly vs. Narrowly Shared Gene Annotations: Genes with annotation points
+    across most or all samples are broadly annotated for this pathway in the
+    dataset. Genes with annotation in only one or a few samples are more
+    narrowly annotated, present only in specific samples. These are annotation-level
+    patterns and do not confirm whether genes are functionally essential or
+    accessory to the pathway.
 
   - >
-    Pathway Completeness: The vertical density of points for a given sample
-    column may indicate its pathway completeness. A sample with many points (genes)
-    may have a more complete version of the pathway compared to a sample with fewer
-    points, potentially suggesting varying levels of functional capacity.
+    Annotation Density per Sample: The vertical density of annotation points for
+    a given sample column reflects how many genes of the pathway are annotated
+    in that sample. Samples with more annotation points have broader gene
+    annotation coverage for the pathway. This does not confirm a more complete
+    or functional version of the pathway.
 
   - >
-    Comparative Genomics at the Pathway Level: This tool enables rapid visual
-    comparison of genetic content for a specific metabolic function across all
-    samples. It can help identify which biological sources might have redundant, complementary,
-    or unique capabilities within the pathway.
+    Comparative Gene Annotation Patterns: This tool enables visual comparison of
+    gene annotation presence for a specific pathway across all samples. It can
+    help identify which samples share similar annotation patterns and which have
+    distinct patterns, generating hypotheses for further investigation.
 
   - >
-    Functional Redundancy: Multiple samples showing the same set of genes
-    (similar vertical patterns) may suggest functional redundancy in the consortium,
-    where several biological sources can perform similar metabolic tasks.
+    Shared Annotation Patterns: Multiple samples showing the same set of gene
+    annotations (similar vertical patterns) reflect annotation overlap for this
+    pathway in the database. Whether shared annotation implies shared functional
+    capacity requires experimental validation.
 
   - >
-    Genetic Specialization: Samples with unique gene presence patterns
-    (isolated points or unique combinations) may indicate genetic specialization,
-    where specific biological sources possess distinctive enzymatic capabilities within
-    the pathway.
+    Unique Gene Annotations: Samples with annotation points not present in other
+    samples have gene annotations unique to them for this pathway in the database.
+    This is an annotation-level observation and does not confirm distinctive
+    enzymatic capabilities or specialized function.
 
 color_scheme: "success"

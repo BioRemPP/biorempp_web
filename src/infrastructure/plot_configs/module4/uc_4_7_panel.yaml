@@ -1,27 +1,30 @@
-# UC-4.7: Interactive Gene-Compound Association Explorer
+# UC-4.7: Interactive Gene-Compound Annotation Explorer
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-4-7"
 
 scientific_question: >
-  What are the specific associations between individual genes and chemical
-  compounds, and which biological samples mediate these interactions?
+  What are the specific annotation links between individual genes and chemical
+  compounds in the dataset, and which biological samples contain these
+  co-annotations?
 
 description: >
-  This interactive visualization serves as a query tool to explore the direct
-  links between gene symbols and compound names. By using one or both dropdown
-  menus, a user can dynamically filter the entire dataset to visualize specific
-  relationships. The resulting scatter plot maps the presence of these
-  associations, providing a powerful tool for hypothesis testing and detailed
-  exploration. Each point in the plot represents an observed association between
-  a gene symbol and a compound name from the BioRemPP results.
+  This interactive visualization serves as a query tool to explore the annotation
+  links between gene symbols and compound names in the BioRemPP database. By
+  using one or both dropdown menus, a user can dynamically filter the dataset to
+  visualize specific co-annotation relationships. The resulting scatter plot maps
+  the presence of these annotation links, providing a tool for exploratory analysis
+  and detailed investigation. Each point in the plot represents an annotation
+  co-occurrence between a gene symbol and a compound name in the BioRemPP results.
 
 visual_elements:
   - label: "Dropdown Menus"
     description: >
       Use the "Select Compound Name" and "Select Gene Symbol" menus to filter
       the data. The plot updates automatically based on your selection(s). You
-      can select one or both filters to explore different perspectives.
+      can select one or more values in either filter to explore different
+      perspectives. Both dropdowns keep a stable full catalog while the chart
+      updates incrementally.
 
   - label: "Y-axis (Compound Names)"
     description: >
@@ -30,48 +33,51 @@ visual_elements:
 
   - label: "X-axis (Gene Symbols)"
     description: >
-      Represents the gene symbols associated with the compounds. Each unique
-      gene is displayed on the horizontal axis.
+      Represents the gene symbols annotated in the dataset. Each unique gene
+      is displayed on the horizontal axis.
 
-  - label: "Points (Associations)"
+  - label: "Points (Annotation Links)"
     description: >
       A point at the intersection of a gene and a compound indicates that an
-      association between them was found in the data. The presence of a point
-      confirms this functional link exists in at least one sample.
+      annotation co-occurrence between them was found in the data. The presence
+      of a point reflects this annotation link in at least one sample in the
+      database.
 
   - label: "Hover Information"
     description: >
       Hovering the cursor over a point reveals which sample and KO identifier
-      are responsible for that specific gene-compound association, enabling
+      are associated with that specific gene-compound annotation, enabling
       detailed traceability.
 
 interpretation_guidelines:
   - >
-    Single Filter (Compound-centric view): Selecting a single compound can help identify
-    its "genetic interaction profile"—the complete set of genes known to be
-    associated with it in this dataset. This view can help identify which genes
-    are involved in biotransforming or processing a specific compound.
+    Compound-centric Annotation View: Selecting one or more compounds can help
+    identify the combined gene annotation profile for those compounds — the set
+    of genes co-annotated with the selected compounds in this dataset. This is
+    an annotation-level inventory and does not confirm confirmed gene-compound
+    functional interactions.
 
   - >
-    Single Filter (Gene-centric view): Selecting a single gene can help identify its
-    "chemical substrate profile"—the complete set of compounds it is known to
-    target. This view can help understand the functional versatility of a specific
-    gene across different substrates.
+    Gene-centric Annotation View: Selecting one or more genes can help identify
+    the combined compound annotation profile — the set of compounds co-annotated
+    with the selected genes in the database.
 
   - >
-    Dual Filter (Hypothesis Testing): Selecting both a gene and a compound
-    allows for direct confirmation of a specific interaction. This is useful
-    for validating hypotheses about specific gene-compound relationships.
+    Dual Filter (Intersection Exploration): Selecting values in both filters
+    returns only the intersection between selected compounds and selected genes,
+    allowing focused exploration of specific annotation co-occurrences in the
+    dataset.
 
   - >
     Sample Identification: The hover data can help identify precisely which samples
-    possess each functional link, providing evidence for targeted analysis and
-    potentially helping identify samples with specific capabilities.
+    contain each annotation link, providing traceability for further exploratory
+    analyses.
 
   - >
-    Functional Network Mapping: By exploring different combinations of genes
-    and compounds, you can map the functional network of biotransformation
-    pathways present in your biological consortium, potentially revealing redundancy,
-    specialization, and functional gaps.
+    Annotation Network Exploration: By exploring different combinations of genes
+    and compounds, you can map annotation co-occurrence patterns in the dataset.
+    These patterns reflect the annotation structure of the database and may
+    generate hypotheses for further investigation, but do not confirm biotransformation
+    pathways, functional redundancy, or specialization.
 
 color_scheme: "success"

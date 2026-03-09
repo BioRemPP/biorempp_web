@@ -1,36 +1,37 @@
-# UC-5.1: Sample - Compound Class Interaction Strength
+# UC-5.1: Sample - Compound Class Annotation Co-occurrence
 # Panel Configuration (YAML)
 
 use_case_id: "uc-5-1"
 
 scientific_question: >
-  Which biological samples are most strongly associated with which chemical
-  classes, and what does this reveal about their metabolic specializations?
+  Which biological samples show the strongest annotation co-occurrence with
+  which chemical classes, and what patterns does this reveal about their
+  compound annotation profiles?
 
 description: >
-  This visualization maps the interaction strength between each biological
-  sample and the different classes of chemical compounds. The chord diagram
-  provides a clear and intuitive overview of the entire interaction landscape,
-  where the connections illustrate the flow and magnitude of functional
-  associations.
+  This visualization maps the annotation co-occurrence count between each
+  biological sample and the different classes of chemical compounds. The chord
+  diagram provides an overview of the annotation landscape, where the
+  connections illustrate the magnitude of co-occurrence counts between samples
+  and compound classes in the dataset.
 
 visual_elements:
   - label: "Outer Arcs"
     description: >
       Each colored arc on the circumference represents either a Sample or a
       Compound Class. The length of the arc is proportional to the total
-      number of interactions associated with it.
+      number of annotation links associated with it.
 
   - label: "Chords (Ribbons)"
     description: >
-      The ribbons flowing between the arcs represent the interactions between
-      a specific sample and a specific compound class.
+      The ribbons flowing between the arcs represent the annotation
+      co-occurrences between a specific sample and a specific compound class.
 
   - label: "Chord Thickness"
     description: >
       The thickness of a chord where it connects to an arc is proportional
-      to the number of interactions. A thick chord indicates a strong
-      association.
+      to the number of annotation co-occurrences. A thick chord indicates a
+      higher count of shared annotations.
 
   - label: "Node Colors"
     description: >
@@ -39,34 +40,40 @@ visual_elements:
 
   - label: "Hover Information"
     description: >
-      Hovering over a chord displays the exact number of interactions
-      between the connected sample and compound class.
+      Hovering over a chord displays the exact number of annotation
+      co-occurrences between the connected sample and compound class.
 
 interpretation_guidelines:
   - >
-    Strong Associations: A thick chord between a specific sample (e.g.,
-    Pseudomonas aeruginosa) and a compound class (e.g., "Aromatics")
-    indicates that this sample has a high number of interactions with
-    compounds of that class, potentially suggesting a functional specialization.
+    Strong Co-occurrence: A thick chord between a specific sample and a
+    compound class indicates that this sample has a high number of annotated
+    gene-compound associations with compounds of that class. This reflects
+    the breadth of annotation overlap and may generate hypotheses about
+    annotation specialization, but does not confirm confirmed metabolic activity.
 
   - >
-    Identifying Generalists vs. Specialists: A sample with many significant
-    chords connecting to various compound classes can be considered a
-    "generalist" in its biotransformation capabilities. A sample with one dominant,
-    thick chord is likely a "specialist."
+    Broad vs. Narrow Annotation Profiles: A sample with many significant
+    chords connecting to various compound classes has broader compound
+    annotation coverage. A sample with one dominant chord has a narrower
+    annotation profile concentrated in a particular compound class. These are
+    annotation-level observations and do not confirm biotransformation capacity.
 
   - >
-    Dominant Chemical Classes: A compound class that is the target of many
-    thick chords from different samples is a major focus of metabolic
-    activity across the entire consortium.
+    Dominant Chemical Classes: A compound class that receives many thick
+    chords from different samples is broadly represented across the dataset's
+    annotations. This pattern reflects annotation structure and may guide
+    hypothesis generation about annotation coverage across chemical classes.
 
   - >
-    Sample Diversity: Samples with connections to multiple compound classes
-    demonstrate broader metabolic versatility and may be valuable for
-    complex bioremediation scenarios.
+    Annotation Breadth: Samples with annotation links to multiple compound
+    classes show broader coverage in the dataset. Exploring which compound
+    classes drive this breadth may inform further annotation analysis.
 
   - >
-    Consortium Design: This visualization can help identify complementary
-    samples that together cover a broad range of compound classes.
+    Complementary Annotation Profiles: Samples with distinct chord patterns
+    covering different compound classes show complementary annotation profiles
+    in the dataset. Identifying such patterns can serve as a starting point
+    for exploring annotation coverage, though any functional inference requires
+    experimental validation.
 
 color_scheme: "success"

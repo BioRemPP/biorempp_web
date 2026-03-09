@@ -35,53 +35,55 @@ def create_module7_overview_header() -> html.Div:
     -----
     Module 7 Focus:
     - Toxicology-aware, application-oriented analysis
-    - Systematic toxicological risk evaluation of compounds
-    - Mapping sample mitigation capabilities against hazards
-    - Support for consortium design and deployment strategies
+    - Systematic toxicological risk profiling of compounds (toxCSM predictions)
+    - Mapping sample KO annotation coverage against toxicologically relevant compounds
+    - Support for prioritization and hypothesis generation
 
     Guiding Questions:
-    - 7.1: Comprehensive toxicological landscape
+    - 7.1: Comprehensive toxicological prediction landscape
     - 7.2: Regulatory priority alignment
-    - 7.3: Genetic response to high-priority threats
-    - 7.4: Characterization of mitigation strategies
+    - 7.3: KO annotation coverage for high-priority compounds
+    - 7.4: Annotation-based profiling of sample coverage per compound
     """
     # Module 7 configuration
     module_id = "7"
     title = "Toxicological Risk Assessment and Profiling"
 
     overview_text = (
-        "This module transitions from purely functional annotation to an "
+        "This module transitions from purely annotation-based analysis to an "
         "application-oriented perspective centered on chemical safety and "
-        "risk mitigation. Using toxicity predictions from the toxCSM model, "
-        "we systematically evaluate the hazard profile of the compounds "
-        "present in the system and relate these risks to the mitigation "
-        "capabilities encoded in the input samples. The analyses are "
-        "structured as a logical sequence of questions that progress from a "
-        "broad characterization of the toxicological landscape to a detailed, "
-        "sample-specific profiling of the biological response. The objective "
-        "is to provide a toxicology-aware framework for guiding consortium "
-        "design and deployment in realistic environmental scenarios."
+        "toxicological prioritization. Using toxicity predictions from the "
+        "toxCSM model, we systematically evaluate the predicted hazard profile "
+        "of the compounds present in the system and relate these computational "
+        "predictions to the KO annotation coverage of the input samples. The "
+        "analyses are structured as a logical sequence of questions that "
+        "progress from a broad characterization of the predicted toxicological "
+        "landscape to annotation-level profiling of sample coverage per "
+        "compound. The objective is to provide a toxicology-aware framework "
+        "for guiding hypothesis generation and experimental prioritization."
     )
 
     # Guiding questions for Module 7
     guiding_questions = [
         {
             "id": "7.1",
-            "subtitle": "Toxicological landscape",
+            "subtitle": "Toxicological prediction landscape",
             "question": (
-                "What is the comprehensive toxicological landscape? We first "
-                "establish a 'risk fingerprint' for each compound across a "
-                "broad panel of toxicological endpoints predicted by toxCSM. "
-                "This comprehensive profiling reveals the full spectrum of "
-                "potential adverse effects, enabling the identification of "
-                "multi-faceted threats that span several biological and "
-                "environmental categories (e.g., genomic damage, "
-                "organism-level toxicity, environmental persistence). The "
-                "impact of this step is the construction of a global "
-                "toxicological landscape that highlights which compounds are "
-                "merely of localized concern and which represent systemic, "
-                "high-priority hazards, forming the foundational layer for "
-                "all subsequent risk-aware analyses."
+                "What is the predicted toxicological landscape? We first "
+                "establish a toxicity prediction profile for each compound "
+                "across a broad panel of toxicological endpoints predicted by "
+                "toxCSM. This comprehensive profiling reveals the predicted "
+                "spectrum of potential adverse effects, enabling the "
+                "identification of compounds with multi-faceted predicted "
+                "toxicity spanning several biological and environmental "
+                "categories (e.g., genomic damage, organism-level toxicity, "
+                "environmental persistence). The result is a global "
+                "toxicological prediction landscape that highlights which "
+                "compounds are predicted to pose localized concern and which "
+                "are predicted to represent broader hazards, forming the "
+                "foundational layer for all subsequent risk-aware analyses. "
+                "Note that these are computational predictions and require "
+                "experimental validation."
             ),
         },
         {
@@ -91,52 +93,51 @@ def create_module7_overview_header() -> html.Div:
                 "How do these predicted risks align with established "
                 "regulatory priorities? To anchor the predictive toxicity data "
                 "in real-world decision-making contexts, we evaluate the "
-                "concordance between high-risk compounds and those monitored "
-                "or flagged by key environmental and regulatory agencies. This "
-                "step addresses which predicted hazards are also recognized as "
-                "priorities in existing regulatory frameworks, resulting in a "
-                "refined set of 'consensus priority compounds' that are "
-                "important from both toxicological and compliance standpoints. "
-                "Focusing on this consensus set provides a more targeted and "
-                "impactful basis for downstream assessments and "
-                "policy-relevant discussions."
+                "concordance between high-risk compounds (as predicted by "
+                "toxCSM) and those monitored or flagged by key environmental "
+                "and regulatory agencies. This step addresses which predicted "
+                "hazards are also recognized as priorities in existing "
+                "regulatory frameworks, resulting in a refined set of "
+                "'shared regulatory priority compounds' that appear important "
+                "from both toxicological prediction and compliance standpoints. "
+                "Focusing on this consensus set provides a more targeted basis "
+                "for downstream assessments and policy-relevant discussions."
             ),
         },
         {
             "id": "7.3",
-            "subtitle": "Elite specialist identification",
+            "subtitle": "KO annotation coverage for priority compounds",
             "question": (
-                "Which samples possess the most potent genetic response to "
-                "high-priority threats? Once the most critical chemical "
-                "threats have been identified, we shift our attention to the "
-                "biological response capacity encoded in the input samples. "
-                "For each sample, we quantify the diversity and richness of "
-                "genetic functions associated with the degradation or "
-                "transformation of consensus priority compounds. This allows "
-                "us to identify 'elite specialist' samples that exhibit "
-                "particularly strong, focused mitigation potential against "
-                "specific high-risk compounds, providing a direct mapping "
-                "between high-priority threats and the samples best equipped "
-                "to counter them."
+                "Which samples show the broadest KO annotation coverage for "
+                "high-priority compounds? Once the most critically predicted "
+                "compounds have been identified, we examine the KO annotation "
+                "coverage of the input samples for those compounds. "
+                "For each sample, we quantify the count of unique KO "
+                "identifiers co-annotated with priority compounds in the "
+                "database. This allows us to identify samples with high "
+                "annotation counts for specific high-priority compounds, "
+                "providing a direct annotation-level mapping between predicted "
+                "high-risk compounds and the samples with the broadest "
+                "co-annotation coverage for them."
             ),
         },
         {
             "id": "7.4",
-            "subtitle": "Mitigation strategy profiling",
+            "subtitle": "Sample annotation profile per compound",
             "question": (
-                "How can the broader mitigation strategies of the samples be "
-                "characterized? We develop a view of each sample’s mitigation "
-                "profile to inform consortium-level design by characterizing "
-                "their capabilities along two complementary axes: breadth, "
-                "defined as the variety of distinct high-risk compounds that a "
-                "sample can target, and depth, defined as the magnitude and "
-                "redundancy of the genetic investment directed toward those "
-                "targets. By integrating these dimensions, we generate a "
-                "strategic mitigation profile for each candidate sample, "
-                "enabling the rational design of microbial consortia that "
-                "combine high potency against specific threats with "
-                "versatility and functional redundancy for robust performance "
-                "under diverse environmental conditions."
+                "How can the annotation profiles of the samples be "
+                "characterized relative to priority compounds? We develop a "
+                "view of each sample's annotation profile to inform "
+                "prioritization by characterizing their KO annotation "
+                "coverage along two complementary axes: breadth, "
+                "defined as the variety of distinct high-priority compounds "
+                "co-annotated with a sample, and depth, defined as the count "
+                "and diversity of KO annotations associated with those "
+                "compounds. By examining these dimensions, we generate a "
+                "descriptive annotation profile for each candidate sample, "
+                "supporting the identification of samples with broad or "
+                "deep annotation coverage for further experimental "
+                "investigation."
             ),
         },
     ]

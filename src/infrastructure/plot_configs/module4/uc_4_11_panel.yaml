@@ -1,37 +1,38 @@
 use_case_id: "uc-4-11"
+
 scientific_question: >
-  What is the overall hierarchical structure of genetic diversity within
-  HADEG and BioRemPP databases, and how is this diversity distributed among
-  different classes of compounds and their specific metabolic pathways or
+  What is the overall hierarchical structure of gene annotation counts within
+  HADEG and BioRemPP databases, and how are these annotation counts distributed
+  among different classes of compounds and their specific metabolic pathways or
   compound names?
 
 description: >
-  This visualization provides a global, hierarchical overview of genetic
-  diversity across selected databases. The sunburst chart illustrates
-  hierarchical relationships: HADEG shows Compound → Pathway → Gene, while
-  BioRemPP shows Compound_Class → Compound_Name → Gene_Symbol. The size and
-  color of each segment represent the number of unique genes or gene symbols
-  involved, allowing for comprehensive assessment of the functional landscape.
+  This visualization provides a global, hierarchical overview of gene annotation
+  counts across selected databases. The sunburst chart illustrates hierarchical
+  relationships: HADEG shows Compound → Pathway → Gene, while BioRemPP shows
+  Compound_Class → Compound_Name → Gene_Symbol. The size and color of each
+  segment represent the number of unique gene annotations, allowing for
+  exploration of annotation distribution across the database hierarchy.
 
 visual_elements:
   - label: "Concentric Rings (Hierarchy)"
     description: >
       The chart is read from the center outwards. The central circle represents
-      the total genetic diversity ("All Pathways"). The first ring breaks this
-      down by Compound class (HADEG: "Alkenes", "Aromatics"; BioRemPP:
+      the total gene annotation count ("All Pathways"). The first ring breaks
+      this down by Compound class (HADEG: "Alkenes", "Aromatics"; BioRemPP:
       Compound_Class), and the outer ring further subdivides each into specific
       Pathways (HADEG) or Compound Names (BioRemPP).
 
   - label: "Slice Size"
     description: >
-      The angular width of each slice is proportional to its unique gene count.
-      Larger slices may represent pathways or compound classes that are supported
-      by a greater diversity of genes.
+      The angular width of each slice is proportional to its unique gene
+      annotation count. Larger slices represent pathways or compound classes
+      with more gene annotations in the database.
 
   - label: "Color Intensity"
     description: >
-      The color of each slice corresponds to its unique gene count, with
-      brighter/warmer colors indicating higher genetic diversity.
+      The color of each slice corresponds to its unique gene annotation count,
+      with brighter/warmer colors indicating higher annotation counts.
 
   - label: "Interactivity"
     description: >
@@ -40,18 +41,22 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Dominant Compound Classes: In the inner ring, the largest slices
+    Broadly Annotated Compound Classes: In the inner ring, the largest slices
     represent the compound classes (HADEG: "Alkenes", "Aromatics"; BioRemPP:
-    Compound_Class categories) that are associated with the highest overall
-    genetic diversity in the dataset.
+    Compound_Class categories) associated with the highest gene annotation counts
+    in the dataset. This reflects annotation coverage and does not confirm that
+    these classes are more biologically important or metabolically complex.
+
   - >
-    Key Metabolic Pathways: In the outer ring, the largest slices pinpoint
-    the specific Pathways (HADEG) or Compound Names (BioRemPP) that are the
-    primary contributors to the genetic diversity of their parent compound class.
+    Broadly Annotated Pathways or Compounds: In the outer ring, the largest
+    slices identify the specific Pathways (HADEG) or Compound Names (BioRemPP)
+    with the most gene annotations within their parent compound class. This is
+    an annotation-level observation and does not confirm functional primacy.
+
   - >
-    Hierarchical Exploration: The chart provides a powerful top-down view.
-    It allows for the immediate identification of the most genetically complex
-    areas of metabolism (large slices) and can enable interactive exploration of
-    their constituent parts by clicking through the layers.
+    Hierarchical Annotation Exploration: The chart provides a top-down view of
+    annotation count distribution across the database hierarchy. It allows for
+    identification of categories with the highest annotation counts and enables
+    interactive drill-down exploration of their constituent elements.
 
 color_scheme: "success"

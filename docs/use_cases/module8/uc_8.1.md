@@ -9,9 +9,9 @@
 
 ## Scientific Question and Rationale
 
-**Question:** What is the minimum number of distinct functional profiles (i.e., groups of samples with identical chemical targets) required to account for all observed compound interactions within a given chemical class?
+**Question:** What is the minimum number of distinct compound co-annotation profiles (i.e., groups of samples with identical compound co-annotation sets) required to collectively cover all observed compound co-annotations within a given chemical class?
 
-This use case formalizes consortium design as a **set cover problem**. By clustering samples into **functional guilds** that share *identical* compound target sets within a specific chemical class, and then selecting the smallest subset of these guilds that collectively cover all compounds, the analysis may reveal the **minimal, non-redundant strategy** needed to achieve full chemical coverage. This can provide a principled foundation for designing parsimonious, yet functionally complete, bioremediation consortia.
+This use case formalizes candidate consortium selection as a **set cover problem** at the annotation level. By clustering samples into **annotation groups** that share *identical* compound co-annotation sets within a specific chemical class, and then selecting the smallest subset of these groups that collectively cover all compounds, the analysis may reveal the **minimal, non-redundant candidate set** needed to achieve full compound annotation coverage. This can provide a principled, annotation-based foundation for hypothesis-driven consortium design (experimental validation is required to confirm functional capacity).
 
 ---
 
@@ -23,8 +23,8 @@ This use case formalizes consortium design as a **set cover problem**. By cluste
   - `compoundclass` – chemical class to which a compound belongs  
   - `compoundname` – name of the chemical compound interacted with by the sample  
 
-- **Core concept: Functional Guilds**  
-  A **functional guild** is defined as a group of samples that share the **exact same set of target compounds** within a selected chemical class. Samples within the same guild are functionally equivalent with respect to that class.
+- **Core concept: Annotation Groups**
+  An **annotation group** is defined as a group of samples that share the **exact same set of compound co-annotations** within a selected chemical class. Samples within the same group have identical annotation profiles with respect to that class.
 
 ---
 
@@ -38,20 +38,20 @@ This use case formalizes consortium design as a **set cover problem**. By cluste
    - `compoundclass` equals the selected class, and  
    - both `sample` and `compoundname` are valid and non-missing.  
 
-   This subset represents all observed interactions between samples and compounds in the chosen class.
+   This subset represents all observed compound co-annotations for samples within the chosen class.
 
-3. **Sample Grouping into Functional Guilds**  
-   For each `sample`, the set of associated `compoundname` values (within the selected class) is computed.  
-   - Samples whose **compound sets are identical** are grouped into the same **functional guild**.  
-   - Each guild is thus characterized by a unique compound profile and a list of member samples.
+3. **Sample Grouping into Annotation Groups**
+   For each `sample`, the set of associated `compoundname` values (within the selected class) is computed.
+   - Samples whose **compound co-annotation sets are identical** are grouped into the same **annotation group**.
+   - Each group is thus characterized by a unique compound annotation profile and a list of member samples.
 
-4. **Minimization via Set Cover (Greedy Heuristic)**  
-   A **greedy set cover algorithm** is applied to the guilds:
-   - Initialize the set of **uncovered compounds** as all unique `compoundname` values in the selected class.  
-   - Iteratively select the guild that covers the largest number of currently uncovered compounds.  
-   - Remove these compounds from the uncovered set and repeat until all compounds are covered.  
+4. **Minimization via Set Cover (Greedy Heuristic)**
+   A **greedy set cover algorithm** is applied to the annotation groups:
+   - Initialize the set of **uncovered compounds** as all unique `compoundname` values in the selected class.
+   - Iteratively select the group that covers the largest number of currently uncovered compounds.
+   - Remove these compounds from the uncovered set and repeat until all compounds are covered.
 
-   The result is a **minimal (or near-minimal) subset of functional guilds** that collectively cover every compound in the selected class.
+   The result is a **minimal (or near-minimal) subset of annotation groups** that collectively cover every compound co-annotation in the selected class.
 
 5. **Rendering**  
    The minimal guild set is visualized as a **faceted scatter plot**:
@@ -66,10 +66,10 @@ This use case formalizes consortium design as a **set cover problem**. By cluste
 - **Dropdown Menu**  
   Use the dropdown to choose the **Compound Class**. The full pipeline (filtering, guild detection, set cover, and plotting) is recomputed and the visualization is updated accordingly.
 
-- **Subplots (Facets)**  
-  Each subplot represents one **minimal required functional guild**:
-  - the **number of subplots** equals the number of guilds selected by the set cover algorithm,  
-  - each subplot can be interpreted as a distinct functional "strategy" for targeting the compounds in the selected class.
+- **Subplots (Facets)**
+  Each subplot represents one **minimal required annotation group**:
+  - the **number of subplots** equals the number of annotation groups selected by the set cover algorithm,
+  - each subplot represents a distinct compound co-annotation profile covering a subset of the selected class.
 
 - **Y-axis (Compounds)**  
   Lists the **Compound Names** that define the chemical profile of that guild within the selected class.
@@ -78,8 +78,8 @@ This use case formalizes consortium design as a **set cover problem**. By cluste
   Lists the **Samples** that belong to that guild.  
   All samples within a subplot share the same compound interaction profile.
 
-- **Points (Interactions)**  
-  A point at the intersection of a sample and a compound indicates an **observed interaction** (i.e., the sample has at least one functional annotation linking it to that compound).
+- **Points (Co-annotations)**
+  A point at the intersection of a sample and a compound indicates an **observed co-annotation** (i.e., the sample has at least one KO annotation linking it to that compound).
 
 ---
 
@@ -97,22 +97,22 @@ The image below illustrates a representative output generated by this use case u
 
 ## Interpretation and Key Messages
 
-- **Functional Redundancy**  
-  The **number of subplots** (minimal guilds) can provide an immediate measure of redundancy:
-  - **Few guilds** → high redundancy: many samples share similar compound profiles.  
-  - **Many guilds** → low redundancy: compound coverage relies on multiple specialized strategies.
+- **Annotation Redundancy**
+  The **number of subplots** (minimal annotation groups) can provide an immediate measure of annotation redundancy:
+  - **Few groups** → high redundancy: many samples share similar compound co-annotation profiles.
+  - **Many groups** → low redundancy: compound annotation coverage relies on multiple distinct annotation profiles.
 
-- **Core vs. Niche Profiles**  
-  - A guild whose subplot contains **many samples** may represent a **core functional profile** that is widely distributed among samples; these could be robust, common strategies.  
-  - A guild with **only one or two samples** may represent a **niche profile**, potentially encoding specialized capabilities that cannot be easily replaced.
+- **Core vs. Niche Annotation Profiles**
+  - A group whose subplot contains **many samples** may represent a **widely distributed co-annotation profile** common across samples; these could be robust, broadly shared annotation patterns.
+  - A group with **only one or two samples** may represent a **niche annotation profile**, potentially encoding co-annotations that cannot be easily replaced.
 
-- **Efficient Consortium Design**  
-  This analysis can be particularly valuable for **designing minimal consortia**:
-  - by selecting **one representative sample per guild** from the minimal set, one could theoretically achieve **complete coverage** of all compounds in the chosen class,  
-  - this may minimize functional overlap while preserving full chemical coverage, which could be desirable in scenarios where the number of deployed samples must be limited.
+- **Annotation-guided Minimal Candidate Set**
+  This analysis can be valuable for **identifying minimal candidate consortia at the annotation level**:
+  - by selecting **one representative sample per annotation group** from the minimal set, one could achieve **complete compound annotation coverage** for the chosen class,
+  - this may minimize annotation overlap while preserving full coverage, useful for hypothesis generation (experimental validation required to confirm functional capacity).
 
-- **Trade-offs and Extensions**  
-  Although the minimal set emphasizes parsimony, additional samples from the same guilds can be added to introduce **redundancy and robustness** (e.g., to buffer against environmental variability or loss of specific members).
+- **Trade-offs and Extensions**
+  Although the minimal set emphasizes parsimony, additional samples from the same annotation groups can be added to increase **annotation redundancy** (e.g., as a proxy for potential robustness against variability or loss of specific members).
 
 ---
 
@@ -124,8 +124,8 @@ The image below illustrates a representative output generated by this use case u
   - `compoundclass`,  
   - `compoundname`.
 
-- **Definition of Guilds**  
-  Functional guilds are defined strictly by **identical compound sets** within the selected class. Even a single additional or missing compound differentiates two guilds.
+- **Definition of Annotation Groups**
+  Annotation groups are defined strictly by **identical compound co-annotation sets** within the selected class. Even a single additional or missing compound differentiates two groups.
 
 - **Set Cover Approximation**  
   The minimization step uses a **greedy heuristic** for the set cover problem:
@@ -134,8 +134,8 @@ The image below illustrates a representative output generated by this use case u
 
 
 
-- **Functional Interpretation**  
-  The analysis is based on **observed sample–compound associations**. It does not encode kinetic parameters, environmental abundance, or interaction strength; it answers a structural question: **Which distinct functional profiles are minimally required to cover all compounds in a given class?**
+- **Annotation Interpretation**
+  The analysis is based on **observed sample–compound co-annotations**. It does not encode kinetic parameters, environmental abundance, or interaction strength; it answers a structural annotation question: **Which distinct co-annotation profiles are minimally required to cover all compound co-annotations in a given class?**
 
 
  

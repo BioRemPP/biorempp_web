@@ -13,7 +13,7 @@ Author(s). BioRemPP: an interactive platform for bioremediation potential profil
 ## Database Citation Template
 
 ```text
-Author(s). BioRemPP Database (version X.Y.Z): curated enzyme-compound associations for bioremediation research. Year. License: CC BY 4.0.
+Author(s). BioRemPP Database: A Curated Compound-Centric Resource for Bioremediation Potential Profiling (version X.Y.Z). Year. DOI: https://doi.org/10.5281/zenodo.18905195. License: CC BY 4.0.
 ```
 
 ---
@@ -30,8 +30,9 @@ Functional analyses were performed using the BioRemPP Web Service (version X.Y.Z
 
 - cite both web service and database when both are used
 - include version and access date
+- include database DOI: https://doi.org/10.5281/zenodo.18905195
 - include non-default analysis parameters when applicable
-- update citation metadata when final DOI/publication metadata is available
+- for web service citation, update DOI metadata when a dedicated DOI becomes available
 
 ---
 

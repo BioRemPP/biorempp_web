@@ -446,7 +446,7 @@ def create_terms_modal():
                                         className="fw-bold",
                                     ),
                                     " page for detailed citation guidelines, including provisional "
-                                    "formats (pending DOI assignment via Zenodo) and recommended "
+                                    "formats (database DOI available via Zenodo; web-service DOI pending) and recommended "
                                     "language for Methods sections.",
                                 ],
                                 className="text-muted mb-2",

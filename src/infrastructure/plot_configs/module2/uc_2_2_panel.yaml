@@ -8,9 +8,9 @@ scientific_question: >
 
 description: >
   This visualization ranks each sample based on the total number of unique
-  compounds with which it is associated. The resulting bar chart provides a
-  clear and direct assessment of the "chemical versatility" of each biological
-  source, highlighting those with the broadest interaction capacity.
+  compounds with which it is associated in the dataset. The resulting bar chart
+  provides a comparative view of compound association breadth across biological
+  sources, based on annotation data.
 
 visual_elements:
   - label: "Y-axis"
@@ -26,19 +26,22 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Chemical Versatility: Taller bars correspond to samples with greater
-    chemical versatility, indicating an ability to interact with a broader
-    and more diverse repertoire of compounds. These biological sources may be
-    considered "generalists."
-  
+    Compound Association Breadth: Taller bars correspond to samples associated
+    with a greater number of unique compounds in the dataset. This reflects the
+    breadth of annotation-level compound associations and may serve as a basis
+    for comparing samples, but does not confirm actual interaction capacity or
+    metabolic versatility.
+
   - >
-    Direct Comparison: The chart allows for the direct comparison and
-    ranking of samples, which can be useful for identifying potential candidates
-    for applications requiring broad interaction capacity.
-  
+    Comparative Ranking: The chart enables direct comparison and ranking of
+    samples by compound association count, which can help orient exploratory
+    analyses or hypothesis generation about which samples show broader or
+    narrower compound coverage.
+
   - >
-    Specialized Potential: Samples with shorter bars may have more
-    specialized chemical targets or a more limited metabolic scope within
-    the context of the analyzed compounds.
+    Narrow Association Profiles: Samples with shorter bars are associated with
+    fewer unique compounds in the dataset. This may reflect a more focused
+    annotation profile, smaller dataset representation, or a narrower compound
+    scope — not necessarily lower biological activity or relevance.
 
 color_scheme: "primary"

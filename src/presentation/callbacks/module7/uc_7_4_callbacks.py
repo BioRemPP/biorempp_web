@@ -375,7 +375,7 @@ def register_uc_7_4_callbacks(app, plot_service) -> None:
 
             config = {
                 "toImageButtonOptions": {
-                    "format": "png",
+                    "format": "svg",
                     "filename": base_filename,
                     "scale": 6,
                 }

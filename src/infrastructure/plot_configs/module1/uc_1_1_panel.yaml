@@ -19,8 +19,8 @@ visual_elements:
   - label: "Set Size (Left Bar Chart)"
     description: >
       Shows the total number of unique KOs found in each individual database.
-      Taller bars indicate broader functional coverage from that annotation
-      source. Compare these values to understand the overall scope of each
+      Taller bars indicate a greater number of KOs in that annotation source.
+      Compare these values to understand the overall KO coverage of each
       database.
   
   - label: "Intersection Matrix (Bottom)"
@@ -35,8 +35,8 @@ visual_elements:
     description: >
       The height of each bar corresponds to the number of KOs in the intersection
       defined by the matrix directly below it. Taller bars indicate larger
-      numbers of shared KOs. The tallest bar reveals the most common pattern
-      of agreement or disagreement among databases.
+      numbers of shared KOs. The tallest bar identifies the most frequent
+      intersection pattern among databases.
   
   - label: "Hover Information"
     description: >
@@ -47,33 +47,33 @@ visual_elements:
 interpretation_guidelines:
   - >
     Consensus Evidence: A large bar above the triple intersection (all three
-    dots connected) may represent strong consensus evidence for KOs that are
-    robustly identified across all sources. This subset may provide higher
-    confidence for downstream functional analysis.
-  
+    dots connected) indicates KOs recognized across all three sources. This
+    convergence may reflect greater annotation agreement and can serve as a
+    starting point for hypothesis generation, though database co-occurrence
+    does not itself confirm biological function.
+
   - >
     Database-Specific Coverage: Bars above single, unconnected dots represent
-    KOs unique to one database. These may highlight the specialized coverage of
-    each source, such as HADEG's targeted focus on hydrocarbon biotransformation
-    pathways or BioRemPP's novel compound-centric functional links.
-  
+    KOs unique to one database. These highlight the specialized scope of each
+    source, such as HADEG's focus on hydrocarbon biotransformation pathways or
+    BioRemPP's compound-centric functional links, and may indicate areas where
+    additional cross-referencing is warranted.
+
   - >
-    Partial Agreement: Bars above pairwise intersections suggest partial
-    agreement and may reveal important differences in curation, scope, or
-    mapping strategies between databases. For example, differences in how
-    compound synonyms are handled or how recently pathways were updated.
-  
+    Partial Agreement: Bars above pairwise intersections reflect partial overlap
+    between sources. These patterns may reveal differences in curation strategy,
+    annotation scope, or update frequency across databases, and are worth
+    examining when selecting a reference framework for analysis.
+
   - >
-    Assessing Complementarity: By comparing the heights of database-specific
-    bars with consensus bars, researchers can assess whether databases provide
-    complementary information (many unique KOs) or redundant coverage (mostly
-    shared KOs). Complementary databases may support multi-source integration
-    strategies.
-  
+    Complementarity Assessment: Comparing database-specific bars with consensus
+    bars can help characterize whether the databases provide complementary or
+    redundant annotation coverage. This can inform decisions about which sources
+    to integrate in a given analysis context.
+
   - >
-    Validation Strategy: KOs appearing in multiple databases offer cross-
-    validation of functional annotations, while unique KOs may require
-    additional experimental validation or literature review before inclusion
-    in high-confidence functional predictions.
+    Cross-Reference Opportunity: KOs appearing in multiple databases allow
+    cross-referencing of annotations across sources. KOs unique to a single
+    database may warrant additional scrutiny before use in downstream analyses.
 
 color_scheme: "primary"

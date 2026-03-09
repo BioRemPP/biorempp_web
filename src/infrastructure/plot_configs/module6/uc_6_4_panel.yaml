@@ -1,23 +1,23 @@
-# UC-6.4: Overview of Enzymatic Activity and Substrate Scope
+# UC-6.4: Overview of Enzyme Activity and Compound Annotation Breadth
 # Panel Configuration (YAML)
 
 use_case_id: "uc-6-4"
 
 scientific_question: >
-  Which enzymatic functions are the most versatile (i.e., target the widest
-  range of unique compounds), how is this versatility distributed across
-  different chemical classes, and which specific genes are the primary
-  drivers of these activities?
+  Which enzyme activity annotations are associated with the widest range of
+  unique compound annotations, how is this annotation breadth distributed
+  across different chemical classes, and which specific genes show the
+  broadest compound annotation coverage within each activity?
 
 description: >
-  This visualization provides a hierarchical, top-down view of the functional
-  landscape of the enzymatic activities. The treemap illustrates how broad
-  enzyme functions are composed of activities targeting specific chemical
-  classes, which are in turn carried out by individual genes. The size of
-  each rectangle is proportional to the number of unique compounds associated
-  with it, highlighting the most promiscuous and important enzymatic functions.
-  The nested rectangles represent the hierarchical path: Enzyme Activity ->
-  Compound Class -> Gene Symbol.
+  This visualization provides a hierarchical, top-down view of the annotation
+  distribution of enzyme activity annotations in the dataset. The treemap
+  illustrates how broad enzyme activity categories encompass annotations across
+  specific chemical classes, which are in turn associated with individual genes.
+  The size of each rectangle is proportional to the number of unique compounds
+  annotated within it, highlighting the enzyme activity categories and genes
+  with the broadest compound annotation coverage. The nested rectangles
+  represent the hierarchical path: Enzyme Activity → Compound Class → Gene Symbol.
 
 visual_elements:
   - label: "Nested Rectangles (Hierarchy)"
@@ -30,15 +30,15 @@ visual_elements:
   - label: "Area (Values)"
     description: >
       The area of each rectangle is proportional to the total unique compound
-      count for that category and all categories nested within it. Larger
-      areas indicate a broader substrate scope and more versatile functions.
+      annotation count for that category and all categories nested within it.
+      Larger areas indicate broader compound annotation coverage.
 
   - label: "Color Scale (Greens)"
     description: >
-      The color of each rectangle corresponds to its unique compound count,
-      with darker/more intense greens indicating higher values. This provides
-      immediate visual identification of the most promiscuous enzymatic
-      activities.
+      The color of each rectangle corresponds to its unique compound annotation
+      count, with darker/more intense greens indicating higher values. This
+      provides immediate visual identification of enzyme activity categories
+      with the broadest compound annotation coverage.
 
   - label: "Interactive Zoom"
     description: >
@@ -49,35 +49,41 @@ visual_elements:
   - label: "Hover Information"
     description: >
       Hovering over each rectangle displays the category name and its
-      exact unique compound count value.
+      exact unique compound annotation count value.
 
 interpretation_guidelines:
   - >
-    Most Versatile Enzyme Functions: The largest rectangles at the top level
-    (e.g., oxidoreductase, transferase) represent the most versatile enzymatic
-    functions that target the widest range of different chemical compounds.
-    These are key functional categories for broad bioremediation potential.
+    Broadly Annotated Enzyme Functions: The largest rectangles at the top level
+    represent enzyme activity categories associated with the widest range of
+    compound annotations in the dataset. This reflects annotation breadth and
+    may generate hypotheses about annotation coverage, but does not confirm
+    that these enzyme functions act on the widest range of substrates in vivo.
 
   - >
-    Substrate Specificity: Within a given enzyme activity, the largest
-    Compound Class rectangles can help identify its primary chemical targets. For
-    example, this can show if a hydrolase function is primarily focused
-    on biotransforming aromatic compounds versus aliphatic compounds.
+    Compound Class Annotation Distribution: Within a given enzyme activity,
+    the largest Compound Class rectangles show which chemical classes have
+    the most compound annotations co-occurring with that activity. This is
+    an annotation-level pattern and does not confirm the primary chemical
+    targets of the enzyme.
 
   - >
-    Key Genetic Contributors: At the lowest level, the largest Gene Symbol
-    rectangles represent the key powerhouse genes that are responsible for
-    the broadest substrate activity within their functional and chemical
-    context. These genes may be targets for bioremediation applications.
+    Gene Annotation Breadth: At the lowest level, the largest Gene Symbol
+    rectangles represent genes with the broadest compound annotation coverage
+    within their enzyme activity and compound class context. This reflects
+    annotation breadth in the database and does not confirm substrate
+    specificity or functional importance in vivo.
 
   - >
-    Functional Promiscuity: Enzyme activities with uniformly distributed
-    compound classes may suggest broad-spectrum biotransformation capability, while
-    those dominated by a single class may indicate specialized function.
+    Annotation Coverage Patterns: Enzyme activity categories with annotation
+    spread broadly across compound classes show wide compound annotation
+    coverage, while those concentrated in a single class show narrower
+    annotation coverage. These are annotation-level patterns and should be
+    interpreted with reference to the underlying annotation sources.
 
   - >
-    Hierarchical Patterns: The overall structure can help identify how enzymatic
-    versatility is distributed across the functional landscape, helping assess
-    which branches are most promiscuous and valuable.
+    Hierarchical Annotation Structure: The overall structure can help identify
+    how compound annotation counts are distributed across enzyme activity
+    categories, guiding exploratory analyses of annotation coverage in the
+    dataset.
 
 color_scheme: "success"

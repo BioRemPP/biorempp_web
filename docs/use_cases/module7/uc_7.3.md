@@ -9,16 +9,16 @@
 
 ## Scientific Question and Rationale
 
-**Question:** For a given high-level toxicological category (e.g., Genomic Toxicity), which samples possess the most diverse genetic toolkit to degrade the associated high-priority compounds?
+**Question:** For a given high-level toxicological category (e.g., Genomic Toxicity), which samples have the most diverse KO annotations co-annotated with the associated high-priority compounds?
 
-This use case acts as a tool for designing **risk-oriented consortia**. By focusing on compounds predicted as **"High Toxicity"** within a selected toxicological super-category, the heatmap quantifies the **genetic response** that each sample can deploy against these priority threats. The color intensity in each cell reflects the number of unique genes associated with a specific sample–compound pair, which can provide a direct proxy for the **depth and complexity** of the underlying degradation machinery.
+This use case provides an annotation-level view of **sample–compound co-annotation patterns** for predicted high-risk compounds. By focusing on compounds predicted as **"High Toxicity"** within a selected toxicological super-category, the heatmap quantifies the **KO annotation count** each sample has for these priority compounds. The color intensity in each cell reflects the number of unique genes co-annotated with a specific sample–compound pair, which may serve as a measure of **annotation breadth** for that pairing (experimental validation required to confirm functional capacity).
 
 ---
 
 ## Data and Inputs
 
 - **Primary data sources:**
-  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` – functional and genetic annotations linking samples, compounds, and genes
+  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` – KO annotations linking samples, compounds, and genes
   - `ToxCSM.xlsx or ToxCSM.csv` – predicted toxicity scores and labels for compounds across multiple endpoints
 - **Key columns:**
   - From `ToxCSM.xlsx or ToxCSM.csv`:
@@ -31,7 +31,7 @@ This use case acts as a tool for designing **risk-oriented consortia**. By focus
     - `genesymbol` – gene symbol or identifier
 - **Entities of interest:**
   - **High-Risk Compounds** within a chosen toxicological super-category
-  - **Samples** and their associated **gene repertoires** targeting these compounds
+  - **Samples** and their associated **gene co-annotations** for these compounds
 
 ---
 
@@ -46,17 +46,17 @@ This use case acts as a tool for designing **risk-oriented consortia**. By focus
    - are labeled **"High Toxicity"** in at least one endpoint within that category.  
    The result is a list of **high-priority compounds** for the chosen threat scenario.
 
-3. **Genetic Response Assessment**  
+3. **KO Annotation Count Assessment**
    The `BioRemPP_Results.xlsx or BioRemPP_Results.csv` table is filtered to include only rows in which:
-   - `compoundname` is in the high-priority list obtained in Step 2.  
-   This subset captures all known sample–gene associations relevant to the chosen threat class.
+   - `compoundname` is in the high-priority list obtained in Step 2.
+   This subset captures all sample–gene co-annotation records relevant to the chosen compound class.
 
-4. **Aggregation and Matrix Construction**  
+4. **Aggregation and Matrix Construction**
    The filtered data is aggregated to construct a 2D matrix where:
-   - rows represent **high-risk compounds** (`compoundname`),  
-   - columns represent **Samples** (`sample`), and  
-   - each cell value is the **count of distinct `genesymbol`** associated with that sample–compound pair.  
-   This count is used as a proxy for the **genetic investment** made by each sample towards each high-risk compound.
+   - rows represent **high-risk compounds** (`compoundname`),
+   - columns represent **Samples** (`sample`), and
+   - each cell value is the **count of distinct `genesymbol`** co-annotated with that sample–compound pair.
+   This count is used as a measure of **KO annotation breadth** for each sample relative to each high-risk compound.
 
 5. **Rendering**  
    The sample–compound matrix is rendered as an interactive heatmap:
@@ -74,13 +74,13 @@ This use case acts as a tool for designing **risk-oriented consortia**. By focus
 - **Y-axis (Rows)**  
   Represents individual **High-Risk Compounds** that are predicted as "High Toxicity" within the selected super-category.
 
-- **X-axis (Columns)**  
-  Represents individual **Samples**, each potentially encoding a genetic toolkit against one or more of the high-risk compounds.
+- **X-axis (Columns)**
+  Represents individual **Samples**, each with co-annotation records for one or more of the high-risk compounds.
 
-- **Cell Color**  
-  The color intensity of each cell indicates the **count of unique genes** (`genesymbol`) that a sample possesses and associates with a specific high-risk compound:
-  - more intense (warmer, darker) colors correspond to higher gene counts,  
-  - lighter colors correspond to fewer genes or no detected association.
+- **Cell Color**
+  The color intensity of each cell indicates the **count of unique genes** (`genesymbol`) co-annotated with a specific sample–compound pair:
+  - more intense (warmer, darker) colors correspond to higher gene counts,
+  - lighter colors correspond to fewer co-annotated genes or no detected association.
 
 ---
 
@@ -98,21 +98,21 @@ The image below illustrates a representative output generated by this use case u
 
 ## Interpretation and Key Messages
 
-- **Identifying Elite Specialists**  
-  Brightly colored cells ("hotspots") may highlight **strong sample–compound pairings**, where a sample deploys a particularly diverse genetic toolkit against a specific high-risk compound.  
-  - A **column with many bright cells** may indicate a **"specialist sample"** that is especially well-equipped to mitigate threats in the selected toxicological category.
+- **Samples with High KO Annotation Counts**
+  Brightly colored cells ("hotspots") may highlight **sample–compound pairs with broad co-annotation coverage**, where a sample has many KO annotations co-annotated with a specific high-risk compound.
+  - A **column with many bright cells** may indicate a sample with **high KO annotation coverage** across the selected toxicological category (experimental validation required to confirm functional capacity).
 
-- **Key Genetic Responses to Priority Compounds**  
-  A **row with many bright cells** may signify a high-risk compound that elicits a strong and diverse genetic response from multiple samples. Such compounds could be:
-  - central targets for remediation efforts, or  
-  - key drivers of selective pressure in contaminated environments.
+- **Widely Co-annotated Priority Compounds**
+  A **row with many bright cells** may signify a high-risk compound that is co-annotated with many genes across multiple samples. Such compounds could be:
+  - broadly annotated targets warranting prioritized experimental investigation, or
+  - candidates for cross-sample annotation comparison.
 
-- **Targeted Consortium Design**  
-  By examining both rows and columns, users can assemble a **consortium** tailored to a specific toxicological domain. For example:
-  - when "Genomic" is selected, samples with the brightest columns can be chosen to build a consortium optimized for mitigating genotoxic threats (e.g., carcinogens, DNA-damaging agents).
+- **Annotation-based Sample Comparison for Hypothesis Generation**
+  By examining both rows and columns, users can compare **KO annotation profiles** across samples relative to a specific toxicological domain. For example:
+  - when "Genomic" is selected, samples with the broadest annotation coverage can be identified as candidates for further investigation (experimental validation required to confirm mitigation capacity).
 
-- **Complementarity vs. Redundancy**  
-  Overlapping bright cells across multiple samples for the same compound may indicate **redundant capacity** (robustness), while complementary patterns (different samples covering different compounds) could support **division of labor** in consortium design.
+- **Annotation Overlap vs. Annotation Complementarity**
+  Overlapping bright cells across multiple samples for the same compound may indicate **high annotation redundancy**, while complementary patterns (different samples covering different compounds) could suggest **distinct annotation profiles** across samples.
 
 ---
 
@@ -126,10 +126,10 @@ The image below illustrates a representative output generated by this use case u
 - **Definition of "High Toxicity"**  
   A compound is considered **high-risk** within a super-category if it is labeled "High Toxicity" for at least one endpoint mapped to that category.
 
-- **Genetic Response Metric**  
-  The "genetic response" is quantified as the **count of unique gene symbols** per sample–compound pair. This is treated as a proxy for:
-  - the genetic investment, and  
-  - the potential mechanistic complexity of the degradation or mitigation strategy.
+- **KO Annotation Count Metric**
+  The annotation count is quantified as the **count of unique gene symbols** co-annotated per sample–compound pair. This is treated as a measure of:
+  - annotation breadth, and
+  - the diversity of KO annotations associated with that sample–compound context (not a direct measure of degradation or mitigation capacity).
 
 
 - **Model and Annotation Limitations**  

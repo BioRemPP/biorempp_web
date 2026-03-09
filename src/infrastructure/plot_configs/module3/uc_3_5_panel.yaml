@@ -4,15 +4,16 @@
 use_case_id: "uc-3-5"
 
 scientific_question: >
-  How similar are the biological samples to one another, based on the shared
-  repertoire of chemical compounds they interact with?
+  How similar are the biological samples to one another, based on their
+  shared compound annotation profiles?
 
 description: >
   This visualization assesses the pairwise similarity between all biological
-  samples based on their shared chemical interaction profiles. The correlogram
+  samples based on their shared compound annotation profiles. The correlogram
   is constructed from a correlation matrix where the similarity between any
-  two samples is quantified by the compounds they have in common. This helps
-  to identify biological sources with analogous chemical interaction capabilities.
+  two samples is quantified by the compounds they share in their annotations.
+  This helps to identify biological sources with similar compound coverage
+  patterns within the dataset.
 
 visual_elements:
   - label: "X-axis and Y-axis"
@@ -46,30 +47,34 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Functional Guilds: Brightly colored squares or blocks off the main
-    diagonal identify clusters of samples with highly similar chemical
-    interaction profiles. These may represent "functional guilds" - groups
-    of biological sources that likely compete for or collaboratively process
-    the same chemical substrates in an environment.
+    Compound Profile Clusters: Brightly colored squares or blocks off the
+    main diagonal identify clusters of samples with highly similar compound
+    annotation profiles. These groupings reflect shared annotation patterns
+    and may generate hypotheses about shared compound coverage, but do not
+    confirm ecological interactions or shared biotransformation activity.
 
   - >
-    Distinct Degradative Strategies: The overall structure of the heatmap
-    may help identify distinct groups of samples that target different classes
-    of chemicals, indicating diverse metabolic capabilities.
+    Distinct Compound Coverage Patterns: The overall structure of the heatmap
+    may help identify distinct groups of samples with different compound
+    annotation profiles, reflecting different compound coverage across
+    chemical classes in the dataset.
 
   - >
-    Unique Chemical Specialists: A sample that shows low correlation
-    (neutral or cool colors) with most other samples may possess a more
-    unique or specialized chemical interaction profile within this dataset.
+    Unique Annotation Profiles: A sample that shows low correlation (neutral
+    or cool colors) with most other samples has a compound annotation profile
+    that differs substantially from the rest, which may be worth investigating
+    further.
 
   - >
-    Consortium Design: Identifying samples with complementary (low
-    correlation) chemical profiles can guide the design of biological
-    consortia with diverse and non-overlapping interaction capabilities.
+    Complementary Profiles: Identifying samples with low correlation reveals
+    samples with divergent compound annotation coverage. This may serve as a
+    starting point for exploring annotation complementarity, though any
+    functional inference requires experimental validation beyond annotation data.
 
   - >
-    Bioremediation Potential: Samples with high similarity in compound
-    profiles may be functionally redundant, while diverse samples could
-    offer broader coverage for multi-contaminant remediation strategies.
+    Annotation Overlap: Samples with high compound profile correlation share
+    similar compound annotation coverage. This may reflect shared annotation
+    sources or similar compound class composition, and should be interpreted
+    in the context of the dataset's annotation structure.
 
 color_scheme: "primary"

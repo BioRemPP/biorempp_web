@@ -1,37 +1,38 @@
-# UC-5.2: Sample Similarity Based on Shared Chemical Profiles
+# UC-5.2: Sample Similarity Based on Shared Compound Annotations
 # Panel Configuration (YAML)
 
 use_case_id: "uc-5-2"
 
 scientific_question: >
-  How functionally similar are the biological samples to one another, based on
-  the shared repertoire of chemical compounds they interact with, and what is
-  the structure of these functional guilds?
+  How similar are the biological samples to one another, based on the
+  overlap of their compound annotation profiles, and what is the structure
+  of these annotation-based groupings?
 
 description: >
   This visualization assesses the pairwise similarity between all biological
-  samples based on their shared chemical interaction profiles. The chord
+  samples based on their shared compound annotation profiles. The chord
   diagram is constructed from a derived set of connections where the strength
   of the link between any two samples is quantified by the number of compounds
-  they have in common. This can help identify biological sources with analogous
-  chemical interaction capabilities.
+  they share in their annotations. This can help identify biological sources
+  with similar compound annotation coverage.
 
 visual_elements:
   - label: "Outer Arcs"
     description: >
       Each colored arc on the circumference represents an individual Sample.
-      The length of the arc is proportional to its total shared interactions
-      with all other samples.
+      The length of the arc is proportional to its total shared annotation
+      overlap with all other samples.
 
   - label: "Chords (Ribbons)"
     description: >
-      The ribbons flowing between two arcs represent the similarity between
-      that pair of samples.
+      The ribbons flowing between two arcs represent the annotation overlap
+      between that pair of samples.
 
   - label: "Chord Thickness"
     description: >
       The thickness of a chord is directly proportional to the number of
-      shared compounds, indicating the strength of the functional similarity.
+      shared compound annotations, indicating the degree of annotation
+      profile similarity between two samples.
 
   - label: "Node Colors"
     description: >
@@ -40,33 +41,38 @@ visual_elements:
 
   - label: "Hover Information"
     description: >
-      Hovering over a chord displays the exact number of shared compounds
-      between the connected sample pair.
+      Hovering over a chord displays the exact number of shared compound
+      annotations between the connected sample pair.
 
 interpretation_guidelines:
   - >
-    Functional Guilds: Thick chords connecting a group of samples may identify
-    functional guilds - clusters of biological sources that likely target a similar
-    range of chemical substrates and may share similar ecological niches
-    or metabolic strategies.
+    Annotation Groupings: Thick chords connecting a group of samples identify
+    clusters of biological sources with similar compound annotation profiles.
+    These groupings reflect shared annotation patterns and may generate
+    hypotheses about annotation coverage overlap, but do not confirm shared
+    metabolic activity or ecological niches.
 
   - >
-    High Similarity: A thick chord between two specific samples indicates
-    that they have very similar chemical interaction profiles.
+    High Annotation Overlap: A thick chord between two specific samples
+    indicates that they share a large portion of their compound annotations,
+    reflecting similar coverage in the dataset.
 
   - >
-    Unique Profiles: A sample with only thin chords connecting to others
-    may possess a more unique or specialized chemical interaction profile
-    compared to the rest of the consortium.
+    Distinct Annotation Profiles: A sample with only thin chords connecting
+    to others has a compound annotation profile that differs substantially
+    from the rest. This observation may warrant further investigation into
+    which compound classes or annotation sources drive this distinctiveness.
 
   - >
-    Consortium Redundancy: Highly interconnected samples may provide
-    functional redundancy, which can be beneficial for robust bioremediation
-    but may also indicate potential overlap in capabilities.
+    Annotation Overlap Patterns: Highly interconnected samples share similar
+    compound annotation coverage. This may reflect shared annotation sources
+    or similar compound class composition in the dataset, and should be
+    interpreted in the context of the dataset's annotation structure.
 
   - >
-    Core vs Peripheral Samples: Samples with many thick connections form
-    the core of functional similarity, while those with few connections
-    are peripheral specialists.
+    Core vs. Peripheral Samples: Samples with many thick connections share
+    broad annotation overlap with others, while those with few connections
+    have more distinct annotation profiles. These are annotation-level
+    observations and do not confirm functional role or ecological position.
 
 color_scheme: "primary"

@@ -1,19 +1,19 @@
-# UC-4.9: Interactive Profiling of Sample Enzymatic Activity
+# UC-4.9: Interactive Gene Annotation Count by Enzyme Activity per Sample
 # Informative Panel Configuration
 
 use_case_id: "uc-4-9"
 
 scientific_question: >
-  For any given biological sample, which enzymatic functions are the most
-  prominent, as measured by the diversity of unique genes associated with them?
+  For any given biological sample, which enzyme activity annotations have the
+  highest number of unique gene annotations co-occurring with them in the database?
 
 description: >
-  This interactive visualization provides a detailed functional profile of a
-  selected sample by ranking its annotated enzyme activities. By choosing a
-  sample from the dropdown menu, the bar chart dynamically updates to display
-  the number of unique gene symbols associated with each enzymatic function.
-  This may highlight the enzymatic capabilities that are most genetically diverse
-  within that biological source.
+  This interactive visualization provides a gene annotation count profile for a
+  selected sample, ranked by enzyme activity annotation. By choosing a sample
+  from the dropdown menu, the bar chart dynamically updates to display the number
+  of unique gene symbols co-annotated with each enzyme activity annotation. This
+  highlights which enzyme activity annotations have the highest gene annotation
+  density within that sample in the database.
 
 visual_elements:
   - label: "Dropdown Menu"
@@ -22,34 +22,41 @@ visual_elements:
 
   - label: "X-axis"
     description: >
-      Represents the individual Enzyme Activities found in the selected sample.
+      Represents the individual Enzyme Activity annotations found in the selected
+      sample.
 
   - label: "Y-axis"
     description: >
-      Represents the count of unique genes associated with each enzyme activity.
+      Represents the count of unique gene annotations associated with each enzyme
+      activity annotation.
 
   - label: "Bar Height and Label"
     description: >
-      The height of each bar and its corresponding numerical label explicitly
-      state the total number of unique genes for that function.
+      The height of each bar and its corresponding numerical label indicate the
+      total number of unique gene annotations for that enzyme activity annotation
+      in the selected sample.
 
 interpretation_guidelines:
   - >
-    **Genetic Investment**: Taller bars may represent enzyme activities that are
-    supported by a larger and more diverse set of genes. This may suggest a
-    significant genetic investment by the biological source in that particular function,
-    potentially indicating its importance.
+    Gene Annotation Count per Enzyme Activity: Taller bars represent enzyme
+    activity annotations with a higher number of unique gene annotations in the
+    database for that sample. This reflects annotation density and may generate
+    hypotheses for further investigation, but does not confirm that these enzyme
+    activities are more important or more actively expressed in the sample.
 
   - >
-    **Functional Specialization**: The ranking of enzyme activities can help identify
-    the functional specialization of the selected sample. For example, a
-    biological source showing high gene counts for 'oxidoreductase' and 'monooxygenase'
-    may be specialized in oxidative biotransformation pathways.
+    Enzyme Activity Annotation Coverage: The ranking of enzyme activity annotations
+    can help identify which activities have the highest gene annotation counts for
+    the selected sample. For example, an activity showing high gene counts may
+    have broader annotation coverage in the database, which is an annotation-level
+    observation and does not confirm functional specialization in oxidative or other
+    biotransformation processes.
 
   - >
-    **Comparative Functional Profiling**: By switching between samples, one
-    can directly compare their enzymatic profiles. This may highlight key
-    functional differences, such as one biological source relying heavily on 'hydrolase'
-    activities while another prioritizes 'transferase' functions.
+    Comparative Annotation Profiles: By switching between samples, one can directly
+    compare their gene annotation counts per enzyme activity. Differences in these
+    profiles reflect annotation structure and may generate hypotheses for further
+    investigation, but do not confirm that one sample relies more heavily on specific
+    enzymatic functions than another.
 
 color_scheme: "success"

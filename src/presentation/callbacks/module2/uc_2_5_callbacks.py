@@ -455,7 +455,7 @@ def register_uc_2_5_callbacks(app, plot_service) -> None:
                 config={
                     "displayModeBar": True,
                     "toImageButtonOptions": {
-                        "format": "png",
+                        "format": "svg",
                         "filename": base_filename,
                         "height": 900,
                         "width": 1400,

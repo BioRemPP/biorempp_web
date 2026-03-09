@@ -362,7 +362,7 @@ Processing time exceeds server-side timeout limit.
     - Chrome: `Ctrl+Shift+N`
     - Firefox: `Ctrl+Shift+P`
 3. **Clear site data:**
-    - Chrome: Settings → Privacy → Site Settings → View permissions and data → biorempp.cloud → Clear data
+    - Chrome: Settings → Privacy → Site Settings → View permissions and data → bioinfo.imd.ufrn.br → Clear data
     - Firefox: Settings → Privacy → Manage Data → Remove site data
 4. **Check network restrictions:**
     - Corporate firewalls may block WebGL or specific JavaScript libraries
@@ -408,7 +408,7 @@ Clicking "Download Data" button produces no response or error.
 **Resolution:**
 
 1. **Check browser pop-up blocker:**
-    - Allow pop-ups for biorempp.cloud
+    - Allow pop-ups for bioinfo.imd.ufrn.br
     - Browser address bar usually shows blocked pop-up icon
 2. **Try alternative format:**
     - If CSV fails, try Excel or JSON

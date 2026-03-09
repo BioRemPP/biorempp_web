@@ -13,7 +13,7 @@
 
 BioRemPP is a scientific web service for bioremediation-oriented functional analysis. It integrates curated databases (BioRemPP, KEGG, HADEG, toxCSM) with international regulatory frameworks to assess functional potential for environmental remediation from KEGG Orthology (KO) annotations.
 
-**Live Application:** [https://biorempp.cloud](https://biorempp.cloud)
+**Live Application:** [https://bioinfo.imd.ufrn.br/biorempp/](https://bioinfo.imd.ufrn.br/biorempp/)
 
 ---
 
@@ -111,7 +111,7 @@ Regulatory frameworks: IARC, EPA, ATSDR, WFD, PSL, EPC, CONAMA.
 
 When using BioRemPP, please cite:
 
-> BioRemPP Web Service v1.0.3-beta. Available at: https://biorempp.cloud (accessed [DATE]).
+> BioRemPP Web Service v1.0.3-beta. Available at: https://bioinfo.imd.ufrn.br/biorempp/ (accessed [DATE]).
 
 > Full citation guidelines: [How to Cite](https://biormepp-web.readthedocs.io/en/latest/about/how-to-cite/)
 

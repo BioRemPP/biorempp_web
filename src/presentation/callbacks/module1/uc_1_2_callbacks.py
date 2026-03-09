@@ -482,6 +482,38 @@ def register_uc_1_2_callbacks(app, plot_service) -> None:
             logger.info("[UC-1.2] SUCCESS: UpSet plot generated successfully!")
             logger.debug(f"[UC-1.2] Figure type: {type(fig)}")
 
+            # UC-1.2 visual tuning:
+            # reduce blank area between the UpSet image and "Set Sizes" annotation.
+            try:
+                current_margin = {}
+                if getattr(fig.layout, "margin", None):
+                    current_margin = fig.layout.margin.to_plotly_json()
+
+                fig.update_layout(
+                    height=520,
+                    margin={
+                        "l": current_margin.get("l", 20),
+                        "r": current_margin.get("r", 20),
+                        "t": current_margin.get("t", 60),
+                        "b": 40,
+                    },
+                )
+
+                annotations = []
+                for ann in getattr(fig.layout, "annotations", []) or []:
+                    ann_dict = ann.to_plotly_json()
+                    if "Set Sizes" in str(ann_dict.get("text", "")):
+                        ann_dict["y"] = -0.04
+                        ann_dict["yanchor"] = "top"
+                    annotations.append(ann_dict)
+
+                if annotations:
+                    fig.update_layout(annotations=annotations)
+            except Exception as visual_tuning_error:
+                logger.debug(
+                    f"[UC-1.2] Visual tuning skipped due to: {visual_tuning_error}"
+                )
+
             # Return as Dash Graph component
             logger.info("[UC-1.2] Step 5: Returning dcc.Graph component")
 
@@ -498,7 +530,7 @@ def register_uc_1_2_callbacks(app, plot_service) -> None:
                     "displaylogo": False,
                     "modeBarButtonsToRemove": ["pan2d", "lasso2d", "select2d"],
                     "toImageButtonOptions": {
-                        "format": "png",
+                        "format": "svg",
                         "filename": base_filename,
                         "height": 900,
                         "width": 1400,

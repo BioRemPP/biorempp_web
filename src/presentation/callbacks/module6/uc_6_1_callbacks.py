@@ -362,7 +362,7 @@ def register_uc_6_1_callbacks(app, plot_service) -> None:
                                         "select2d",
                                     ],
                                     "toImageButtonOptions": {
-                                        "format": "png",
+                                        "format": "svg",
                                         "filename": base_filename,
                                         "height": 1000,
                                         "width": 1400,

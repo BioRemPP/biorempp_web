@@ -36,21 +36,22 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    Comparative Ranking: By switching between databases, one can observe
-    how the functional ranking of a sample changes. A sample that ranks highly
-    in HADEG but lower in KEGG, for example, may be a specialist in
-    hydrocarbon biotransformation, reflecting HADEG's specific scope.
-  
+    Comparative Ranking: By switching between databases, one can observe how the
+    KO-richness ranking of a sample changes across annotation sources. A sample
+    that ranks highly in HADEG but lower in KEGG may reflect HADEG's more focused
+    annotation scope rather than confirmed specialization in a particular pathway.
+
   - >
-    Identifying Generalists vs. Specialists: Samples that consistently rank
-    high across all three databases may be considered robust functional
-    "generalists." Those whose ranks vary significantly may have more specialized
-    metabolic capabilities that are only captured by certain databases.
-  
+    Broad vs. Narrow Annotation Profiles: Samples that consistently rank high
+    across all three databases show broad functional annotation coverage regardless
+    of source. Those whose ranks vary significantly may have KO profiles that are
+    more selectively captured by certain databases, warranting further investigation
+    of the annotation differences.
+
   - >
-    Assessing Database Bias: The differences in rankings may help identify the
-    inherent scope and focus of each annotation source. This analysis can help
-    assess which database may be most suitable for identifying specific types of
-    functional potential.
+    Assessing Database Scope: Differences in rankings across databases may help
+    characterize the inherent scope and focus of each annotation source, and can
+    inform decisions about which database is most appropriate for a given
+    analytical question.
 
 color_scheme: "success"

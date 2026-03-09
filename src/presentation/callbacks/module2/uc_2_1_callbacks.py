@@ -283,7 +283,7 @@ def register_uc_2_1_callbacks(app, plot_service) -> None:
                 config={
                     "displayModeBar": True,
                     "toImageButtonOptions": {
-                        "format": "png",
+                        "format": "svg",
                         "filename": base_filename,
                         "height": 800,
                         "width": 1200,

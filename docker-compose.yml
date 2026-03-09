@@ -151,6 +151,7 @@ services:
       - ./src:/app/src:rw
       - ./config:/app/config:rw
       - ./biorempp_app.py:/app/biorempp_app.py:rw
+      - ./pyproject.toml:/app/pyproject.toml:ro
       - ./data:/app/data:rw
 
       # Data persistence

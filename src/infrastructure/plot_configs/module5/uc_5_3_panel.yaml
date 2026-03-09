@@ -1,40 +1,42 @@
-# UC-5.3: Regulatory Relevance of Samples
+# UC-5.3: Sample-Agency Annotation Co-occurrence
 # Panel Configuration (YAML)
 
 use_case_id: "uc-5-3"
 
 scientific_question: >
-  Which biological samples are most functionally relevant to the compounds
-  monitored by different environmental regulatory agencies?
+  Which biological samples show the highest annotation co-occurrence with
+  the compounds monitored by different environmental regulatory agencies?
 
 description: >
-  This visualization maps the interaction strength between each biological
-  sample and the various regulatory agencies represented in the dataset.
-  The chord diagram provides a clear overview of these relationships, where
-  the connections illustrate the magnitude of functional associations within
-  each regulatory context.
+  This visualization maps the annotation co-occurrence count between each
+  biological sample and the various regulatory agencies represented in the
+  dataset. The chord diagram provides an overview of these annotation-level
+  relationships, where the connections illustrate the magnitude of co-occurrence
+  counts between samples and agency compound lists.
 
 visual_elements:
   - label: "Outer Arcs"
     description: >
       Each colored arc on the circumference represents either a Sample or a
       Regulatory Agency. The length of the arc is proportional to the total
-      number of interactions associated with it.
+      number of annotation links associated with it.
 
   - label: "Chords (Ribbons)"
     description: >
-      The ribbons flowing between the arcs represent the interactions between
-      a specific sample and a specific agency.
+      The ribbons flowing between the arcs represent the annotation
+      co-occurrences between a specific sample and a specific agency's
+      compound list.
 
   - label: "Chord Thickness"
     description: >
       The thickness of a chord where it connects to an arc is proportional to
-      the number of interactions. A thick chord indicates a strong association.
+      the number of annotation co-occurrences. A thick chord indicates a higher
+      count of shared annotations between a sample and an agency's compound list.
 
   - label: "Agency Dropdown Selector"
     description: >
       A dropdown control allows selecting a specific regulatory agency to focus
-      the visualization. When selected, the diagram shows only interactions
+      the visualization. When selected, the diagram shows only annotation links
       involving the chosen agency.
 
   - label: "Node Colors"
@@ -44,30 +46,36 @@ visual_elements:
 
 interpretation_guidelines:
   - >
-    High Regulatory Relevance: A thick chord between a sample (e.g.,
-    Acinetobacter) and an agency (e.g., "EPC") indicates that this sample
-    possesses a high number of genetic functions related to compounds
-    regulated by that agency.
+    High Annotation Co-occurrence: A thick chord between a sample and an
+    agency indicates that this sample has a high number of annotated gene-compound
+    associations overlapping with that agency's compound list. This reflects
+    annotation-level co-occurrence and does not confirm that the sample
+    possesses confirmed functions for those compounds.
 
   - >
-    Identifying Key Biological Sources: Samples with multiple thick chords connecting
-    to various agencies are functionally versatile and relevant across several
-    regulatory contexts. Conversely, a sample with one dominant chord may be
-    a specialist for a particular set of regulated pollutants.
+    Broad vs. Narrow Annotation Coverage: Samples with multiple thick chords
+    connecting to various agencies show broader annotation overlap across
+    regulatory contexts. Samples with one dominant chord show annotation
+    concentration in a particular agency's compound list. These are
+    annotation-level patterns and do not confirm regulatory compliance or
+    functional versatility.
 
   - >
-    Agency Impact: A regulatory agency that is the target of many thick chords
-    from different samples has a broad footprint in the dataset, meaning its
-    list of target compounds is associated with widespread metabolic
-    capabilities across the consortium.
+    Agency Annotation Footprint: A regulatory agency that receives many thick
+    chords from different samples has a compound list that is broadly represented
+    in the dataset's annotations. This reflects the scope of that agency's
+    compound list relative to the dataset's annotation structure.
 
   - >
-    Comparative Assessment: By comparing the chord thickness across different
-    sample-agency pairs, one can assess which samples may be most valuable
-    for addressing specific regulatory priorities.
+    Comparative Annotation Coverage: By comparing chord thickness across
+    different sample-agency pairs, one can assess which samples show higher
+    annotation overlap with specific agency compound lists. This comparison is
+    exploratory and does not establish functional or regulatory relevance.
 
   - >
-    Consortium Design: This visualization can help identify samples that
-    complement each other across different regulatory contexts.
+    Complementary Annotation Profiles: Samples that cover different agency
+    compound lists in their annotations show complementary annotation profiles
+    across regulatory contexts. Identifying such patterns can guide exploratory
+    analyses, though any functional inference requires experimental validation.
 
 color_scheme: "success"

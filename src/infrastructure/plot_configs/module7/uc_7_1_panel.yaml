@@ -4,16 +4,17 @@
 use_case_id: "uc-7-1"
 
 scientific_question: >
-  What is the comprehensive toxicological profile of each chemical compound
-  across a wide range of risk categories, and which compounds pose the most
-  significant and multi-faceted hazards?
+  What is the predicted toxicological profile of each chemical compound
+  across a wide range of risk categories, and which compounds receive
+  the highest predicted scores across multiple endpoints?
 
 description: >
-  This visualization provides a detailed toxicological fingerprint for each
+  This visualization provides a predicted toxicological profile for each
   compound analyzed by the ToxCSM model. The faceted heatmap displays the
   predicted toxicity scores for each compound across numerous endpoints,
   which are grouped into five major super-categories. This allows for a
-  direct comparison of the specific risks associated with each chemical.
+  direct comparison of the predicted scores associated with each chemical
+  across toxicological domains.
 
 visual_elements:
   - label: "Facets (Subplots)"
@@ -27,7 +28,7 @@ visual_elements:
     description: >
       Represents the individual Compound Names being analyzed. Each row
       corresponds to a unique chemical compound from the dataset, allowing
-      the assessment of its complete toxicological profile across all
+      the assessment of its predicted toxicological profile across all
       endpoints.
 
   - label: "X-Axis (Toxicological Endpoints)"
@@ -40,44 +41,46 @@ visual_elements:
     description: >
       The color intensity of each cell indicates the predicted Toxicity Score,
       typically ranging from 0 to 1. Darker, warmer colors (reds) indicate a
-      higher predicted risk, while lighter colors indicate lower risk.
+      higher predicted score, while lighter colors indicate lower predicted
+      scores.
 
   - label: "Hover Information"
     description: >
       Hovering over a cell reveals the compound name, the specific endpoint,
       the predicted numerical score, and its corresponding qualitative label
-      (e.g., 'High Toxicity', 'Moderate Risk').
+      (e.g., 'High Toxicity', 'Moderate Risk') as defined by the ToxCSM model.
 
 interpretation_guidelines:
   - >
-    Compound Risk Fingerprint: By reading across a horizontal row, one can
-    assess the complete toxicological "fingerprint" of a single compound.
-    This can be useful for identifying compounds that pose multiple, distinct
-    types of risk (e.g., a compound that is both carcinogenic and an
-    environmental toxin).
+    Compound Predicted Score Profile: By reading across a horizontal row, one
+    can assess the predicted toxicological profile of a single compound across
+    endpoints. Compounds with high predicted scores across multiple facets
+    may warrant further investigation, bearing in mind that these are
+    computational predictions and not confirmed experimental determinations.
 
   - >
-    High-Concern Endpoints: Vertical columns that are consistently dark across
-    many compounds represent toxicological endpoints that are a common
-    predicted outcome for the chemicals in this dataset. These endpoints
-    may warrant prioritized attention in remediation strategies.
+    High-Scoring Endpoints: Vertical columns that are consistently dark across
+    many compounds represent toxicological endpoints where high predicted scores
+    are common for the chemicals in this dataset. These patterns are
+    model-derived and should be interpreted with reference to the ToxCSM
+    model's scope and limitations.
 
   - >
-    Prioritizing "Problem" Compounds: Compounds with numerous dark red cells,
-    especially across multiple facets, may be identified as the most hazardous
-    pollutants. This allows for the prioritization of these specific chemicals
-    for targeted bioremediation strategies.
+    Compounds with Broad High-Score Patterns: Compounds with numerous dark red
+    cells, especially across multiple facets, receive high predicted scores
+    across many endpoints. These patterns may guide prioritization of further
+    investigation, but do not constitute confirmed hazard determinations.
 
   - >
     Category-Specific Patterns: Comparing patterns across the five facets
-    helps understand if certain compounds are specialists (toxic in one
-    domain) or generalists (toxic across multiple domains), informing
-    risk assessment strategies.
+    helps identify compounds with predicted scores concentrated in one domain
+    versus those with elevated scores across multiple domains. These are
+    model predictions and do not confirm toxicological mechanisms.
 
   - >
-    Identifying Safe Compounds: Compounds with predominantly light-colored
-    cells across all facets may be considered lower priority for immediate
-    remediation efforts, allowing resources to be focused on higher-risk
-    chemicals.
+    Low-Score Compounds: Compounds with predominantly light-colored cells
+    across all facets receive low predicted scores across endpoints. These
+    are model-derived predictions and should not be interpreted as confirmed
+    safety determinations without experimental validation.
 
 color_scheme: "success"

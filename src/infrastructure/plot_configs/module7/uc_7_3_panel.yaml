@@ -1,58 +1,68 @@
-# UC-7.3: Mapping of Genetic Response to High-Priority Threats
+# UC-7.3: Gene Annotation Coverage for High Predicted-Risk Compounds
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-7-3"
 
 scientific_question: >
-  For a given high-level toxicological category (e.g., Genomic Toxicity), which
-  biological samples possess the most diverse genetic toolkit to biotransform the
-  widest range of high-risk compounds?
+  For a given toxicological category (e.g., Genomic Toxicity), which
+  biological samples show the most diverse gene annotations co-occurring
+  with compounds predicted to have high toxicity scores?
 
 description: >
-  This interactive visualization serves as a targeted tool for designing
-  "special operations" consortia. By selecting a high-risk toxicological
-  super-category, the heatmap dynamically updates to map the genetic response
-  of each sample against the specific compounds classified as 'High Toxicity'
-  for that threat.
+  This interactive visualization maps the gene annotation coverage of each
+  sample against the specific compounds classified as 'High Toxicity' (by
+  ToxCSM predicted score) within a selected toxicological super-category.
+  By selecting a toxicological super-category, the heatmap dynamically updates
+  to show which samples have the most gene annotations co-occurring with
+  those high-predicted-score compounds in the reference database.
 
 visual_elements:
   - label: "Dropdown Menu"
     description: >
       Allows selection of the Toxicological Super-Category of interest (e.g.,
-      Genomic, Environmental). The plot updates to show compounds and responses
-      specific to that threat class.
+      Genomic, Environmental). The plot updates to show compounds and annotation
+      coverage specific to that category.
 
-  - label: "Y-Axis (High-Risk Compounds)"
+  - label: "Y-Axis (High-Score Compounds)"
     description: >
-      Represents the individual compounds classified as 'High Toxicity' within
-      the selected super-category.
+      Represents the individual compounds classified as 'High Toxicity' (by
+      predicted score) within the selected super-category.
 
   - label: "X-Axis (Samples)"
     description: >
-      Represents the individual biological samples being analyzed for their
-      genetic capability to biotransform high-risk compounds.
+      Represents the individual biological samples, shown by the number of
+      unique gene annotations they have co-occurring with each high-predicted-score
+      compound in the reference database.
+
   - label: "Cell Color (Unique Gene Count)"
     description: >
-      The color intensity indicates the number of unique genes a sample deploys
-      against a specific high-risk compound. Darker/Warmer colors represent a
-      more robust genetic response.
+      The color intensity indicates the number of unique gene annotations a
+      sample has co-occurring with a specific high-predicted-score compound
+      in the database. Darker/warmer colors represent higher annotation counts.
 
 interpretation_guidelines:
   - >
-    Targeted Consortia Design: Identify samples with high gene counts (dark cells)
-    against specific high-priority threats to form specialized consortia.
+    Gene Annotation Coverage: Samples with high gene annotation counts (dark cells)
+    for specific high-predicted-score compounds show broader annotation overlap
+    with those compounds in the database. This is an annotation-level observation
+    and does not confirm that these samples can biotransform those compounds.
 
   - >
-    Genetic Redundancy: Samples showing multiple genes for a single compound
-    may suggest a robust and potentially redundant biotransformation capability.
+    Annotation Breadth vs. Depth: Samples with multiple gene annotations for a
+    single compound show greater annotation redundancy in the database for that
+    compound. This may generate hypotheses for further investigation, but does
+    not confirm a robust or redundant functional response.
 
   - >
-    Broad-Spectrum Capability: Samples with dark cells across many rows (compounds)
-    within a category indicate broad-spectrum capability against that specific
-    type of threat.
+    Broad Annotation Coverage: Samples with annotation links across many
+    compounds within a category show broader gene annotation coverage for that
+    toxicological domain. These patterns may guide further exploratory analyses,
+    though any functional inference requires experimental validation.
 
   - >
-    Gap Analysis: Columns (samples) with few or no colored cells may indicate a lack
-    of genetic resources for those specific risk categories.
+    Low Annotation Coverage: Samples with few or no gene annotations for specific
+    high-predicted-score compounds show limited annotation overlap for those
+    compounds in the database. This reflects annotation coverage and does not
+    confirm absence of functional capacity.
 
 color_scheme: "success"

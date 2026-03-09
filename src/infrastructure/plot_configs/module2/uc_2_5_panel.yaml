@@ -43,25 +43,27 @@ visual_elements:
 interpretation_guidelines:
   - >
     Comparing Distributions: By switching between databases, one can compare
-    their overall distributions. A database with a higher median KO count
-    (e.g., KEGG) may offer broader functional coverage, while another with a
-    tighter distribution (a shorter box) may be more consistent in its
-    annotation depth across samples.
-  
+    their overall KO count distributions. A database with a higher median may
+    yield broader annotation coverage per sample, while a tighter distribution
+    (shorter IQR box) may indicate more uniform annotation depth across samples
+    for that source.
+
   - >
-    Identifying Database-Specific Outliers: A sample that appears as an outlier
-    in one database but not another may help identify a specific strength or focus
-    of that annotation source (e.g., HADEG identifying exceptionally high KO
-    counts for a known hydrocarbon degrader).
-  
+    Database-Specific Outliers: A sample that appears as a high outlier in one
+    database but not another may reflect a specific focus of that annotation
+    source, warranting closer examination of which KO categories drive the
+    difference.
+
   - >
-    Assessing Annotation Scope: A narrow distribution from a specialized database
-    like HADEG versus a wider one from a generalist database like KEGG may provide
-    insights into their intended applications and curation strategies.
-  
+    Assessing Annotation Scope: Comparing the spread and central tendency across
+    databases can provide insights into differences in curation strategy and
+    scope. A narrower distribution may indicate more focused annotation criteria,
+    while a wider one may reflect a broader annotation philosophy.
+
   - >
     Median vs. Mean: The box plot emphasizes the median (middle value) rather
-    than the mean, making it robust to outliers. This is particularly useful
-    when comparing databases with different annotation philosophies.
+    than the mean, making it more robust to extreme values. This is useful when
+    comparing databases where a few samples may have unusually high or low KO
+    counts.
 
 color_scheme: "success"

@@ -1,75 +1,82 @@
-# UC-6.2: Biological Interaction Flow
+# UC-6.2: Sample-Class-Enzyme Annotation Flow
 # Panel Configuration (YAML)
 
 use_case_id: "uc-6-2"
 
 scientific_question: >
-  How is the functional potential of each microbial sample distributed across
-  different chemical classes, and which enzymatic activities are predominantly
-  employed for each?
+  How are annotation links distributed from each biological sample across
+  different chemical classes and enzyme activity annotations in the dataset?
 
 description: >
-  This alluvial diagram visualizes the biological flow of interactions across
-  three distinct stages: from the source sample, through the chemical class it
-  targets, to the specific enzymatic function used. The width of the flows
-  represents the number of observed interactions, providing a quantitative map
-  of the dominant metabolic strategies for each organism.
+  This alluvial diagram visualizes the annotation co-occurrence flow across
+  three distinct stages: from the source sample, through the chemical class
+  of its annotated compounds, to the associated enzyme activity annotation.
+  The width of the flows represents the number of annotation links, providing
+  a quantitative map of the most prevalent annotation pathways per sample.
 
 visual_elements:
   - label: "Stages (Vertical Columns)"
     description: >
-      The three vertical columns represent the hierarchical flow of biological
-      interactions: Sample, Compound Class, and Enzyme Activity. Each column
-      represents a distinct level in the metabolic process.
+      The three vertical columns represent the hierarchical levels of annotation:
+      Sample, Compound Class, and Enzyme Activity. Each column represents a
+      distinct level in the dataset's annotation structure.
 
   - label: "Nodes"
     description: >
       Each node represents a unique entity at its respective stage. From left
-      to right: microbial samples, chemical compound classes, and enzymatic
-      activities. Node size reflects the total flow passing through it.
+      to right: biological samples, chemical compound classes, and enzyme
+      activity annotations. Node size reflects the total annotation flow
+      passing through it.
 
   - label: "Flows (Ribbons)"
     description: >
-      The ribbons connecting nodes represent the flow of interactions between
-      stages. Each flow traces a pathway from a sample through the compound
-      class it targets to the enzymatic function employed.
+      The ribbons connecting nodes represent annotation co-occurrence links
+      between stages. Each flow traces an annotation path from a sample
+      through its annotated compound classes to the associated enzyme activity
+      annotation.
 
   - label: "Flow Thickness"
     description: >
-      The thickness of a flow is proportional to the number of interactions
-      it represents. Thicker flows indicate more dominant or frequently
-      observed metabolic pathways in the dataset.
+      The thickness of a flow is proportional to the number of annotation
+      links it represents. Thicker flows indicate more frequently observed
+      annotation pathways in the dataset.
 
   - label: "Interactivity"
     description: >
       Hover over nodes and flows to see their names and values. Nodes can
       be dragged vertically to improve readability and explore specific
-      pathways of interest.
+      annotation paths of interest.
 
 interpretation_guidelines:
   - >
-    Dominant Metabolic Strategies: The thickest flows can help identify the primary
-    metabolic strategies employed by the biological community, showing which
-    compound classes are most frequently targeted by which enzyme activities.
+    Dominant Annotation Paths: The thickest flows can help identify the most
+    prevalent annotation patterns across samples, showing which compound classes
+    and enzyme activity annotations are most broadly co-occurring in the dataset.
+    These are annotation-level observations and do not confirm confirmed metabolic
+    activity or biochemical function.
 
   - >
-    Sample Specialization: A sample with a few thick, dominant flows can be
-    considered a "specialist." An organism whose flow branches out to many
-    different classes and activities is a functional "generalist."
+    Broad vs. Narrow Annotation Profiles: A sample with a few thick flows
+    has annotation concentrated in particular compound classes and enzyme activity
+    annotations. A sample whose flows branch broadly covers more diverse annotation
+    combinations. These patterns reflect annotation structure and do not confirm
+    metabolic specialization or functional breadth.
 
   - >
-    Enzyme Versatility: An enzyme activity node that receives flows from
-    many different compound classes can be interpreted as a versatile or
-    broadly applicable function within the consortium.
+    Enzyme Activity Annotation Coverage: An enzyme activity node that receives
+    flows from many different compound classes has broad annotation co-occurrence
+    in the dataset. This reflects annotation coverage and may serve as a starting
+    point for further investigation, but does not confirm enzymatic versatility.
 
   - >
-    Chemical Class Coverage: Identify which compound classes receive the
-    most attention from the consortium and which may represent gaps in
-    the bioremediation potential.
+    Chemical Class Annotation Coverage: Identifying which compound classes have
+    the most annotation links in the dataset may guide further exploration of
+    compound class representation and annotation sources.
 
   - >
-    Consortium Optimization: Use this visualization to identify redundant
-    capabilities or gaps that could inform the design of optimized
-    microbial consortia for specific bioremediation targets.
+    Annotation Overlap and Gaps: Comparing flow patterns across samples can
+    reveal differences in annotation coverage across compound classes and enzyme
+    activity annotations. These differences reflect the dataset's annotation
+    structure and may inform further exploratory analyses.
 
 color_scheme: "success"

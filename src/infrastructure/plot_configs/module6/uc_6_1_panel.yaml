@@ -1,75 +1,85 @@
-# UC-6.1: Regulatory to Molecular Interaction Flow
+# UC-6.1: Regulatory to Molecular Annotation Flow
 # Panel Configuration (YAML)
 
 use_case_id: "uc-6-1"
 
 scientific_question: >
-  How do high-level regulatory contexts cascade through specific biological
-  samples and their genetic machinery to target individual chemical compounds?
+  How are annotation links distributed across the dataset, from regulatory
+  agency compound lists through biological samples and gene symbols to
+  individual chemical compounds?
 
 description: >
-  This alluvial diagram visualizes the end-to-end flow of interactions across
-  four distinct stages, from the macro-level regulatory agency down to the
-  specific compound being targeted. The width of the flows represents the
-  number of observed interactions, providing a quantitative map of the most
-  dominant pathways from regulation to function.
+  This alluvial diagram visualizes the annotation co-occurrence flow across
+  four distinct stages, from the regulatory agency compound list down to the
+  specific annotated compound. The width of the flows represents the number
+  of annotation links, providing a quantitative map of the most prevalent
+  annotation pathways in the dataset.
 
 visual_elements:
   - label: "Stages (Vertical Columns)"
     description: >
-      The four vertical columns represent the hierarchical flow of interactions:
+      The four vertical columns represent the hierarchical levels of annotation:
       Regulatory Agency, Sample, Gene Symbol, and Compound Name. Each column
-      represents a distinct level in the bioremediation process chain.
+      represents a distinct level in the dataset's annotation structure.
 
   - label: "Nodes"
     description: >
       Each node represents a unique entity at its respective stage. From left
       to right: regulatory agencies, biological samples, gene symbols, and
-      compound names. Node size reflects the total flow passing through it.
+      compound names. Node size reflects the total annotation flow passing
+      through it.
 
   - label: "Flows (Ribbons)"
     description: >
-      The ribbons connecting nodes represent the flow of interactions between
-      stages. Each flow traces a pathway from a regulatory context through
-      a sample and its genes to a target compound.
+      The ribbons connecting nodes represent annotation co-occurrence links
+      between stages. Each flow traces an annotation path from a regulatory
+      agency compound list through a sample and its annotated genes to a
+      specific compound.
 
   - label: "Flow Thickness"
     description: >
-      The thickness of a flow is proportional to the number of interactions
-      it represents. Thicker flows indicate more dominant or frequently
-      observed pathways in the dataset.
+      The thickness of a flow is proportional to the number of annotation
+      links it represents. Thicker flows indicate more frequently observed
+      annotation pathways in the dataset.
 
   - label: "Interactivity"
     description: >
       Hover over nodes and flows to see their names and values. Nodes can
       be dragged vertically to improve readability and explore specific
-      pathways of interest.
+      annotation paths of interest.
 
 interpretation_guidelines:
   - >
-    Tracing Dominant Pathways: The thickest flows allow for tracing the most
-    significant interaction pathways from start to finish. Identify which
-    agency's regulations are most strongly linked to specific samples, genes,
-    and compounds.
+    Tracing Dominant Annotation Paths: The thickest flows allow tracing the
+    most prevalent annotation paths from start to finish. Identifying which
+    agency compound lists are most broadly represented in specific samples,
+    genes, and compounds reflects the annotation structure of the dataset
+    and may guide further exploratory analysis.
 
   - >
-    Identifying Key Players: The size of nodes can help identify key players at each
-    stage. A large sample node may indicate a biological source central to many different
-    interaction flows. A large gene node may highlight a versatile or critical gene.
+    Identifying Key Nodes: Node size can help identify entities with broad
+    annotation coverage at each stage. A large sample node is broadly
+    annotated across many agency compound lists and gene-compound pairs.
+    A large gene node appears broadly across many annotation co-occurrences.
+    These are annotation-level observations and do not confirm biological
+    centrality or functional importance.
 
   - >
-    System-Level View: The diagram provides a holistic, system-level view of
-    how regulatory pressures, microbial agents, genetic tools, and chemical
-    targets are interconnected in the bioremediation process.
+    System-Level Annotation View: The diagram provides a holistic view of
+    how annotation links connect regulatory agency compound lists, samples,
+    gene symbols, and compound names in the dataset. This reflects the
+    dataset's annotation structure and does not imply a confirmed biological
+    process from regulation to function.
 
   - >
-    Regulatory Impact: Trace how specific regulatory agencies influence the
-    entire downstream process, from which samples are involved to which
-    compounds are ultimately targeted.
+    Agency Annotation Footprint: Tracing flows from specific regulatory
+    agencies shows which samples and genes have annotation overlap with that
+    agency's compound list. This is an annotation co-occurrence observation
+    and does not confirm regulatory compliance or functional targeting.
 
   - >
-    Bottleneck Identification: Narrow flows between stages may indicate
-    bottlenecks or specialized pathways that may deserve further investigation
-    for targeted bioremediation strategies.
+    Narrow Annotation Flows: Narrow flows between stages may indicate
+    specialized or less frequent annotation co-occurrences that may warrant
+    further investigation into the underlying annotation sources.
 
 color_scheme: "success"

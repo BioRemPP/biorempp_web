@@ -101,7 +101,7 @@ Test BioRemPP with scientifically relevant demonstration data:
 
 1. **Annotate genomes** → Use KAAS, eggNOG-mapper, or DIAMOND to generate KO identifiers
 2. **Format input** → Follow [Input Format](input-format.md) specification
-3. **Upload to BioRemPP** → Visit [https://biorempp.cloud](https://biorempp.cloud)
+3. **Upload to BioRemPP** → Visit [https://bioinfo.imd.ufrn.br/biorempp/](https://bioinfo.imd.ufrn.br/biorempp/)
 4. **Explore results** → 8 modules, 56 use cases for comprehensive analysis
 5. **Export data** → Download results for external analysis
 

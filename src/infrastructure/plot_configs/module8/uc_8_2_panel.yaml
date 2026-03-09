@@ -1,101 +1,98 @@
-# UC-8.2: Chemical Class Completeness Scorecard
+# UC-8.2: Chemical Class KO Annotation Overlap Scorecard
 # Panel Configuration (Informative Collapsible Panel)
 
 use_case_id: "uc-8-2"
 
 scientific_question: >
-  Which biological samples possess the most "complete" genetic toolkit for
-  a given chemical class, and how can this be used to identify elite
-  functional specialists?
+  Which biological samples show the highest KO annotation overlap with each
+  chemical class in the database, and how does this annotation coverage
+  vary across samples and compound classes?
 
 description: >
-  This visualization provides a quantitative "scorecard" that ranks each
-  sample's functional potential for every compound class in the BioRemPP
+  This visualization provides a quantitative scorecard that ranks each
+  sample's KO annotation overlap for every compound class in the BioRemPP
   database. Instead of a simple presence/absence metric, this analysis
-  calculates a Completeness Score. This score represents the percentage of
-  all known KOs for a given compound class (within this dataset) that a
-  specific sample possesses. The scorecard is presented as a heatmap matrix
-  comparing Samples (rows) against Compound Classes (columns), with cell
-  values representing the completeness score (0-100%).
+  calculates a KO Annotation Overlap Score. This score represents the
+  percentage of all KOs annotated for a given compound class (within this
+  dataset) that are also present in a specific sample's annotation. The
+  scorecard is presented as a heatmap matrix comparing Samples (rows) against
+  Compound Classes (columns), with cell values representing the overlap score
+  (0-100%).
 
 visual_elements:
   - label: "Heatmap Matrix"
     description: >
       The visualization is structured as a matrix where rows represent individual
-      biological samples (isolates/genomes) and columns represent compound classes
-      from the BioRemPP database. Each cell in the matrix displays a completeness
-      score as both color intensity and numerical value, creating an intuitive
-      visual scorecard of functional capabilities.
-  
+      biological samples and columns represent compound classes from the BioRemPP
+      database. Each cell displays a KO annotation overlap score as both color
+      intensity and numerical value, enabling comparison of annotation coverage
+      across samples and compound classes.
+
   - label: "Color Gradient (Green Scale)"
     description: >
-      Cell colors range from light green (low completeness, 0-20%) through
-      medium green (moderate completeness, 40-60%) to dark green (high
-      completeness, 80-100%). The color intensity provides an immediate visual
-      indicator of a sample's genetic toolkit completeness for each compound
-      class. Brighter/darker cells represent "hotspots" of functional excellence.
-  
-  - label: "Completeness Score Labels"
+      Cell colors range from light green (low overlap, 0-20%) through medium
+      green (moderate overlap, 40-60%) to dark green (high overlap, 80-100%).
+      The color intensity provides an immediate visual indicator of a sample's
+      KO annotation overlap for each compound class.
+
+  - label: "Overlap Score Labels"
     description: >
-      Each cell displays the completeness percentage (e.g., "85.5%") directly
-      within the cell. A score of 100% indicates the sample possesses every
-      single KO for that compound class found in the entire dataset, making it
-      a complete functional specialist. Scores below 50% may suggest incomplete
-      genetic toolkits requiring consortium approaches.
-  
+      Each cell displays the overlap percentage (e.g., "85.5%") directly within
+      the cell. A score of 100% indicates the sample has all KOs annotated for
+      that compound class in the dataset. Scores below 50% indicate partial
+      annotation overlap for that class.
+
   - label: "Sample Rows (Y-axis)"
     description: >
-      Each row represents a biological sample and shows its completeness scores
-      across all compound classes. Reading across a row allows assessment of a
-      sample's versatility - multiple high scores (>70%) may indicate a generalist
-      with broad capabilities, while scattered high scores may suggest
-      selective specialization.
-  
+      Each row represents a biological sample and shows its KO annotation overlap
+      scores across all compound classes. Reading across a row allows assessment
+      of a sample's annotation breadth — multiple high scores indicate broad
+      annotation overlap across classes, while scattered high scores suggest
+      annotation coverage concentrated in particular classes.
+
   - label: "Compound Class Columns (X-axis)"
     description: >
       Each column represents a chemical compound class (e.g., BTEX, PAHs,
-      Chlorinated Solvents) and shows completeness scores across all samples.
-      Reading down a column can help identify which samples are best equipped for that
-      class and may indicate the complexity of the biotransformation pathway based
-      on overall score distribution.
+      Chlorinated Solvents) and shows annotation overlap scores across all samples.
+      Reading down a column can help identify which samples show the highest
+      annotation overlap for that class and how annotation coverage is distributed
+      across samples.
 
 interpretation_guidelines:
   - >
-    Identifying Elite Specialists: Brightly colored cells (dark green, >80%
-    completeness) may identify samples that are potent "specialists" for specific
-    compound classes. A score of 100% may indicate the sample possesses every
-    single KO for that class in the dataset, suggesting it as a candidate for
-    targeted bioremediation of that chemical class. These elite specialists
-    may be prioritized for experimental validation and application development.
-  
+    High Annotation Overlap: Brightly colored cells (dark green, >80% overlap)
+    indicate samples with a high proportion of the KOs annotated for that compound
+    class in the dataset. This reflects annotation coverage and may generate
+    hypotheses about annotation breadth, but does not confirm that the sample can
+    fully process compounds of that class. Experimental validation is required
+    before any functional or application inference.
+
   - >
-    Comparing Functional Potential: Reading horizontally across a sample's row
-    allows comprehensive assessment of its overall biotransformation capabilities.
-    A sample with multiple high-scoring cells (>70%) may be a versatile candidate,
-    potent across several different chemical classes. Such generalists are
-    valuable for mixed contamination scenarios requiring broad functional coverage.
-  
+    Annotation Breadth Across Classes: Reading horizontally across a sample's row
+    allows assessment of its KO annotation coverage across compound classes. A
+    sample with multiple high-scoring cells shows broad annotation overlap across
+    classes. These are annotation-level observations and do not confirm
+    biotransformation versatility or functional capacity.
+
   - >
-    Assessing Chemical Class Complexity: Reading vertically down a compound
-    class column can help assess biotransformation difficulty. A class with generally low
-    scores across all samples (<50% average) may indicate a complex biotransformation
-    pathway that is not fully encoded by any single biological source. Such classes may
-    require consortium approaches or pathway engineering to achieve complete
-    biotransformation.
-  
+    Compound Class Annotation Coverage: Reading vertically down a compound class
+    column can help identify how annotation overlap for that class is distributed
+    across samples. A class with generally low scores across all samples indicates
+    that few samples have broad KO annotation overlap for that class in the dataset.
+    This is an annotation-level observation and should not be interpreted as
+    confirming pathway complexity.
+
   - >
-    Strategic Sample Selection: For bioremediation applications, select samples
-    based on the contamination profile. For single-compound contamination, choose
-    the sample with the highest completeness score for that class (darkest cell
-    in column). For multi-compound contamination, select samples with high scores
-    across relevant classes or combine complementary specialists to achieve
-    comprehensive coverage.
-  
+    Annotation-Based Sample Comparison: For exploratory purposes, samples with
+    higher overlap scores for a specific compound class have greater KO annotation
+    coverage for that class in the dataset. This may guide prioritization of further
+    investigation, but does not establish confirmed functional capacity for any class.
+
   - >
-    Functional Gap Analysis: Cells with low scores (<30%, light green) represent
-    functional gaps where samples lack critical biotransformation genes. These gaps
-    can guide genetic engineering efforts, horizontal gene transfer studies, or
-    consortium design to achieve complete functional pathways. Identifying which
-    specific KOs are missing can inform targeted gene acquisition strategies.
+    Low Annotation Overlap: Cells with low scores (light green) indicate limited
+    KO annotation overlap between a sample and a compound class. This reflects
+    annotation coverage in the dataset and should not be interpreted as confirming
+    absence of functional capacity. Annotation gaps may reflect database coverage
+    rather than true biological absence.
 
 color_scheme: "success"

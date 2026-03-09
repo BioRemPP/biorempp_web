@@ -18,8 +18,8 @@ metadata:
     Simple scatter plot showing gene-compound associations. Each point
     represents an observed link between a gene symbol and a compound name.
     Flexible dual-filter dropdown menus allow compound-centric, gene-centric,
-    or hypothesis-testing views. Supports three filtering modes: compound only,
-    gene only, or both filters combined.
+    or hypothesis-testing views. Supports multiselect filtering modes:
+    one-or-more compounds, one-or-more genes, or both filters combined.
   version: "1.0.0"
   author: "BioRemPP Development Team"
   created_date: "2025-12-03"
@@ -131,12 +131,12 @@ interactivity:
     - component_id: "uc-4-7-compound-dropdown"
       property: "value"
       trigger_type: "dropdown_selection"
-      description: "Filter by compound (optional)"
+      description: "Filter by one or more compounds (optional)"
     
     - component_id: "uc-4-7-gene-dropdown"
       property: "value"
       trigger_type: "dropdown_selection"
-      description: "Filter by gene (optional)"
+      description: "Filter by one or more genes (optional)"
   
   outputs:
     - component_id: "uc-4-7-chart-container"
@@ -152,15 +152,15 @@ interactivity:
   controls:
     - component_id: "uc-4-7-compound-dropdown"
       type: "dropdown"
-      label: "Select Compound (Optional)"
+      label: "Select Compound(s) (Optional)"
       options_source: "dynamic"
-      description: "Filter by specific compound"
+      description: "Filter by one or more compounds (full stable catalog)"
     
     - component_id: "uc-4-7-gene-dropdown"
       type: "dropdown"
-      label: "Select Gene (Optional)"
+      label: "Select Gene(s) (Optional)"
       options_source: "dynamic"
-      description: "Filter by specific gene"
+      description: "Filter by one or more genes (full stable catalog)"
   
   filtering_modes:
     - mode: "no_selection"
@@ -168,16 +168,20 @@ interactivity:
       behavior: "Show informative message"
     
     - mode: "compound_only"
-      description: "Compound selected, gene not selected"
-      behavior: "Show all genes associated with selected compound"
+      description: "One or more compounds selected, genes not selected"
+      behavior: "Show all genes associated with selected compounds"
     
     - mode: "gene_only"
-      description: "Gene selected, compound not selected"
-      behavior: "Show all compounds associated with selected gene"
+      description: "One or more genes selected, compounds not selected"
+      behavior: "Show all compounds associated with selected genes"
     
     - mode: "both_selected"
-      description: "Both compound and gene selected"
-      behavior: "Show specific gene-compound interaction"
+      description: "One or more compounds and one or more genes selected"
+      behavior: "Show only intersection of selected compounds and genes"
+
+  option_catalog_behavior:
+    strategy: "stable_full_catalog"
+    description: "Dropdown options are not recalculated from current selections."
 
 # ============================================================================
 # SECTION 5: Validation Configuration (REQUIRED)
@@ -199,7 +203,7 @@ validation:
       message: "This use case requires BioRemPP database"
     
     - rule: "at_least_one_filter"
-      message: "Please select at least one filter (compound or gene)"
+      message: "Please select at least one filter (compound(s) or gene(s))"
 
 # ============================================================================
 # SECTION 6: Performance Configuration (REQUIRED)
@@ -247,11 +251,11 @@ error_handling:
     
     no_associations_found:
       action: "display_message"
-      message: "No associations found for {filter_description}. Try a different combination."
+      message: "No associations found for selected filters ({filter_description}). Try a different combination."
     
     no_filter_selected:
       action: "display_info"
-      message: "Please select a compound and/or a gene from the dropdown menus above to explore associations."
+      message: "Please select one or more compounds and/or genes from the dropdown menus above to explore associations."
     
     biorempp_data_missing:
       action: "display_message"

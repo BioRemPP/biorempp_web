@@ -30,9 +30,14 @@ def create_methods_layout() -> html.Div:
                     html.Div(
                         [
                             html.H1(
-                                "Analytical Methods",
-                                className="display-4 mb-3",
-                                style={"fontWeight": "600"},
+                                [
+                                    html.I(
+                                        className="fas fa-cogs text-success",
+                                        style={"fontSize": "0.9em", "lineHeight": "1"},
+                                    ),
+                                    "Analytical Methods",
+                                ],
+                                className="mb-3 d-flex align-items-center justify-content-center gap-3 flex-wrap",
                             ),
                             html.P(
                                 "Comprehensive analytical workflows for all 56 use cases across 8 modules",
@@ -40,11 +45,11 @@ def create_methods_layout() -> html.Div:
                             ),
                             html.Hr(),
                         ],
-                        className="text-center py-4",
+                        className="mb-5",
                     )
                 ],
-                fluid=True,
-                className="bg-light",
+                fluid=False,
+                className="px-4 py-4",
             ),
             # Scientific Overview Card
             dbc.Container(

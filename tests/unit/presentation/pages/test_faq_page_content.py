@@ -81,3 +81,5 @@ def test_faq_removes_legacy_resume_and_citation_wording():
     assert "cached in Redis" not in content
     assert "How do I cite BioRemPP before DOI assignment?" not in content
     assert "How do I cite BioRemPP using current templates?" in content
+    assert "https://doi.org/10.5281/zenodo.18905195" in content
+    assert "Zenodo DOI: [Zenodo DOI pending]" not in content
