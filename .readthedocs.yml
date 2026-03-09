@@ -1,33 +1,16 @@
 # Configuration file for Read the Docs
 # https://docs.readthedocs.io/en/stable/config-file/v2.html
-
 version: 2
 
-# Build configuration
 build:
   os: ubuntu-22.04
   tools:
     python: "3.11"
-  jobs:
-    post_install:
-      # Install project dependencies if needed for mkdocstrings
-      - pip install -e .[docs]
 
-# MkDocs configuration
 mkdocs:
   configuration: mkdocs.yml
   fail_on_warning: false
 
-# Python dependencies
 python:
   install:
-    # Install project with documentation dependencies from pyproject.toml
-    - method: pip
-      path: .
-      extras:
-        - docs
-
-# Formats to build (HTML is default, PDF optional)
-formats:
-  - pdf
-  - epub
+    - requirements: docs/requirements.txt
