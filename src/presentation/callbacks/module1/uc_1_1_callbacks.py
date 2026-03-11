@@ -27,6 +27,7 @@ from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
 from src.shared.logging import get_logger
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = get_logger(__name__)
 
@@ -352,6 +353,7 @@ def register_uc_1_1_callbacks(app, plot_service) -> None:
         - Extracts and normalizes KO sets from databases
         - Generates visualization using UpSetStrategy via PlotService
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             "UC-1.1 render_uc_1_1 callback triggered",
             extra={"active_item": active_item, "has_data": bool(merged_data)},
@@ -428,8 +430,9 @@ def register_uc_1_1_callbacks(app, plot_service) -> None:
         # Convert to DataFrame with category and identifier columns
         logger.debug("Converting KO sets to DataFrame format for UpSetStrategy")
         upset_data = []
-        for db_name, ko_set in ko_sets.items():
-            for ko in ko_set:
+        for db_name in sorted(ko_sets.keys()):
+            ko_set = ko_sets[db_name]
+            for ko in sorted(ko_set):
                 upset_data.append({"category": db_name, "identifier": ko})
 
         upset_df = pd.DataFrame(upset_data)

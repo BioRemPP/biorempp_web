@@ -13,12 +13,14 @@ import os
 import time
 import json
 import logging
+from dataclasses import dataclass
 import dash_bootstrap_components as dbc
 from dash import Input, Output, State, html, no_update
 from dash.exceptions import PreventUpdate
 from threading import Thread
 from uuid import uuid4
 
+from config.settings import get_settings
 from src.presentation.components.composite.processing_feedback import (
     create_merge_statistics_card,
     create_processing_alert,
@@ -27,6 +29,10 @@ from src.presentation.components.composite.processing_feedback import (
 )
 from src.presentation.routing import app_path
 from src.presentation.services import DataProcessingService, job_resume_service
+from src.presentation.services.results_payload_resolver import (
+    build_results_payload_ref,
+    prime_results_payload_cache,
+)
 from src.presentation.services.results_context import build_results_context
 from src.shared.exceptions import (
     CircuitBreakerOpenError,
@@ -41,11 +47,13 @@ from src.shared.logging import build_log_ref, get_logger
 from src.shared.metrics import (
     PROCESSING_DURATION_SECONDS,
     RESUME_PERSIST_DURATION_SECONDS,
+    RESUME_PERSIST_STAGE_TOTAL,
     instrument_callback,
 )
 
 # Configure logging
 logger = get_logger(__name__)
+settings = get_settings()
 # Dedicated logger outside `src.presentation.callbacks` hierarchy so
 # transition samples always propagate to app.log.
 results_transition_logger = logging.getLogger("biorempp.results_transition")
@@ -53,7 +61,7 @@ results_transition_logger = logging.getLogger("biorempp.results_transition")
 # Initialize data processing service (singleton)
 _data_service = None
 _RESUME_SAVE_TIMEOUT_SECONDS = max(
-    float(os.getenv("BIOREMPP_RESUME_SAVE_TIMEOUT_SECONDS", "2.5")),
+    float(os.getenv("BIOREMPP_RESUME_SAVE_TIMEOUT_SECONDS", "5.0")),
     0.1,
 )
 
@@ -72,32 +80,69 @@ def get_data_service():
     return _data_service
 
 
+@dataclass(frozen=True)
+class ResumePersistOutcome:
+    """Structured result for non-blocking resume persistence."""
+
+    saved_effective: bool
+    stage: str
+    timed_out: bool
+    store_set_confirmed: bool
+    store_set_saved: bool
+    store_set_ms: float | None = None
+    error_type: str | None = None
+
+
 def _persist_resume_payload_with_timeout(
     job_id: str,
     payload: dict,
     owner_token: str,
     ttl_seconds: int,
     timeout_seconds: float = _RESUME_SAVE_TIMEOUT_SECONDS,
-) -> bool:
+) -> ResumePersistOutcome:
     """
     Persist resume payload with bounded wait time.
 
     Returns
     -------
-    bool
-        True on successful persistence, False on timeout or errors.
+    ResumePersistOutcome
+        Structured outcome with timeout stage and effective save state.
     """
-    outcome = {"saved": False, "error": None}
+    outcome = {
+        "saved": False,
+        "error": None,
+        "store_set_confirmed": False,
+        "store_set_saved": False,
+        "store_set_ms": None,
+    }
     persist_started = time.perf_counter()
+
+    def _on_store_set_complete(saved: bool, store_set_ms: float) -> None:
+        outcome["store_set_confirmed"] = True
+        outcome["store_set_saved"] = bool(saved)
+        try:
+            outcome["store_set_ms"] = float(store_set_ms)
+        except (TypeError, ValueError):
+            outcome["store_set_ms"] = None
 
     def _worker() -> None:
         try:
-            outcome["saved"] = job_resume_service.save_job_payload(
-                job_id=job_id,
-                payload=payload,
-                owner_token=owner_token,
-                ttl_seconds=ttl_seconds,
-            )
+            save_kwargs = {
+                "job_id": job_id,
+                "payload": payload,
+                "owner_token": owner_token,
+                "ttl_seconds": ttl_seconds,
+            }
+            try:
+                outcome["saved"] = job_resume_service.save_job_payload(
+                    **save_kwargs,
+                    on_store_set_complete=_on_store_set_complete,
+                )
+            except TypeError:
+                # Backward-compatible fallback for mocks/legacy implementations.
+                outcome["saved"] = job_resume_service.save_job_payload(**save_kwargs)
+                outcome["store_set_confirmed"] = True
+                outcome["store_set_saved"] = bool(outcome["saved"])
         except Exception as exc:  # pragma: no cover - defensive fallback
             outcome["error"] = exc
 
@@ -113,38 +158,136 @@ def _persist_resume_payload_with_timeout(
         RESUME_PERSIST_DURATION_SECONDS.labels(outcome="timed_out").observe(
             max(time.perf_counter() - persist_started, 0.0)
         )
+        store_set_confirmed = bool(outcome["store_set_confirmed"])
+        store_set_saved = bool(outcome["store_set_saved"])
+        stage = (
+            "timed_out_after_store"
+            if (store_set_confirmed and store_set_saved)
+            else "timed_out_before_store"
+        )
+        RESUME_PERSIST_STAGE_TOTAL.labels(stage=stage).inc()
         logger.warning(
             "Resume payload persistence timed out",
             extra={
                 "job_ref": _job_ref(job_id),
                 "timeout_seconds": timeout_seconds,
+                "stage": stage,
+                "store_set_confirmed": store_set_confirmed,
+                "store_set_saved": store_set_saved,
+                "store_set_ms": outcome.get("store_set_ms"),
             },
         )
-        return False
+        return ResumePersistOutcome(
+            saved_effective=store_set_confirmed and store_set_saved,
+            stage=stage,
+            timed_out=True,
+            store_set_confirmed=store_set_confirmed,
+            store_set_saved=store_set_saved,
+            store_set_ms=outcome.get("store_set_ms"),
+        )
 
     error = outcome["error"]
     if error is not None:
         RESUME_PERSIST_DURATION_SECONDS.labels(outcome="error").observe(
             max(time.perf_counter() - persist_started, 0.0)
         )
+        RESUME_PERSIST_STAGE_TOTAL.labels(stage="unexpected_error").inc()
         logger.error(
             "Resume payload persistence failed with unexpected error",
             extra={"job_ref": _job_ref(job_id)},
             exc_info=(type(error), error, error.__traceback__),
         )
-        return False
+        return ResumePersistOutcome(
+            saved_effective=False,
+            stage="unexpected_error",
+            timed_out=False,
+            store_set_confirmed=bool(outcome["store_set_confirmed"]),
+            store_set_saved=bool(outcome["store_set_saved"]),
+            store_set_ms=outcome.get("store_set_ms"),
+            error_type=type(error).__name__,
+        )
 
     saved = bool(outcome["saved"])
+    stage = "saved" if saved else "failed"
+    RESUME_PERSIST_STAGE_TOTAL.labels(stage=stage).inc()
     RESUME_PERSIST_DURATION_SECONDS.labels(
         outcome="saved" if saved else "failed"
     ).observe(max(time.perf_counter() - persist_started, 0.0))
-    return saved
+    return ResumePersistOutcome(
+        saved_effective=saved,
+        stage=stage,
+        timed_out=False,
+        store_set_confirmed=bool(outcome["store_set_confirmed"]),
+        store_set_saved=bool(outcome["store_set_saved"]),
+        store_set_ms=outcome.get("store_set_ms"),
+    )
 
 
 def _observe_processing_duration(started_at: float, outcome: str) -> None:
     """Observe processing callback duration by coarse outcome class."""
     PROCESSING_DURATION_SECONDS.labels(outcome=outcome).observe(
         max(time.perf_counter() - started_at, 0.0)
+    )
+
+
+def _select_results_payload_transport(
+    serialized_result: dict,
+    owner_token: str,
+) -> tuple[dict | None, str]:
+    """
+    Select payload transport strategy for merged-result-store.
+
+    Returns
+    -------
+    tuple[dict | None, str]
+        (store_payload, transport_mode), where transport_mode is one of:
+        - server_ref
+        - client_full
+        - guard_blocked_invalid_ref
+    """
+    if settings.RESULTS_PAYLOAD_MODE != "server":
+        return serialized_result, "client_full"
+
+    payload_ref = build_results_payload_ref(serialized_result, owner_token)
+    if isinstance(payload_ref, dict) and "_payload_ref" in payload_ref:
+        return payload_ref, "server_ref"
+
+    return None, "guard_blocked_invalid_ref"
+
+
+def _build_transport_guard_response(
+    persisted_job_id: str,
+    transport_mode: str,
+):
+    """Build controlled callback response for invalid server payload transport."""
+    logger.error(
+        "Results payload transport guard triggered",
+        extra={
+            "job_ref": _job_ref(persisted_job_id),
+            "results_payload_mode": settings.RESULTS_PAYLOAD_MODE,
+            "transport_mode": transport_mode,
+        },
+    )
+    return (
+        create_processing_error_alert(
+            "Results Transport Guard",
+            "Unable to open results safely in server payload mode.",
+            error_type="PayloadTransportGuardError",
+            recovery_suggestions=[
+                "Retry processing once to rebuild resume payload reference",
+                "Confirm production environment variables are loaded",
+                "Contact support if the issue persists",
+            ],
+            technical_details=(
+                "Server mode requires `_payload_ref` transport for "
+                "`merged-result-store`."
+            ),
+        ),
+        no_update,
+        no_update,
+        {"display": "none"},
+        no_update,
+        no_update,
     )
 
 
@@ -383,12 +526,13 @@ def register_real_processing_callbacks(app):
             # Persist serialized payload for resume-by-job-id flow (non-blocking)
             metadata = result["metadata"]
             persisted_job_id = metadata.get("job_id", job_id)
-            resume_saved = _persist_resume_payload_with_timeout(
+            resume_persist_outcome = _persist_resume_payload_with_timeout(
                 job_id=persisted_job_id,
                 payload=serialized_result,
                 owner_token=effective_owner_token,
                 ttl_seconds=job_resume_service.get_resume_ttl_seconds(),
             )
+            resume_saved = resume_persist_outcome.saved_effective
             payload_size_bytes = job_resume_service.estimate_payload_size_bytes(
                 serialized_result
             )
@@ -398,15 +542,23 @@ def register_real_processing_callbacks(app):
                 extra={
                     "job_ref": _job_ref(persisted_job_id),
                     "resume_saved": resume_saved,
+                    "resume_persist_stage": resume_persist_outcome.stage,
+                    "resume_persist_timed_out": resume_persist_outcome.timed_out,
+                    "resume_store_set_confirmed": resume_persist_outcome.store_set_confirmed,
+                    "resume_store_set_saved": resume_persist_outcome.store_set_saved,
+                    "resume_store_set_ms": resume_persist_outcome.store_set_ms,
                     "payload_size_bytes": payload_size_bytes,
                     "resume_max_payload_mb": job_resume_service.get_resume_max_payload_mb(),
                 },
             )
 
-            if not resume_saved:
+            if settings.RESULTS_PAYLOAD_MODE == "server" and not resume_saved:
                 logger.warning(
-                    "Resume payload unavailable for this run",
-                    extra={"job_ref": _job_ref(persisted_job_id)},
+                    "Resume payload persistence not confirmed within timeout",
+                    extra={
+                        "job_ref": _job_ref(persisted_job_id),
+                        "resume_persist_stage": resume_persist_outcome.stage,
+                    },
                 )
 
             status_message = create_processing_alert(
@@ -419,12 +571,46 @@ def register_real_processing_callbacks(app):
                 ],
             )
 
+            hydration_cache_primed = False
+            if settings.RESULTS_PAYLOAD_MODE == "server":
+                hydration_cache_primed = prime_results_payload_cache(
+                    serialized_result,
+                    effective_owner_token,
+                )
+
+            merged_store_payload, payload_transport_mode = _select_results_payload_transport(
+                serialized_result,
+                effective_owner_token,
+            )
+            logger.info(
+                "Results payload transport decision",
+                extra={
+                    "job_ref": _job_ref(persisted_job_id),
+                    "results_payload_mode": settings.RESULTS_PAYLOAD_MODE,
+                    "transport_mode": payload_transport_mode,
+                    "resume_saved": resume_saved,
+                    "resume_persist_stage": resume_persist_outcome.stage,
+                    "hydration_cache_primed": hydration_cache_primed,
+                    "payload_size_bytes": payload_size_bytes,
+                },
+            )
+
+            if settings.RESULTS_PAYLOAD_MODE == "server" and (
+                not isinstance(merged_store_payload, dict)
+                or "_payload_ref" not in merged_store_payload
+            ):
+                processing_outcome = "transport_guard"
+                return _build_transport_guard_response(
+                    persisted_job_id,
+                    payload_transport_mode,
+                )
+
             # Return results
             processing_outcome = "success"
             return (
                 status_message,
-                serialized_result,
-                build_results_context(serialized_result),
+                merged_store_payload,
+                build_results_context(merged_store_payload),
                 {"display": "block"},  # Show completion panel
                 {"display": "none"},  # Hide progress panel
                 effective_owner_token,

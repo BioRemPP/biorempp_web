@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -124,6 +125,7 @@ def register_uc_3_7_callbacks(app, plot_service) -> None:
         - Passes prepared data to CorrelogramStrategy via PlotService
         - Generates compound-compound correlation matrix heatmap
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"[UC-3.7] Render callback triggered. Active item: {active_item}")
 
         # Check if UC-3.7 accordion is active

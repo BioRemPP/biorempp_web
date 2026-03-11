@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False
@@ -103,6 +104,7 @@ def register_uc_7_3_callbacks(app, plot_service) -> None:
         - Extracts unique 'super_category' values from ToxCSM dataset
         - Returns empty list if ToxCSM data unavailable
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-7.3] 🔄 Dropdown init triggered")
 
         if not merged_data:
@@ -176,6 +178,7 @@ def register_uc_7_3_callbacks(app, plot_service) -> None:
         - Passes prepared data to HeatmapStrategy via PlotService
         - Generates heatmap showing genetic toolkit diversity
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(
             f"[UC-7.3] Render callback triggered. Category: {selected_category}"
         )

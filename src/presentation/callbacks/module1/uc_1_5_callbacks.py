@@ -29,6 +29,7 @@ from dash.exceptions import PreventUpdate
 logger = logging.getLogger(__name__)
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 
 def register_uc_1_5_callbacks(app, plot_service) -> None:
@@ -111,6 +112,7 @@ def register_uc_1_5_callbacks(app, plot_service) -> None:
         - Calculates compliance scores: (sample compounds / agency compounds) × 100%
         - Uses HeatmapScoredStrategy via PlotService
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"UC-1.5 render callback triggered. Active item: {active_item}")
 
         # Check if UC-1.5 accordion is active

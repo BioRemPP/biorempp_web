@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -114,6 +115,7 @@ def register_uc_8_3_callbacks(app, plot_service) -> None:
         - Generates heatmap with samples (rows) × compound names (columns)
         - Uses PlotService with HeatmapScoredStrategy
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"UC-8.3 render callback triggered. Active item: {active_item}")
 
         # Check if UC-8.3 accordion is active

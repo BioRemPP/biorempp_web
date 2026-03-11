@@ -27,6 +27,7 @@ from dash import Input, Output, State, callback_context, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -180,6 +181,7 @@ def register_uc_2_1_callbacks(app, plot_service) -> None:
         - Slider/database changes trigger auto-update if chart already rendered
         - Validates Sample and KO columns before processing
         """
+        biorempp_data = resolve_results_payload(biorempp_data)
         # Check data availability
         if not biorempp_data:
             logger.warning("No data available for UC-2.1")
@@ -365,6 +367,7 @@ def register_uc_2_1_callbacks(app, plot_service) -> None:
         - Calculates maximum KO count across all samples
         - Generates slider marks at appropriate intervals
         """
+        biorempp_data = resolve_results_payload(biorempp_data)
         if not biorempp_data:
             logger.debug("[UC-2.1] No data in store, preventing update")
             raise PreventUpdate

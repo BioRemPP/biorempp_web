@@ -29,6 +29,7 @@ from dash import Input, Output, State, dcc, html
 from plotly.subplots import make_subplots
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +103,7 @@ def register_uc_8_1_callbacks(app, plot_service) -> None:
         - Extracts unique compound classes from BioRemPP data
         - Returns empty list if accordion not active or data unavailable
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[UC-8.1] [CALLBACK 2] Dropdown init triggered, "
             f"active_item: {active_item}"
@@ -196,6 +198,7 @@ def register_uc_8_1_callbacks(app, plot_service) -> None:
         - Calculates unique KO counts per compound for color scaling
         - Generates faceted scatter with one subplot per minimized group
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-8.1] [CALLBACK 3] ========== RENDER TRIGGERED ==========")
         logger.info(f"[UC-8.1] [CALLBACK 3] selected_class: '{selected_class}'")
         logger.debug(f"[UC-8.1] [CALLBACK 3] merged_data type: {type(merged_data)}")
@@ -392,12 +395,41 @@ def register_uc_8_1_callbacks(app, plot_service) -> None:
             else:
                 final_df["_unique_ko_count"] = 1
 
+            cache_context = None
+            fig = None
+            try:
+                selected_class_hash = plot_service.generate_token_hash(selected_class)
+                cached_figure, cache_context = plot_service.resolve_graph_cache(
+                    use_case_id="UC-8.1",
+                    data=final_df,
+                    filters={"compoundclass": selected_class},
+                    extra_cache_tokens={"compoundclass_hash": selected_class_hash},
+                )
+                if cached_figure is not None:
+                    fig = cached_figure
+            except Exception as cache_error:
+                logger.warning(
+                    f"[UC-8.1] Cache resolution skipped due to error: {cache_error}"
+                )
+
             # ========================================
             # Step 9: Generate plot
             # ========================================
-            fig = _create_frozenset_figure(final_df, minimized_groups, selected_class)
-
-            logger.info("[UC-8.1] Faceted scatter generation successful")
+            if fig is None:
+                fig = _create_frozenset_figure(final_df, minimized_groups, selected_class)
+                try:
+                    plot_service.store_graph_cache(
+                        cache_context,
+                        fig,
+                        metadata={"selected_class": selected_class},
+                    )
+                except Exception as cache_error:
+                    logger.warning(
+                        f"[UC-8.1] Cache store skipped due to error: {cache_error}"
+                    )
+                logger.info("[UC-8.1] Faceted scatter generation successful")
+            else:
+                logger.info("[UC-8.1] Cache HIT served")
 
             # ========================================
             # Step 10: Return chart component

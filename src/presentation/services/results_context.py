@@ -20,8 +20,8 @@ def build_results_context(payload: Any) -> dict[str, Any]:
     """
     Build a lightweight context payload for /results routing.
 
-    The full merged payload stays in ``merged-result-store`` for downstream
-    module callbacks, while routing only needs compact metadata.
+    Routing only needs compact metadata. In server payload mode,
+    ``merged-result-store`` may contain just a payload reference.
     """
     if not isinstance(payload, dict):
         return {"ready": False, "job_id": None, "metadata": {}}

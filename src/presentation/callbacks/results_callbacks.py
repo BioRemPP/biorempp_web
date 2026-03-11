@@ -12,6 +12,7 @@ from dash import Input, Output, State, callback
 from dash.exceptions import PreventUpdate
 
 from ..components.composite import create_ag_grid_table
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 # Configure logging
 logger = logging.getLogger(__name__)
@@ -51,6 +52,7 @@ def register_results_callbacks(app):
     )
     def render_biorempp_table(active_item, merged_data):
         """Render BioRemPP table when accordion opens."""
+        merged_data = resolve_results_payload(merged_data)
         if not active_item or not merged_data:
             raise PreventUpdate
 
@@ -71,6 +73,7 @@ def register_results_callbacks(app):
     )
     def render_hadeg_table(active_item, merged_data):
         """Render HADEG table when accordion opens."""
+        merged_data = resolve_results_payload(merged_data)
         if not active_item or not merged_data:
             raise PreventUpdate
 
@@ -95,6 +98,7 @@ def register_results_callbacks(app):
         Uses toxcsm_raw_df to display merged data (user's compounds + ToxCSM data + Sample column).
         This shows only the compounds that matched the user's input, in wide format (66 columns).
         """
+        merged_data = resolve_results_payload(merged_data)
         if not active_item or not merged_data:
             raise PreventUpdate
 
@@ -130,6 +134,7 @@ def register_results_callbacks(app):
     )
     def render_kegg_table(active_item, merged_data):
         """Render KEGG table when accordion opens."""
+        merged_data = resolve_results_payload(merged_data)
         if not active_item or not merged_data:
             raise PreventUpdate
 

@@ -28,6 +28,7 @@ from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
 from src.shared.logging import get_logger
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = get_logger(__name__)
 
@@ -292,6 +293,7 @@ def register_uc_2_5_callbacks(app, plot_service) -> None:
         - Calculates ranks within database
         - Generates box-scatter plot via BoxScatterStrategy
         """
+        merged_data = resolve_results_payload(merged_data)
         from dash import ctx
 
         # Determine which component triggered the callback

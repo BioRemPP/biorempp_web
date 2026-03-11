@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -127,6 +128,7 @@ def register_uc_4_10_callbacks(app, plot_service) -> None:
         PreventUpdate
             If accordion not opened or no data available.
         """
+        merged_data = resolve_results_payload(merged_data)
         # Check if accordion is opened
         if not active_item or active_item != "uc-4-10-accordion":
             logger.debug("[UC-4.10] Accordion not opened")

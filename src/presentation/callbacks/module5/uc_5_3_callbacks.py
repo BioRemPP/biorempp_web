@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -104,6 +105,7 @@ def register_uc_5_3_callbacks(app, plot_service) -> None:
         - Filters out placeholder values (#N/D, #N/A, etc.)
         - Returns sorted list of agency options for dropdown
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-5.3] Dropdown init triggered, " f"active_item: {active_item}")
 
         if not merged_data:
@@ -213,6 +215,7 @@ def register_uc_5_3_callbacks(app, plot_service) -> None:
         - Passes filtered data to ChordStrategy via PlotService
         - Generates agency-specific chord diagram
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-5.3] Render triggered, agency: {selected_agency}")
 
         # Check if agency is selected

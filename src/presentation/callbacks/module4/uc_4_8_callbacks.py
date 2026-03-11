@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -148,6 +149,7 @@ def register_uc_4_8_callbacks(app, plot_service) -> None:
         active_item: Optional[str],
     ) -> Tuple[list, list]:
         """Initialize dropdowns with full stable catalogs from BioRemPP data."""
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             "[UC-4.8] Dropdowns init triggered, data type: %s, active_item=%s",
             type(merged_data),
@@ -235,6 +237,7 @@ def register_uc_4_8_callbacks(app, plot_service) -> None:
         merged_data: Optional[dict],
     ) -> Any:
         """Render UC-4.8 scatter plot with multiselect-aware conditional filtering."""
+        merged_data = resolve_results_payload(merged_data)
         selected_samples = _normalize_selection(selected_sample)
         selected_genes = _normalize_selection(selected_gene)
 

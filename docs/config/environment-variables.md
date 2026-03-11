@@ -6,6 +6,7 @@ Use the tracked files below as reference:
 
 - `.env/env.example` (template)
 - `.env/env.production` (production baseline)
+- `.env/env.production.biome` (institutional production baseline)
 
 ---
 
@@ -67,6 +68,19 @@ Use the tracked files below as reference:
 | `BIOREMPP_RESUME_REDIS_COMPRESSION_LEVEL` | Redis payload compression level (1..9) | `6` |
 | `BIOREMPP_RESUME_REDIS_SOCKET_TIMEOUT_SECONDS` | Redis socket timeout | `3` |
 | `BIOREMPP_RESUME_REDIS_HEALTHCHECK` | Startup Redis health gate for resume | `false` |
+| `BIOREMPP_RESUME_SAVE_TIMEOUT_SECONDS` | Max wait (seconds) for non-blocking resume save confirmation | `5.0` |
+
+---
+
+## Results Payload Transport
+
+| Variable | Purpose | Default |
+|---|---|---|
+| `BIOREMPP_RESULTS_PAYLOAD_MODE` | Transport mode for `merged-result-store` (`client`, `server`) | `server` |
+| `BIOREMPP_RESULTS_HYDRATION_CACHE_SIZE` | In-memory entries for hydrated payload cache | `64` |
+| `BIOREMPP_RESULTS_HYDRATION_CACHE_TTL_SECONDS` | TTL (seconds) for hydrated payload cache entries | `900` |
+| `BIOREMPP_RESULTS_HYDRATION_RETRY_ATTEMPTS` | Retry attempts when hydration returns `not_found` | `8` |
+| `BIOREMPP_RESULTS_HYDRATION_RETRY_DELAY_MS` | Delay in milliseconds between hydration retries | `250` |
 
 ---
 

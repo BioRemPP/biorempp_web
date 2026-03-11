@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -133,6 +134,7 @@ def register_uc_4_12_callbacks(app, plot_service) -> None:
         PreventUpdate
             If no data available or required column not found.
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[UC-4.12] 🔄 Dropdown init triggered, " f"data type: {type(merged_data)}"
         )
@@ -240,6 +242,7 @@ def register_uc_4_12_callbacks(app, plot_service) -> None:
         PreventUpdate
             If no sample selected or no data available.
         """
+        merged_data = resolve_results_payload(merged_data)
         if not selected_sample:
             logger.debug("[UC-4.12] No sample selected, preventing update")
             raise PreventUpdate

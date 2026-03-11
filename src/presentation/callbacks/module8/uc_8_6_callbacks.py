@@ -30,6 +30,7 @@ logger = get_logger(__name__)
 import os
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 # =============================================================================
 # Helper Functions
@@ -521,6 +522,7 @@ def register_uc_8_6_callbacks(app, plot_service):
         - HADEG: 58 pathways for degradation analysis (default)
         - KEGG: 19 pathways for general metabolism
         """
+        merged_data = resolve_results_payload(merged_data)
         from dash import callback_context
 
         logger.info("[UC-8.6] populate_pathway_dropdown callback triggered")
@@ -664,6 +666,7 @@ def register_uc_8_6_callbacks(app, plot_service):
         - No KOs for pathway → Warning message
         - Plot generation error → Error message with details
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info("[UC-8.6] render_uc_8_6 callback triggered")
         logger.debug(f"[UC-8.6] Selected pathway: '{selected_pathway}'")
 
@@ -734,8 +737,9 @@ def register_uc_8_6_callbacks(app, plot_service):
         # Create UpSet DataFrame from sets
         # Format: [{'category': sample_name, 'identifier': ko_id}, ...]
         upset_data = []
-        for sample_name, ko_set in sample_ko_sets.items():
-            for ko_id in ko_set:
+        for sample_name in sorted(sample_ko_sets.keys()):
+            ko_set = sample_ko_sets[sample_name]
+            for ko_id in sorted(ko_set):
                 upset_data.append({"category": sample_name, "identifier": ko_id})
 
         upset_df = pd.DataFrame(upset_data)

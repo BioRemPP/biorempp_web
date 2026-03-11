@@ -203,11 +203,15 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
         dcc.Store(id='example-data-store', storage_type='memory'),
         dcc.Store(id='merged-result-store', storage_type='memory'),
         dcc.Store(id='results-context-store', storage_type='memory'),
+        dcc.Store(id="resume-browser-token-store", storage_type="local"),
         
         html.Div(id='page-content')
     ])
     logger.info("[OK] App layout configured")
-    logger.info("  - Stores: upload-data, example-data, merged-result, results-context")
+    logger.info(
+        "  - Stores: upload-data, example-data, merged-result, "
+        "results-context, resume-browser-token"
+    )
     logger.info("  - Routing: url, page-content")
     
     # Routing callback

@@ -21,7 +21,7 @@ import hashlib
 import json
 import logging
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, Tuple
 
 import pandas as pd
 import plotly.graph_objects as go
@@ -194,12 +194,28 @@ class PlotService:
         str
             MD5 hash (16 characters).
         """
+        hash_df = df
+        # UpSet-like datasets are often built from Python sets; sort rows to
+        # stabilize hash generation across callback executions.
+        if {"category", "identifier"}.issubset(df.columns):
+            try:
+                hash_df = (
+                    df.sort_values(
+                        by=["category", "identifier"],
+                        kind="mergesort",
+                        na_position="last",
+                    )
+                    .reset_index(drop=True)
+                )
+            except Exception:
+                hash_df = df
+
         # Create hash from shape + columns + sample of data
         hash_components = [
-            str(df.shape),
-            str(sorted(df.columns.tolist())),
-            str(df.head(5).values.tobytes()) if len(df) > 0 else "",
-            str(df.tail(5).values.tobytes()) if len(df) > 5 else "",
+            str(hash_df.shape),
+            str(sorted(hash_df.columns.tolist())),
+            str(hash_df.head(5).values.tobytes()) if len(hash_df) > 0 else "",
+            str(hash_df.tail(5).values.tobytes()) if len(hash_df) > 5 else "",
         ]
 
         hash_string = "|".join(hash_components)
@@ -223,8 +239,33 @@ class PlotService:
         filter_string = json.dumps(filters, sort_keys=True)
         return hashlib.md5(filter_string.encode()).hexdigest()[:16]
 
+    def generate_token_hash(self, value: Any) -> str:
+        """
+        Generate deterministic hash for arbitrary cache token values.
+
+        Parameters
+        ----------
+        value : Any
+            Value to hash.
+
+        Returns
+        -------
+        str
+            MD5 hash (16 characters).
+        """
+        try:
+            token_string = json.dumps(value, sort_keys=True, default=str)
+        except Exception:
+            token_string = str(value)
+        return hashlib.md5(token_string.encode()).hexdigest()[:16]
+
     def _get_cache_key(
-        self, config: Dict[str, Any], layer: str, data_hash: str, filters_hash: str
+        self,
+        config: Dict[str, Any],
+        layer: str,
+        data_hash: str,
+        filters_hash: str,
+        extra_tokens: Optional[Dict[str, Any]] = None,
     ) -> str:
         """
         Generate cache key from template.
@@ -239,6 +280,8 @@ class PlotService:
             Data content hash.
         filters_hash : str
             Filters hash.
+        extra_tokens : Optional[Dict[str, Any]], default=None
+            Additional placeholders for key template substitution.
 
         Returns
         -------
@@ -278,12 +321,22 @@ class PlotService:
             f"Using template for layer '{layer}': {template}",
             extra={
                 "template": template,
-                "available_placeholders": ["data_hash", "filters_hash"],
+                "available_placeholders": (
+                    ["data_hash", "filters_hash"]
+                    + sorted((extra_tokens or {}).keys())
+                ),
             },
         )
 
         try:
-            key = template.format(data_hash=data_hash, filters_hash=filters_hash)
+            template_values: Dict[str, Any] = {
+                "data_hash": data_hash,
+                "filters_hash": filters_hash,
+            }
+            if extra_tokens:
+                template_values.update(extra_tokens)
+
+            key = template.format(**template_values)
             logger.debug(
                 "Cache key generated successfully",
                 extra={"key": key[:50], "full_length": len(key)},
@@ -293,13 +346,121 @@ class PlotService:
                 f"Cache key template error: missing placeholder '{e}'",
                 extra={
                     "template": template,
-                    "available": ["data_hash", "filters_hash"],
+                    "available": (
+                        ["data_hash", "filters_hash"]
+                        + sorted((extra_tokens or {}).keys())
+                    ),
                     "error": str(e),
                 },
             )
             raise
 
         return key
+
+    def resolve_graph_cache(
+        self,
+        use_case_id: str,
+        data: pd.DataFrame,
+        filters: Optional[Dict[str, Any]] = None,
+        *,
+        config: Optional[Dict[str, Any]] = None,
+        force_refresh: bool = False,
+        extra_cache_tokens: Optional[Dict[str, Any]] = None,
+    ) -> Tuple[Optional[go.Figure], Optional[Dict[str, Any]]]:
+        """
+        Resolve graph cache hit and return reusable cache context.
+
+        This method is intended for callbacks that build figures manually but
+        still need to use the YAML-driven graph cache contract.
+
+        Parameters
+        ----------
+        use_case_id : str
+            Use case identifier.
+        data : pd.DataFrame
+            Data used to derive cache key.
+        filters : Optional[Dict[str, Any]], default=None
+            Filter state used to derive cache key.
+        config : Optional[Dict[str, Any]], default=None
+            Preloaded use case configuration.
+        force_refresh : bool, default=False
+            Skip cache read if True.
+        extra_cache_tokens : Optional[Dict[str, Any]], default=None
+            Extra placeholders expected by key template.
+
+        Returns
+        -------
+        Tuple[Optional[go.Figure], Optional[Dict[str, Any]]]
+            Cached figure (if hit) and cache context for later storage.
+        """
+        use_case_config = config or self.config_loader.load_config(use_case_id)
+        cache_config = use_case_config.get("performance", {}).get("cache", {})
+        if not cache_config.get("enabled", True):
+            return None, None
+
+        data_hash = self._generate_data_hash(data)
+        filters_hash = self._generate_filters_hash(filters) if filters else "no_filters"
+        graph_cache_key = self._get_cache_key(
+            use_case_config,
+            "graph",
+            data_hash,
+            filters_hash,
+            extra_tokens=extra_cache_tokens,
+        )
+        ttl = self._get_cache_ttl(cache_config, "graph")
+        cache_context: Dict[str, Any] = {
+            "use_case_id": use_case_id,
+            "key": graph_cache_key,
+            "ttl": ttl,
+            "filters": filters,
+        }
+
+        if force_refresh:
+            return None, cache_context
+
+        cached_figure = self.cache_manager.get_cached_graph(graph_cache_key)
+        if cached_figure is not None:
+            logger.info(f"Cache HIT (graph) for {use_case_id}")
+        else:
+            logger.debug(f"Cache MISS (graph) for {use_case_id}")
+        return cached_figure, cache_context
+
+    def store_graph_cache(
+        self,
+        cache_context: Optional[Dict[str, Any]],
+        figure: go.Figure,
+        *,
+        metadata: Optional[Dict[str, Any]] = None,
+    ) -> None:
+        """
+        Store figure in graph cache using context from resolve_graph_cache.
+
+        Parameters
+        ----------
+        cache_context : Optional[Dict[str, Any]]
+            Context returned by resolve_graph_cache.
+        figure : go.Figure
+            Figure to cache.
+        metadata : Optional[Dict[str, Any]], default=None
+            Additional cache metadata.
+        """
+        if not cache_context:
+            return
+
+        base_metadata: Dict[str, Any] = {
+            "use_case_id": cache_context.get("use_case_id"),
+            "filters": cache_context.get("filters"),
+            "ttl": cache_context.get("ttl"),
+        }
+        if metadata:
+            base_metadata.update(metadata)
+
+        self.cache_manager.cache_graph(
+            cache_context["key"],
+            figure,
+            metadata=base_metadata,
+            ttl=cache_context.get("ttl"),
+        )
 
     def _get_cache_ttl(self, cache_config: Dict[str, Any], layer: str) -> int:
         """

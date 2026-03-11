@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -103,6 +104,7 @@ def register_uc_5_4_callbacks(app, plot_service) -> None:
         - Passes prepared data to NetworkStrategy via PlotService
         - Generates bipartite gene-compound network diagram
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-5.4] Render triggered, active_item: {active_item}")
 
         # Check if accordion is active

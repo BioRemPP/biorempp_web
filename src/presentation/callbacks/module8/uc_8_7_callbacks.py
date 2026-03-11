@@ -30,6 +30,7 @@ logger = get_logger(__name__)
 import os
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 # =============================================================================
 # Helper Functions
@@ -256,6 +257,7 @@ def register_uc_8_7_callbacks(app, plot_service):
         Triggered when accordion is opened.
         Extracts unique sample identifiers from BioRemPP database.
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info("[UC-8.7] populate_sample_dropdown callback triggered")
         logger.debug(f"[UC-8.7] active_item: {active_item}")
 
@@ -333,6 +335,7 @@ def register_uc_8_7_callbacks(app, plot_service):
 
         Based on CLI reference: docs/CLI_UC/8.7/plot.py
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info("[UC-8.7] render_uc_8_7 callback triggered")
         logger.debug(f"[UC-8.7] Selected samples: {selected_samples}")
 
@@ -392,7 +395,7 @@ def register_uc_8_7_callbacks(app, plot_service):
             logger.info("[UC-8.7] Generating KO to sample memberships...")
             memberships = (
                 filtered_df.groupby("KO")["Sample"]
-                .apply(lambda x: list(set(x)))
+                .apply(lambda x: sorted(set(x)))
                 .to_dict()
             )
 
@@ -413,8 +416,9 @@ def register_uc_8_7_callbacks(app, plot_service):
             # Prepare data for UpSet plot strategy
             # Format: [{category: sample, identifier: ko}, ...]
             upset_data = []
-            for ko, samples in memberships.items():
-                for sample in samples:
+            for ko in sorted(memberships.keys()):
+                samples = memberships[ko]
+                for sample in sorted(samples):
                     upset_data.append({"category": sample, "identifier": ko})
 
             # Convert to DataFrame (required by PlotService)

@@ -178,8 +178,10 @@ def test_resolve_resume_request_rejects_token_mismatch(
 def test_resolve_resume_request_success_returns_payload_and_redirect(
     isolated_resume_service,
     isolated_rate_limiter,
+    monkeypatch,
 ):
     """Valid job+token should restore payload and redirect to results."""
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESULTS_PAYLOAD_MODE", "server")
     before_success = _counter_value(RESUME_CALLBACK_ATTEMPTS_TOTAL, outcome="success")
     job_id = "BRP-20260225-123003-ABC114"
     owner_token = "token-4"
@@ -198,7 +200,13 @@ def test_resolve_resume_request_success_returns_payload_and_redirect(
         job_resume_callbacks.resolve_resume_request(job_id, owner_token)
     )
 
-    assert data_update == payload
+    assert isinstance(data_update, dict)
+    assert data_update.get("metadata", {}).get("job_id") == job_id
+    assert "biorempp_df" not in data_update
+    payload_ref = data_update.get("_payload_ref")
+    assert isinstance(payload_ref, dict)
+    assert payload_ref.get("job_id") == job_id
+    assert payload_ref.get("owner_token") == owner_token
     assert isinstance(context_update, dict)
     assert context_update.get("ready") is True
     assert context_update.get("job_id") == job_id
@@ -217,6 +225,7 @@ def test_resolve_resume_request_success_respects_url_base_path(
 ):
     """Redirect should honor configured URL_BASE_PATH."""
     monkeypatch.setattr(job_resume_callbacks.settings, "URL_BASE_PATH", "/biorempp/")
+    monkeypatch.setattr(job_resume_callbacks.settings, "RESULTS_PAYLOAD_MODE", "server")
     job_id = "BRP-20260225-123005-ABC116"
     owner_token = "token-5"
     payload = {
@@ -234,7 +243,13 @@ def test_resolve_resume_request_success_respects_url_base_path(
         job_resume_callbacks.resolve_resume_request(job_id, owner_token)
     )
 
-    assert data_update == payload
+    assert isinstance(data_update, dict)
+    assert data_update.get("metadata", {}).get("job_id") == job_id
+    assert "biorempp_df" not in data_update
+    payload_ref = data_update.get("_payload_ref")
+    assert isinstance(payload_ref, dict)
+    assert payload_ref.get("job_id") == job_id
+    assert payload_ref.get("owner_token") == owner_token
     assert isinstance(context_update, dict)
     assert context_update.get("ready") is True
     assert context_update.get("job_id") == job_id

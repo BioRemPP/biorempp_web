@@ -29,6 +29,7 @@ logger = logging.getLogger(__name__)
 import os
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 
 def register_uc_8_5_callbacks(app, plot_service) -> None:
@@ -116,6 +117,7 @@ def register_uc_8_5_callbacks(app, plot_service) -> None:
         - Uses color-only display (text_auto: false) for pattern recognition
         - Hover tooltips show exact percentages
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"UC-8.5 render callback triggered. Active item: {active_item}")
 
         # Check if UC-8.5 accordion is active

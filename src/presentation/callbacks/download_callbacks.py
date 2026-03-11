@@ -25,6 +25,7 @@ from dash.exceptions import PreventUpdate
 
 from src.application.core.result_exporter import ExportFormat, ResultExporter
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -182,6 +183,7 @@ class DownloadCallbackFactory:
             *additional_states,  # DB buttons + dropdown filters
         ):
             """Download data for this use case."""
+            merged_data = resolve_results_payload(merged_data)
             from dash import callback_context
 
             # Determine which button was clicked

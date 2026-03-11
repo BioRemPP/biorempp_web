@@ -27,6 +27,7 @@ from dash import Input, Output, State, callback_context, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -160,6 +161,7 @@ def register_uc_2_2_callbacks(app, plot_service) -> None:
         - Slider/database changes trigger auto-update if chart already rendered
         - Processes compound counts per sample with range filtering
         """
+        merged_data = resolve_results_payload(merged_data)
         # Check data availability
         if not merged_data:
             logger.warning("No data available for UC-2.2")
@@ -394,6 +396,7 @@ def register_uc_2_2_callbacks(app, plot_service) -> None:
         - Calculates maximum compound count across all samples
         - Generates slider marks at appropriate intervals
         """
+        merged_data = resolve_results_payload(merged_data)
         if not merged_data:
             logger.debug("[UC-2.2] No data in store, preventing update")
             raise PreventUpdate

@@ -13,7 +13,7 @@ from collections import deque
 from datetime import datetime, timezone
 from pathlib import Path
 from threading import Lock
-from typing import Optional
+from typing import Callable, Optional
 
 from .resume_store import ResumeStore
 from .resume_store_diskcache import DiskcacheResumeStore
@@ -371,6 +371,7 @@ class JobResumeService:
         payload: dict,
         owner_token: str,
         ttl_seconds: Optional[int] = None,
+        on_store_set_complete: Optional[Callable[[bool, float], None]] = None,
     ) -> bool:
         """
         Save serialized result payload by `job_id`.
@@ -385,35 +386,69 @@ class JobResumeService:
             Browser ownership token for same-browser enforcement.
         ttl_seconds : Optional[int]
             Custom TTL override.
+        on_store_set_complete : Optional[Callable[[bool, float], None]]
+            Optional callback invoked right after backend `set()` completes with
+            `(saved, store_set_ms)`.
         """
         normalized_job_id = (job_id or "").strip().upper()
         operation_started = time.perf_counter()
+        serialize_check_ms = 0.0
+        store_set_ms = 0.0
+        metrics_emit_ms = 0.0
+        payload_size_bytes: Optional[int] = None
+        masked_job_id = self._mask_job_id(normalized_job_id)
+
+        def _emit_timing_log(status: str) -> None:
+            total_ms = (time.perf_counter() - operation_started) * 1000
+            logger.info(
+                "Resume payload persistence timing",
+                extra={
+                    "job_ref": masked_job_id,
+                    "backend": self._store.backend_name,
+                    "status": status,
+                    "payload_size_bytes": payload_size_bytes,
+                    "serialize_check_ms": round(float(serialize_check_ms), 2),
+                    "store_set_ms": round(float(store_set_ms), 2),
+                    "metrics_emit_ms": round(float(metrics_emit_ms), 2),
+                    "total_ms": round(float(total_ms), 2),
+                },
+            )
+
         if not self.validate_job_id(normalized_job_id):
             logger.warning("Refusing to save resume payload: invalid job_id format")
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 time.perf_counter() - operation_started,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
             return False
         if not isinstance(payload, dict):
             logger.warning(
                 "Refusing to save resume payload: payload must be dict",
-                extra={"job_ref": self._mask_job_id(normalized_job_id)},
+                extra={"job_ref": masked_job_id},
             )
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 time.perf_counter() - operation_started,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
             return False
         if not isinstance(owner_token, str) or not owner_token.strip():
             logger.warning(
                 "Refusing to save resume payload: missing owner_token",
-                extra={"job_ref": self._mask_job_id(normalized_job_id)},
+                extra={"job_ref": masked_job_id},
             )
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 time.perf_counter() - operation_started,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
             return False
 
         if ttl_seconds is None:
@@ -426,7 +461,6 @@ class JobResumeService:
 
         payload_size_bytes = self.estimate_payload_size_bytes(payload)
         if payload_size_bytes > self._max_payload_bytes:
-            masked_job_id = self._mask_job_id(normalized_job_id)
             self._record_security_event("save_failed")
             logger.warning(
                 "Refusing to save resume payload: payload too large",
@@ -436,11 +470,14 @@ class JobResumeService:
                     "max_payload_bytes": self._max_payload_bytes,
                 },
             )
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 time.perf_counter() - operation_started,
                 payload_size_bytes=payload_size_bytes,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
             return False
 
         try:
@@ -448,14 +485,16 @@ class JobResumeService:
         except ValueError:
             self._record_security_event("save_failed")
             logger.warning("Refusing to save resume payload: unsafe cache key")
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 time.perf_counter() - operation_started,
                 payload_size_bytes=payload_size_bytes,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
             return False
 
-        masked_job_id = self._mask_job_id(normalized_job_id)
         cache_value = {
             "job_id": normalized_job_id,
             "owner_token": owner_token.strip(),
@@ -467,9 +506,19 @@ class JobResumeService:
             "merged_result_payload": payload,
         }
 
+        serialize_check_ms = (time.perf_counter() - operation_started) * 1000
         start_time = time.perf_counter()
         saved = self._store.set(cache_key, cache_value, ttl)
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        store_set_ms = (time.perf_counter() - start_time) * 1000
+        if on_store_set_complete is not None:
+            try:
+                on_store_set_complete(bool(saved), float(store_set_ms))
+            except Exception:  # pragma: no cover - defensive callback guard
+                logger.debug(
+                    "on_store_set_complete callback failed",
+                    exc_info=True,
+                )
+
         total_elapsed_s = time.perf_counter() - operation_started
         if saved:
             logger.info(
@@ -479,14 +528,17 @@ class JobResumeService:
                     "backend": self._store.backend_name,
                     "ttl_seconds": ttl,
                     "payload_size_bytes": payload_size_bytes,
-                    "save_ms": round(elapsed_ms, 2),
+                    "save_ms": round(store_set_ms, 2),
                 },
             )
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_OK,
                 total_elapsed_s,
                 payload_size_bytes=payload_size_bytes,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_OK)
         else:
             self._record_security_event("save_failed")
             logger.warning(
@@ -495,14 +547,17 @@ class JobResumeService:
                     "job_ref": masked_job_id,
                     "backend": self._store.backend_name,
                     "payload_size_bytes": payload_size_bytes,
-                    "save_ms": round(elapsed_ms, 2),
+                    "save_ms": round(store_set_ms, 2),
                 },
             )
+            metrics_started = time.perf_counter()
             self._emit_save_metrics(
                 self.STATUS_SAVE_FAILED,
                 total_elapsed_s,
                 payload_size_bytes=payload_size_bytes,
             )
+            metrics_emit_ms = (time.perf_counter() - metrics_started) * 1000
+            _emit_timing_log(self.STATUS_SAVE_FAILED)
         return saved
 
     def load_job_payload(

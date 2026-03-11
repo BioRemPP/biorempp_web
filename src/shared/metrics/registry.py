@@ -354,6 +354,13 @@ RESUME_PERSIST_DURATION_SECONDS = _metric(
     ),
 )
 
+RESUME_PERSIST_STAGE_TOTAL = _metric(
+    Counter,
+    "biorempp_resume_persist_stage_total",
+    "Resume persistence wrapper outcomes by execution stage",
+    ["stage"],
+)
+
 RESULTS_TRANSITION_SAMPLES_TOTAL = _metric(
     Counter,
     "biorempp_results_transition_samples_total",
@@ -457,6 +464,7 @@ __all__ = [
     "UPLOAD_SIZE_BYTES",
     "PROCESSING_DURATION_SECONDS",
     "RESUME_PERSIST_DURATION_SECONDS",
+    "RESUME_PERSIST_STAGE_TOTAL",
     "RESULTS_TRANSITION_SAMPLES_TOTAL",
     "RESULTS_TRANSITION_CLICK_TO_REQUEST_SECONDS",
     "RESULTS_TRANSITION_REQUEST_TO_PAINT_SECONDS",

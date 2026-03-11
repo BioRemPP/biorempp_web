@@ -46,6 +46,11 @@ All settings can be overridden with environment variables:
 - BIOREMPP_SAMPLE_NAME_PATTERN: Regex pattern for sample name validation
 - BIOREMPP_CACHE_DIR: Base cache directory (default: <project_root>/cache)
 - BIOREMPP_BACKGROUND_CALLBACKS_ENABLED: Enable Dash background callbacks
+- BIOREMPP_RESULTS_PAYLOAD_MODE: Results payload mode (client|server)
+- BIOREMPP_RESULTS_HYDRATION_CACHE_SIZE: In-memory hydration cache entries
+- BIOREMPP_RESULTS_HYDRATION_CACHE_TTL_SECONDS: Hydration cache TTL in seconds
+- BIOREMPP_RESULTS_HYDRATION_RETRY_ATTEMPTS: Retry attempts on resume not_found
+- BIOREMPP_RESULTS_HYDRATION_RETRY_DELAY_MS: Retry delay in milliseconds
 - BIOREMPP_OBSERVABILITY_ENABLED: Enable Prometheus instrumentation (True/False)
 - BIOREMPP_OBSERVABILITY_METRICS_PATH: Metrics endpoint path (default: /metrics)
 - BIOREMPP_RESUME_BACKEND: Resume backend (diskcache|redis)
@@ -437,6 +442,38 @@ class Settings:
         default_factory=lambda: _get_bool(
             "BIOREMPP_BACKGROUND_CALLBACKS_ENABLED",
             True,
+        )
+    )
+
+    RESULTS_PAYLOAD_MODE: Literal["client", "server"] = field(
+        default_factory=lambda: os.getenv(
+            "BIOREMPP_RESULTS_PAYLOAD_MODE", "server"
+        )
+        .strip()
+        .lower()
+    )
+
+    RESULTS_HYDRATION_CACHE_SIZE: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESULTS_HYDRATION_CACHE_SIZE", 64
+        )
+    )
+
+    RESULTS_HYDRATION_CACHE_TTL_SECONDS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESULTS_HYDRATION_CACHE_TTL_SECONDS", 900
+        )
+    )
+
+    RESULTS_HYDRATION_RETRY_ATTEMPTS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESULTS_HYDRATION_RETRY_ATTEMPTS", 8
+        )
+    )
+
+    RESULTS_HYDRATION_RETRY_DELAY_MS: int = field(
+        default_factory=lambda: _get_int(
+            "BIOREMPP_RESULTS_HYDRATION_RETRY_DELAY_MS", 250
         )
     )
 
@@ -967,6 +1004,24 @@ class Settings:
                 )
                 self.BACKGROUND_CALLBACKS_ENABLED = False
 
+        if self.RESULTS_PAYLOAD_MODE not in ("client", "server"):
+            print(
+                "[WARNING] Invalid BIOREMPP_RESULTS_PAYLOAD_MODE, using 'server'"
+            )
+            self.RESULTS_PAYLOAD_MODE = "server"
+        self.RESULTS_HYDRATION_CACHE_SIZE = max(
+            self.RESULTS_HYDRATION_CACHE_SIZE, 1
+        )
+        self.RESULTS_HYDRATION_CACHE_TTL_SECONDS = max(
+            self.RESULTS_HYDRATION_CACHE_TTL_SECONDS, 30
+        )
+        self.RESULTS_HYDRATION_RETRY_ATTEMPTS = max(
+            self.RESULTS_HYDRATION_RETRY_ATTEMPTS, 1
+        )
+        self.RESULTS_HYDRATION_RETRY_DELAY_MS = max(
+            self.RESULTS_HYDRATION_RETRY_DELAY_MS, 0
+        )
+
         # Auto-adjust settings based on environment
         if self.is_production:
             # Force production-safe settings
@@ -1210,6 +1265,11 @@ class Settings:
             "Dash Callback Execution",
             extra={
                 "background_callbacks_enabled": self.BACKGROUND_CALLBACKS_ENABLED,
+                "results_payload_mode": self.RESULTS_PAYLOAD_MODE,
+                "results_hydration_cache_size": self.RESULTS_HYDRATION_CACHE_SIZE,
+                "results_hydration_cache_ttl_seconds": self.RESULTS_HYDRATION_CACHE_TTL_SECONDS,
+                "results_hydration_retry_attempts": self.RESULTS_HYDRATION_RETRY_ATTEMPTS,
+                "results_hydration_retry_delay_ms": self.RESULTS_HYDRATION_RETRY_DELAY_MS,
             },
         )
 
@@ -1312,6 +1372,13 @@ class Settings:
             f"  Backoff: base {self.RESUME_RATE_LIMIT_BACKOFF_BASE_SECONDS}s, "
             f"max {self.RESUME_RATE_LIMIT_BACKOFF_MAX_SECONDS}s",
             f"  Alert Window: {self.RESUME_ALERT_WINDOW_SECONDS}s",
+            "",
+            "Results Payload:",
+            f"  Mode: {self.RESULTS_PAYLOAD_MODE}",
+            f"  Hydration Cache Size: {self.RESULTS_HYDRATION_CACHE_SIZE}",
+            f"  Hydration Cache TTL: {self.RESULTS_HYDRATION_CACHE_TTL_SECONDS}s",
+            f"  Hydration Retry Attempts: {self.RESULTS_HYDRATION_RETRY_ATTEMPTS}",
+            f"  Hydration Retry Delay: {self.RESULTS_HYDRATION_RETRY_DELAY_MS}ms",
             f"  Gunicorn Line Limit: {self.GUNICORN_LIMIT_REQUEST_LINE}",
             f"  Gunicorn Header Size: {self.GUNICORN_LIMIT_REQUEST_FIELD_SIZE}",
             f"  Gunicorn Header Count: {self.GUNICORN_LIMIT_REQUEST_FIELDS}",

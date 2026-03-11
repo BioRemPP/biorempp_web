@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -132,6 +133,7 @@ def register_uc_4_2_callbacks(app, plot_service) -> None:
         PreventUpdate
             If no data available or 'Pathway' column not found.
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[UC-4.2] 🔄 Dropdown init triggered, data type: {type(merged_data)}"
         )
@@ -227,6 +229,7 @@ def register_uc_4_2_callbacks(app, plot_service) -> None:
         PreventUpdate
             If no pathway selected or no data available.
         """
+        merged_data = resolve_results_payload(merged_data)
         # Check dropdown selection
         if not selected_pathway:
             logger.debug("[UC-4.2] No pathway selected")

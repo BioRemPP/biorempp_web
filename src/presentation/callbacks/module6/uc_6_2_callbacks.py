@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +103,7 @@ def register_uc_6_2_callbacks(app, plot_service) -> None:
         - Passes prepared data to SankeyStrategy via PlotService
         - Generates multi-level biological interaction flow diagram
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-6.2] Render triggered, active_item: {active_item}")
 
         # Check if accordion is active

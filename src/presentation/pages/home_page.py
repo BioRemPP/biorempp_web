@@ -11,7 +11,7 @@ create_home_layout
 Notes
 -----
 - 5 sections: Header, Intro, Upload Workflow, Help, Footer
-- State managed via 5 dcc.Stores
+- State managed via page-level and global dcc.Stores
 - Clean separation from results page
 """
 
@@ -70,12 +70,13 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     - Section 4: Resume by Job ID + Help & Guidance
     - Section 5: Footer
 
-    State Management (5 dcc.Stores):
+    State Management (page-level stores):
     - upload-result: UploadResultDTO
     - processing-progress: ProcessingProgressDTO
     - processing-complete: bool flag
     - merged-result: MergedDataDTO
     - resume-browser-token: local browser ownership token for job resume
+      (provided by global app layout)
 
     Workflow:
     1. User uploads file -> upload-result populated
@@ -161,8 +162,6 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             ),
             # Session ID
             dcc.Store(id="session-id-store", storage_type="session", data=session_id),
-            # Resume ownership token (persists in same browser across sessions)
-            dcc.Store(id="resume-browser-token-store", storage_type="local"),
         ]
     )
 

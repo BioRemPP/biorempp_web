@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -121,6 +122,7 @@ def register_uc_1_6_callbacks(app, plot_service) -> None:
         - Calculates unique KO counts per (Agency, Sample) combination
         - Uses HeatmapStrategy via PlotService
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"[UC-1.6] Render callback triggered. Active item: {active_item}")
 
         # Check if UC-1.6 accordion is active

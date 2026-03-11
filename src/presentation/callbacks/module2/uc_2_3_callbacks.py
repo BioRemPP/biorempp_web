@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -106,6 +107,7 @@ def register_uc_2_3_callbacks(app, plot_service) -> None:
         - Extracts unique compound classes from BioRemPP DataFrame
         - Returns sorted list of options with no initial selection
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[UC-2.3] 🔄 Dropdown init triggered, data type: {type(merged_data)}"
         )
@@ -193,6 +195,7 @@ def register_uc_2_3_callbacks(app, plot_service) -> None:
         - Counts unique samples per compound
         - Generates ranking chart via PlotService
         """
+        merged_data = resolve_results_payload(merged_data)
         # Check dropdown selection
         if not selected_class:
             logger.debug("UC-2.3: No compound class selected")

@@ -274,6 +274,56 @@ class TestCacheKeyGeneration:
         assert 'graph' in graph_key
         assert 'df' in df_key
 
+    def test_get_cache_key_with_extra_tokens(self, plot_service):
+        """Test key generation with additional template placeholders."""
+        config = {
+            'performance': {
+                'cache': {
+                    'enabled': True,
+                    'layers': [
+                        {
+                            'layer': 'graph',
+                            'key_template': 'uc_8_1_{data_hash}_{compoundclass_hash}'
+                        }
+                    ]
+                }
+            }
+        }
+
+        key = plot_service._get_cache_key(
+            config,
+            'graph',
+            'abc123',
+            'filters123',
+            extra_tokens={'compoundclass_hash': 'classhash'}
+        )
+
+        assert key == 'uc_8_1_abc123_classhash'
+
+    def test_get_cache_key_with_missing_extra_token_raises(self, plot_service):
+        """Missing extra template token should raise KeyError."""
+        config = {
+            'performance': {
+                'cache': {
+                    'enabled': True,
+                    'layers': [
+                        {
+                            'layer': 'graph',
+                            'key_template': 'uc_8_1_{data_hash}_{compoundclass_hash}'
+                        }
+                    ]
+                }
+            }
+        }
+
+        with pytest.raises(KeyError):
+            plot_service._get_cache_key(
+                config,
+                'graph',
+                'abc123',
+                'filters123'
+            )
+
 
 # ============================================================================
 # TTL CONFIGURATION TESTS
@@ -620,6 +670,66 @@ class TestCachingBehavior:
         cache_mgr.get_cached_graph.assert_not_called()
         # But result should still be cached
         cache_mgr.cache_graph.assert_called_once()
+
+    def test_resolve_graph_cache_returns_context_with_extra_tokens(
+        self, plot_service, sample_plot_dataframe
+    ):
+        """resolve_graph_cache should support extra key placeholders."""
+        plot_service.config_loader = Mock()
+        plot_service.cache_manager = Mock()
+
+        mock_config = {
+            'metadata': {'use_case_id': 'UC-8.1'},
+            'performance': {
+                'cache': {
+                    'enabled': True,
+                    'layers': [
+                        {
+                            'layer': 'graph',
+                            'key_template': 'uc_8_1_{data_hash}_{compoundclass_hash}',
+                            'ttl': 3600
+                        }
+                    ]
+                }
+            }
+        }
+        plot_service.config_loader.load_config.return_value = mock_config
+        plot_service.cache_manager.get_cached_graph.return_value = None
+
+        cached, context = plot_service.resolve_graph_cache(
+            use_case_id='UC-8.1',
+            data=sample_plot_dataframe,
+            filters={'compoundclass': 'Aromatics'},
+            extra_cache_tokens={'compoundclass_hash': 'classhash'}
+        )
+
+        assert cached is None
+        assert context is not None
+        assert context['use_case_id'] == 'UC-8.1'
+        assert context['ttl'] == 3600
+        assert 'classhash' in context['key']
+
+    def test_store_graph_cache_uses_context(self, plot_service):
+        """store_graph_cache should write figure using resolved context."""
+        plot_service.cache_manager = Mock()
+        figure = go.Figure()
+        context = {
+            'use_case_id': 'UC-7.6',
+            'key': 'uc_7_6_key',
+            'ttl': 3600,
+            'filters': {'active_item': 'uc-7-6-accordion'},
+        }
+
+        plot_service.store_graph_cache(
+            context,
+            figure,
+            metadata={'source': 'unit_test'}
+        )
+
+        plot_service.cache_manager.cache_graph.assert_called_once()
+        _, kwargs = plot_service.cache_manager.cache_graph.call_args
+        assert kwargs['metadata']['use_case_id'] == 'UC-7.6'
+        assert kwargs['metadata']['source'] == 'unit_test'
 
 
 # ============================================================================

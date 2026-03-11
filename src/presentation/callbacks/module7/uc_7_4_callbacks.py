@@ -30,6 +30,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False
@@ -102,6 +103,7 @@ def register_uc_7_4_callbacks(app, plot_service) -> None:
         - ToxCSM data is in long format with super_category column
         - Returns empty list if ToxCSM data unavailable
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[UC-7.4] 🔄 Dropdown init triggered, " f"data type: {type(merged_data)}"
         )
@@ -193,6 +195,7 @@ def register_uc_7_4_callbacks(app, plot_service) -> None:
         - Adds threshold lines (0.3 safety, 0.5 moderate, 0.7 high risk)
         - Sorts endpoints by median toxicity score (descending)
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-7.4] 📊 Render triggered, category: {selected_category}")
 
         if not selected_category:
@@ -253,6 +256,41 @@ def register_uc_7_4_callbacks(app, plot_service) -> None:
                 f"[UC-7.4] 📈 Generating box plot: {len(df_filtered)} "
                 f"records, {df_filtered['endpoint'].nunique()} endpoints"
             )
+
+            cache_filters = {"selected_category": selected_category}
+            cache_context = None
+            fig = None
+            try:
+                cached_figure, cache_context = plot_service.resolve_graph_cache(
+                    use_case_id="UC-7.4",
+                    data=df_filtered,
+                    filters=cache_filters,
+                )
+                if cached_figure is not None:
+                    fig = cached_figure
+            except Exception as cache_error:
+                logger.warning(
+                    f"[UC-7.4] Cache resolution skipped due to error: {cache_error}"
+                )
+
+            if fig is not None:
+                cat_safe = str(selected_category).replace(" ", "_")
+                db_basename = f"toxicity_distribution_{cat_safe}"
+                try:
+                    suggested = sanitize_filename("UC-7.4", db_basename, "png")
+                except Exception:
+                    suggested = f"{db_basename}.png"
+
+                base_filename = os.path.splitext(suggested)[0]
+                config = {
+                    "toImageButtonOptions": {
+                        "format": "svg",
+                        "filename": base_filename,
+                        "scale": 6,
+                    }
+                }
+                logger.info("[UC-7.4] Cache HIT served")
+                return dcc.Graph(figure=fig, config=config, className="border rounded p-2")
 
             # ==================================================================
             # VISUALIZATION: Create Box Plot with Jittered Points
@@ -362,6 +400,17 @@ def register_uc_7_4_callbacks(app, plot_service) -> None:
                 annotation_text="High Risk",
                 annotation_position="right",
             )
+
+            try:
+                plot_service.store_graph_cache(
+                    cache_context,
+                    fig,
+                    metadata={"selected_category": selected_category},
+                )
+            except Exception as cache_error:
+                logger.warning(
+                    f"[UC-7.4] Cache store skipped due to error: {cache_error}"
+                )
 
             # Prepare safe basename and export configuration
             cat_safe = str(selected_category).replace(" ", "_")

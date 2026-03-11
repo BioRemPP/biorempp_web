@@ -27,6 +27,7 @@ from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
 from src.shared.logging import get_logger
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = get_logger(__name__)
 
@@ -388,6 +389,7 @@ def register_uc_1_2_callbacks(app, plot_service) -> None:
         - Extracts and normalizes compound sets grouped by regulatory agency
         - Generates visualization using UpSetStrategy via PlotService
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-1.2] ========== RENDER CALLBACK TRIGGERED ==========")
         logger.info(f"[UC-1.2] active_item received: '{active_item}'")
         logger.info(
@@ -460,8 +462,9 @@ def register_uc_1_2_callbacks(app, plot_service) -> None:
         # Convert to DataFrame format expected by UpSetStrategy
         logger.info("[UC-1.2] Step 3: Converting to UpSet DataFrame format...")
         upset_data = []
-        for agency, compounds in compound_sets.items():
-            for compound in compounds:
+        for agency in sorted(compound_sets.keys()):
+            compounds = compound_sets[agency]
+            for compound in sorted(compounds):
                 upset_data.append({"category": agency, "identifier": compound})
 
         upset_df = pd.DataFrame(upset_data)

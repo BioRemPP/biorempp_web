@@ -27,6 +27,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -100,6 +101,7 @@ def register_uc_6_3_callbacks(app, plot_service) -> None:
         - Passes prepared data to TreemapStrategy via PlotService
         - Generates hierarchical treemap visualization
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"[UC-6.3] Render callback triggered. Active item: {active_item}")
 
         # Check if UC-6.3 accordion is active

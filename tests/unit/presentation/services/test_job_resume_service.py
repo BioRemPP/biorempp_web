@@ -88,6 +88,39 @@ def test_save_and_load_job_payload_success(resume_service):
     ) >= (before_load_latency + 1.0)
 
 
+def test_save_job_payload_emits_store_callback_and_timing_log(resume_service, caplog):
+    """Save should emit store callback and structured timing event."""
+    job_id = "BRP-20260225-120000-ABC124"
+    owner_token = "browser-token-cb"
+    payload = {"metadata": {"job_id": job_id}, "biorempp_df": []}
+    callback_data = {}
+
+    def _on_store(saved: bool, store_set_ms: float) -> None:
+        callback_data["saved"] = saved
+        callback_data["store_set_ms"] = store_set_ms
+
+    with caplog.at_level("INFO"):
+        saved = resume_service.save_job_payload(
+            job_id,
+            payload,
+            owner_token,
+            ttl_seconds=30,
+            on_store_set_complete=_on_store,
+        )
+
+    assert saved is True
+    assert callback_data["saved"] is True
+    assert callback_data["store_set_ms"] >= 0.0
+    timing_records = [
+        rec for rec in caplog.records if rec.message == "Resume payload persistence timing"
+    ]
+    assert timing_records
+    timing = timing_records[-1]
+    assert getattr(timing, "backend", None) == resume_service._store.backend_name
+    assert getattr(timing, "job_ref", "").startswith("job_")
+    assert getattr(timing, "payload_size_bytes", None) is not None
+
+
 def test_save_rejects_invalid_job_id(resume_service):
     """Invalid job format should be rejected on save and load validation."""
     payload = {"metadata": {"job_id": "invalid"}}

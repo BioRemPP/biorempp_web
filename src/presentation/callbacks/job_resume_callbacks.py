@@ -20,6 +20,9 @@ from threading import Lock
 from config.settings import get_settings
 from src.presentation.routing import app_path
 from src.presentation.services import job_resume_service
+from src.presentation.services.results_payload_resolver import (
+    build_results_payload_ref,
+)
 from src.presentation.services.results_context import build_results_context
 from src.presentation.services.resume_store_redis import redis as redis_client_module
 from src.shared.logging import build_log_ref, get_logger
@@ -581,9 +584,12 @@ def resolve_resume_request(job_id: str, owner_token: str):
             },
         )
         resume_rate_limiter.register_success(identity_hash)
+        merged_store_payload = payload
+        if settings.RESULTS_PAYLOAD_MODE == "server":
+            merged_store_payload = build_results_payload_ref(payload, owner_token)
         return (
-            payload,
-            build_results_context(payload),
+            merged_store_payload,
+            build_results_context(merged_store_payload),
             app_path("/results"),
             "",
             _build_status_alert(

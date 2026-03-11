@@ -29,6 +29,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -102,6 +103,7 @@ def register_uc_7_6_callbacks(app, plot_service) -> None:
         - Aggregates unique compounds per sample per toxicity category
         - Generates treemap with hierarchy: All Samples > Sample > Toxicity Category
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.debug(f"[UC-7.6] Render callback triggered. Active item: {active_item}")
 
         # Check if UC-7.6 accordion is active
@@ -325,40 +327,63 @@ def register_uc_7_6_callbacks(app, plot_service) -> None:
                     "No data after aggregation.", "bi bi-funnel"
                 )
 
+            cache_context = None
+            fig = None
+            try:
+                cached_figure, cache_context = plot_service.resolve_graph_cache(
+                    use_case_id="UC-7.6",
+                    data=df_agg,
+                    filters={"active_item": active_item},
+                )
+                if cached_figure is not None:
+                    fig = cached_figure
+            except Exception as cache_error:
+                logger.warning(
+                    f"[UC-7.6] Cache resolution skipped due to error: {cache_error}"
+                )
+
             # ========================================
             # Step 8: Generate Treemap
             # ========================================
-            logger.debug("[UC-7.6] Generating treemap")
+            if fig is None:
+                logger.debug("[UC-7.6] Generating treemap")
 
-            # Use qualitative color palette
-            color_sequence = px.colors.qualitative.Pastel1
+                # Use qualitative color palette
+                color_sequence = px.colors.qualitative.Pastel1
 
-            fig = px.treemap(
-                df_agg,
-                path=["root", "Sample", "Toxicity Category"],
-                values="unique_compound_count",
-                color="Toxicity Category",
-                color_discrete_sequence=color_sequence,
-                hover_name="Toxicity Category",
-                hover_data={"unique_compound_count": ":.0f"},
-            )
+                fig = px.treemap(
+                    df_agg,
+                    path=["root", "Sample", "Toxicity Category"],
+                    values="unique_compound_count",
+                    color="Toxicity Category",
+                    color_discrete_sequence=color_sequence,
+                    hover_name="Toxicity Category",
+                    hover_data={"unique_compound_count": ":.0f"},
+                )
 
-            fig.update_traces(textinfo="label+value", textfont_size=14)
+                fig.update_traces(textinfo="label+value", textfont_size=14)
 
-            fig.update_layout(
-                title=dict(
-                    text="Sample Risk Mitigation Breadth by Compound Variety",
-                    x=0.5,
-                    xanchor="center",
-                    font=dict(size=16),
-                ),
-                height=700,
-                width=None,
-                template="simple_white",
-                margin=dict(t=50, l=10, r=10, b=10),
-            )
-
-            logger.info("[UC-7.6] Treemap generation successful")
+                fig.update_layout(
+                    title=dict(
+                        text="Sample Risk Mitigation Breadth by Compound Variety",
+                        x=0.5,
+                        xanchor="center",
+                        font=dict(size=16),
+                    ),
+                    height=700,
+                    width=None,
+                    template="simple_white",
+                    margin=dict(t=50, l=10, r=10, b=10),
+                )
+                try:
+                    plot_service.store_graph_cache(cache_context, fig)
+                except Exception as cache_error:
+                    logger.warning(
+                        f"[UC-7.6] Cache store skipped due to error: {cache_error}"
+                    )
+                logger.info("[UC-7.6] Treemap generation successful")
+            else:
+                logger.info("[UC-7.6] Cache HIT served")
 
             # ========================================
             # Step 9: Prepare filename and return chart component

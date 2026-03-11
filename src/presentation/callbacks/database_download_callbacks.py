@@ -11,6 +11,7 @@ import pandas as pd
 from dash import Input, Output, State, ctx, dcc
 
 from src.application.core.result_exporter import ResultExporter
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 
@@ -65,6 +66,7 @@ def register_database_download_callbacks(app):
     )
     def download_biorempp_database(csv_clicks, excel_clicks, json_clicks, merged_data):
         """Download BioRemPP merged database in selected format."""
+        merged_data = resolve_results_payload(merged_data)
         logger.info(
             f"[DEBUG] BioRemPP download triggered: csv={csv_clicks}, excel={excel_clicks}, json={json_clicks}"
         )
@@ -129,6 +131,7 @@ def register_database_download_callbacks(app):
     )
     def download_hadeg_database(csv_clicks, excel_clicks, json_clicks, merged_data):
         """Download HADEG merged database in selected format."""
+        merged_data = resolve_results_payload(merged_data)
         if not ctx.triggered or not merged_data:
             return None
 
@@ -186,6 +189,7 @@ def register_database_download_callbacks(app):
     )
     def download_kegg_database(csv_clicks, excel_clicks, json_clicks, merged_data):
         """Download KEGG merged database in selected format."""
+        merged_data = resolve_results_payload(merged_data)
         if not ctx.triggered or not merged_data:
             return None
 
@@ -243,6 +247,7 @@ def register_database_download_callbacks(app):
     )
     def download_toxcsm_database(csv_clicks, excel_clicks, json_clicks, merged_data):
         """Download ToxCSM merged database in selected format (wide format, 66 columns)."""
+        merged_data = resolve_results_payload(merged_data)
         if not ctx.triggered or not merged_data:
             return None
 

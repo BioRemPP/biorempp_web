@@ -28,6 +28,7 @@ from dash import Input, Output, State, dcc, html
 from dash.exceptions import PreventUpdate
 
 from src.presentation.components.download_component import sanitize_filename
+from src.presentation.services.results_payload_resolver import resolve_results_payload
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs
@@ -123,6 +124,7 @@ def register_uc_7_5_callbacks(app, plot_service) -> None:
         - ToxCSM data includes: compoundname, endpoint, toxicity_score, super_category
         - Returns empty list if data unavailable
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-7.5] 🔄 Dropdown init triggered")
         logger.debug(f"[UC-7.5] merged_data type: {type(merged_data)}")
         logger.debug(f"[UC-7.5] active_item: {active_item}")
@@ -251,6 +253,7 @@ def register_uc_7_5_callbacks(app, plot_service) -> None:
         - Passes filtered data to DensityPlotStrategy via PlotService
         - Generates overlaid KDE curves for toxicity score distributions
         """
+        merged_data = resolve_results_payload(merged_data)
         logger.info(f"[UC-7.5] 📊 Render triggered for: {selected_category}")
 
         # Check dropdown selection
