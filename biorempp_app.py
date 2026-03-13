@@ -349,7 +349,7 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             return result_layout
         else:
             # Default to homepage
-            return get_home_layout()
+            return get_home_layout(include_resume_browser_token_store=False)
 
     @app.callback(
         Output("results-module-container", "children"),
@@ -566,15 +566,32 @@ def create_app(force_initialize: bool = False) -> dash.Dash:
             File download response or 404 if not found
         """
         from flask import send_from_directory
-        data_dir = Path(__file__).parent / "data"
         if not settings.is_public_data_file_allowed(filename):
             logger.warning("Blocked non-allowlisted public data file request")
             return FILE_NOT_FOUND_PAYLOAD, 404
-        try:
-            return send_from_directory(data_dir, filename, as_attachment=True)
-        except FileNotFoundError:
-            logger.warning("Allowlisted public data file not found on disk")
-            return FILE_NOT_FOUND_PAYLOAD, 404
+
+        base_dir = Path(__file__).parent
+        candidate_dirs = [
+            settings.DATA_DIR,
+            base_dir / "data",
+            base_dir / "src" / "data",
+        ]
+
+        seen_dirs: set[Path] = set()
+        for data_dir in candidate_dirs:
+            resolved_dir = Path(data_dir).resolve()
+            if resolved_dir in seen_dirs:
+                continue
+            seen_dirs.add(resolved_dir)
+
+            file_path = resolved_dir / filename
+            if file_path.is_file():
+                return send_from_directory(
+                    str(resolved_dir), filename, as_attachment=True
+                )
+
+        logger.warning("Allowlisted public data file not found on disk")
+        return FILE_NOT_FOUND_PAYLOAD, 404
 
     root_data_route = "/data/<filename>"
     app.server.add_url_rule(

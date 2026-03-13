@@ -5,8 +5,10 @@
 #/docs
 # VsCode
 .vscode
-# Claude AI
+# 
+# Claude AI/Codex
 .claude
+.planning
 #biorempp_web/unoff_docs
 *.env
 

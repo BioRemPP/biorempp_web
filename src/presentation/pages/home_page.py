@@ -38,7 +38,10 @@ from ..pages.new_user import (
 from ..pages.terms_of_use import create_terms_modal
 
 
-def create_home_layout(session_id: Optional[str] = None) -> html.Div:
+def create_home_layout(
+    session_id: Optional[str] = None,
+    include_resume_browser_token_store: bool = True,
+) -> html.Div:
     """
     Create homepage layout.
 
@@ -46,6 +49,10 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     ----------
     session_id : Optional[str], optional
         Session ID for tracking user session, by default None
+    include_resume_browser_token_store : bool, optional
+        Whether to include `resume-browser-token-store` in this page layout.
+        Keep True when rendering the page in isolation (unit tests, standalone
+        contexts). Set False when global app layout already provides this store.
 
     Returns
     -------
@@ -162,6 +169,14 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
             ),
             # Session ID
             dcc.Store(id="session-id-store", storage_type="session", data=session_id),
+            # Browser token used by resume flow.
+            # In full app runtime this store is provided at global app layout.
+            # Keep this page-level copy only when explicitly requested.
+            *(
+                [dcc.Store(id="resume-browser-token-store", storage_type="local")]
+                if include_resume_browser_token_store
+                else []
+            ),
         ]
     )
 
@@ -183,7 +198,10 @@ def create_home_layout(session_id: Optional[str] = None) -> html.Div:
     return layout
 
 
-def get_layout(session_id: Optional[str] = None) -> html.Div:
+def get_layout(
+    session_id: Optional[str] = None,
+    include_resume_browser_token_store: bool = True,
+) -> html.Div:
     """
     Get homepage layout (alias for create_home_layout).
 
@@ -191,6 +209,8 @@ def get_layout(session_id: Optional[str] = None) -> html.Div:
     ----------
     session_id : Optional[str], optional
         Session ID for tracking, by default None
+    include_resume_browser_token_store : bool, optional
+        Whether to include `resume-browser-token-store` in this page layout.
 
     Returns
     -------
@@ -201,4 +221,7 @@ def get_layout(session_id: Optional[str] = None) -> html.Div:
     -----
     This function is called by Dash when rendering the homepage.
     """
-    return create_home_layout(session_id=session_id)
+    return create_home_layout(
+        session_id=session_id,
+        include_resume_browser_token_store=include_resume_browser_token_store,
+    )

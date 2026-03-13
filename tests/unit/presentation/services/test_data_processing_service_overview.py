@@ -142,6 +142,141 @@ def mock_database_dir(tmp_path):
     return tmp_path
 
 
+@pytest.fixture
+def mock_database_dir_legacy_toxcsm(tmp_path):
+    """Create minimal databases using legacy ToxCSM endpoint naming."""
+    biorempp_df = pd.DataFrame(
+        [
+            {
+                "ko": "K00001",
+                "cpd": "C00001",
+                "compoundname": "Compound A",
+                "genesymbol": "GENEA",
+                "referenceAG": "EPA",
+                "compoundclass": "ClassA",
+                "enzyme_activity": "ActA",
+            },
+            {
+                "ko": "K00001",
+                "cpd": "C00002",
+                "compoundname": "Compound B",
+                "genesymbol": "GENEB",
+                "referenceAG": "ATSDR",
+                "compoundclass": "ClassB",
+                "enzyme_activity": "ActB",
+            },
+            {
+                "ko": "K00002",
+                "cpd": "C00003",
+                "compoundname": "Compound C",
+                "genesymbol": "GENEC",
+                "referenceAG": "EPA",
+                "compoundclass": "ClassA",
+                "enzyme_activity": "ActC",
+            },
+        ]
+    )
+    biorempp_df.to_csv(tmp_path / "biorempp_db.csv", sep=";", index=False)
+
+    hadeg_df = pd.DataFrame(
+        [
+            {
+                "ko": "K00001",
+                "Gene": "GeneA",
+                "Pathway": "Pathway 1",
+                "compound_pathway": "CategoryA",
+            },
+            {
+                "ko": "K00001",
+                "Gene": "GeneB",
+                "Pathway": "Pathway 2",
+                "compound_pathway": "CategoryB",
+            },
+            {
+                "ko": "K00003",
+                "Gene": "GeneC",
+                "Pathway": "Pathway 3",
+                "compound_pathway": "CategoryA",
+            },
+        ]
+    )
+    hadeg_df.to_csv(tmp_path / "hadeg_db.csv", sep=";", index=False)
+
+    kegg_df = pd.DataFrame(
+        [
+            {"ko": "K00001", "pathname": "KPath 1", "genesymbol": "KG1"},
+            {"ko": "K00002", "pathname": "KPath 2", "genesymbol": "KG2"},
+            {"ko": "K00002", "pathname": "KPath 3", "genesymbol": "KG3"},
+        ]
+    )
+    kegg_df.to_csv(tmp_path / "kegg_degradation_db.csv", sep=";", index=False)
+
+    # Legacy naming: Genomic_*, unprefixed Avian and Eye_Irritation
+    toxcsm_df = pd.DataFrame(
+        [
+            {
+                "cpd": "C00001",
+                "compoundname": "Compound A",
+                "value_NR_AR": 0.1,
+                "label_NR_AR": "Low",
+                "value_SR_ARE": 0.2,
+                "label_SR_ARE": "Low",
+                "value_Genomic_AMES_Mutagenesis": 0.3,
+                "label_Genomic_AMES_Mutagenesis": "Medium",
+                "value_Avian": 0.4,
+                "label_Avian": "High",
+                "value_Eye_Irritation": 0.5,
+                "label_Eye_Irritation": "High",
+            },
+            {
+                "cpd": "C00002",
+                "compoundname": "Compound B",
+                "value_NR_AR": 0.1,
+                "label_NR_AR": "Low",
+                "value_SR_ARE": 0.2,
+                "label_SR_ARE": "Low",
+                "value_Genomic_AMES_Mutagenesis": 0.3,
+                "label_Genomic_AMES_Mutagenesis": "Medium",
+                "value_Avian": 0.4,
+                "label_Avian": "High",
+                "value_Eye_Irritation": 0.5,
+                "label_Eye_Irritation": "High",
+            },
+            {
+                "cpd": "C00003",
+                "compoundname": "Compound C",
+                "value_NR_AR": 0.1,
+                "label_NR_AR": "Low",
+                "value_SR_ARE": 0.2,
+                "label_SR_ARE": "Low",
+                "value_Genomic_AMES_Mutagenesis": 0.3,
+                "label_Genomic_AMES_Mutagenesis": "Medium",
+                "value_Avian": 0.4,
+                "label_Avian": "High",
+                "value_Eye_Irritation": 0.5,
+                "label_Eye_Irritation": "High",
+            },
+            {
+                "cpd": "C99999",
+                "compoundname": "Compound X",
+                "value_NR_AR": 0.1,
+                "label_NR_AR": "Low",
+                "value_SR_ARE": 0.2,
+                "label_SR_ARE": "Low",
+                "value_Genomic_AMES_Mutagenesis": 0.3,
+                "label_Genomic_AMES_Mutagenesis": "Medium",
+                "value_Avian": 0.4,
+                "label_Avian": "High",
+                "value_Eye_Irritation": 0.5,
+                "label_Eye_Irritation": "High",
+            },
+        ]
+    )
+    toxcsm_df.to_csv(tmp_path / "toxcsm_db.csv", sep=";", index=False)
+
+    return tmp_path
+
+
 def test_process_upload_includes_database_overview(mock_database_dir):
     """Metadata should include database_overview with global+input values."""
     service = DataProcessingService(database_path=mock_database_dir)
@@ -284,3 +419,31 @@ def test_process_upload_metadata_matches_deduplicated_outputs(mock_database_dir)
         + len(result["kegg_df"])
     )
     assert aggregate["total_relations_input"] == expected_total_relations
+
+
+def test_legacy_toxcsm_column_names_are_normalized_and_mapped(
+    mock_database_dir_legacy_toxcsm,
+):
+    """Legacy ToxCSM columns must still produce 5 mapped super-categories."""
+    service = DataProcessingService(database_path=mock_database_dir_legacy_toxcsm)
+    content = ">SampleA\nK00001\n>SampleB\nK00002\n"
+
+    result = service.process_upload(content=content, filename="input.txt")
+    toxcsm_df = result["toxcsm_df"]
+    toxcsm_stats = result["metadata"]["database_overview"]["toxcsm"]
+
+    assert sorted(toxcsm_df["super_category"].unique().tolist()) == [
+        "Environmental",
+        "Genomic",
+        "Nuclear Response",
+        "Organic",
+        "Stress Response",
+    ]
+    assert toxcsm_df["endpoint"].str.startswith("Gen_").any()
+    assert toxcsm_df["endpoint"].str.startswith("Env_").any()
+    assert toxcsm_df["endpoint"].str.startswith("Org_").any()
+
+    assert toxcsm_stats["toxicity_endpoints"]["global_value"] == 5
+    assert toxcsm_stats["toxicity_categories"]["global_value"] == 5
+    assert toxcsm_stats["toxicity_endpoints"]["input_value"] == 5
+    assert toxcsm_stats["toxicity_categories"]["input_value"] == 5

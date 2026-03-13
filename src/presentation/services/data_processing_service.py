@@ -106,16 +106,87 @@ class DataProcessingService:
         return len([col for col in columns if col.startswith("value_")])
 
     @staticmethod
+    def _extract_toxcsm_prefix(column_name: str) -> Optional[str]:
+        """
+        Extract canonical ToxCSM prefix from a value column name.
+
+        Supports both schemas:
+        - Current: value_NR_*, value_SR_*, value_Gen_*, value_Env_*, value_Org_*
+        - Legacy: value_Genomic_* and unprefixed Env/Org endpoints
+        """
+        if not column_name.startswith("value_"):
+            return None
+
+        endpoint = column_name[len("value_") :]
+        if endpoint.startswith("NR_"):
+            return "NR"
+        if endpoint.startswith("SR_"):
+            return "SR"
+        if endpoint.startswith("Gen_") or endpoint.startswith("Genomic_"):
+            return "Gen"
+        if endpoint.startswith("Env_"):
+            return "Env"
+        if endpoint.startswith("Org_"):
+            return "Org"
+
+        legacy_env_endpoints = {
+            "Avian",
+            "Biodegradation",
+            "Crustacean",
+            "Fathead_Minnow",
+            "Honey_Bee",
+            "T._Pyriformis",
+            "T_Pyriformis",
+        }
+        if endpoint in legacy_env_endpoints:
+            return "Env"
+
+        legacy_org_endpoints = {
+            "Eye_Corrosion",
+            "Eye_Irritation",
+            "Liver_Injury_I",
+            "Liver_Injury_II",
+            "Respiratory_Disease",
+            "Skin_Sensitisation",
+            "hERG_I_Inhibitor",
+            "hERG_II_Inhibitor",
+        }
+        if endpoint in legacy_org_endpoints:
+            return "Org"
+
+        return None
+
+    @staticmethod
+    def _normalize_toxcsm_endpoint(endpoint: str, prefix: Optional[str]) -> str:
+        """Normalize endpoint labels to stable names across legacy/new schemas."""
+        if endpoint.startswith("value_"):
+            endpoint = endpoint[len("value_") :]
+
+        if endpoint.startswith("Genomic_"):
+            endpoint = endpoint.replace("Genomic_", "Gen_", 1)
+        elif endpoint == "T._Pyriformis":
+            endpoint = "T_Pyriformis"
+
+        if prefix in {"NR", "SR"}:
+            return endpoint
+        if prefix == "Gen":
+            return endpoint if endpoint.startswith("Gen_") else f"Gen_{endpoint}"
+        if prefix == "Env":
+            return endpoint if endpoint.startswith("Env_") else f"Env_{endpoint}"
+        if prefix == "Org":
+            return endpoint if endpoint.startswith("Org_") else f"Org_{endpoint}"
+
+        return endpoint
+
+    @staticmethod
     def _count_toxicity_categories(columns: List[str]) -> int:
-        """Count unique ToxCSM super-categories from `value_` prefixes."""
-        categories = set()
+        """Count canonical ToxCSM categories from `value_` columns."""
+        canonical_prefixes = set()
         for col in columns:
-            if not col.startswith("value_"):
-                continue
-            parts = col.split("_")
-            if len(parts) > 1 and parts[1]:
-                categories.add(parts[1])
-        return len(categories)
+            prefix = DataProcessingService._extract_toxcsm_prefix(col)
+            if prefix:
+                canonical_prefixes.add(prefix)
+        return len(canonical_prefixes)
 
     def _build_database_overview_global_stats(self) -> Dict[str, Dict[str, int]]:
         """
@@ -479,7 +550,7 @@ class DataProcessingService:
         df_long = df_long.dropna(subset=["toxicity_score"])
 
         # Extract prefix from endpoint (e.g., 'value_NR_AR' → 'NR')
-        df_long["prefix"] = df_long["endpoint"].str.split("_").str[1]
+        df_long["prefix"] = df_long["endpoint"].map(self._extract_toxcsm_prefix)
 
         # Map prefix to super-category
         df_long["super_category"] = df_long["prefix"].map(category_mapping)
@@ -488,7 +559,12 @@ class DataProcessingService:
         df_long = df_long.dropna(subset=["super_category"])
 
         # Clean endpoint name (remove 'value_' prefix)
-        df_long["endpoint"] = df_long["endpoint"].str.replace("value_", "", regex=False)
+        df_long["endpoint"] = df_long.apply(
+            lambda row: self._normalize_toxcsm_endpoint(
+                str(row["endpoint"]), row["prefix"]
+            ),
+            axis=1,
+        )
 
         # Keep unique compounds
         return self._dedupe_rows(df_long)
