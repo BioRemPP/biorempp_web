@@ -226,18 +226,44 @@ flowchart LR
 ### Web Service
 
 ```text
-BioRemPP Development Team (2026). BioRemPP: Bioremediation Potential Profile 
-Web Service (v1.0.0). Available at: https://bioinfo.imd.ufrn.br/biorempp/
+Lima Silva, D. F., & Fassarella Agnez-Lima, L. (2026). BioRemPP: A Compound-Centric
+Web Server for Bioremediation Potential Profiling (1.0.0). Zenodo.
+https://doi.org/10.5281/zenodo.18919675
 ```
 
 ??? note "BibTeX Format"
     ```bibtex
-    @misc{biorempp2025,
-      title={BioRemPP: Bioremediation Potential Profile Web Service},
-      author={BioRemPP Development Team},
-      year={2025},
-      url={https://bioinfo.imd.ufrn.br/biorempp/},
-      note={Version 1.0.0}
+    @software{limasilva2026biorempp_web,
+      author    = {Lima Silva, D. F. and Fassarella Agnez-Lima, L.},
+      title     = {BioRemPP: A Compound-Centric Web Server for Bioremediation
+                   Potential Profiling},
+      year      = {2026},
+      publisher = {Zenodo},
+      version   = {1.0.0},
+      doi       = {10.5281/zenodo.18919675},
+      url       = {https://doi.org/10.5281/zenodo.18919675}
+    }
+    ```
+
+### Database
+
+```text
+Lima Silva, D. F., & Fassarella Agnez-Lima, L. (2025–2026). BioRemPP Database:
+A Curated Compound-Centric Resource for Bioremediation Potential Profiling (1.0.0)
+[Data set]. Zenodo. https://doi.org/10.5281/zenodo.18905195
+```
+
+??? note "BibTeX Format"
+    ```bibtex
+    @dataset{limasilva2025biorempp_db,
+      author    = {Lima Silva, D. F. and Fassarella Agnez-Lima, L.},
+      title     = {BioRemPP Database: A Curated Compound-Centric Resource for
+                   Bioremediation Potential Profiling},
+      year      = {2025},
+      publisher = {Zenodo},
+      version   = {1.0.0},
+      doi       = {10.5281/zenodo.18905195},
+      url       = {https://doi.org/10.5281/zenodo.18905195}
     }
     ```
 

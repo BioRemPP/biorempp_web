@@ -23,7 +23,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 #### DOI and Archival Release Note
 
 - **Zenodo deposition note for citation and archival tracking**.
-- **Official DOI reference included:** https://doi.org/10.5281/zenodo.18905195
+- **Web Service DOI:** https://doi.org/10.5281/zenodo.18919675
+- **Database DOI:** https://doi.org/10.5281/zenodo.18905195
 
 ### Changed
 
