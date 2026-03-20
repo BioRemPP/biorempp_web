@@ -281,8 +281,10 @@ secrets/
 
 # Local Claude Code settings (contain local host paths - privacy risk)
 .claude/
+.codex/
 
 # Archive and profiling (non-production artifacts)
+.planning/
 .archive/
 profiling_biorempp/
 
