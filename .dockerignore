@@ -279,6 +279,13 @@ service-account.json
 secrets/
 .secrets/
 
+# Local Claude Code settings (contain local host paths - privacy risk)
+.claude/
+
+# Archive and profiling (non-production artifacts)
+.archive/
+profiling_biorempp/
+
 # ============================================================================
 # DOCKER INFRASTRUCTURE (v2.0)
 # ============================================================================
