@@ -82,4 +82,14 @@ interpretation_guidelines:
     Identifying such patterns can serve as a starting point for exploratory
     analyses, though any functional inference requires experimental validation.
 
+limitations:
+  - >
+    Methodological limitation: Area size is determined by unique gene annotation counts in the reference database, which structurally favors well-studied chemical classes regardless of their real prevalence in the samples.
+
+  - >
+    Visualization limitation: The nested rectangles display aggregate gene counts but hide the identity, function, and pathway context of the genes within each compound's box.
+
+  - >
+    Interpretive limitation: Large rectangles represent broad database coverage for a chemical or class, not confirmed functional diversity, higher metabolic activity, or biological significance.
+
 color_scheme: "success"
