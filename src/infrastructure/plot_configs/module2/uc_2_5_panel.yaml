@@ -66,4 +66,20 @@ interpretation_guidelines:
     comparing databases where a few samples may have unusually high or low KO
     counts.
 
+limitations:
+  - >
+    Methodological limitation: Distribution summaries are calculated from unique
+    KO counts per sample and therefore inherit the same limits of presence-based
+    annotation data, excluding expression, abundance, and functional validation.
+
+  - >
+    Visualization limitation: The box-and-scatter plot summarizes spread and
+    outliers but does not identify which KO categories or sample attributes
+    explain the observed variability in each database.
+
+  - >
+    Interpretive limitation: Differences in median, spread, or outlier patterns
+    indicate variation in annotation coverage across databases, not direct
+    evidence of stronger functional potential or biological activity.
+
 color_scheme: "success"

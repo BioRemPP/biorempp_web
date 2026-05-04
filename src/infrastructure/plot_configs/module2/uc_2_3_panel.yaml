@@ -52,4 +52,20 @@ interpretation_guidelines:
     generating hypotheses about functional coverage differences across compound
     categories.
 
+limitations:
+  - >
+    Methodological limitation: Counts are based on unique sample co-annotations
+    per compound within the selected chemical class and do not account for
+    abundance, repeated evidence, or cross-class annotation complexity.
+
+  - >
+    Visualization limitation: The filtered bar chart reflects only one chemical
+    class at a time and compresses the result to sample counts, without showing
+    the identity of contributing samples or overlap structure between compounds.
+
+  - >
+    Interpretive limitation: Compounds associated with more samples indicate
+    broader co-occurrence in the dataset, not confirmed ubiquity, accessibility,
+    or validated biotransformation potential across those samples.
+
 color_scheme: "success"
