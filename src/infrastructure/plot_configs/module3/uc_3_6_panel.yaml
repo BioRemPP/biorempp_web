@@ -72,4 +72,20 @@ interpretation_guidelines:
     uncharacterized genes based on their association patterns.
 
 
+limitations:
+  - >
+    Methodological limitation: Gene co-occurrence is inferred from binary
+    presence/absence patterns across samples and does not incorporate genomic
+    context, expression, regulation, or causal dependence between genes.
+
+  - >
+    Visualization limitation: The correlogram summarizes each gene pair with a
+    single correlation value, masking which samples drive the association and
+    how robust the signal is under sparse annotation patterns.
+
+  - >
+    Interpretive limitation: Strong co-occurrence suggests recurring annotation
+    linkage, not proof of operon structure, pathway membership, co-regulation,
+    or essential functional coupling.
+
 color_scheme: "primary"
