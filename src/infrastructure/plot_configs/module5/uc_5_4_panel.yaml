@@ -80,4 +80,14 @@ interpretation_guidelines:
     structure. Any inference about metabolic function requires experimental
     validation beyond annotation data.
 
+limitations:
+  - >
+    Methodological limitation: The bipartite network is built from unweighted annotation records, treating all database links equally without incorporating experimental evidence or reaction kinetics.
+
+  - >
+    Visualization limitation: The force-directed layout clusters nodes based on topology, which can visually overstate the relationship between loosely connected genes and compounds.
+
+  - >
+    Interpretive limitation: Hub nodes and dense clusters represent frequent database co-occurrences, not necessarily core metabolic pathways, physical interactions, or confirmed enzymatic activity.
+
 color_scheme: "success"
