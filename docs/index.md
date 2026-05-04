@@ -7,7 +7,7 @@ description: Open-access scientific web service for integrative functional analy
 
 *Open-Access Scientific Platform for Bioremediation Functional Analysis*
 
-**Version:** 1.0.0 | **Last Updated:** 2026-03-09
+**Version:** 1.0.0 | **Last Updated:** 2026-05-04
 
 ---
 
