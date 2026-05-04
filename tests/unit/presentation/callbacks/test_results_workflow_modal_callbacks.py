@@ -129,6 +129,7 @@ def test_resolve_results_workflow_modal_opens_for_valid_workflow(monkeypatch):
     assert "KO Richness" in _flatten_text(title)
     assert "Load data" in body_text
     assert "analytical steps" in body_text
+    assert "View complete Use Case documentation" in body_text
 
 
 def test_resolve_results_workflow_modal_ignores_non_clicked_trigger():
