@@ -29,7 +29,8 @@ uc_user_guide/
 - Detailed description
 - Visual elements guide
 - Interpretation guidelines
-- Color-coded sections (success/info/warning borders)
+- Use-case-specific limitations
+- Color-coded sections (success/info/primary/warning/danger emphasis)
 
 ### 3. Interactive Controls
 - **Database Selector**: Toggle between BioRemPP, HADEG, KEGG

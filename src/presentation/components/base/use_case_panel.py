@@ -251,6 +251,7 @@ def create_use_case_panel(
     description: str,
     visual_elements: Optional[List[Dict[str, str]]] = None,
     interpretation_guidelines: Optional[List[str]] = None,
+    limitations: Optional[List[str]] = None,
     color_scheme: str = "info",
 ) -> html.Div:
     """
@@ -269,6 +270,8 @@ def create_use_case_panel(
         Example: [{'label': 'Y-axis', 'description': 'Samples'}]
     interpretation_guidelines : Optional[List[str]], optional
         List of interpretation guidelines (plain text)
+    limitations : Optional[List[str]], optional
+        List of use-case-specific limitations (plain text)
     color_scheme : str, optional
         Bootstrap color (info, primary, success, warning),
         by default "info"
@@ -291,6 +294,9 @@ def create_use_case_panel(
     ...     interpretation_guidelines=[
     ...         'Ranking: Observe changes',
     ...         'Generalists: High ranks'
+    ...     ],
+    ...     limitations=[
+    ...         'Methodological limitation: Ranking is based on unique KO counts.'
     ...     ]
     ... )
 
@@ -328,6 +334,18 @@ def create_use_case_panel(
                 className="mt-3 mb-2 text-warning fw-bold",
             ),
             html.Ul(interpretation_items, className="mb-0"),
+        ]
+
+    # Limitations section
+    limitations_content = []
+    if limitations:
+        limitation_items = [html.Li(limitation) for limitation in limitations]
+        limitations_content = [
+            html.H6(
+                [html.I(className="fas fa-triangle-exclamation me-2"), "Limitations"],
+                className="mt-3 mb-2 text-danger fw-bold",
+            ),
+            html.Ul(limitation_items, className="mb-0"),
         ]
 
     # Main panel with collapse button
@@ -404,6 +422,12 @@ def create_use_case_panel(
                                 (
                                     html.Div(interpretation_content)
                                     if interpretation_guidelines
+                                    else html.Div()
+                                ),
+                                # Limitations
+                                (
+                                    html.Div(limitations_content)
+                                    if limitations
                                     else html.Div()
                                 ),
                             ],

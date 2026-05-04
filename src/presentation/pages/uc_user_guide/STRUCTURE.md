@@ -68,7 +68,8 @@ User Guide Page (/help/user-guide or /user-guide)
 │              │         ├─── Scientific Question (green border)
 │              │         ├─── Description (info section)
 │              │         ├─── Visual Elements (primary section)
-│              │         └─── Interpretation (warning section)
+│              │         ├─── Interpretation (warning section)
+│              │         └─── Limitations (danger section)
 │              │
 │              ├─── Demo Alert (blue)
 │              │    └─── "This is a demonstration..."
@@ -155,7 +156,8 @@ create_interactive_demo_section()
           │                   ├─── Scientific Question
           │                   ├─── Description
           │                   ├─── Visual Elements
-          │                   └─── Interpretation
+          │                   ├─── Interpretation
+          │                   └─── Limitations
           │
           ├─── dbc.Alert (demo notice)
           │

@@ -152,6 +152,20 @@ def create_demo_use_case_panel(config: dict) -> html.Div:
         html.Ul(interpretation_items, className="mb-0"),
     ]
 
+    # Limitations
+    limitations_content = []
+    if panel_info.get("limitations"):
+        limitation_items = [
+            html.Li(limitation) for limitation in panel_info["limitations"]
+        ]
+        limitations_content = [
+            html.H6(
+                [html.I(className="fas fa-triangle-exclamation me-2"), "Limitations"],
+                className="mt-3 mb-2 text-danger fw-bold",
+            ),
+            html.Ul(limitation_items, className="mb-0"),
+        ]
+
     # Main panel
     panel = html.Div(
         [
@@ -217,6 +231,12 @@ def create_demo_use_case_panel(config: dict) -> html.Div:
                                 html.Div(visual_elements_content),
                                 # Interpretation Guidelines
                                 html.Div(interpretation_content),
+                                # Limitations
+                                (
+                                    html.Div(limitations_content)
+                                    if panel_info.get("limitations")
+                                    else html.Div()
+                                ),
                             ],
                             className="p-4",
                         )

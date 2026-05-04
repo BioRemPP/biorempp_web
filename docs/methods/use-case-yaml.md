@@ -256,7 +256,8 @@ Defines error responses.
 
 ### Panel Configuration (`*_panel.yaml`)
 
-Provides scientific context for users.
+Provides scientific context, interpretation guidance, and use-case-specific
+scope boundaries for users.
 
 | Field | Required | Description |
 |-------|----------|-------------|
@@ -265,7 +266,13 @@ Provides scientific context for users.
 | `description` | Yes | What the visualization shows |
 | `visual_elements` | Yes | Explanation of chart elements |
 | `interpretation_guidelines` | Yes | How to interpret results |
+| `limitations` | No | Flat list of method, visualization, or interpretation constraints specific to the use case |
 | `color_scheme` | Yes | Bootstrap color scheme |
+
+`limitations`, when present, should remain a simple list of short statements.
+For consistency, prefer bullets that clarify method-level constraints, what the
+visualization compresses or omits, and what conclusions should not be drawn
+from the chart alone.
 
 ---
 
