@@ -78,4 +78,14 @@ interpretation_guidelines:
     These are annotation-level patterns and do not confirm specialization or
     generalist degradation capability.
 
+limitations:
+  - >
+    Methodological limitation: Sizing bubbles by total KO counts inherently biases the visualization toward large, promiscuous enzyme families or extensively studied xenobiotics with many reference annotations.
+
+  - >
+    Visualization limitation: The bubble size aggregates multiple diverse enzymatic steps into a single volume, obscuring whether the underlying KOs belong to completely disjoint reaction steps or redundant pathways.
+
+  - >
+    Interpretive limitation: Large, bright bubbles emphasize areas of dense reference annotations for specific chemical classes, not a guaranteed high biotransformation rate or actual remediation potential in the environment.
+
 color_scheme: "success"

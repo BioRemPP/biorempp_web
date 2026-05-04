@@ -81,4 +81,14 @@ interpretation_guidelines:
     database. This may guide further exploratory analyses, but does not confirm
     biotransformation versatility or suitability for any specific application.
 
+limitations:
+  - >
+    Methodological limitation: Scaling bubble sizes by gene counts artificially emphasizes well-characterized enzyme classes with deep reference databases, while penalizing novel or under-studied degradation pathways.
+
+  - >
+    Visualization limitation: The matrix condenses all unique genes associated with an enzyme activity into a single sphere, making it impossible to distinguish between a functional multi-subunit complex and a loose collection of redundant paralogs.
+
+  - >
+    Interpretive limitation: The largest bubbles represent hotspots of dense genetic annotation, but this static mapping does not confirm robust in vivo expression or the actual remediation capacity of the sample.
+
 color_scheme: "success"

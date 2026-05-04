@@ -72,4 +72,14 @@ interpretation_guidelines:
     pathways in the dropdown, you can compare how KO annotation counts are
     distributed across genes and samples for different chemical compound classes.
 
+limitations:
+  - >
+    Methodological limitation: Mapping KO counts to specific genes across samples relies solely on sequence homology to reference genomes, entirely ignoring critical functional determinants like promoter strength, translation efficiency, and environmental induction.
+
+  - >
+    Visualization limitation: The heatmap matrix flattens complex multigenic operons and regulatory cascades into independent rectangular blocks, removing all spatial and topological context of how these genes interact.
+
+  - >
+    Interpretive limitation: High-intensity cells demonstrate extensive genetic homology to reference pathways within a given sample, not empirical evidence of robust protein synthesis, enzymatic turnover, or functional superiority over other samples.
+
 color_scheme: "success"

@@ -79,4 +79,14 @@ interpretation_guidelines:
     This is an annotation-level observation and does not confirm distinctive
     enzymatic capabilities or specialized function.
 
+limitations:
+  - >
+    Methodological limitation: Gene annotation presence is treated as a binary variable, making no distinction between a highly transcribed core gene and a low-copy, weakly expressed pseudogene.
+
+  - >
+    Visualization limitation: The scatter plot simply maps gene presence to samples, omitting the vital topological information about how these genes are ordered within the metabolic pathway.
+
+  - >
+    Interpretive limitation: Consistently aligned points indicate broadly shared genetic annotations in the database, not necessarily shared active transcription, functional complementation, or ecological cooperation in vivo.
+
 color_scheme: "success"

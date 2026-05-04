@@ -80,4 +80,14 @@ interpretation_guidelines:
     generate hypotheses for further investigation, but do not confirm biotransformation
     pathways, functional redundancy, or specialization.
 
+limitations:
+  - >
+    Methodological limitation: Gene-compound associations reflect co-occurrences in the reference database and text-mining pipelines, which may include indirect or generalized links rather than direct catalytic specificity.
+
+  - >
+    Visualization limitation: The point grid condenses all gene-compound links to a uniform presence mark, losing crucial dimensions like reaction kinetics, substrate affinity, and environmental conditions required.
+
+  - >
+    Interpretive limitation: A dense cluster of annotation points highlights a strong database representation for certain compounds, not confirmed biochemical interaction or high efficiency in actual bioaugmentation scenarios.
+
 color_scheme: "success"
