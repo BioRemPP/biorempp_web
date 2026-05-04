@@ -68,4 +68,14 @@ interpretation_guidelines:
     starting point for exploratory analyses, though any functional inference
     requires experimental validation beyond annotation and prediction data.
 
+limitations:
+  - >
+    Methodological limitation: Area scaling relies on total gene annotation counts, which may artificially inflate the prominence of promiscuous enzyme families or highly redundant annotations.
+
+  - >
+    Visualization limitation: The nested rectangles map total annotation depth but obscure whether these genes form contiguous pathways or belong to isolated, unrelated biological processes.
+
+  - >
+    Interpretive limitation: Large rectangles indicate high database redundancy for specific compound-sample pairs, not necessarily stronger catalytic efficiency or superior bioremediation potential.
+
 color_scheme: "success"

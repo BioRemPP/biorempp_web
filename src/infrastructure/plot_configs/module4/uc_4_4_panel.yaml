@@ -57,4 +57,14 @@ interpretation_guidelines:
     in profile shapes reflect annotation structure and may generate hypotheses for
     further investigation, but do not confirm metabolic strategies or ecological roles.
 
+limitations:
+  - >
+    Methodological limitation: The axes map KO counts across different KEGG pathways, heavily favoring universally conserved or extensively studied pathways that simply possess a larger number of reference KOs in the database.
+
+  - >
+    Visualization limitation: The closed polygonal shape suggests an interconnected and balanced metabolic network, whereas the mapped pathways might be expressed under mutually exclusive environmental conditions.
+
+  - >
+    Interpretive limitation: An expansive radar profile denotes a versatile and broad genetic potential according to the annotation database, not necessarily a simultaneously active and coordinated multienzyme network in vivo.
+
 color_scheme: "success"

@@ -58,4 +58,14 @@ interpretation_guidelines:
     database and may guide exploratory analyses, but do not confirm ecological
     roles or metabolic specializations.
 
+limitations:
+  - >
+    Methodological limitation: The radar axes plot KO annotation counts across samples, which inherently biases the visualization toward deeply sequenced samples or those with taxa overrepresented in reference databases.
+
+  - >
+    Visualization limitation: The polygonal shape implies a cohesive functional profile, but the radial axes (samples) are completely independent, and the connecting lines have no biological meaning regarding sample-to-sample interactions.
+
+  - >
+    Interpretive limitation: A larger radial expansion for specific samples indicates high annotation density for the selected pathway, but this geometric representation does not confirm synergistic interactions or actual ecological activity in a consortium.
+
 color_scheme: "success"

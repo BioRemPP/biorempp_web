@@ -56,4 +56,14 @@ interpretation_guidelines:
     confirm which metabolic pathways are actively expressed or functionally
     complete in the sample.
 
+limitations:
+  - >
+    Methodological limitation: Pathway richness is defined by raw KO counts, treating all KEGG Orthology identifiers equally without considering whether they represent bottleneck enzymes or redundant accessory functions.
+
+  - >
+    Visualization limitation: The horizontal bar chart condenses the entire metabolic pathway into a single numerical length, hiding the topological completeness of the pathway and the temporal sequence of the reactions.
+
+  - >
+    Interpretive limitation: Long bars indicate an extensive genetic repertoire mapped to a KEGG pathway within the database, but this does not confirm that the sample exhibits high expression levels or actual catalytic activity for that pathway in situ.
+
 color_scheme: "success"

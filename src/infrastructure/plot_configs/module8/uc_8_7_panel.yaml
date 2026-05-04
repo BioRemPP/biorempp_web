@@ -82,4 +82,14 @@ interpretation_guidelines:
     interpreted as confirming functional guilds, metabolic cooperation, or shared
     evolutionary histories.
 
+limitations:
+  - >
+    Methodological limitation: Intersection sizes depend entirely on discrete KO presence/absence counts, making no distinction between highly conserved housekeeping genes and highly specialized degradation genes.
+
+  - >
+    Visualization limitation: The bar chart arrays intersection volume but completely omits the temporal dynamics, spatial organization, and cross-feeding dependencies necessary to understand shared metabolic networks.
+
+  - >
+    Interpretive limitation: Large intersections highlight shared genetic repertoire in the annotation database, not confirmed ecological synergy, metabolic redundancy, or functional complementarity in an applied consortium.
+
 color_scheme: "success"

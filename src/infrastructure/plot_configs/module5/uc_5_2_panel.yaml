@@ -75,4 +75,14 @@ interpretation_guidelines:
     have more distinct annotation profiles. These are annotation-level
     observations and do not confirm functional role or ecological position.
 
+limitations:
+  - >
+    Methodological limitation: Pairwise similarity is based on the unweighted overlap of compound annotations, which may artificially group samples driven by a small set of highly-annotated common features.
+
+  - >
+    Visualization limitation: The chords display the aggregate volume of shared annotations but do not reveal which specific compound classes drive the similarity between any two samples.
+
+  - >
+    Interpretive limitation: Clustering based on shared annotations reflects similarities in database coverage, not necessarily shared metabolic activity, similar environmental conditions, or functional equivalence.
+
 color_scheme: "primary"

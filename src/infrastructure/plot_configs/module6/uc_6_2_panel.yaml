@@ -79,4 +79,14 @@ interpretation_guidelines:
     activity annotations. These differences reflect the dataset's annotation
     structure and may inform further exploratory analyses.
 
+limitations:
+  - >
+    Methodological limitation: Flow thickness reflects the frequency of annotation records linking samples, compound classes, and enzymes, not the completeness or activity of degradation pathways.
+
+  - >
+    Visualization limitation: The diagram aggregates flows through broad compound classes, hiding which specific chemicals are actually linked to which specific enzyme activities within a sample.
+
+  - >
+    Interpretive limitation: Broad flows from a sample to an enzyme class indicate high database coverage, not necessarily that the sample relies predominantly on those enzymes for biodegradation.
+
 color_scheme: "success"

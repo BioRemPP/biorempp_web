@@ -82,4 +82,14 @@ interpretation_guidelines:
     specialized or less frequent annotation co-occurrences that may warrant
     further investigation into the underlying annotation sources.
 
+limitations:
+  - >
+    Methodological limitation: Flow thickness represents raw database co-occurrence counts of annotations across hierarchical categories, without reflecting abundance, expression levels, or reaction efficiency.
+
+  - >
+    Visualization limitation: The alluvial layout merges flows at each stage, which can obscure whether specific regulatory compounds map exclusively to specific genes within a given sample.
+
+  - >
+    Interpretive limitation: Prominent flows indicate broad annotation overlap across datasets, not confirmed functional, regulatory, or metabolic pathways operating in vivo.
+
 color_scheme: "success"
