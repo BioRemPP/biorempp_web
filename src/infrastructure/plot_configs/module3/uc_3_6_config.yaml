@@ -73,13 +73,27 @@ visualization:
       title:
         show: true
         text: "Gene Co-occurrence Network"
-        font_size: 18
-      
+        font:
+          size: 20
+          color: "#000000"
+
       # Axis configuration
       xaxis_title: "Gene Symbol"
       yaxis_title: "Gene Symbol"
+      xaxis_title_font:
+        size: 16
+        color: "#000000"
+      yaxis_title_font:
+        size: 16
+        color: "#000000"
       xaxis_tickangle: -45
+      xaxis_tickfont:
+        size: 13
+        color: "#000000"
       yaxis_tickangle: 0
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
       
       # Color configuration
       color_continuous_scale: "RdBu_r"

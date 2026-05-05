@@ -320,10 +320,15 @@ class PCAStrategy(BasePlotStrategy):
         if title_config:
             show_title = title_config.get("show", True)
             if show_title:
+                title_font_cfg = title_config.get("font", {})
                 layout_updates["title"] = {
                     "text": title_config.get("text", ""),
                     "x": title_config.get("x", 0.5),
                     "xanchor": "center",
+                    "font": dict(
+                        size=title_font_cfg.get("size", 16),
+                        color=title_font_cfg.get("color", "#000000"),
+                    ),
                 }
 
         # Dimensions (autosize or fixed)
@@ -357,6 +362,28 @@ class PCAStrategy(BasePlotStrategy):
         # Apply all layout updates
         if layout_updates:
             fig.update_layout(**layout_updates)
+
+        # Apply axis tickfont and title font
+        xaxis_tickfont = chart_config.get("xaxis_tickfont", {})
+        yaxis_tickfont = chart_config.get("yaxis_tickfont", {})
+        xaxis_title_font = chart_config.get("xaxis_title_font", {})
+        yaxis_title_font = chart_config.get("yaxis_title_font", {})
+
+        x_update = {}
+        if xaxis_tickfont:
+            x_update["tickfont"] = xaxis_tickfont
+        if xaxis_title_font:
+            x_update["title_font"] = xaxis_title_font
+        if x_update:
+            fig.update_xaxes(**x_update)
+
+        y_update = {}
+        if yaxis_tickfont:
+            y_update["tickfont"] = yaxis_tickfont
+        if yaxis_title_font:
+            y_update["title_font"] = yaxis_title_font
+        if y_update:
+            fig.update_yaxes(**y_update)
 
         # Update trace settings (marker configuration)
         marker_config = chart_config.get("marker", {})

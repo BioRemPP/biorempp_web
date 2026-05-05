@@ -108,13 +108,22 @@ visualization:
       
       # Axis configuration
       show_explained_variance: true
-    
+      xaxis_tickfont:
+        size: 13
+        color: "#000000"
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
+
     # Layout configuration
     layout:
       title:
         show: true
         text: "PCA - Sample Relationships by Compound Profile"
         x: 0.5
+        font:
+          size: 20
+          color: "#000000"
       
       template: "simple_white"
       height: 800
