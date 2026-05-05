@@ -82,43 +82,45 @@ visualization:
       show: true  # Toggle title visibility
       text: "Ranking of Compounds by Sample Interaction"
       font:
-        size: 18
+        size: 20
         family: "Arial, sans-serif"
-        color: "#2c3e50"
+        color: "#000000"
       x: 0.5
       xanchor: "center"
-    
+
     # Axis labels
     labels:
       compound: "Compound Name"
       sample_count: "Number of Unique Samples"
-    
+
     # Layout configuration
     layout:
       height: 600
       autosize: true  # Enable responsive sizing
       template: "simple_white"
-      
+
       # X-axis configuration
       xaxis:
         title:
           text: "Compound Name"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         tickfont:
-          size: 10
+          size: 13
+          color: "#000000"
         tickangle: -45  # X-axis label angle (rotated for readability)
-      
+
       # Y-axis configuration
       yaxis:
         title:
           text: "Number of Unique Samples"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         tickfont:
-          size: 11
+          size: 13
+          color: "#000000"
         tickangle: 0  # Y-axis label angle (horizontal)
       
       # Margins
