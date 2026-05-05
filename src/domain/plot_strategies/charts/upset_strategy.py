@@ -118,6 +118,12 @@ class UpSetStrategy(BasePlotStrategy):
         # Color scheme
         self.bar_color = plotly_config.get("bar_color", "#0d6efd")
 
+        # Matplotlib font size for UpSet plot elements
+        self.mpl_font_size = plotly_config.get("mpl_font_size", 10)
+
+        # Title config at plotly level (separate from layout)
+        self.title_config = plotly_config.get("title", {})
+
         # Layout configuration
         self.layout_config = plotly_config.get("layout", {})
 
@@ -390,6 +396,9 @@ class UpSetStrategy(BasePlotStrategy):
 
         import matplotlib.pyplot as plt
 
+        # Apply global font size for UpSet plot elements (bars, labels, counts)
+        plt.rcParams.update({"font.size": self.mpl_font_size})
+
         # Create matplotlib figure and render UpSet explicitly into it.
         # This avoids backend-dependent figure reuse and unstable dimensions.
         mpl_fig = plt.figure(figsize=(self.fig_width, self.fig_height))
@@ -479,6 +488,17 @@ class UpSetStrategy(BasePlotStrategy):
         layout_config = self.layout_config or {}
         margin_config = layout_config.get("margin", {})
 
+        # Title: prefer plotly.title dict, fall back to layout.title_* flat keys
+        title_cfg = self.title_config or {}
+        title_font_cfg = title_cfg.get("font", {})
+        title_text = title_cfg.get("text", layout_config.get("title", ""))
+        title_font_size = title_font_cfg.get(
+            "size", layout_config.get("title_size", 16)
+        )
+        title_font_color = title_font_cfg.get(
+            "color", layout_config.get("title_color", "#000000")
+        )
+
         fig.update_layout(
             # Hide axes (image plot)
             xaxis=dict(visible=False),
@@ -495,13 +515,10 @@ class UpSetStrategy(BasePlotStrategy):
             ),
             # Title
             title=dict(
-                text=layout_config.get("title", ""),
+                text=title_text,
                 x=0.5,
                 xanchor="center",
-                font=dict(
-                    size=layout_config.get("title_size", 16),
-                    color=layout_config.get("title_color", "#333"),
-                ),
+                font=dict(size=title_font_size, color=title_font_color),
             ),
             # Size
             height=layout_config.get("height", 600),

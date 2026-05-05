@@ -96,17 +96,20 @@ visualization:
     # Figure dimensions
     fig_width: 10
     fig_height: 6
-    
+
     # Color scheme
     bar_color: "#0d6efd"
-    
+
+    # Matplotlib font size for UpSet plot elements (bars, labels, counts)
+    mpl_font_size: 12
+
     # Title configuration (at plotly level, NOT inside layout)
     title:
       text: "Compound Overlap Across Regulatory Agencies"
       font:
-        size: 16
+        size: 20
         family: "Arial, sans-serif"
-        color: "#333"
+        color: "#000000"
       x: 0.5
       xanchor: "center"
     
