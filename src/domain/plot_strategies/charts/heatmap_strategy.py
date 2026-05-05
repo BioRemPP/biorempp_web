@@ -264,22 +264,35 @@ class HeatmapStrategy(BasePlotStrategy):
         # Handle title configuration (support both string and dict)
         title_config = chart_config.get("title", {})
         if isinstance(title_config, str):
-            # Backward compatibility: string title
             show_title = True
             title_text = title_config
+            title_font_size = 16
+            title_font_color = "#000000"
         else:
-            # New format: dict with show, text
             show_title = title_config.get("show", True)
             title_text = (
                 title_config.get("text", "Unique Value Count Heatmap")
                 if show_title
                 else ""
             )
+            title_font_cfg = title_config.get("font", {})
+            title_font_size = title_font_cfg.get("size", 16)
+            title_font_color = title_font_cfg.get("color", "#000000")
 
-        # Get axis labels
-        x_label = chart_config.get("xaxis", {}).get("title", "Sample")
-        y_label = chart_config.get("yaxis", {}).get("title", "Category")
+        # Get axis labels and font configs
+        xaxis_cfg = chart_config.get("xaxis", {})
+        yaxis_cfg = chart_config.get("yaxis", {})
+        x_label = xaxis_cfg.get("title", "Sample")
+        y_label = yaxis_cfg.get("title", "Category")
         color_label = chart_config.get("color_label", "Unique Count")
+
+        # Get tick fonts (flat keys first, then nested)
+        xaxis_tickfont = chart_config.get("xaxis_tickfont", xaxis_cfg.get("tickfont", {}))
+        yaxis_tickfont = chart_config.get("yaxis_tickfont", yaxis_cfg.get("tickfont", {}))
+
+        # Get axis title fonts
+        xaxis_title_font = chart_config.get("xaxis_title_font", xaxis_cfg.get("title_font", {}))
+        yaxis_title_font = chart_config.get("yaxis_title_font", yaxis_cfg.get("title_font", {}))
 
         # Get text display setting
         # For count matrices, show integer values
@@ -329,7 +342,6 @@ class HeatmapStrategy(BasePlotStrategy):
         layout_update = {
             "height": height,
             "template": template,
-            "xaxis_tickangle": xaxis_tickangle,
             "margin": margin,
             "plot_bgcolor": "white",
             "coloraxis_colorbar": dict(title=colorbar_title),
@@ -337,7 +349,12 @@ class HeatmapStrategy(BasePlotStrategy):
 
         # Add title if enabled
         if show_title and title_text:
-            layout_update["title"] = {"text": title_text, "x": 0.5, "xanchor": "center"}
+            layout_update["title"] = {
+                "text": title_text,
+                "x": 0.5,
+                "xanchor": "center",
+                "font": dict(size=title_font_size, color=title_font_color),
+            }
 
         # Add autosize or width
         if use_autosize:
@@ -348,16 +365,29 @@ class HeatmapStrategy(BasePlotStrategy):
 
         fig.update_layout(**layout_update)
 
-        # Remove grid lines for cleaner look
-        fig.update_xaxes(showgrid=False)
+        # Update X-axis: angle, tickfont, and title font
+        x_update = {"showgrid": False, "tickangle": xaxis_tickangle}
+        if xaxis_tickfont:
+            x_update["tickfont"] = xaxis_tickfont
+        if xaxis_title_font:
+            x_update["title_font"] = xaxis_title_font
+        fig.update_xaxes(**x_update)
 
-        # Update Y-axis with rotation
-        fig.update_yaxes(showgrid=False, tickangle=yaxis_tickangle)
+        # Update Y-axis: angle, tickfont, and title font
+        y_update = {"showgrid": False, "tickangle": yaxis_tickangle}
+        if yaxis_tickfont:
+            y_update["tickfont"] = yaxis_tickfont
+        if yaxis_title_font:
+            y_update["title_font"] = yaxis_title_font
+        fig.update_yaxes(**y_update)
 
         # Update text font size if configured
         text_font_size = chart_config.get("text_font_size", 10)
+        text_font_color = chart_config.get("text_font_color", "black")
         if text_auto:
-            fig.update_traces(textfont_size=text_font_size)
+            fig.update_traces(
+                textfont=dict(size=text_font_size, color=text_font_color)
+            )
 
         logger.info(
             f"Heatmap figure created - "

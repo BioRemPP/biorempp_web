@@ -366,12 +366,11 @@ class FacetedHeatmapStrategy(BasePlotStrategy):
         # Handle title configuration (support both string and dict)
         title_config = chart_config.get("title", {})
         if isinstance(title_config, str):
-            # Backward compatibility: string title
             show_title = True
             title_text = title_config
             title_font_size = 16
+            title_font_color = "#000000"
         else:
-            # New format: dict with show, text, font_size
             show_title = title_config.get("show", True)
             title_text = (
                 title_config.get(
@@ -380,7 +379,12 @@ class FacetedHeatmapStrategy(BasePlotStrategy):
                 if show_title
                 else ""
             )
-            title_font_size = title_config.get("font_size", 16)
+            title_font_cfg = title_config.get("font", {})
+            # Support both font.size (dict) and font_size (flat) for backward compat
+            title_font_size = title_font_cfg.get(
+                "size", title_config.get("font_size", 16)
+            )
+            title_font_color = title_font_cfg.get("color", "#000000")
 
         # Get layout options
         height = layout_config.get("height", 800)
@@ -402,7 +406,7 @@ class FacetedHeatmapStrategy(BasePlotStrategy):
                 text=title_text,
                 x=0.5,
                 xanchor="center",
-                font=dict(size=title_font_size),
+                font=dict(size=title_font_size, color=title_font_color),
             ),
             "height": height,
             "margin": margin,
@@ -419,17 +423,33 @@ class FacetedHeatmapStrategy(BasePlotStrategy):
 
         fig.update_layout(**layout_update)
 
-        # Update X-axes: rotate labels
+        # Update X-axes: rotate labels and apply tickfont
         xaxis_tickangle = chart_config.get("xaxis_tickangle", -45)
+        xaxis_tickfont = chart_config.get("xaxis_tickfont", {})
         for i in range(1, n_cols + 1):
-            fig.update_xaxes(tickangle=xaxis_tickangle, row=1, col=i)
+            x_update = {"tickangle": xaxis_tickangle}
+            if xaxis_tickfont:
+                x_update["tickfont"] = xaxis_tickfont
+            fig.update_xaxes(**x_update, row=1, col=i)
 
-        # Update Y-axis: title and rotation on first column
-        yaxis_title = chart_config.get("yaxis_title", "Compound")
+        # Update Y-axis: title, rotation, and font on first column
+        yaxis_title_config = chart_config.get("yaxis_title", "Compound")
         yaxis_tickangle = chart_config.get("yaxis_tickangle", 0)
-        fig.update_yaxes(
-            title_text=yaxis_title, tickangle=yaxis_tickangle, row=1, col=1
-        )
+        yaxis_tickfont = chart_config.get("yaxis_tickfont", {})
+
+        if isinstance(yaxis_title_config, str):
+            yaxis_title = yaxis_title_config
+            yaxis_title_font = {}
+        else:
+            yaxis_title = yaxis_title_config.get("text", "Compound")
+            yaxis_title_font = yaxis_title_config.get("font", {})
+
+        y_update = {"title_text": yaxis_title, "tickangle": yaxis_tickangle}
+        if yaxis_title_font:
+            y_update["title_font"] = yaxis_title_font
+        if yaxis_tickfont:
+            y_update["tickfont"] = yaxis_tickfont
+        fig.update_yaxes(**y_update, row=1, col=1)
 
         logger.info(
             f"Faceted heatmap created - "

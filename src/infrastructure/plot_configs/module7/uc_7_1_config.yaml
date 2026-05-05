@@ -84,17 +84,29 @@ visualization:
       title:
         show: true
         text: "Faceted Heatmap of Predicted Compound Toxicity Profiles"
-        font_size: 16
-      
+        font:
+          size: 20
+          color: "#000000"
+
       # Color configuration
       colorscale: "Reds"
       colorbar_title: "Toxicity Score"
-      
-      # Axis labels
-      yaxis_title: "Compound"
+
+      # Axis labels and font
+      yaxis_title:
+        text: "Compound"
+        font:
+          size: 16
+          color: "#000000"
       yaxis_tickangle: 0
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
       xaxis_tickangle: -45
-      
+      xaxis_tickfont:
+        size: 12
+        color: "#000000"
+
       # Facet spacing
       horizontal_spacing: 0.02
     
