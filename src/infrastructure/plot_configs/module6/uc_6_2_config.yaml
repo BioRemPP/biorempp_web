@@ -97,14 +97,15 @@ visualization:
         show: true
         text: "Biological Interaction Flow: Sample → Compound Class → Enzyme Activity"
         font:
-          size: 16
-    
+          size: 20
+          color: "#000000"
+
     # Layout configuration
     layout:
       template: "simple_white"
       height: 900
       autosize: true
-      font_size: 10
+      font_size: 13
       
       paper_bgcolor: "white"
       

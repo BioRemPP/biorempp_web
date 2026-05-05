@@ -336,17 +336,18 @@ class NetworkStrategy(BasePlotStrategy):
         # Handle title configuration (support both string and dict)
         title_config = chart_config.get("title", {})
         if isinstance(title_config, str):
-            # Backward compatibility: string title
             show_title = True
             title_text = title_config
             title_font_size = 16
+            title_font_color = "#000000"
         else:
-            # New format: dict with show, text, font
             show_title = title_config.get("show", True)
             title_text = (
                 title_config.get("text", "Network Diagram") if show_title else ""
             )
-            title_font_size = title_config.get("font", {}).get("size", 16)
+            title_font_cfg = title_config.get("font", {})
+            title_font_size = title_font_cfg.get("size", 16)
+            title_font_color = title_font_cfg.get("color", "#000000")
 
         # Create traces
         traces = []
@@ -414,7 +415,7 @@ class NetworkStrategy(BasePlotStrategy):
                 text=title_text,
                 x=0.5,
                 xanchor="center",
-                font=dict(size=title_font_size),
+                font=dict(size=title_font_size, color=title_font_color),
             )
 
         # Add autosize or width
