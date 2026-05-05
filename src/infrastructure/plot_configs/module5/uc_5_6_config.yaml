@@ -98,7 +98,8 @@ visualization:
         show: true
         text: "Compound-Compound Functional Similarity Network"
         font:
-          size: 16
+          size: 20
+          color: "#000000"
       
       show_legend: false
     

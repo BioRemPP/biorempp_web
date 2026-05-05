@@ -99,7 +99,8 @@ visualization:
         show: true
         text: "Gene-Compound Interaction Network"
         font:
-          size: 16
+          size: 20
+          color: "#000000"
       
       show_legend: true
     

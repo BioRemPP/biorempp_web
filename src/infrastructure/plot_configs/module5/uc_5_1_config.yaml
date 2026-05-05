@@ -84,23 +84,23 @@ visualization:
       enabled: true
       radius_offset: 1.2
       font:
-        size: 11
+        size: 14
         family: "Arial, sans-serif"
-        color: "#2c3e50"
-    
+        color: "#000000"
+
     # Chords configuration
     chords:
       anchor: "arc_midpoint"
-    
+
     # Chart configuration
     chart:
       title:
         show: true
         text: "Sample - Compound Class Interaction Network"
         font:
-          size: 18
+          size: 20
           family: "Arial, sans-serif"
-          color: "#2c3e50"
+          color: "#000000"
     
     # Layout configuration
     layout:
