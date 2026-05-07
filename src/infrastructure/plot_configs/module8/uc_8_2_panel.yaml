@@ -95,4 +95,14 @@ interpretation_guidelines:
     absence of functional capacity. Annotation gaps may reflect database coverage
     rather than true biological absence.
 
+limitations:
+  - >
+    Methodological limitation: Overlap scores are calculated as the percentage of available reference KOs present in a sample, meaning pathways with many redundant or poorly characterized KOs can artificially deflate apparent functional completeness.
+
+  - >
+    Visualization limitation: The color gradients collapse complex, multi-step enzymatic pathways into a single scalar value, hiding whether the missing KOs are critical bottleneck enzymes or easily bypassed auxiliary steps.
+
+  - >
+    Interpretive limitation: High overlap scores indicate robust genetic potential mapping for a target, not necessarily that the sample expresses those enzymes efficiently under the specific environmental conditions required for remediation.
+
 color_scheme: "success"

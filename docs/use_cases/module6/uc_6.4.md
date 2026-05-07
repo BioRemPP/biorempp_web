@@ -1,9 +1,9 @@
-# UC-6.4 — Enzymatic Hierarchy
+﻿# UC-6.4 â€” Enzymatic Hierarchy
 
-**Module:** 6 – Hierarchical and Flow-based Functional Analysis  
+**Module:** 6 â€“ Hierarchical and Flow-based Functional Analysis  
 **Visualization type:** Treemap (three-level hierarchical composition)  
 **Primary inputs:** BioRemPP results table with `enzyme_activity`, `compoundclass`, `genesymbol`, and `compoundname`  
-**Primary outputs:** Hierarchical partitioning of substrate scope across enzyme activities → chemical classes → genes
+**Primary outputs:** Hierarchical partitioning of substrate scope across enzyme activities â†’ chemical classes â†’ genes
 
 ---
 
@@ -11,7 +11,7 @@
 
 **Question:** Which enzymatic functions are co-annotated with the widest range of unique compounds, how is this co-annotation breadth distributed across different chemical classes, and which specific genes are the primary contributors?
 
-This use case provides a **top-down annotation overview** of the **enzymatic co-annotation landscape** in the dataset. It organizes the system into three levels—**enzyme activities**, **compound classes**, and **genes**—and quantifies for each branch how many **unique compounds** are co-annotated with it. The resulting treemap may highlight **broadly co-annotated enzymatic functions**, which chemical classes are their main co-annotation context, and which genes contribute the most to this compound co-annotation breadth.
+This use case provides a **top-down annotation overview** of the **enzymatic co-annotation landscape** in the dataset. It organizes the system into three levelsâ€”**enzyme activities**, **compound classes**, and **genes**â€”and quantifies for each branch how many **unique compounds** are co-annotated with it. The resulting treemap may highlight **broadly co-annotated enzymatic functions**, which chemical classes are their main co-annotation context, and which genes contribute the most to this compound co-annotation breadth.
 
 ---
 
@@ -19,10 +19,10 @@ This use case provides a **top-down annotation overview** of the **enzymatic co-
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `enzyme_activity` – functional category/label of the enzymatic activity  
-  - `compoundclass` – chemical class/category of the substrates  
-  - `genesymbol` – gene symbol or identifier implementing that activity in at least one sample  
-  - `compoundname` – specific compound name or identifier
+  - `enzyme_activity` â€“ functional category/label of the enzymatic activity  
+  - `compoundclass` â€“ chemical class/category of the substrates  
+  - `genesymbol` â€“ gene symbol or identifier implementing that activity in at least one sample  
+  - `compoundname` â€“ specific compound name or identifier
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 
 - **Hierarchical structure:**
@@ -34,26 +34,26 @@ This use case provides a **top-down annotation overview** of the **enzymatic co-
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Hierarchy Definition**  
+2. **Hierarchy Definition**
    A three-level hierarchy is defined:
    - **Level 1:** `enzyme_activity`  
    - **Level 2:** `compoundclass` (nested within each enzyme activity)  
    - **Level 3:** `genesymbol` (nested within each compound class)
 
-3. **Aggregation of Substrate Scope**  
+3. **Aggregation of Substrate Scope**
    The data is grouped by each unique `(enzyme_activity, compoundclass, genesymbol)` path:
    - for each group, the number of **distinct `compoundname`** entries is computed (e.g., via `nunique()`),  
    - this count represents the **substrate scope** (number of unique compounds) associated with that gene within that functional and chemical context.
 
-4. **Value Propagation for Treemap**  
+4. **Value Propagation for Treemap**
    The unique compound counts at the lowest level (per gene) are used as the basic **values**:
    - higher-level values for `compoundclass` and `enzyme_activity` nodes are obtained by **summing** the values of all nested nodes,  
    - this yields total substrate scope at each level of the hierarchy.
 
-5. **Rendering**  
+5. **Rendering**
    The aggregated data is rendered as an **interactive treemap**:
    - each rectangle represents a node in the hierarchy (enzyme activity, compound class, gene),  
    - the **area** of the rectangle is proportional to its total unique compound count,  
@@ -63,7 +63,7 @@ This use case provides a **top-down annotation overview** of the **enzymatic co-
 
 ## How to Read the Plot
 
-- **Nested Rectangles (Hierarchy)**  
+- **Nested Rectangles (Hierarchy)**
   The treemap uses nested rectangles to represent the hierarchy:
   - **Outer rectangles** represent **enzyme activities** (`enzyme_activity`),  
   - within each activity, **inner rectangles** represent **compound classes** (`compoundclass`),  
@@ -71,7 +71,7 @@ This use case provides a **top-down annotation overview** of the **enzymatic co-
 
 - **Area (Values)**
   The **area** of each rectangle is proportional to the **total number of unique co-annotated compounds**:
-  - for a **gene node**, area reflects how many distinct compounds that gene is co-annotated with under that activity–class context,
+  - for a **gene node**, area reflects how many distinct compounds that gene is co-annotated with under that activityâ€“class context,
   - for a **compound class node**, area reflects the sum of unique compounds co-annotated with all genes contributing to that class,
   - for an **enzyme activity node**, area reflects the full compound co-annotation breadth of that activity across classes and genes.
 
@@ -80,7 +80,7 @@ This use case provides a **top-down annotation overview** of the **enzymatic co-
   - brighter or warmer colors indicate **broader compound co-annotation coverage**,
   - cooler colors indicate more limited compound co-annotation sets.
 
-- **Interactivity**  
+- **Interactivity**
   In the interactive view:
   - clicking on a rectangle **zooms in** to that part of the hierarchy,  
   - hovering displays labels (enzyme activity, compound class, gene) and their associated **unique compound counts**.
@@ -113,7 +113,7 @@ The image below illustrates a representative output generated by this use case u
 
 - **High-contributing Genes**
   At the lowest level, large **gene** rectangles may identify **broadly co-annotated genes**:
-  - genes co-annotated with many distinct compounds under a given activity–class context,
+  - genes co-annotated with many distinct compounds under a given activityâ€“class context,
   - genes with broad compound co-annotation coverage that may be candidates for further investigation.
 
 - **System-Level Annotation Overview**
@@ -124,13 +124,26 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Rectangle sizes are driven by unique compound counts associated with enzyme annotations, meaning promiscuous or heavily curated enzymes will inherently dominate the treemap.
+
+- **Visualization limitation**
+  The treemap layout conveys relative annotation volume but obscures whether the compounds within an enzyme category are structurally related or biologically coherent.
+
+- **Interpretive limitation**
+  Dominant enzyme categories reflect widespread annotation linkages in the database, not necessarily that those enzymes are the most active or critical for bioremediation in the studied environment.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing:
   - `enzyme_activity`, `compoundclass`, `genesymbol`, and `compoundname`.
 
-- **Value Definition**  
+- **Value Definition**
   - The fundamental value driving the visualization is the **count of unique compound names** per `(enzyme_activity, compoundclass, genesymbol)` group.  
   - Higher-level values are computed as **sums** of these counts across nested nodes.
 
@@ -149,5 +162,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_6.4.png">
   <img src="../uc_6.4.png" alt="Activity diagram of the use case">
 </a>
+
 
 

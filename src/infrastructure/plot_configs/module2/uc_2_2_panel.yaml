@@ -44,4 +44,20 @@ interpretation_guidelines:
     annotation profile, smaller dataset representation, or a narrower compound
     scope — not necessarily lower biological activity or relevance.
 
+limitations:
+  - >
+    Methodological limitation: The metric counts unique compound names per sample
+    and treats all co-annotations equally, without weighting by abundance,
+    evidence strength, toxicity priority, or biodegradation relevance.
+
+  - >
+    Visualization limitation: The ranking chart summarizes breadth of compound
+    coverage but does not show which compounds are shared across samples, how
+    strongly they are represented, or how compound classes are distributed.
+
+  - >
+    Interpretive limitation: Samples with more associated compounds reflect
+    broader annotation coverage in the current dataset, not confirmed interaction
+    capacity, metabolic versatility, or remediation effectiveness.
+
 color_scheme: "primary"

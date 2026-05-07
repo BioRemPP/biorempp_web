@@ -74,4 +74,14 @@ interpretation_guidelines:
     has more focused annotation coverage. These are annotation patterns and do
     not confirm metabolic breadth or specialization.
 
+limitations:
+  - >
+    Methodological limitation: Heatmap intensities are driven by raw KO annotation counts, which inherently bias the visual focus toward pathways that are extensively documented in the database, regardless of their actual in vivo expression levels.
+
+  - >
+    Visualization limitation: The grid rigidly forces pathways into discrete chemical classes, masking the biological reality that many key metabolic enzymes are promiscuous and participate across multiple, distinct functional boundaries.
+
+  - >
+    Interpretive limitation: Brightly colored cells represent hotspots of database knowledge mapping to the sample's genome, not confirmed areas of intense catalytic activity or primary energy-yielding biotransformations.
+
 color_scheme: "success"

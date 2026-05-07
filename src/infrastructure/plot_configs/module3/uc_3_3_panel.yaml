@@ -102,4 +102,20 @@ interpretation_guidelines:
     warrant further investigation to understand what annotation features
     distinguish them.
 
+limitations:
+  - >
+    Methodological limitation: The dendrogram depends strongly on the selected
+    distance metric and linkage method, and different valid parameter choices
+    can produce different cluster topologies from the same KO matrix.
+
+  - >
+    Visualization limitation: Branch lengths summarize relative dissimilarity
+    under the chosen metric, but the tree does not show which KO features drive
+    each merge or how much uncertainty exists in borderline groupings.
+
+  - >
+    Interpretive limitation: Stable or separated clusters indicate annotation
+    similarity structure, not definitive biological lineages, shared activity,
+    or experimentally confirmed functional modules.
+
 color_scheme: "success"

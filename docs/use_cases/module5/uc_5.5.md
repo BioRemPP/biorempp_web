@@ -1,17 +1,17 @@
-# UC-5.5 — Gene–Gene Interaction Network (Based on Shared Compounds) 
+﻿# UC-5.5 â€” Geneâ€“Gene Interaction Network (Based on Shared Compounds) 
 
-**Module:** 5 – Modeling Interactions of Samples, Genes, and Compounds  
-**Visualization type:** Weighted gene–gene network (shared-compound edges, force-directed layout)  
+**Module:** 5 â€“ Modeling Interactions of Samples, Genes, and Compounds  
+**Visualization type:** Weighted geneâ€“gene network (shared-compound edges, force-directed layout)  
 **Primary inputs:** BioRemPP results table with `genesymbol` and `compoundname` columns  
-**Primary outputs:** Gene–gene interaction network weighted by number of shared compounds; node-level connectivity (degree)
+**Primary outputs:** Geneâ€“gene interaction network weighted by number of shared compounds; node-level connectivity (degree)
 
 ---
 
 ## Scientific Question and Rationale
 
-**Question:** Which genes share the most compound co-annotations across samples, and what co-annotation structure do these gene–gene relationships form?
+**Question:** Which genes share the most compound co-annotations across samples, and what co-annotation structure do these geneâ€“gene relationships form?
 
-This use case examines **gene–gene co-annotation overlap** by identifying which genes are co-annotated with overlapping sets of chemical compounds across all biological samples. Genes that share many compound co-annotations could warrant investigation as potential functional partners, though experimental validation is required. By constructing a **gene–gene network** where edges represent shared compound co-annotations and edge weights encode the number of these shared annotations, the analysis may highlight **co-annotation clusters**, highly connected **hub genes**, and potential **bridge genes** that connect distinct annotation subsets.
+This use case examines **geneâ€“gene co-annotation overlap** by identifying which genes are co-annotated with overlapping sets of chemical compounds across all biological samples. Genes that share many compound co-annotations could warrant investigation as potential functional partners, though experimental validation is required. By constructing a **geneâ€“gene network** where edges represent shared compound co-annotations and edge weights encode the number of these shared annotations, the analysis may highlight **co-annotation clusters**, highly connected **hub genes**, and potential **bridge genes** that connect distinct annotation subsets.
 
 ---
 
@@ -19,26 +19,26 @@ This use case examines **gene–gene co-annotation overlap** by identifying whic
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `genesymbol` – gene symbol or identifier
-  - `compoundname` – name (or identifier) of the chemical compound associated with that gene in at least one sample
+  - `genesymbol` â€“ gene symbol or identifier
+  - `compoundname` â€“ name (or identifier) of the chemical compound associated with that gene in at least one sample
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 - **Derived structures:**
   - mapping of each gene to its set of unique compounds,  
-  - weighted gene–gene edge list based on the count of shared compounds.
+  - weighted geneâ€“gene edge list based on the count of shared compounds.
 
 ---
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Gene-to-Compound Mapping**  
+2. **Gene-to-Compound Mapping**
    For each unique `genesymbol`, a **compound set** is constructed:
    - all unique `compoundname` entries associated with that gene are collected into a set,  
    - this set represents the **compound co-annotation profile** of that gene.
 
-3. **Graph Construction (Gene–Gene Network)**  
+3. **Graph Construction (Geneâ€“Gene Network)**
    A network graph is built where:
    - each unique **gene** is added as a **node**,  
    - all unique pairs of genes are evaluated; for each pair:
@@ -46,7 +46,7 @@ This use case examines **gene–gene co-annotation overlap** by identifying whic
      - if the intersection is non-empty, an **edge** is added between the two genes,  
      - the **edge weight** is set to the number of shared unique compounds.
 
-4. **Layout and Styling**  
+4. **Layout and Styling**
    A **force-directed layout** is used to compute node positions:
    - genes with many strong connections tend to be drawn closer to one another, forming clusters,  
    - sparsely connected genes are placed closer to the periphery.  
@@ -54,10 +54,10 @@ This use case examines **gene–gene co-annotation overlap** by identifying whic
    - **degree** (number of connected gene neighbors) is calculated for each node,  
    - this degree is mapped to node color to highlight highly connected genes.
 
-5. **Rendering**  
+5. **Rendering**
    The network is rendered as an interactive plot:
    - nodes represent individual genes,  
-   - edges represent gene–gene links based on shared compounds,  
+   - edges represent geneâ€“gene links based on shared compounds,  
    - **edge thickness** is proportional to edge weight (number of shared compounds),  
    - **node color** is proportional to degree (number of gene neighbors), with a color bar indicating the scale.
 
@@ -65,22 +65,22 @@ This use case examines **gene–gene co-annotation overlap** by identifying whic
 
 ## How to Read the Plot
 
-- **Nodes (Genes)**  
+- **Nodes (Genes)**
   Each point in the graph is a **Gene Symbol**:
   - the position is determined by the force-directed layout,  
   - the **color** of a node encodes its **degree** (how many other genes it is connected to).
 
-- **Edges (Gene–Gene Links)**
+- **Edges (Geneâ€“Gene Links)**
   Each line between two nodes represents a **shared compound co-annotation link**:
   - two genes share at least one common compound co-annotation,
   - the **thickness** of the edge is proportional to the **number of shared compound co-annotations** (edge weight).
 
-- **Color Scale for Nodes**  
+- **Color Scale for Nodes**
   A color bar indicates the range of node degrees:
   - nodes with **brighter/warmer colors** correspond to **high-degree genes** (hubs),  
   - nodes with cooler or darker colors correspond to lower-degree genes.
 
-- **Overall Structure**  
+- **Overall Structure**
   The spatial arrangement may reflect the **network's modular organization**:
   - dense clusters could indicate groups of genes with many shared compound partners,  
   - sparsely connected or isolated nodes might indicate more specialized or infrequent relationships.
@@ -123,21 +123,34 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Gene-gene edges are formed whenever two genes share at least one annotated compound, which can create dense networks driven by promiscuous compounds rather than true pathway relationships.
+
+- **Visualization limitation**
+  The network summarizes shared compound connections as single edges, hiding the identity and number of the specific compounds linking any two genes.
+
+- **Interpretive limitation**
+  Network clusters reflect shared compound annotations in the reference database, not confirmed co-regulation, sequential enzymatic steps, or biological interaction.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing at least the columns `genesymbol` and `compoundname`.
 
 - **Link Definition**
   - A link between two genes is defined by the **presence of at least one shared compound co-annotation** in their annotation sets.
   - **Edge weight** is the number of shared unique compound co-annotations.
-  - **Node color** reflects **gene–gene connectivity** (degree), *not* the total number of gene–compound co-annotations.
+  - **Node color** reflects **geneâ€“gene connectivity** (degree), *not* the total number of geneâ€“compound co-annotations.
 
-- **Network Properties**  
+- **Network Properties**
   - The network is typically treated as **undirected and weighted**: directionality is not inferred, but the strength of association is encoded in edge weights.  
   - The layout is based on a force-directed algorithm that can be made reproducible by fixing a random seed.
 
-- **Interpretation Scope**  
+- **Interpretation Scope**
   - The network captures **association patterns** inferred from shared compound targets; it does not directly encode regulatory direction, reaction stoichiometry, or kinetic parameters.  
   - Co-connectivity should be interpreted as **hypothesis-generating evidence** for functional relationships that require additional biochemical, genomic, or regulatory validation.
 
@@ -152,5 +165,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_5.5.png">
   <img src="../uc_5.5.png" alt="Activity diagram of the use case">
 </a>
+
 
 

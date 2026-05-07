@@ -78,43 +78,45 @@ visualization:
       show: true  # Toggle title visibility
       text: "Ranking of Samples by Compound Richness"
       font:
-        size: 18
+        size: 20
         family: "Arial, sans-serif"
-        color: "#2c3e50"
+        color: "#000000"
       x: 0.5
       xanchor: "center"
-    
+
     # Axis labels
     labels:
       Sample: "Sample ID"
       Compound_Count: "Number of Unique Compounds"
-    
+
     # Layout configuration
     layout:
       height: 600
       autosize: true  # Enable responsive sizing
       template: "simple_white"
-      
+
       # X-axis configuration
       xaxis:
         title:
           text: "Number of Unique Compounds"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         tickfont:
-          size: 11
+          size: 13
+          color: "#000000"
         tickangle: 0  # X-axis label angle (horizontal)
-      
+
       # Y-axis configuration
       yaxis:
         title:
           text: "Sample ID"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         tickfont:
-          size: 10
+          size: 13
+          color: "#000000"
         tickangle: 0  # Y-axis label angle (horizontal)
       
       # Margins

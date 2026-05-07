@@ -376,8 +376,10 @@ class HeatmapScoredStrategy(BasePlotStrategy):
         title_text = title_config.get("text", "Completeness Scorecard")
 
         # Get axis labels
-        x_label = chart_config.get("xaxis", {}).get("title", "Category")
-        y_label = chart_config.get("yaxis", {}).get("title", "Sample")
+        xaxis_cfg = chart_config.get("xaxis", {})
+        yaxis_cfg = chart_config.get("yaxis", {})
+        x_label = xaxis_cfg.get("title", "Category")
+        y_label = yaxis_cfg.get("title", "Sample")
         color_label = chart_config.get("color_label", "Completeness (%)")
 
         # Get text display settings
@@ -412,26 +414,53 @@ class HeatmapScoredStrategy(BasePlotStrategy):
             b=margin_config.get("b", 120),
         )
 
-        # Get axis angles
+        # Get axis tick angles
         xaxis_tickangle = chart_config.get("xaxis_tickangle", -45)
         yaxis_tickangle = chart_config.get("yaxis_tickangle", 0)
+
+        # Get axis tick fonts (flat keys for backward compat)
+        xaxis_tickfont = chart_config.get("xaxis_tickfont", xaxis_cfg.get("tickfont", {}))
+        yaxis_tickfont = chart_config.get("yaxis_tickfont", yaxis_cfg.get("tickfont", {}))
+
+        # Get axis title fonts
+        xaxis_title_font = chart_config.get("xaxis_title_font", xaxis_cfg.get("title_font", {}))
+        yaxis_title_font = chart_config.get("yaxis_title_font", yaxis_cfg.get("title_font", {}))
 
         # Get colorbar configuration
         colorbar_config = chart_config.get("colorbar", {})
         colorbar_title = colorbar_config.get("title", color_label)
+        colorbar_title_font = colorbar_config.get("title_font", {})
 
-        # Get title display setting
+        # Get title display setting and font
         show_title = title_config.get("show", True)
+        title_font_cfg = title_config.get("font", {})
+        title_font_size = title_font_cfg.get("size", 16)
+        title_font_color = title_font_cfg.get("color", "#000000")
 
         # Build layout update dict
         layout_update = {
             "height": height,
             "template": template,
-            "xaxis_tickangle": xaxis_tickangle,
-            "yaxis_tickangle": yaxis_tickangle,
             "margin": margin,
-            "coloraxis_colorbar": dict(title=colorbar_title),
+            "coloraxis_colorbar": dict(
+                title=dict(text=colorbar_title, **({"font": colorbar_title_font} if colorbar_title_font else {}))
+            ),
         }
+
+        # Build xaxis and yaxis dicts with tick angle and font
+        xaxis_update = {"tickangle": xaxis_tickangle}
+        if xaxis_tickfont:
+            xaxis_update["tickfont"] = xaxis_tickfont
+        if xaxis_title_font:
+            xaxis_update["title_font"] = xaxis_title_font
+        layout_update["xaxis"] = xaxis_update
+
+        yaxis_update = {"tickangle": yaxis_tickangle}
+        if yaxis_tickfont:
+            yaxis_update["tickfont"] = yaxis_tickfont
+        if yaxis_title_font:
+            yaxis_update["title_font"] = yaxis_title_font
+        layout_update["yaxis"] = yaxis_update
 
         # Add title if enabled
         if show_title and title_text:
@@ -439,6 +468,7 @@ class HeatmapScoredStrategy(BasePlotStrategy):
                 "text": title_text,
                 "x": title_config.get("x", 0.5),
                 "xanchor": title_config.get("xanchor", "center"),
+                "font": dict(size=title_font_size, color=title_font_color),
             }
 
         # Only set width if not using autosize
@@ -447,14 +477,24 @@ class HeatmapScoredStrategy(BasePlotStrategy):
 
         fig.update_layout(**layout_update)
 
-        # Update text font size if configured
+        # Plotly Heatmap traces only support size/family/color on textfont.
+        # Keep accepting text_font_weight in config for forward compatibility,
+        # but do not pass unsupported keys to Plotly.
         text_font_size = chart_config.get("text_font_size", 10)
-        fig.update_traces(textfont_size=text_font_size)
-
-        # Set text color based on value for better contrast
-        # Black text for light cells, white for dark cells
         text_font_color = chart_config.get("text_font_color", "black")
-        fig.update_traces(textfont_color=text_font_color)
+        text_font_weight = chart_config.get("text_font_weight", "normal")
+        if text_font_weight not in {"normal", "", None}:
+            logger.debug(
+                "Ignoring unsupported heatmap text_font_weight=%s for use_case_id=%s",
+                text_font_weight,
+                self.metadata.get("use_case_id", "unknown"),
+            )
+        fig.update_traces(
+            textfont=dict(
+                size=text_font_size,
+                color=text_font_color,
+            )
+        )
 
         logger.info(
             f"✓ Heatmap figure created - "

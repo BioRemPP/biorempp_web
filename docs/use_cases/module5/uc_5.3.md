@@ -1,9 +1,9 @@
-# UC-5.3 — Regulatory Relevance of Samples 
+﻿# UC-5.3 â€” Regulatory Relevance of Samples 
 
-**Module:** 5 – Modeling Interactions of Samples, Genes, and Compounds  
-**Visualization type:** Chord diagram (bipartite sample–agency interaction network)  
+**Module:** 5 â€“ Modeling Interactions of Samples, Genes, and Compounds  
+**Visualization type:** Chord diagram (bipartite sampleâ€“agency interaction network)  
 **Primary inputs:** BioRemPP results table with `sample` and `referenceAG` columns  
-**Primary outputs:** Interaction matrix of samples × regulatory agencies (co-occurrence counts)
+**Primary outputs:** Interaction matrix of samples Ã— regulatory agencies (co-occurrence counts)
 
 ---
 
@@ -11,7 +11,7 @@
 
 **Question:** Which samples are most co-annotated with compounds monitored by different environmental regulatory agencies?
 
-This use case quantifies how strongly each biological sample is co-annotated with the **regulatory context** represented in the dataset. By summarizing co-annotation frequencies between samples and **environmental or regulatory agencies** (`referenceAG`), the analysis can reveal which samples are most frequently co-annotated with compounds under formal monitoring. A **chord diagram** is used to provide an integrated, system-level view of sample–agency co-annotation patterns, which may highlight samples with broad or focused regulatory compound coverage.
+This use case quantifies how strongly each biological sample is co-annotated with the **regulatory context** represented in the dataset. By summarizing co-annotation frequencies between samples and **environmental or regulatory agencies** (`referenceAG`), the analysis can reveal which samples are most frequently co-annotated with compounds under formal monitoring. A **chord diagram** is used to provide an integrated, system-level view of sampleâ€“agency co-annotation patterns, which may highlight samples with broad or focused regulatory compound coverage.
 
 ---
 
@@ -19,36 +19,36 @@ This use case quantifies how strongly each biological sample is co-annotated wit
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `sample` – identifier for each biological sample
-  - `referenceAG` – regulatory or scientific agency label (e.g., WFD, CONAMA, EPC)
+  - `sample` â€“ identifier for each biological sample
+  - `referenceAG` â€“ regulatory or scientific agency label (e.g., WFD, CONAMA, EPC)
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 - **Derived structure:** interaction matrix with:
   - rows = samples  
   - columns = regulatory agencies  
-  - cell = interaction count for each sample–agency pair
+  - cell = interaction count for each sampleâ€“agency pair
 
 ---
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Filtering**  
+2. **Filtering**
    The dataset is filtered to retain only rows containing valid entries for both `sample` and `referenceAG`. Incomplete records are discarded.
 
-3. **Aggregation (Interaction Strength)**  
+3. **Aggregation (Interaction Strength)**
    The filtered data is grouped by unique `(sample, referenceAG)` pairs:
    - for each pair, the total number of **co-occurrence records** (rows) is counted,  
    - this count provides a measure of **interaction strength** between the sample and the agency's monitored chemical space.
 
-4. **Chord Matrix / Edge List Construction**  
+4. **Chord Matrix / Edge List Construction**
    The aggregated counts are arranged into a matrix or edge list suitable for chord diagram rendering, where:
    - each **sample** is treated as one set of nodes,  
    - each **regulatory agency (`referenceAG`)** is treated as the other set,  
    - the edge weight between them is the interaction count.
 
-5. **Rendering**  
+5. **Rendering**
    A **chord diagram** is generated:
    - arcs on the circumference represent both samples and regulatory agencies,  
    - ribbons (chords) connect each sample to the agencies with which it is associated,  
@@ -58,18 +58,18 @@ This use case quantifies how strongly each biological sample is co-annotated wit
 
 ## How to Read the Plot
 
-- **Outer Arcs (Nodes)**  
+- **Outer Arcs (Nodes)**
   Each colored arc along the circle represents either:
   - a **Sample**, or  
   - a **Regulatory Agency** (`referenceAG`).  
   The length of an arc is proportional to the **total number of interactions** (sum of counts) associated with that entity.
 
-- **Chords (Ribbons)**  
-  The ribbons spanning between arcs represent **Sample–Agency** relationships:
+- **Chords (Ribbons)**
+  The ribbons spanning between arcs represent **Sampleâ€“Agency** relationships:
   - one end of the ribbon is anchored at a sample arc,  
   - the other at an agency arc.
 
-- **Chord Thickness**  
+- **Chord Thickness**
   The thickness of a chord where it connects to an arc is proportional to the **interaction strength**:
   - **thicker chords** may denote stronger associations (more co-occurrences),  
   - **thinner chords** reflect weaker or less frequent associations.
@@ -111,12 +111,25 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Links to regulatory agencies are based on simple presence of compound annotations, ignoring concentration thresholds, degradation kinetics, or regulatory context.
+
+- **Visualization limitation**
+  The chord diagram summarizes total annotation overlaps but hides which specific regulated compounds are actually annotated in each sample.
+
+- **Interpretive limitation**
+  Thick chords indicate high database co-occurrence with an agency's target list, not proof of regulatory compliance, contamination levels, or active degradation of those compounds.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing at least the columns `sample` and `referenceAG`.
 
-- **Interaction Definition**  
+- **Interaction Definition**
   Interaction strength is defined as the **total number of co-occurrence records** for each `(sample, referenceAG)` pair in the raw data:
   - multiple rows linking the same sample and agency (e.g., via different compounds or genes) increase the aggregate count,  
   - the chord diagram therefore reflects overall **intensity of association**, not unique compound or KO counts.
@@ -136,5 +149,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_5.3.png">
   <img src="../uc_5.3.png" alt="Activity diagram of the use case">
 </a>
+
 
 

@@ -65,4 +65,14 @@ interpretation_guidelines:
     compounds in the database. This reflects annotation coverage and does not
     confirm absence of functional capacity.
 
+limitations:
+  - >
+    Methodological limitation: Gene counts depend on the breadth of the reference database and the number of KOs matched, ignoring whether those genes form complete, functional degradation pathways.
+
+  - >
+    Visualization limitation: The heatmap uses color intensity to represent unique gene counts, masking the identity, metabolic role, and reaction kinetics of those specific genes.
+
+  - >
+    Interpretive limitation: Darker cells indicate broader database co-occurrence between a sample's genes and a toxic compound, not confirmed ability to metabolize, detoxify, or tolerate that chemical.
+
 color_scheme: "success"

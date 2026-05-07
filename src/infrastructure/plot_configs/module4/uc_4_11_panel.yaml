@@ -59,4 +59,14 @@ interpretation_guidelines:
     identification of categories with the highest annotation counts and enables
     interactive drill-down exploration of their constituent elements.
 
+limitations:
+  - >
+    Methodological limitation: Hierarchical aggregations strictly enforce the predefined ontology of the reference database (e.g., KEGG or HADEG), which may not accurately reflect the actual physiological compartments or operon logic of the organism.
+
+  - >
+    Visualization limitation: The nested rings display cumulative annotation depth from compound to pathway to gene, but obscure whether these overlapping gene counts translate into contiguous, unbroken metabolic pathways.
+
+  - >
+    Interpretive limitation: Prominent sunburst sectors indicate deep, redundant annotation for specific broad chemical categories, not a confirmed specialized metabolic lifestyle or guaranteed complete degradation routes in situ.
+
 color_scheme: "success"

@@ -9,6 +9,8 @@ from typing import Dict, List
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 
+from src.presentation.pages.methods.workflow_docs import build_use_case_docs_url
+
 
 def _build_workflow_title_children(workflow: Dict) -> html.Div:
     """Build modal title section from workflow payload."""
@@ -22,6 +24,7 @@ def _build_workflow_title_children(workflow: Dict) -> html.Div:
 def _build_workflow_body_children(workflow: Dict) -> html.Div:
     """Build modal body section from workflow payload."""
     steps = workflow.get("steps", [])
+    docs_url = build_use_case_docs_url(workflow.get("use_case_id"))
 
     step_elements = []
     for step in steps:
@@ -56,16 +59,36 @@ def _build_workflow_body_children(workflow: Dict) -> html.Div:
 
         step_elements.append(step_card)
 
-    return html.Div(
-        [
-            html.P(
-                f"{len(steps)} analytical steps",
-                className="text-muted mb-3",
-                style={"fontSize": "0.9rem", "fontStyle": "italic"},
-            ),
-            html.Div(step_elements),
-        ]
-    )
+    children = [
+        html.P(
+            f"{len(steps)} analytical steps",
+            className="text-muted mb-3",
+            style={"fontSize": "0.9rem", "fontStyle": "italic"},
+        ),
+        html.Div(step_elements),
+    ]
+
+    if docs_url:
+        children.extend(
+            [
+                html.Hr(className="mt-4 mb-3"),
+                html.Div(
+                    dbc.Button(
+                        [
+                            html.I(className="fas fa-book me-2"),
+                            "View complete Use Case documentation",
+                        ],
+                        href=docs_url,
+                        target="_blank",
+                        external_link=True,
+                        color="link",
+                        className="px-0 fw-semibold text-decoration-none",
+                    )
+                ),
+            ]
+        )
+
+    return html.Div(children)
 
 
 def create_workflow_modal(workflow: Dict) -> dbc.Modal:

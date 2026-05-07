@@ -59,4 +59,14 @@ interpretation_guidelines:
     investigation, but do not confirm that one sample relies more heavily on specific
     enzymatic functions than another.
 
+limitations:
+  - >
+    Methodological limitation: Enzyme activity is ranked solely by the sheer number of unique annotated gene symbols, completely ignoring differences in enzyme kinetics, turnover rates, and substrate specificities.
+
+  - >
+    Visualization limitation: The bar chart array aggregates diverse isoenzymes into a single monolithic block, hiding the fact that many of these genes might be mutually exclusive or expressed under conflicting environmental conditions.
+
+  - >
+    Interpretive limitation: A tall bar highlights a high genetic redundancy for a specific enzyme class within the annotation database, not confirmed high catalytic output or essentiality for biotransformation.
+
 color_scheme: "success"

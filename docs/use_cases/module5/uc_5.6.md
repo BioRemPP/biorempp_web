@@ -1,17 +1,17 @@
-# UC-5.6 — Compound–Compound Interaction Network (Based on Shared Genes)
+﻿# UC-5.6 â€” Compoundâ€“Compound Interaction Network (Based on Shared Genes)
 
-**Module:** 5 – Modeling Interactions of Samples, Genes, and Compounds  
-**Visualization type:** Weighted compound–compound network (shared-gene edges, force-directed layout)  
+**Module:** 5 â€“ Modeling Interactions of Samples, Genes, and Compounds  
+**Visualization type:** Weighted compoundâ€“compound network (shared-gene edges, force-directed layout)  
 **Primary inputs:** BioRemPP results table with `compoundname` and `genesymbol` columns  
-**Primary outputs:** Compound–compound interaction network weighted by number of shared genes; node-level connectivity (degree)
+**Primary outputs:** Compoundâ€“compound interaction network weighted by number of shared genes; node-level connectivity (degree)
 
 ---
 
 ## Scientific Question and Rationale
 
-**Question:** Which chemical compounds share the most gene co-annotations across samples, and what co-annotation structure do these compound–compound relationships form?
+**Question:** Which chemical compounds share the most gene co-annotations across samples, and what co-annotation structure do these compoundâ€“compound relationships form?
 
-This use case examines **compound–compound co-annotation overlap** by identifying which compounds are co-annotated with overlapping sets of genes across all biological samples. Compounds that share many gene co-annotations could warrant investigation as potentially related in pathway annotation, though structural or biochemical similarity requires experimental validation. By constructing a **compound–compound network** where edges represent shared gene co-annotations and edge weights encode the number of these shared annotations, the analysis may reveal **compound co-annotation clusters**, highly connected **hub compounds**, and **bridge compounds** that link distinct annotation groups.
+This use case examines **compoundâ€“compound co-annotation overlap** by identifying which compounds are co-annotated with overlapping sets of genes across all biological samples. Compounds that share many gene co-annotations could warrant investigation as potentially related in pathway annotation, though structural or biochemical similarity requires experimental validation. By constructing a **compoundâ€“compound network** where edges represent shared gene co-annotations and edge weights encode the number of these shared annotations, the analysis may reveal **compound co-annotation clusters**, highly connected **hub compounds**, and **bridge compounds** that link distinct annotation groups.
 
 ---
 
@@ -19,26 +19,26 @@ This use case examines **compound–compound co-annotation overlap** by identify
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `compoundname` – name (or identifier) of the chemical compound
-  - `genesymbol` – gene symbol or identifier associated with that compound in at least one sample
+  - `compoundname` â€“ name (or identifier) of the chemical compound
+  - `genesymbol` â€“ gene symbol or identifier associated with that compound in at least one sample
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 - **Derived structures:**
   - mapping of each compound to its set of unique genes,  
-  - weighted compound–compound edge list based on the count of shared genes.
+  - weighted compoundâ€“compound edge list based on the count of shared genes.
 
 ---
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Compound-to-Gene Mapping**  
+2. **Compound-to-Gene Mapping**
    For each unique `compoundname`, a **gene set** is constructed:
    - all unique `genesymbol` entries associated with that compound are collected into a set,  
    - this set represents the **gene co-annotation profile** of that compound.
 
-3. **Graph Construction (Compound–Compound Network)**  
+3. **Graph Construction (Compoundâ€“Compound Network)**
    A network graph is built where:
    - each unique **compound** is added as a **node**,  
    - all unique pairs of compounds are evaluated; for each pair:
@@ -46,7 +46,7 @@ This use case examines **compound–compound co-annotation overlap** by identify
      - if the intersection is non-empty, an **edge** is added between the two compounds,  
      - the **edge weight** is set to the number of shared unique genes.
 
-4. **Layout and Styling**  
+4. **Layout and Styling**
    A **force-directed layout** is used to compute node positions:
    - compounds with many strong connections tend to cluster toward the center,  
    - sparsely connected compounds are positioned closer to the periphery.  
@@ -54,10 +54,10 @@ This use case examines **compound–compound co-annotation overlap** by identify
    - **degree** (number of connected compound neighbors) is calculated for each node,  
    - this degree is mapped to node color to highlight highly connected compounds.
 
-5. **Rendering**  
+5. **Rendering**
    The network is rendered as an interactive plot:
    - nodes represent individual compounds,  
-   - edges represent compound–compound links based on shared genes,  
+   - edges represent compoundâ€“compound links based on shared genes,  
    - **edge thickness** is proportional to edge weight (number of shared genes),  
    - **node color** is proportional to degree (number of compound neighbors), with a color bar indicating the scale.
 
@@ -65,17 +65,17 @@ This use case examines **compound–compound co-annotation overlap** by identify
 
 ## How to Read the Plot
 
-- **Nodes (Compounds)**  
+- **Nodes (Compounds)**
   Each point in the graph is a **Compound Name**:
   - its position is determined by the force-directed layout,  
   - its **color** encodes its **degree** (how many other compounds it is connected to).
 
-- **Edges (Compound–Compound Links)**
+- **Edges (Compoundâ€“Compound Links)**
   Each line between two nodes represents a **shared gene co-annotation link**:
   - the two compounds share at least one common gene co-annotation,
   - the **thickness** of the edge is proportional to the **number of shared gene co-annotations** (edge weight).
 
-- **Node Color Scale**  
+- **Node Color Scale**
   A color bar indicates the range of node degrees:
   - **brighter/warmer colors** correspond to **high-degree compounds** (hubs),  
   - cooler or darker colors correspond to compounds with fewer connections.
@@ -123,9 +123,22 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Compound-compound edges are formed solely based on shared gene annotations, which may link structurally unrelated chemicals annotated to broad-acting or promiscuous enzyme families.
+
+- **Visualization limitation**
+  The network visually compresses the shared gene connections into single edges, hiding the identity and specific functions of the genes driving the clustering.
+
+- **Interpretive limitation**
+  Dense compound clusters represent shared annotation profiles, not necessarily similar chemical structures, shared degradation pathways, or sequential intermediates.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing at least the columns `compoundname` and `genesymbol`.
 
 - **Link Definition**
@@ -133,7 +146,7 @@ The image below illustrates a representative output generated by this use case u
   - **Edge weight** is the number of shared unique gene co-annotations.
   - **Node color** reflects **connectivity to other compounds** (degree), *not* the total number of unique genes co-annotated with each compound.
 
-- **Network Properties**  
+- **Network Properties**
   - The network is typically treated as **undirected and weighted**: edges encode symmetric relationships based on shared genes and carry a weight proportional to that overlap.  
   - The force-directed layout can be made reproducible by fixing a random seed.
 
@@ -152,5 +165,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_5.6.png">
   <img src="../uc_5.6.png" alt="Activity diagram of the use case">
 </a>
+
 
 

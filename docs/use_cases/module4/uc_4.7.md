@@ -1,9 +1,9 @@
-# UC-4.7 — Gene–Compound Association Explorer
+﻿# UC-4.7 â€” Geneâ€“Compound Association Explorer
 
-**Module:** 4 – Functional and Genetic Profiling  
-**Visualization type:** Interactive scatter (gene–compound matrix with sample-level details via hover)  
-**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sample–compound–gene–KO associations)  
-**Primary outputs:** Filterable map of gene–compound associations, with links back to contributing samples
+**Module:** 4 â€“ Functional and Genetic Profiling  
+**Visualization type:** Interactive scatter (geneâ€“compound matrix with sample-level details via hover)  
+**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sampleâ€“compoundâ€“geneâ€“KO associations)  
+**Primary outputs:** Filterable map of geneâ€“compound associations, with links back to contributing samples
 
 ---
 
@@ -15,9 +15,9 @@ This use case can provide an **exploratory query interface** over the BioRemPP a
 
 - all genes co-annotated with a given compound (compound-centric view),
 - all compounds co-annotated with a given gene (gene-centric view), and
-- the subset of samples that carry a specific gene–compound co-annotation.
+- the subset of samples that carry a specific geneâ€“compound co-annotation.
 
-By exposing gene–compound annotation co-occurrences at full resolution, UC-4.7 and UC-4.8 can support **hypothesis generation** and identification of gene–compound pairs for downstream experimental investigation (experimental validation required to confirm functional roles).
+By exposing geneâ€“compound annotation co-occurrences at full resolution, UC-4.7 and UC-4.8 can support **hypothesis generation** and identification of geneâ€“compound pairs for downstream experimental investigation (experimental validation required to confirm functional roles).
 
 ---
 
@@ -25,29 +25,29 @@ By exposing gene–compound annotation co-occurrences at full resolution, UC-4.7
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (semicolon-delimited)  
 - **Key columns:**
-  - `sample` – identifier for each biological sample  
-  - `compoundname` – individual chemical compound names  
-  - `genesymbol` – gene symbols associated with the interaction  
-  - `ko` – KEGG Orthology identifier(s) mapped to the gene in that context
+  - `sample` â€“ identifier for each biological sample  
+  - `compoundname` â€“ individual chemical compound names  
+  - `genesymbol` â€“ gene symbols associated with the interaction  
+  - `ko` â€“ KEGG Orthology identifier(s) mapped to the gene in that context
 
 - **User controls:**
-  - **Dropdown – Compound Name:** `compoundname` (optional filter)  
-  - **Dropdown – Gene Symbol:** `genesymbol` (optional filter)
+  - **Dropdown â€“ Compound Name:** `compoundname` (optional filter)  
+  - **Dropdown â€“ Gene Symbol:** `genesymbol` (optional filter)
 
 - **Output structure:**
   - **X-axis:** gene symbols  
   - **Y-axis:** compound names  
-  - **Points:** observed gene–compound associations, with hover metadata exposing the underlying samples and KOs
+  - **Points:** observed geneâ€“compound associations, with hover metadata exposing the underlying samples and KOs
 
 ---
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    - The results table `BioRemPP_Results.xlsx or BioRemPP_Results.csv` is loaded from a semicolon-delimited text file.  
    - Only rows with non-missing `compoundname`, `genesymbol`, and `sample` are retained.
 
-2. **Widget Initialization (Query Controls)**  
+2. **Widget Initialization (Query Controls)**
    - Two interactive dropdown menus are created and populated with:
      - all unique `compoundname` values, and  
      - all unique `genesymbol` values.  
@@ -55,17 +55,17 @@ By exposing gene–compound annotation co-occurrences at full resolution, UC-4.7
      - **no selection** (returns all values along that dimension), and  
      - selection of a **single compound** and/or a **single gene**.
 
-3. **Conditional Data Filtering**  
+3. **Conditional Data Filtering**
    Based on the user's choices, the table is filtered as follows:
-   - **Compound-only selection:**  
+   - **Compound-only selection:**
      - If only `compoundname` is selected, the data is filtered to all rows matching that compound, across all genes and samples.
-   - **Gene-only selection:**  
+   - **Gene-only selection:**
      - If only `genesymbol` is selected, the data is filtered to all rows matching that gene, across all compounds and samples.
-   - **Compound + gene selection:**  
+   - **Compound + gene selection:**
      - If both are selected, the data is filtered to rows matching that exact `(compoundname, genesymbol)` pair.
 
 
-4. **Association Extraction and Rendering**  
+4. **Association Extraction and Rendering**
    - From the filtered table, unique combinations of:
      - `compoundname`,  
      - `genesymbol`,  
@@ -80,21 +80,21 @@ By exposing gene–compound annotation co-occurrences at full resolution, UC-4.7
 
 ## How to Read the Plot
 
-- **Dropdown Menus (Query Interface)**  
+- **Dropdown Menus (Query Interface)**
   - **Select Compound Name:** filters the visualization to interactions involving that compound.  
   - **Select Gene Symbol:** filters the visualization to interactions involving that gene.  
-  - Selecting **both** returns only the intersection for that gene–compound pair.  
+  - Selecting **both** returns only the intersection for that geneâ€“compound pair.  
   - The scatter updates immediately after each change.
 
-- **Y-axis – Compound Names**  
+- **Y-axis â€“ Compound Names**
   - Each position on the vertical axis corresponds to a **Compound** (`compoundname`).  
   - Multiple points along that row indicate different genes associated with the same compound.
 
-- **X-axis – Gene Symbols**  
+- **X-axis â€“ Gene Symbols**
   - Each position on the horizontal axis corresponds to a **Gene Symbol** (`genesymbol`).  
   - Multiple points along that column indicate different compounds associated with the same gene.
 
-- **Points – Gene–Compound Associations**  
+- **Points â€“ Geneâ€“Compound Associations**
   - Each point at the intersection of a gene and a compound indicates that **at least one association** between them exists in the BioRemPP dataset.  
 
 
@@ -129,24 +129,37 @@ The image below illustrates a representative output generated by this use case u
   - Selecting both a gene and a compound asks: "Do this gene and compound co-annotate in any of the samples in the dataset?"
 
 - **Annotation-level Exploration**
-  - By exploring gene–compound co-annotation patterns, one can:
+  - By exploring geneâ€“compound co-annotation patterns, one can:
     - identify **samples carrying unique or rare co-annotations**,
     - detect **widely shared annotation co-occurrences** across multiple samples, and
-    - generate hypotheses about gene–compound relationships for experimental follow-up.
+    - generate hypotheses about geneâ€“compound relationships for experimental follow-up.
+
+---
+
+## Limitations
+
+- **Methodological limitation**
+  Gene-compound associations reflect co-occurrences in the reference database, which may include indirect or generalized links rather than direct catalytic specificity.
+
+- **Visualization limitation**
+  The point grid condenses all gene-compound links to a uniform presence mark, losing crucial dimensions like reaction kinetics, substrate affinity, and environmental conditions required.
+
+- **Interpretive limitation**
+  A dense cluster of annotation points highlights a strong database representation for certain compounds, not confirmed biochemical interaction or high efficiency in actual bioaugmentation scenarios.
 
 ---
 
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis requires a semicolon-delimited table containing at least:
   - `sample`,  
   - `compoundname`,  
   - `genesymbol`,  
   - `ko`.
 
-- **Association Definition**  
-  - A gene–compound association is defined by the presence of **at least one row** in the BioRemPP results where the same `genesymbol` and `compoundname` co-occur.  
+- **Association Definition**
+  - A geneâ€“compound association is defined by the presence of **at least one row** in the BioRemPP results where the same `genesymbol` and `compoundname` co-occur.  
   - The visualization displays **presence/absence** of associations, not their frequency or expression level.
 
 - **Scope and Limitations**

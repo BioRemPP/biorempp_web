@@ -95,36 +95,44 @@ visualization:
         show: true
         text: "Chemical Class Completeness Scorecard"
         font:
-          size: 16
+          size: 20
           family: "Arial"
-          color: "#2c3e50"
+          color: "#000000"
         x: 0.5
         xanchor: "center"
-      
+
       # Axis configuration
       xaxis:
         title: "Compound Class"
         title_font:
-          size: 14
-      
+          size: 16
+          color: "#000000"
+
       yaxis:
         title: "Sample"
         title_font:
-          size: 14
-      
+          size: 16
+          color: "#000000"
+
       # Color configuration
       color_label: "KO Completeness (%)"
       color_continuous_scale: "Greens"
-      
+
       # Text display in cells
       show_values: true
       text_auto: ".1f"
-      text_font_size: 10
+      text_font_size: 11
       text_font_color: "black"
-      
-      # Axis label angles
+
+      # Axis label angles and tick fonts
       xaxis_tickangle: -45
+      xaxis_tickfont:
+        size: 13
+        color: "#000000"
       yaxis_tickangle: 0
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
       
       # Colorbar configuration
       colorbar:

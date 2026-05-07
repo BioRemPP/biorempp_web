@@ -74,4 +74,14 @@ interpretation_guidelines:
     is an annotation-level observation and does not confirm diverse functional
     capabilities or suitability for specific applications.
 
+limitations:
+  - >
+    Methodological limitation: Gene-sample association mappings rely strictly on reference database annotations, ignoring whether these genes are part of intact operons or fragmented sequences.
+
+  - >
+    Visualization limitation: The uniform intersection points obscure quantitative differences in gene copy numbers and the critical regulatory networks governing their actual expression.
+
+  - >
+    Interpretive limitation: Extensive gene presence across many samples highlights high genetic coverage within the reference dataset, not confirmed ecological dominance or generalized biotransformation activity.
+
 color_scheme: "success"

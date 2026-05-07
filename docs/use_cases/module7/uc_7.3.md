@@ -1,8 +1,8 @@
-# UC-7.3 — Mapping of Genetic Response to High-Priority Threats
+﻿# UC-7.3 â€” Mapping of Genetic Response to High-Priority Threats
 
-**Module:** 7 – Toxicological Risk Assessment and Profiling  
-**Visualization type:** Interactive heatmap (unique gene count per sample–compound pair for high-risk threats)  
-**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sample–compound–gene associations) and `ToxCSM.xlsx or ToxCSM.csv` (predicted toxicity per compound and endpoint)  
+**Module:** 7 â€“ Toxicological Risk Assessment and Profiling  
+**Visualization type:** Interactive heatmap (unique gene count per sampleâ€“compound pair for high-risk threats)  
+**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sampleâ€“compoundâ€“gene associations) and `ToxCSM.xlsx or ToxCSM.csv` (predicted toxicity per compound and endpoint)  
 **Primary outputs:** Matrix of unique gene counts for high-risk compounds across samples, stratified by toxicological super-category
 
 ---
@@ -11,24 +11,24 @@
 
 **Question:** For a given high-level toxicological category (e.g., Genomic Toxicity), which samples have the most diverse KO annotations co-annotated with the associated high-priority compounds?
 
-This use case provides an annotation-level view of **sample–compound co-annotation patterns** for predicted high-risk compounds. By focusing on compounds predicted as **"High Toxicity"** within a selected toxicological super-category, the heatmap quantifies the **KO annotation count** each sample has for these priority compounds. The color intensity in each cell reflects the number of unique genes co-annotated with a specific sample–compound pair, which may serve as a measure of **annotation breadth** for that pairing (experimental validation required to confirm functional capacity).
+This use case provides an annotation-level view of **sampleâ€“compound co-annotation patterns** for predicted high-risk compounds. By focusing on compounds predicted as **"High Toxicity"** within a selected toxicological super-category, the heatmap quantifies the **KO annotation count** each sample has for these priority compounds. The color intensity in each cell reflects the number of unique genes co-annotated with a specific sampleâ€“compound pair, which may serve as a measure of **annotation breadth** for that pairing (experimental validation required to confirm functional capacity).
 
 ---
 
 ## Data and Inputs
 
 - **Primary data sources:**
-  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` – KO annotations linking samples, compounds, and genes
-  - `ToxCSM.xlsx or ToxCSM.csv` – predicted toxicity scores and labels for compounds across multiple endpoints
+  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` â€“ KO annotations linking samples, compounds, and genes
+  - `ToxCSM.xlsx or ToxCSM.csv` â€“ predicted toxicity scores and labels for compounds across multiple endpoints
 - **Key columns:**
   - From `ToxCSM.xlsx or ToxCSM.csv`:
-    - `compoundname` – name of the chemical compound
-    - `endpoint` / `label_*` – toxicity endpoints and their qualitative labels (e.g., "High Toxicity")
-    - `supercategory` (derived) – toxicological super-category (e.g., Genomic, Environmental, Organic)
+    - `compoundname` â€“ name of the chemical compound
+    - `endpoint` / `label_*` â€“ toxicity endpoints and their qualitative labels (e.g., "High Toxicity")
+    - `supercategory` (derived) â€“ toxicological super-category (e.g., Genomic, Environmental, Organic)
   - From `BioRemPP_Results.xlsx or BioRemPP_Results.csv`:
-    - `sample` – identifier for each biological sample
-    - `compoundname` – compound associated with the interaction
-    - `genesymbol` – gene symbol or identifier
+    - `sample` â€“ identifier for each biological sample
+    - `compoundname` â€“ compound associated with the interaction
+    - `genesymbol` â€“ gene symbol or identifier
 - **Entities of interest:**
   - **High-Risk Compounds** within a chosen toxicological super-category
   - **Samples** and their associated **gene co-annotations** for these compounds
@@ -37,10 +37,10 @@ This use case provides an annotation-level view of **sample–compound co-annota
 
 ## Analytical Workflow
 
-1. **User Selection**  
+1. **User Selection**
    The user selects a **toxicological super-category** (e.g., "Genomic", "Environmental", "Organic") from an interactive dropdown menu.
 
-2. **Threat Scenario Definition (High-Risk Compound Set)**  
+2. **Threat Scenario Definition (High-Risk Compound Set)**
    The `ToxCSM` dataset is filtered to identify all `compoundname` entries that:
    - belong to the selected super-category, and  
    - are labeled **"High Toxicity"** in at least one endpoint within that category.  
@@ -49,17 +49,17 @@ This use case provides an annotation-level view of **sample–compound co-annota
 3. **KO Annotation Count Assessment**
    The `BioRemPP_Results.xlsx or BioRemPP_Results.csv` table is filtered to include only rows in which:
    - `compoundname` is in the high-priority list obtained in Step 2.
-   This subset captures all sample–gene co-annotation records relevant to the chosen compound class.
+   This subset captures all sampleâ€“gene co-annotation records relevant to the chosen compound class.
 
 4. **Aggregation and Matrix Construction**
    The filtered data is aggregated to construct a 2D matrix where:
    - rows represent **high-risk compounds** (`compoundname`),
    - columns represent **Samples** (`sample`), and
-   - each cell value is the **count of distinct `genesymbol`** co-annotated with that sample–compound pair.
+   - each cell value is the **count of distinct `genesymbol`** co-annotated with that sampleâ€“compound pair.
    This count is used as a measure of **KO annotation breadth** for each sample relative to each high-risk compound.
 
-5. **Rendering**  
-   The sample–compound matrix is rendered as an interactive heatmap:
+5. **Rendering**
+   The sampleâ€“compound matrix is rendered as an interactive heatmap:
    - axis labels denote compounds (rows) and samples (columns),  
    - color intensity encodes the unique gene count per cell,  
    - optional hover tooltips expose detailed information (compound, sample, gene count).
@@ -68,17 +68,17 @@ This use case provides an annotation-level view of **sample–compound co-annota
 
 ## How to Read the Plot
 
-- **Dropdown Menu**  
+- **Dropdown Menu**
    Use the dropdown to select the **Toxicological Super-Category** of interest (e.g., Genomic, Environmental, Organic). The heatmap updates to reflect high-risk compounds and responses specific to that category.
 
-- **Y-axis (Rows)**  
+- **Y-axis (Rows)**
   Represents individual **High-Risk Compounds** that are predicted as "High Toxicity" within the selected super-category.
 
 - **X-axis (Columns)**
   Represents individual **Samples**, each with co-annotation records for one or more of the high-risk compounds.
 
 - **Cell Color**
-  The color intensity of each cell indicates the **count of unique genes** (`genesymbol`) co-annotated with a specific sample–compound pair:
+  The color intensity of each cell indicates the **count of unique genes** (`genesymbol`) co-annotated with a specific sampleâ€“compound pair:
   - more intense (warmer, darker) colors correspond to higher gene counts,
   - lighter colors correspond to fewer co-annotated genes or no detected association.
 
@@ -99,7 +99,7 @@ The image below illustrates a representative output generated by this use case u
 ## Interpretation and Key Messages
 
 - **Samples with High KO Annotation Counts**
-  Brightly colored cells ("hotspots") may highlight **sample–compound pairs with broad co-annotation coverage**, where a sample has many KO annotations co-annotated with a specific high-risk compound.
+  Brightly colored cells ("hotspots") may highlight **sampleâ€“compound pairs with broad co-annotation coverage**, where a sample has many KO annotations co-annotated with a specific high-risk compound.
   - A **column with many bright cells** may indicate a sample with **high KO annotation coverage** across the selected toxicological category (experimental validation required to confirm functional capacity).
 
 - **Widely Co-annotated Priority Compounds**
@@ -116,23 +116,36 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Gene counts depend on the breadth of the reference database and the number of KOs matched, ignoring whether those genes form complete, functional degradation pathways.
+
+- **Visualization limitation**
+  The heatmap uses color intensity to represent unique gene counts, masking the identity, metabolic role, and reaction kinetics of those specific genes.
+
+- **Interpretive limitation**
+  Darker cells indicate broader database co-occurrence between a sample's genes and a toxic compound, not confirmed ability to metabolize, detoxify, or tolerate that chemical.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis requires two semicolon-delimited tables:
-  - `ToxCSM.xlsx or ToxCSM.csv` – containing compound-level toxicity predictions and labels,  
-  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` – containing sample–compound–gene associations.
+  - `ToxCSM.xlsx or ToxCSM.csv` â€“ containing compound-level toxicity predictions and labels,  
+  - `BioRemPP_Results.xlsx or BioRemPP_Results.csv` â€“ containing sampleâ€“compoundâ€“gene associations.
 
-- **Definition of "High Toxicity"**  
+- **Definition of "High Toxicity"**
   A compound is considered **high-risk** within a super-category if it is labeled "High Toxicity" for at least one endpoint mapped to that category.
 
 - **KO Annotation Count Metric**
-  The annotation count is quantified as the **count of unique gene symbols** co-annotated per sample–compound pair. This is treated as a measure of:
+  The annotation count is quantified as the **count of unique gene symbols** co-annotated per sampleâ€“compound pair. This is treated as a measure of:
   - annotation breadth, and
-  - the diversity of KO annotations associated with that sample–compound context (not a direct measure of degradation or mitigation capacity).
+  - the diversity of KO annotations associated with that sampleâ€“compound context (not a direct measure of degradation or mitigation capacity).
 
 
-- **Model and Annotation Limitations**  
+- **Model and Annotation Limitations**
   The analysis reflects:
   - the predictive scope and calibration of ToxCSM, and  
   - the coverage and curation of BioRemPP annotations.  
@@ -149,5 +162,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_7.3.png">
   <img src="../uc_7.3.png" alt="Activity diagram of the use case">
 </a>
+
 
 

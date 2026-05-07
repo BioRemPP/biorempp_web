@@ -90,4 +90,20 @@ interpretation_guidelines:
     starting point for exploring annotation complementarity, though any
     functional inference requires experimental validation.
 
+limitations:
+  - >
+    Methodological limitation: PCA is computed from standardized binary
+    presence/absence KO profiles and therefore does not capture abundance,
+    expression, pathway activity, or nonlinear relationships among features.
+
+  - >
+    Visualization limitation: The 2D projection shows only PC1 and PC2, so
+    relevant structure may remain in higher components and the apparent
+    distances between samples are a simplified view of the full KO space.
+
+  - >
+    Interpretive limitation: Visible clusters or outliers indicate differences
+    in KO annotation structure, not confirmed ecological similarity, shared
+    metabolism, or validated functional complementarity.
+
 color_scheme: "primary"

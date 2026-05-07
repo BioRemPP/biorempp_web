@@ -78,4 +78,14 @@ interpretation_guidelines:
     annotation overlap with other genes in the dataset. This may reflect
     narrow annotation coverage rather than unique substrate specificity.
 
+limitations:
+  - >
+    Methodological limitation: Gene-gene edges are formed whenever two genes share at least one annotated compound, which can create dense networks driven by promiscuous compounds rather than true pathway relationships.
+
+  - >
+    Visualization limitation: The network summarizes shared compound connections as single edges, hiding the identity and number of the specific compounds linking any two genes.
+
+  - >
+    Interpretive limitation: Network clusters reflect shared compound annotations in the reference database, not confirmed co-regulation, sequential enzymatic steps, or biological interaction.
+
 color_scheme: "success"

@@ -85,25 +85,38 @@ visualization:
         show: true
         text: "Pathway-Compound Pathway Functional Map"
       
-      # Axis labels
+      # Axis labels and fonts
       xaxis:
         title: "Compound Pathway (Chemical Class)"
+        title_font:
+          size: 16
+          color: "#000000"
       yaxis:
         title: "Pathway"
-      
-      # Axis angles
+        title_font:
+          size: 16
+          color: "#000000"
+
+      # Axis angles and tick fonts
       xaxis_tickangle: -45
+      xaxis_tickfont:
+        size: 13
+        color: "#000000"
       yaxis_tickangle: 0
-      
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
+
       # Color configuration
       color_label: "Unique KO Count"
       color_continuous_scale:
         - "#f7fcf5"  # Very light green
         - "#3CB371"  # Medium sea green
-      
+
       # Text annotations
       text_auto: false
-      text_font_size: 10
+      text_font_size: 11
+      text_font_color: "black"
       
       # Colorbar
       colorbar:

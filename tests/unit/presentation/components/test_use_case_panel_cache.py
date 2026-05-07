@@ -21,13 +21,17 @@ def _reset_uc_panel_cache():
     clear_use_case_config_cache()
 
 
-def _write_uc_yaml(path: Path, description: str) -> None:
+def _write_uc_yaml(
+    path: Path, description: str, limitations: list[str] | None = None
+) -> None:
     """Write minimal valid UC YAML configuration file."""
     payload = {
         "use_case_id": "uc-test-1",
         "scientific_question": "Test question?",
         "description": description,
     }
+    if limitations is not None:
+        payload["limitations"] = limitations
     path.write_text(yaml.safe_dump(payload, sort_keys=False), encoding="utf-8")
 
 
@@ -108,3 +112,30 @@ def test_load_use_case_config_raises_value_error_for_non_mapping_yaml(
 
     with pytest.raises(ValueError, match="expected mapping"):
         load_use_case_config(str(config_path))
+
+
+def test_load_use_case_config_preserves_optional_limitations(monkeypatch, tmp_path):
+    """Optional limitations field should survive cache roundtrips intact."""
+    monkeypatch.setenv("BIOREMPP_UC_PANEL_CACHE_ENABLED", "true")
+    monkeypatch.setenv("BIOREMPP_UC_PANEL_CACHE_VALIDATE_MTIME", "true")
+
+    config_path = tmp_path / "uc_with_limitations.yaml"
+    _write_uc_yaml(
+        config_path,
+        description="with limitations",
+        limitations=[
+            "Methodological limitation: Example constraint.",
+            "Visualization limitation: Example display caveat.",
+            "Interpretive limitation: Example inference boundary.",
+        ],
+    )
+
+    first = load_use_case_config(str(config_path))
+    first["limitations"][0] = "mutated-by-caller"
+    second = load_use_case_config(str(config_path))
+
+    assert second["limitations"] == [
+        "Methodological limitation: Example constraint.",
+        "Visualization limitation: Example display caveat.",
+        "Interpretive limitation: Example inference boundary.",
+    ]

@@ -118,22 +118,26 @@ visualization:
         title:
           text: "Enzyme Activity"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         showgrid: false
         tickangle: -45  # X-axis label angle (rotated for readability)
         tickfont:
-          size: 10
-      
+          size: 13
+          color: "#000000"
+
       # Y-axis configuration
       yaxis:
         title:
           text: "Unique Gene Count"
           font:
-            size: 14
-            color: "#2c3e50"
+            size: 16
+            color: "#000000"
         showgrid: true
         gridcolor: "lightgray"
+        tickfont:
+          size: 13
+          color: "#000000"
         tickangle: 0  # Y-axis label angle (horizontal)
       
       # Margins

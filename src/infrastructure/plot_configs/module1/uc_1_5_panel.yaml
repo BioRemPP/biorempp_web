@@ -94,4 +94,21 @@ interpretation_guidelines:
     starting point for identifying which compounds or pathways are
     underrepresented for a given sample.
 
+limitations:
+  - >
+    Methodological limitation: The compliance score is a presence-based overlap
+    metric normalized by each agency's compound list size and does not weight
+    compounds by abundance, evidence strength, pathway depth, or toxicological
+    importance.
+
+  - >
+    Visualization limitation: Heatmap color intensity can visually equalize
+    cells from agencies with very different denominators, so similar shades do
+    not necessarily represent comparable annotation breadth in absolute terms.
+
+  - >
+    Interpretive limitation: Higher scores indicate stronger annotation overlap
+    with a regulatory list, not legal compliance, confirmed degradation
+    capacity, or operational suitability without further validation.
+
 color_scheme: "primary"

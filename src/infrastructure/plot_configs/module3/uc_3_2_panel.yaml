@@ -98,4 +98,20 @@ interpretation_guidelines:
     compound annotation patterns. Exploring these differences can help identify
     which compound classes are more or less represented across different samples.
 
+limitations:
+  - >
+    Methodological limitation: PCA is based on standardized binary compound
+    presence/absence profiles and does not encode compound abundance, annotation
+    confidence, environmental concentration, or mechanistic interaction strength.
+
+  - >
+    Visualization limitation: The scatter plot compresses high-dimensional
+    compound co-annotation space into two axes, so separation patterns may omit
+    variance carried by additional components or class-specific features.
+
+  - >
+    Interpretive limitation: Samples that appear close or far apart reflect
+    similarity in compound annotation coverage, not confirmed shared
+    biotransformation behavior or environmental equivalence.
+
 color_scheme: "primary"

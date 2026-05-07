@@ -1,9 +1,9 @@
-# UC-4.6 — Functional Potential by Chemical Compound
+﻿# UC-4.6 â€” Functional Potential by Chemical Compound
 
-**Module:** 4 – Functional and Genetic Profiling  
-**Visualization type:** Interactive scatter (sample–compound matrix with KO-based intensity)  
-**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sample–compound–KO associations, with chemical class)  
-**Primary outputs:** Sample–compound functional potential map for a selected chemical class
+**Module:** 4 â€“ Functional and Genetic Profiling  
+**Visualization type:** Interactive scatter (sampleâ€“compound matrix with KO-based intensity)  
+**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sampleâ€“compoundâ€“KO associations, with chemical class)  
+**Primary outputs:** Sampleâ€“compound functional potential map for a selected chemical class
 
 ---
 
@@ -13,7 +13,7 @@
 
 Instead of asking only **whether** a sample is co-annotated with a compound, this use case quantifies **how many unique KEGG Orthology (KO) identifiers** are associated with each `(sample, compound)` pair in the dataset, providing a measure of **KO annotation diversity** at compound resolution.
 
-By filtering on a **chemical class** and summarizing **unique KO counts** for each `(sample, compound)` pair, the visualization creates a two-dimensional **KO annotation landscape**, where "hotspots" (large, bright points) may identify sample–compound combinations with particularly high KO annotation diversity (experimental validation required to confirm functional roles).
+By filtering on a **chemical class** and summarizing **unique KO counts** for each `(sample, compound)` pair, the visualization creates a two-dimensional **KO annotation landscape**, where "hotspots" (large, bright points) may identify sampleâ€“compound combinations with particularly high KO annotation diversity (experimental validation required to confirm functional roles).
 
 ---
 
@@ -21,10 +21,10 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (semicolon-delimited)  
 - **Key columns:**
-  - `sample` – identifier for each biological sample  
-  - `compoundclass` – chemical class for each compound  
-  - `compoundname` – individual compound names  
-  - `ko` – KEGG Orthology identifier(s) associated with each sample–compound interaction
+  - `sample` â€“ identifier for each biological sample  
+  - `compoundclass` â€“ chemical class for each compound  
+  - `compoundname` â€“ individual compound names  
+  - `ko` â€“ KEGG Orthology identifier(s) associated with each sampleâ€“compound interaction
 
 - **User control:**
   - A **dropdown menu** to select the **Compound Class** (`compoundclass`) to be analyzed.
@@ -38,11 +38,11 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
 
 ## Analytical Workflow
 
-1. **Compound Class Selection (User Input)**  
+1. **Compound Class Selection (User Input)**
    The user selects a **chemical class** (`compoundclass`) from an interactive dropdown menu.  
    - All subsequent filtering and aggregation are restricted to compounds belonging to this class.
 
-2. **Dynamic Filtering**  
+2. **Dynamic Filtering**
    - The results table `BioRemPP_Results.xlsx or BioRemPP_Results.csv` is loaded.  
    - The dataset is filtered to retain only rows where:
      - `compoundclass` equals the selected class, and  
@@ -56,7 +56,7 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
      - `compoundname`,
      - `unique_ko_count` (the KO annotation diversity metric).
 
-4. **Rendering as Sample–Compound Scatter Map**  
+4. **Rendering as Sampleâ€“Compound Scatter Map**
    - The aggregated table is rendered as a **scatter (dot) plot** where:
      - **X-axis:** `sample`,  
      - **Y-axis:** `compoundname`,  
@@ -67,20 +67,20 @@ By filtering on a **chemical class** and summarizing **unique KO counts** for ea
 
 ## How to Read the Plot
 
-- **Dropdown Menu (Chemical Class Selection)**  
+- **Dropdown Menu (Chemical Class Selection)**
   - Use the menu to select the **Compound Class** of interest (e.g., aromatics, chlorinated compounds).  
   - The plot automatically updates to show only compounds and interactions within that class.
 
-- **Y-axis – Compound Names**  
+- **Y-axis â€“ Compound Names**
   - Each horizontal position corresponds to an individual **Compound** (`compoundname`) within the selected class.  
   - Reading along the row reveals which samples interact with that compound and with what KO diversity.
 
-- **X-axis – Samples**  
+- **X-axis â€“ Samples**
   - Each vertical position corresponds to a **Sample**.  
   - Reading down the column reveals which compounds of the selected class are targeted by that sample and with what level of functional potential.
 
-- **Marker Size and Color – Functional Potential**  
-  - Each point represents a **sample–compound** interaction.  
+- **Marker Size and Color â€“ Functional Potential**
+  - Each point represents a **sampleâ€“compound** interaction.  
   - **Marker size** and **color intensity** are both mapped to the **count of unique KOs** (`unique_ko_count`) for that co-annotation:
     - larger, brighter markers indicate higher KO annotation diversity
     - smaller, paler markers indicate lower KO annotation diversity
@@ -103,7 +103,7 @@ The image below illustrates a representative output generated by this use case u
 
 - **KO Annotation Hotspots**
   - Large, brightly colored points may mark **hotspots of high KO annotation diversity**, where a sample has many unique KOs co-annotated with a specific compound.
-  - These hotspots could highlight **sample–compound pairs** worth prioritizing for annotation-guided experimental investigation (experimental validation required to confirm functional roles).
+  - These hotspots could highlight **sampleâ€“compound pairs** worth prioritizing for annotation-guided experimental investigation (experimental validation required to confirm functional roles).
 
 - **Sample-Level KO Annotation Breadth**
   - A sample whose column contains **many large, bright markers** has high KO annotation diversity across multiple compounds in that class.
@@ -120,9 +120,22 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Sizing bubbles by total KO counts inherently biases the visualization toward large, promiscuous enzyme families or extensively studied xenobiotics with many reference annotations.
+
+- **Visualization limitation**
+  The bubble size aggregates multiple diverse enzymatic steps into a single volume, obscuring whether the underlying KOs belong to completely disjoint reaction steps or redundant pathways.
+
+- **Interpretive limitation**
+  Large, bright bubbles emphasize areas of dense reference annotations for specific chemical classes, not a guaranteed high biotransformation rate or actual remediation potential in the environment.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis requires a semicolon-delimited table containing at least:
   - `sample`,  
   - `compoundclass`,  
@@ -135,7 +148,7 @@ The image below illustrates a representative output generated by this use case u
 
 - **Scope and Limitations**
   - The metric captures **KO annotation co-occurrence**, not expression or kinetic performance.
-  - Higher KO diversity reflects more diverse annotations in the database for that sample–compound pair, not confirmed functional versatility or degradation capacity (experimental validation required).
+  - Higher KO diversity reflects more diverse annotations in the database for that sampleâ€“compound pair, not confirmed functional versatility or degradation capacity (experimental validation required).
 
 
  

@@ -77,4 +77,20 @@ interpretation_guidelines:
     sources or similar compound class composition, and should be interpreted
     in the context of the dataset's annotation structure.
 
+limitations:
+  - >
+    Methodological limitation: Similarities are computed from binary compound
+    presence/absence profiles using Pearson correlation and therefore do not
+    capture compound abundance, annotation confidence, or chemical importance.
+
+  - >
+    Visualization limitation: The heatmap reduces each pair of samples to a
+    single compound-profile similarity score and does not expose which compound
+    classes or specific compounds drive the pattern.
+
+  - >
+    Interpretive limitation: Correlated compound profiles indicate overlapping
+    annotation coverage, not confirmed shared exposure history, functional
+    interaction capacity, or equivalent remediation behavior.
+
 color_scheme: "primary"

@@ -75,4 +75,21 @@ interpretation_guidelines:
     collaboration or consortium design based on KO overlap requires experimental
     validation beyond annotation data.
 
+limitations:
+  - >
+    Methodological limitation: Pairwise similarities are calculated with Pearson
+    correlation on binary KO presence/absence vectors, which captures linear
+    co-variation but is sensitive to sparse profiles and does not model pathway
+    weighting or abundance.
+
+  - >
+    Visualization limitation: The correlogram compresses each sample pair into
+    a single similarity value, so it does not reveal which KO subsets create a
+    high or low correlation pattern.
+
+  - >
+    Interpretive limitation: High or low correlation indicates annotation-level
+    similarity or divergence, not direct evidence of shared metabolism,
+    ecological interaction, or consortium compatibility.
+
 color_scheme: "primary"

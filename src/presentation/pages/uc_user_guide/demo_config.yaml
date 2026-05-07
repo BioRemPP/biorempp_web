@@ -69,6 +69,21 @@ panel:
       Database Scope: Differences highlight each database's focus, helping
       select the most appropriate source for specific analyses.
 
+  limitations:
+    - >
+      Methodological limitation: Ranking is based on unique KO counts and does
+      not incorporate abundance, expression, or experimental confirmation of activity.
+
+    - >
+      Visualization limitation: The chart highlights relative ranking by
+      database but does not show overlap structure, pathway depth, or uncertainty
+      in annotation coverage.
+
+    - >
+      Interpretive limitation: Changes in sample rank across databases indicate
+      annotation-scope differences and should not be read as confirmed functional
+      superiority of one sample.
+
 # Mock chart data for demonstration
 mock_data:
   samples:

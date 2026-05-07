@@ -53,4 +53,20 @@ interpretation_guidelines:
     functional complexity differences that would require experimental follow-up
     to validate.
 
+limitations:
+  - >
+    Methodological limitation: Unique gene counts per compound summarize
+    annotation breadth but do not capture gene expression, copy number, enzyme
+    kinetics, or whether distinct genes act in the same pathway.
+
+  - >
+    Visualization limitation: The filtered ranking chart reduces each compound
+    to a single gene-diversity count and does not reveal which genes contribute
+    to the total or how those genes are functionally related.
+
+  - >
+    Interpretive limitation: Compounds with more associated genes may suggest
+    broader annotated functional context, but do not by themselves demonstrate
+    mechanistic complexity, pathway completeness, or confirmed biotransformation.
+
 color_scheme: "success"

@@ -358,6 +358,9 @@ class CorrelogramStrategy(BasePlotStrategy):
         title_config = chart_config.get("title", {})
         show_title = title_config.get("show", True)
         title_text = title_config.get("text", "Correlogram") if show_title else ""
+        title_font_cfg = title_config.get("font", {})
+        title_font_size = title_font_cfg.get("size", title_config.get("font_size", 16))
+        title_font_color = title_font_cfg.get("color", "#000000")
 
         # Get axis labels based on mode (with custom override support)
         if self.correlation_mode == "sample":
@@ -371,6 +374,12 @@ class CorrelogramStrategy(BasePlotStrategy):
         yaxis_title = chart_config.get(
             "yaxis_title", chart_config.get("axis_label", default_label)
         )
+
+        # Get tick and title fonts
+        xaxis_tickfont = chart_config.get("xaxis_tickfont", {})
+        yaxis_tickfont = chart_config.get("yaxis_tickfont", {})
+        xaxis_title_font = chart_config.get("xaxis_title_font", {})
+        yaxis_title_font = chart_config.get("yaxis_title_font", {})
 
         # Get color configuration
         color_scale = chart_config.get("color_continuous_scale", "RdBu_r")
@@ -413,7 +422,7 @@ class CorrelogramStrategy(BasePlotStrategy):
                 text=title_text,
                 x=0.5,
                 xanchor="center",
-                font=dict(size=title_config.get("font_size", 16)),
+                font=dict(size=title_font_size, color=title_font_color),
             ),
             "height": height,
             "margin": margin,
@@ -428,16 +437,30 @@ class CorrelogramStrategy(BasePlotStrategy):
 
         fig.update_layout(**layout_update)
 
-        # Update axes
-        fig.update_xaxes(
-            showgrid=False, tickangle=xaxis_tickangle, title=dict(text=xaxis_title)
-        )
-        fig.update_yaxes(
-            showgrid=False,
-            autorange="reversed",  # Align heatmap orientation
-            tickangle=yaxis_tickangle,
-            title=dict(text=yaxis_title),
-        )
+        # Update X-axis with tickfont and title font
+        x_update = {
+            "showgrid": False,
+            "tickangle": xaxis_tickangle,
+            "title": dict(text=xaxis_title),
+        }
+        if xaxis_tickfont:
+            x_update["tickfont"] = xaxis_tickfont
+        if xaxis_title_font:
+            x_update["title_font"] = xaxis_title_font
+        fig.update_xaxes(**x_update)
+
+        # Update Y-axis with tickfont and title font
+        y_update = {
+            "showgrid": False,
+            "autorange": "reversed",
+            "tickangle": yaxis_tickangle,
+            "title": dict(text=yaxis_title),
+        }
+        if yaxis_tickfont:
+            y_update["tickfont"] = yaxis_tickfont
+        if yaxis_title_font:
+            y_update["title_font"] = yaxis_title_font
+        fig.update_yaxes(**y_update)
 
         # Update colorbar
         colorbar_config = chart_config.get("colorbar", {})

@@ -1,9 +1,9 @@
-# UC-6.1 — Regulatory-to-Molecular Interaction Flow
+﻿# UC-6.1 â€” Regulatory-to-Molecular Interaction Flow
 
-**Module:** 6 – Hierarchical and Flow-based Functional Analysis  
+**Module:** 6 â€“ Hierarchical and Flow-based Functional Analysis  
 **Visualization type:** Four-stage alluvial / Sankey diagram  
 **Primary inputs:** BioRemPP results table with `referenceAG`, `sample`, `genesymbol`, and `compoundname`  
-**Primary outputs:** Multi-stage flow network from regulatory agencies → samples → genes → compounds
+**Primary outputs:** Multi-stage flow network from regulatory agencies â†’ samples â†’ genes â†’ compounds
 
 ---
 
@@ -19,13 +19,13 @@ This use case traces **co-annotation paths** from environmental or regulatory ag
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `referenceAG` – regulatory or scientific agency label  
-  - `sample` – identifier for each biological sample  
-  - `genesymbol` – gene symbol or identifier  
-  - `compoundname` – chemical compound name or identifier  
+  - `referenceAG` â€“ regulatory or scientific agency label  
+  - `sample` â€“ identifier for each biological sample  
+  - `genesymbol` â€“ gene symbol or identifier  
+  - `compoundname` â€“ chemical compound name or identifier  
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 
-- **Conceptual flow (stages):**  
+- **Conceptual flow (stages):**
   1. **Regulatory Agency** (`referenceAG`)  
   2. **Sample** (`sample`)  
   3. **Gene Symbol** (`genesymbol`)  
@@ -35,28 +35,28 @@ This use case traces **co-annotation paths** from environmental or regulatory ag
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Path Definition**  
+2. **Path Definition**
    A four-stage path is defined for each row using:
-   - `referenceAG` → `sample` → `genesymbol` → `compoundname`.  
+   - `referenceAG` â†’ `sample` â†’ `genesymbol` â†’ `compoundname`.  
    Each complete combination represents a single **regulatory-to-molecular interaction path**.
 
-3. **Aggregation of Flows**  
+3. **Aggregation of Flows**
    The data is grouped by each **unique four-step path**:
    - for every unique `(referenceAG, sample, genesymbol, compoundname)` combination,  
    - the number of occurrences is counted.  
    This **count** becomes the **flow value** that determines ribbon thickness.
 
-4. **Link Construction for Sankey / Alluvial Diagram**  
+4. **Link Construction for Sankey / Alluvial Diagram**
    The aggregated paths are transformed into a set of linked pairs suitable for a Sankey diagram:
-   - **Stage 1 → Stage 2:** `referenceAG` → `sample`  
-   - **Stage 2 → Stage 3:** `sample` → `genesymbol`  
-   - **Stage 3 → Stage 4:** `genesymbol` → `compoundname`  
+   - **Stage 1 â†’ Stage 2:** `referenceAG` â†’ `sample`  
+   - **Stage 2 â†’ Stage 3:** `sample` â†’ `genesymbol`  
+   - **Stage 3 â†’ Stage 4:** `genesymbol` â†’ `compoundname`  
    Node indices and link values are encoded in the format required by the plotting library.
 
-5. **Rendering**  
+5. **Rendering**
    The data is rendered as an **interactive alluvial (Sankey) diagram**:
    - vertical columns represent the four stages,  
    - nodes within each column represent unique entities at that stage,  
@@ -66,14 +66,14 @@ This use case traces **co-annotation paths** from environmental or regulatory ag
 
 ## How to Read the Plot
 
-- **Vertical Columns (Stages)**  
+- **Vertical Columns (Stages)**
   From left to right, the four columns represent:
-  1. **Regulatory Agencies**  
-  2. **Samples**  
-  3. **Gene Symbols**  
+  1. **Regulatory Agencies**
+  2. **Samples**
+  3. **Gene Symbols**
   4. **Compound Names**
 
-- **Nodes within Columns**  
+- **Nodes within Columns**
   Each node is a unique entity at that stage:
   - a specific agency, sample, gene, or compound.  
   Node size (height) is proportional to the **total flow** entering or leaving that node.
@@ -84,11 +84,11 @@ This use case traces **co-annotation paths** from environmental or regulatory ag
   - a ribbon from a sample to a gene may indicate that the gene is co-annotated with that sample,
   - a ribbon from a gene to a compound may indicate that the gene is co-annotated with that compound.
 
-- **Flow Thickness**  
+- **Flow Thickness**
   The **thickness** of each ribbon is proportional to the **number of co-occurrences** (the aggregated count for that partial path).  
   Thicker ribbons may indicate **more frequently observed** regulatory-to-molecular relationships.
 
-- **Interactivity**  
+- **Interactivity**
   In the interactive version:
   - hovering over nodes or flows displays labels and numeric values (counts),  
   - nodes may be dragged vertically to improve visual separation of overlapping flows.
@@ -132,17 +132,30 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Flow thickness represents raw database co-occurrence counts of annotations across hierarchical categories, without reflecting abundance, expression levels, or reaction efficiency.
+
+- **Visualization limitation**
+  The alluvial layout merges flows at each stage, which can obscure whether specific regulatory compounds map exclusively to specific genes within a given sample.
+
+- **Interpretive limitation**
+  Prominent flows indicate broad annotation overlap across datasets, not confirmed functional, regulatory, or metabolic pathways operating in vivo.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing at least the columns:
   - `referenceAG`, `sample`, `genesymbol`, and `compoundname`.
 
-- **Flow Definition**  
+- **Flow Definition**
   - Each unique `(referenceAG, sample, genesymbol, compoundname)` combination contributes a unit count to the corresponding path.  
   - The **strength of a flow** (ribbon thickness) is defined as the **total count of co-occurrences** for that path in the raw data.
 
-- **Scope and Limitations**  
+- **Scope and Limitations**
   - The alluvial diagram encodes **frequency of observation**, not kinetic rates, toxicity levels, or regulatory severity.  
   - It should be interpreted as a **structural mapping** of how regulatory contexts, samples, genes, and compounds are linked, serving as a guide for more detailed downstream analyses rather than a complete risk or performance assessment on its own.
 
@@ -157,5 +170,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_6.1.png">
   <img src="../uc_6.1.png" alt="Activity diagram of the use case">
 </a>
+
 
 

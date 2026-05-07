@@ -1,9 +1,9 @@
-# UC-6.3 — Chemical Hierarchy
+﻿# UC-6.3 â€” Chemical Hierarchy
 
-**Module:** 6 – Hierarchical and Flow-based Functional Analysis  
+**Module:** 6 â€“ Hierarchical and Flow-based Functional Analysis  
 **Visualization type:** Treemap (three-level hierarchical composition)  
 **Primary inputs:** BioRemPP results table with `compoundclass`, `compoundname`, `sample`, and `genesymbol`  
-**Primary outputs:** Hierarchical partitioning of genetic diversity across classes → compounds → samples
+**Primary outputs:** Hierarchical partitioning of genetic diversity across classes â†’ compounds â†’ samples
 
 ---
 
@@ -11,7 +11,7 @@
 
 **Question:** Which chemical classes and specific compounds are co-annotated with the most diverse gene sets, and which samples contribute the most to this annotation diversity?
 
-This use case provides a **top-down, hierarchical view** of **gene co-annotation distribution across chemical space**. It organizes the dataset into three levels—**chemical classes**, **individual compounds**, and **biological samples**—and quantifies for each branch how many **unique genes** are co-annotated. The resulting treemap can expose which parts of chemical space are most densely co-annotated with genes, which compounds are co-annotated with particularly diverse gene sets, and which samples contribute the most to this annotation diversity.
+This use case provides a **top-down, hierarchical view** of **gene co-annotation distribution across chemical space**. It organizes the dataset into three levelsâ€”**chemical classes**, **individual compounds**, and **biological samples**â€”and quantifies for each branch how many **unique genes** are co-annotated. The resulting treemap can expose which parts of chemical space are most densely co-annotated with genes, which compounds are co-annotated with particularly diverse gene sets, and which samples contribute the most to this annotation diversity.
 
 ---
 
@@ -19,10 +19,10 @@ This use case provides a **top-down, hierarchical view** of **gene co-annotation
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 - **Key columns:**
-  - `compoundclass` – high-level chemical class or category  
-  - `compoundname` – specific compound or pollutant name  
-  - `sample` – identifier for each biological sample  
-  - `genesymbol` – gene symbol or identifier associated with that sample–compound pair
+  - `compoundclass` â€“ high-level chemical class or category  
+  - `compoundname` â€“ specific compound or pollutant name  
+  - `sample` â€“ identifier for each biological sample  
+  - `genesymbol` â€“ gene symbol or identifier associated with that sampleâ€“compound pair
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 
 - **Hierarchical structure:**
@@ -34,26 +34,26 @@ This use case provides a **top-down, hierarchical view** of **gene co-annotation
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Hierarchy Definition**  
+2. **Hierarchy Definition**
    A three-level hierarchy is defined:
    - **Level 1:** `compoundclass`  
    - **Level 2:** `compoundname` (nested within each class)  
    - **Level 3:** `sample` (nested within each compound)
 
-3. **Aggregation of Genetic Diversity**  
+3. **Aggregation of Genetic Diversity**
    The data is grouped by each unique `(compoundclass, compoundname, sample)` path:
    - for each group, the number of **distinct gene symbols** (`genesymbol`) is computed (e.g., via `nunique()`),  
    - this count represents the **genetic diversity** contributed by that sample to that specific compound within that class.
 
-4. **Value Propagation for Treemap**  
+4. **Value Propagation for Treemap**
    The unique gene counts at the lowest level (per sample) are used as the basic **values**:
    - higher-level values for `compoundname` and `compoundclass` nodes are obtained by summing the values of all nested nodes,  
    - this yields gene-diversity totals at each level.
 
-5. **Rendering**  
+5. **Rendering**
    The aggregated data is rendered as an **interactive treemap**:
    - each rectangle represents a node in the hierarchy (class, compound, or sample),  
    - the **area** of the rectangle is proportional to its total unique gene count,  
@@ -63,7 +63,7 @@ This use case provides a **top-down, hierarchical view** of **gene co-annotation
 
 ## How to Read the Plot
 
-- **Nested Rectangles (Hierarchy)**  
+- **Nested Rectangles (Hierarchy)**
   The treemap uses nested rectangles to represent the hierarchy:
   - **Outer rectangles** represent **compound classes** (`compoundclass`),  
   - within each class, **inner rectangles** represent **compounds** (`compoundname`),  
@@ -80,7 +80,7 @@ This use case provides a **top-down, hierarchical view** of **gene co-annotation
   - brighter or warmer colors indicate **higher gene co-annotation diversity**,
   - cooler colors indicate fewer unique gene co-annotations.
 
-- **Interactivity**  
+- **Interactivity**
   The interactive treemap allows:
   - clicking on a rectangle to **zoom in** and focus on a specific class, compound, or sample subset,  
   - hovering to display labels (class, compound, sample) and the associated **unique gene count**.
@@ -124,13 +124,26 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Area size is determined by unique gene annotation counts in the reference database, which structurally favors well-studied chemical classes regardless of their real prevalence in the samples.
+
+- **Visualization limitation**
+  The nested rectangles display aggregate gene counts but hide the identity, function, and pathway context of the genes within each compound's box.
+
+- **Interpretive limitation**
+  Large rectangles represent broad database coverage for a chemical or class, not confirmed functional diversity, higher metabolic activity, or biological significance.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing:
   - `compoundclass`, `compoundname`, `sample`, and `genesymbol`.
 
-- **Value Definition**  
+- **Value Definition**
   - The fundamental value driving the visualization is the **count of unique gene symbols** within each `(compoundclass, compoundname, sample)` group.  
   - Higher-level values are derived by **summing** these counts across nested levels.
 
@@ -149,5 +162,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_6.3.png">
   <img src="../uc_6.3.png" alt="Activity diagram of the use case">
 </a>
+
 
 

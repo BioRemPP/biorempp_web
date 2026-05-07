@@ -777,6 +777,23 @@ class TestFigureCreation:
         # px.imshow uses texttemplate instead of text
         assert fig.data[0].texttemplate is not None
 
+    def test_create_figure_ignores_unsupported_text_font_weight(self):
+        """Heatmap text font weight should not break figure rendering."""
+        config = get_ko_completeness_config()
+        config['visualization']['plotly']['chart']['text_font_weight'] = 'bold'
+        config['visualization']['plotly']['chart']['text_font_size'] = 13
+        config['visualization']['plotly']['chart']['text_font_color'] = '#222222'
+        strategy = HeatmapScoredStrategy(config)
+
+        df = get_ko_completeness_data()
+        processed = strategy.process_data(df)
+
+        fig = strategy.create_figure(processed)
+
+        assert isinstance(fig, go.Figure)
+        assert fig.data[0].textfont.size == 13
+        assert fig.data[0].textfont.color == '#222222'
+
     def test_create_figure_hides_text_values(self):
         """Test that text values can be hidden."""
         config = get_ko_completeness_config()

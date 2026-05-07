@@ -95,42 +95,57 @@ visualization:
         show: true
         text: "Regulatory Compliance Scorecard"
         font:
-          size: 16
+          size: 20
           family: "Arial"
-          color: "#2c3e50"
+          color: "#000000"
+          weight: "bold"
         x: 0.5
         xanchor: "center"
-      
+
       # Axis configuration
       xaxis:
         title: "Regulatory Agency"
         title_font:
-          size: 14
-      
+          size: 16
+          color: "#000000"
+          weight: "bold"
+
       yaxis:
         title: "Sample"
         title_font:
-          size: 14
-      
+          size: 16
+          color: "#000000"
+          weight: "bold"
+
       # Color configuration
       color_label: "Compliance (%)"
       color_continuous_scale: "Greens"
-      
-      # Text display in cells
+
+      # Text display in cells (normal weight — not bold)
       show_values: true
       text_auto: ".1f"
-      text_font_size: 10
+      text_font_size: 11
       text_font_color: "black"
-      
-      # Axis label angles
+      text_font_weight: "normal"
+
+      # Axis label angles and tick fonts (bold)
       xaxis_tickangle: -45
+      xaxis_tickfont:
+        size: 13
+        color: "#000000"
+        weight: "bold"
       yaxis_tickangle: 0
-      
+      yaxis_tickfont:
+        size: 13
+        color: "#000000"
+        weight: "bold"
+
       # Colorbar configuration
       colorbar:
         title: "Compliance (%)"
         title_font:
-          size: 12
+          size: 13
+          weight: "bold"
     
     # Layout configuration
     layout:

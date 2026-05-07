@@ -1,9 +1,9 @@
-# UC-5.4 — Gene–Compound Interaction Network
+﻿# UC-5.4 â€” Geneâ€“Compound Interaction Network
 
-**Module:** 5 – Modeling Interactions of Samples, Genes, and Compounds  
-**Visualization type:** Bipartite network graph (genes ↔ compounds)  
+**Module:** 5 â€“ Modeling Interactions of Samples, Genes, and Compounds  
+**Visualization type:** Bipartite network graph (genes â†” compounds)  
 **Primary inputs:** BioRemPP results table with `genesymbol` and `compoundname` columns  
-**Primary outputs:** Gene–compound interaction network (nodes, edges, node degree/centrality)
+**Primary outputs:** Geneâ€“compound interaction network (nodes, edges, node degree/centrality)
 
 ---
 
@@ -11,7 +11,7 @@
 
 **Question:** What is the overall structure of the interaction network between genes and chemical compounds, and which entities may act as central "hubs" connecting disparate functions?
 
-This use case builds a **bipartite co-annotation network** linking all detected **genes** to the **chemical compounds** with which they are co-annotated across the biological samples. By examining the topology of this network, the analysis may identify **highly connected hubs** and **densely connected modules**, which could reveal broadly co-annotated genes and widely co-annotated chemical targets. This network-level view complements sample- and pathway-level analyses by potentially exposing how gene–compound co-annotations are distributed across the dataset.
+This use case builds a **bipartite co-annotation network** linking all detected **genes** to the **chemical compounds** with which they are co-annotated across the biological samples. By examining the topology of this network, the analysis may identify **highly connected hubs** and **densely connected modules**, which could reveal broadly co-annotated genes and widely co-annotated chemical targets. This network-level view complements sample- and pathway-level analyses by potentially exposing how geneâ€“compound co-annotations are distributed across the dataset.
 
 ---
 
@@ -19,64 +19,64 @@ This use case builds a **bipartite co-annotation network** linking all detected 
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv`  
 **Key columns:**
-  - `genesymbol` – gene symbol or identifier
-  - `compoundname` – name (or identifier) of the associated chemical compound
+  - `genesymbol` â€“ gene symbol or identifier
+  - `compoundname` â€“ name (or identifier) of the associated chemical compound
 - **Accepted format:** semicolon-delimited text table (`.txt` or `.csv`)
 - **Derived structures:**
-  - node set of **genes**  
-  - node set of **compounds**  
-  - edge list of observed **gene–compound interactions**
+  - node set of **genes**
+  - node set of **compounds**
+  - edge list of observed **geneâ€“compound interactions**
 
 ---
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    The primary results table (`BioRemPP_Results.xlsx or BioRemPP_Results.csv`) is loaded from its semicolon-delimited format.
 
-2. **Graph Construction (Bipartite Network)**  
+2. **Graph Construction (Bipartite Network)**
    A bipartite graph is built using a network library (e.g., `networkx`):
    - each unique `genesymbol` is added as a **gene node** (type = `"gene"`),  
    - each unique `compoundname` is added as a **compound node** (type = `"compound"`),  
    - for every row in the table, an **undirected edge** is added between the corresponding gene and compound, representing an observed interaction.
 
-3. **Layout Calculation**  
+3. **Layout Calculation**
    A **force-directed layout algorithm** (e.g., `spring_layout`) is applied to compute 2D coordinates for each node:
    - highly connected nodes tend to be placed toward the center,  
    - sparsely connected nodes tend to be pushed toward the periphery,  
    - clusters of nodes naturally emerge from the optimization of edge lengths and repulsive forces.
 
-4. **Computation of Node Properties**  
+4. **Computation of Node Properties**
    For each node, the **degree** (number of incident edges) is calculated:
    - this serves as a simple hubness metric,  
    - it is later displayed as part of the hover information.
 
-5. **Rendering**  
+5. **Rendering**
    The network is rendered using an interactive plotting library (e.g., `plotly`):
    - nodes are plotted at their layout coordinates,  
    - edges are drawn as straight segments between node positions,  
    - genes and compounds receive distinct, solid colors and uniform node sizes,  
-   - hover tooltips expose node identity and degree (e.g., `"Gene: gstA" — Interactions: 15`).
+   - hover tooltips expose node identity and degree (e.g., `"Gene: gstA" â€” Interactions: 15`).
 
 ---
 
 ## How to Read the Plot
 
-- **Nodes**  
+- **Nodes**
   Each point in the graph is a node representing:
   - a **Gene** (e.g., shown in one color), or  
   - a **Compound** (shown in a contrasting color).  
 
-- **Edges**  
+- **Edges**
   Each line (edge) between a gene and a compound represents an **observed interaction**:
   - at least one row in the results table links that gene to that compound in some sample.
 
-- **Hover Information**  
+- **Hover Information**
   Hovering over a node reveals:
   - its type and name (e.g., `"Gene: gstA"`, `"Compound: benzene"`),  
   - its **number of connections** (degree), reflecting how many interaction partners it has.
 
-- **Spatial Structure**  
+- **Spatial Structure**
   The spatial layout is **informative but not literal**:
   - nodes closer to the center or to each other may be more highly or densely connected,  
   - **clusters** of nodes may indicate sub-networks of genes and compounds with many shared interactions.
@@ -120,20 +120,33 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  The bipartite network is built from unweighted annotation records, treating all database links equally without incorporating experimental evidence or reaction kinetics.
+
+- **Visualization limitation**
+  The force-directed layout clusters nodes based on topology, which can visually overstate the relationship between loosely connected genes and compounds.
+
+- **Interpretive limitation**
+  Hub nodes and dense clusters represent frequent database co-occurrences, not necessarily core metabolic pathways, physical interactions, or confirmed enzymatic activity.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis assumes a semicolon-delimited table containing at least the columns `genesymbol` and `compoundname`.
 
-- **Network Definition**  
-  - The network is **undirected and unweighted** in this representation: an edge indicates that a gene–compound interaction exists, but does not encode interaction frequency or strength.  
+- **Network Definition**
+  - The network is **undirected and unweighted** in this representation: an edge indicates that a geneâ€“compound interaction exists, but does not encode interaction frequency or strength.  
   - Node degree reflects the number of **distinct partners**, not the number of occurrences in the raw table.
 
-- **Layout and Visual Bias**  
+- **Layout and Visual Bias**
   - The force-directed layout (`spring_layout`) is stochastic but reproducible when a random seed is fixed.  
-  - Visual centrality in the plot is correlated with connectivity but is not a formal centrality metric—additional measures (e.g., betweenness, eigenvector centrality) can be computed if needed.
+  - Visual centrality in the plot is correlated with connectivity but is not a formal centrality metricâ€”additional measures (e.g., betweenness, eigenvector centrality) can be computed if needed.
 
-- **Interpretation Scope**  
+- **Interpretation Scope**
   The graph reveals **topological patterns of interaction**, not mechanistic or kinetic details:
   - co-connectivity may suggest potential functional relationships but does not itself establish biochemical mechanisms,  
   - further validation using pathway databases, structural information, or experimental data is required to confirm mechanistic roles.
@@ -149,5 +162,6 @@ The image below illustrates a representative output generated by this use case u
 <a class="glightbox" href="../uc_5.4.png">
   <img src="../uc_5.4.png" alt="Activity diagram of the use case">
 </a>
+
 
 

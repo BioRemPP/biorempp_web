@@ -1,8 +1,8 @@
-# UC-4.8 —  Gene Inventory Explorer
+﻿# UC-4.8 â€”  Gene Inventory Explorer
 
-**Module:** 4 – Functional and Genetic Profiling  
-**Visualization type:** Interactive scatter (sample–gene matrix with contextual metadata via hover)  
-**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sample–gene–compound–KO associations)  
+**Module:** 4 â€“ Functional and Genetic Profiling  
+**Visualization type:** Interactive scatter (sampleâ€“gene matrix with contextual metadata via hover)  
+**Primary inputs:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (sampleâ€“geneâ€“compoundâ€“KO associations)  
 **Primary outputs:** Filterable map of gene presence across samples
 
 ---
@@ -15,7 +15,7 @@ UC-4.8 can provide an **exploratory interface** to the gene-level annotation com
 
 - list all annotated genes present in a given sample (sample-centric view),
 - identify which samples carry a specific gene annotation of interest (gene-centric view), and
-- inspect the compounds and KOs associated with each sample–gene annotation pair.
+- inspect the compounds and KOs associated with each sampleâ€“gene annotation pair.
 
 This use case can support **annotation-level exploration**, **gene annotation tracking**, and **hypothesis-driven exploration** of the BioRemPP dataset (experimental validation required to confirm gene function).
 
@@ -25,14 +25,14 @@ This use case can support **annotation-level exploration**, **gene annotation tr
 
 - **Primary data source:** `BioRemPP_Results.xlsx or BioRemPP_Results.csv` (semicolon-delimited)  
 - **Key columns:**
-  - `sample` – identifier for each biological sample  
-  - `genesymbol` – gene symbols detected and functionally annotated  
-  - `compoundname` – compounds associated with that gene in a given sample  
-  - `ko` – KEGG Orthology identifier(s) mapped to the gene in that context
+  - `sample` â€“ identifier for each biological sample  
+  - `genesymbol` â€“ gene symbols detected and functionally annotated  
+  - `compoundname` â€“ compounds associated with that gene in a given sample  
+  - `ko` â€“ KEGG Orthology identifier(s) mapped to the gene in that context
 
 - **User controls:**
-  - **Dropdown – Sample:** all unique `sample` identifiers  
-  - **Dropdown – Gene Symbol:** all unique `genesymbol` entries
+  - **Dropdown â€“ Sample:** all unique `sample` identifiers  
+  - **Dropdown â€“ Gene Symbol:** all unique `genesymbol` entries
 
 - **Output structure:**
   - **Y-axis:** samples  
@@ -43,11 +43,11 @@ This use case can support **annotation-level exploration**, **gene annotation tr
 
 ## Analytical Workflow
 
-1. **Data Loading**  
+1. **Data Loading**
    - The BioRemPP results table `BioRemPP_Results.xlsx or BioRemPP_Results.csv` is loaded from a semicolon-delimited file.  
    - Rows with missing `sample` or `genesymbol` are discarded to ensure valid associations.
 
-2. **Widget Initialization (Query Controls)**  
+2. **Widget Initialization (Query Controls)**
    - Two interactive dropdown menus are constructed and populated with:
      - all unique `sample` identifiers, and  
      - all unique `genesymbol` values.  
@@ -55,23 +55,23 @@ This use case can support **annotation-level exploration**, **gene annotation tr
      - **no selection** (no filter on that dimension), and  
      - selection of a **single sample** or **single gene**.
 
-3. **Conditional Data Filtering**  
+3. **Conditional Data Filtering**
    Depending on the user's choices, the dataset is filtered as follows:
 
-   - **Sample-only selection:**  
+   - **Sample-only selection:**
      - If only a `sample` is selected, the table is filtered to rows matching that sample, returning all genes present in that sample.
 
-   - **Gene-only selection:**  
+   - **Gene-only selection:**
      - If only a `genesymbol` is selected, the table is filtered to rows matching that gene, returning all samples that carry it.
 
-   - **Sample + gene selection:**  
+   - **Sample + gene selection:**
      - If both a `sample` and a `genesymbol` are selected, the table is filtered to the rows matching that exact pair.  
      - This confirms the presence of the gene in that sample and retrieves associated `compoundname` and `ko` information.
 
-   - **No selection:**  
-     - If neither filter is set, the full sample–gene association space is visualized (optionally restricted for performance, depending on implementation).
+   - **No selection:**
+     - If neither filter is set, the full sampleâ€“gene association space is visualized (optionally restricted for performance, depending on implementation).
 
-4. **Association Extraction and Rendering**  
+4. **Association Extraction and Rendering**
    - From the filtered table, unique `(sample, genesymbol)` pairs are extracted, with their associated `compoundname` and `ko` carried as hover metadata.  
    - A scatter-like matrix is rendered where:
      - **Y-axis:** `sample`,  
@@ -82,20 +82,20 @@ This use case can support **annotation-level exploration**, **gene annotation tr
 
 ## How to Read the Plot
 
-- **Dropdown Menus (Query Interface)**  
+- **Dropdown Menus (Query Interface)**
   - **Select Sample:** filters the visualization to genes present in that sample.  
   - **Select Gene Symbol:** filters the visualization to samples that carry that gene.  
-  - Selecting **both** restricts the view to that specific sample–gene association.  
+  - Selecting **both** restricts the view to that specific sampleâ€“gene association.  
 
-- **Y-axis – Samples**  
+- **Y-axis â€“ Samples**
   - Each horizontal position corresponds to a **Sample**.  
   - Multiple points along that row indicate different genes present in that sample.
 
-- **X-axis – Gene Symbols**  
+- **X-axis â€“ Gene Symbols**
   - Each vertical position corresponds to a **Gene Symbol**.  
   - Multiple points along that column indicate different samples that carry that gene.
 
-- **Points – Sample–Gene Presence**  
+- **Points â€“ Sampleâ€“Gene Presence**
   - A point at the intersection of a `sample` and a `genesymbol` signifies that the gene has been detected and functionally annotated in that sample.  
 
 
@@ -142,17 +142,30 @@ The image below illustrates a representative output generated by this use case u
 
 ---
 
+## Limitations
+
+- **Methodological limitation**
+  Gene-sample association mappings rely strictly on reference database annotations, ignoring whether these genes are part of intact operons or fragmented sequences.
+
+- **Visualization limitation**
+  The uniform intersection points obscure quantitative differences in gene copy numbers and the critical regulatory networks governing their actual expression.
+
+- **Interpretive limitation**
+  Extensive gene presence across many samples highlights high genetic coverage within the reference dataset, not confirmed ecological dominance or generalized biotransformation activity.
+
+---
+
 ## Reproducibility and Assumptions
 
-- **Input Format**  
+- **Input Format**
   The analysis requires a semicolon-delimited table containing at least:
   - `sample`,  
   - `genesymbol`,  
   - `compoundname`,  
   - `ko`.
 
-- **Presence Definition**  
-  - A sample–gene association (a point in the plot) is defined by the existence of **at least one row** in the input table where that `sample` and `genesymbol` co-occur.  
+- **Presence Definition**
+  - A sampleâ€“gene association (a point in the plot) is defined by the existence of **at least one row** in the input table where that `sample` and `genesymbol` co-occur.  
   - The visualization captures **presence/absence**, not copy number, expression level, or interaction frequency.
 
 - **Scope and Limitations**

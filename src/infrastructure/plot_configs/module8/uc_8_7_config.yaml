@@ -86,17 +86,20 @@ visualization:
     # Figure dimensions
     fig_width: 10
     fig_height: 6
-    
+
     # Color scheme
     bar_color: "#28A745"
-    
+
+    # Matplotlib font size for UpSet plot elements
+    mpl_font_size: 12
+
     # Title configuration (at plotly level)
     title:
       text: "KO Set Intersections Across Selected Samples"
       font:
-        size: 16
+        size: 20
         family: "Arial, sans-serif"
-        color: "#333"
+        color: "#000000"
       x: 0.5
       xanchor: "center"
     

@@ -78,4 +78,14 @@ interpretation_guidelines:
     annotation overlap with other compounds in the dataset. This may reflect
     narrow annotation coverage rather than unique substrate properties.
 
+limitations:
+  - >
+    Methodological limitation: Compound-compound edges are formed solely based on shared gene annotations, which may link structurally unrelated chemicals annotated to broad-acting or promiscuous enzyme families.
+
+  - >
+    Visualization limitation: The network visually compresses the shared gene connections into single edges, hiding the identity and specific functions of the genes driving the clustering.
+
+  - >
+    Interpretive limitation: Dense compound clusters represent shared annotation profiles, not necessarily similar chemical structures, shared degradation pathways, or sequential intermediates.
+
 color_scheme: "success"
