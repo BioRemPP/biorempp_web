@@ -477,15 +477,22 @@ class HeatmapScoredStrategy(BasePlotStrategy):
 
         fig.update_layout(**layout_update)
 
-        # Update cell text font (size, color, weight)
+        # Plotly Heatmap traces only support size/family/color on textfont.
+        # Keep accepting text_font_weight in config for forward compatibility,
+        # but do not pass unsupported keys to Plotly.
         text_font_size = chart_config.get("text_font_size", 10)
         text_font_color = chart_config.get("text_font_color", "black")
         text_font_weight = chart_config.get("text_font_weight", "normal")
+        if text_font_weight not in {"normal", "", None}:
+            logger.debug(
+                "Ignoring unsupported heatmap text_font_weight=%s for use_case_id=%s",
+                text_font_weight,
+                self.metadata.get("use_case_id", "unknown"),
+            )
         fig.update_traces(
             textfont=dict(
                 size=text_font_size,
                 color=text_font_color,
-                weight=text_font_weight,
             )
         )
 
