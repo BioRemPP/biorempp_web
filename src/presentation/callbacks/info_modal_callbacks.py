@@ -19,9 +19,13 @@ Notes
 
 import logging
 import uuid
-from pathlib import Path
 
 from dash import Input, Output, State, ctx, dcc, no_update
+
+from src.presentation.callbacks.sample_dataset_utils import (
+    SAMPLE_DATASET_FILENAME,
+    resolve_sample_dataset_path,
+)
 
 logger = logging.getLogger(__name__)
 logger.propagate = False  # Prevent duplicate logs from parent loggers
@@ -253,14 +257,14 @@ def register_info_modal_callbacks(app):
         if not n_clicks:
             return no_update
 
-        dataset_path = (
-            Path(__file__).resolve().parents[3] / "data" / "exemple_dataset.txt"
-        )
+        dataset_path = resolve_sample_dataset_path()
         if not dataset_path.exists():
-            logger.error("[SAMPLE_DATA_MODAL] Sample dataset file not found")
+            logger.error(
+                "[SAMPLE_DATA_MODAL] Sample dataset file not found: %s", dataset_path
+            )
             return no_update
 
-        return dcc.send_file(str(dataset_path), "exemple_dataset.txt")
+        return dcc.send_file(str(dataset_path), SAMPLE_DATASET_FILENAME)
 
     # ========================================
     # Callback: Toggle Publications Modal Open/Close

@@ -16,11 +16,15 @@ Notes
 """
 
 import base64
-from pathlib import Path
 from typing import Any, Dict, Optional, Tuple
 
 from dash import Input, Output, State, callback, ctx, no_update
 from dash.exceptions import PreventUpdate
+
+from src.presentation.callbacks.sample_dataset_utils import (
+    SAMPLE_DATASET_FILENAME,
+    resolve_sample_dataset_path,
+)
 
 # Import from Application Layer
 # Note: Adjust import paths based on actual project structure
@@ -104,19 +108,17 @@ def register_upload_callbacks(app, upload_handler: Optional[UploadHandler] = Non
         if triggered_id == "load-sample-btn":
             try:
                 # Load sample data file
-                sample_path = Path("data/sample_data.txt")
-                if not sample_path.exists():
-                    sample_path = Path("biorempp_web/data/sample_data.txt")
+                sample_path = resolve_sample_dataset_path()
 
                 with open(sample_path, "r") as f:
                     sample_content = f.read()
 
                 # Process sample data
                 result = upload_handler.process_upload(
-                    file_content=sample_content, filename="sample_data.txt"
+                    file_content=sample_content, filename=SAMPLE_DATASET_FILENAME
                 )
 
-                filename_msg = "[OK] Sample data loaded: sample_data.txt"
+                filename_msg = f"[OK] Sample data loaded: {SAMPLE_DATASET_FILENAME}"
                 return result.to_dict(), filename_msg
 
             except Exception as e:
