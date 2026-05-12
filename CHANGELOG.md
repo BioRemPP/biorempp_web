@@ -15,6 +15,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ---
 
+## [1.0.1] - 2026-05-07
+##### Patch release for NAR review alignment, use-case documentation expansion, and production/docs consistency.
+
+### Added
+
+#### Use-Case Context and Documentation Access
+
+-  `Limitations` section in use-case description panels across the analytical modules, enabling case-specific methodological, visualization, and interpretive caveats directly in the UI.
+- **Official use-case documentation link in Methods modals** with a `View complete Use Case documentation` call-to-action pointing to the canonical Read the Docs page for each workflow.
+- **Shared sample dataset path resolver** for download and sample-loading flows, centralizing lookup of the bundled example dataset.
+-  **Public documentation links and citation metadata refreshed**, including stable Read the Docs URLs and the official Zenodo DOI references for the web service and database.
+
+
+### Changed
+
+#### Visualization Configuration, Runtime, and Documentation
+
+- **Chart font customization expanded across visualization strategies**, including heatmap, faceted heatmap, correlogram, PCA, network, Sankey, and UpSet renderers for more consistent typography control.
+- **Use-case YAML schema and user-guide demo updated** to document the new `limitations` field and the five-section panel structure.
+- **Official use-case documentation pages revised across modules 1 to 8** to align UI guidance, limitations content, and interpretive notes with the current analytical workflows.
+
+
+---
+
 ## [1.0.0] - 2026-03-09
 ##### Zenodo-deposited release for DOI citation; official article publication is still under peer review.
 
@@ -520,4 +544,4 @@ For questions, bug reports, or feature requests:
 - **Email:** biorempp@gmail.com
 ---
 
-**Last Updated:** 2026 -  Migration to organization repository
+**Last Updated:** 2026-05-11 - Release 1.0.1 changelog aligned with post-1.0.0 codebase updates
