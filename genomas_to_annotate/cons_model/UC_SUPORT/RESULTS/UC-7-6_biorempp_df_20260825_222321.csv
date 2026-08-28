@@ -1,0 +1,86 @@
+Sample,Toxicity_Category,Unique_Compound_Count
+BD117,Organic,101
+BD117,Environmental,94
+BD117,Genomic,46
+BD117,Stress Response,27
+BD117,Nuclear Response,21
+BD120,Organic,140
+BD120,Environmental,134
+BD120,Genomic,75
+BD120,Nuclear Response,31
+BD120,Stress Response,31
+BD126,Organic,140
+BD126,Environmental,134
+BD126,Genomic,75
+BD126,Nuclear Response,31
+BD126,Stress Response,31
+BD127,Organic,138
+BD127,Environmental,134
+BD127,Genomic,74
+BD127,Stress Response,29
+BD127,Nuclear Response,28
+BD132,Organic,131
+BD132,Environmental,125
+BD132,Genomic,66
+BD132,Nuclear Response,24
+BD132,Stress Response,23
+BD139,Organic,111
+BD139,Environmental,105
+BD139,Genomic,54
+BD139,Stress Response,27
+BD139,Nuclear Response,24
+BD158,Organic,106
+BD158,Environmental,101
+BD158,Genomic,51
+BD158,Stress Response,26
+BD158,Nuclear Response,23
+BD160,Organic,130
+BD160,Environmental,124
+BD160,Genomic,66
+BD160,Nuclear Response,24
+BD160,Stress Response,23
+BD162,Organic,128
+BD162,Environmental,122
+BD162,Genomic,66
+BD162,Nuclear Response,30
+BD162,Stress Response,30
+BD163,Organic,143
+BD163,Environmental,137
+BD163,Genomic,76
+BD163,Nuclear Response,32
+BD163,Stress Response,31
+BD48,Organic,126
+BD48,Environmental,120
+BD48,Genomic,60
+BD48,Stress Response,27
+BD48,Nuclear Response,23
+BD50,Organic,131
+BD50,Environmental,125
+BD50,Genomic,66
+BD50,Nuclear Response,24
+BD50,Stress Response,23
+BD54,Organic,126
+BD54,Environmental,120
+BD54,Genomic,60
+BD54,Stress Response,27
+BD54,Nuclear Response,23
+BD61,Organic,126
+BD61,Environmental,122
+BD61,Genomic,63
+BD61,Stress Response,30
+BD61,Nuclear Response,29
+BD9,Organic,128
+BD9,Environmental,122
+BD9,Genomic,66
+BD9,Nuclear Response,30
+BD9,Stress Response,30
+BG1,Organic,128
+BG1,Environmental,122
+BG1,Genomic,66
+BG1,Nuclear Response,30
+BG1,Stress Response,30
+E7,Organic,126
+E7,Environmental,120
+E7,Genomic,60
+E7,Stress Response,27
+E7,Nuclear Response,23

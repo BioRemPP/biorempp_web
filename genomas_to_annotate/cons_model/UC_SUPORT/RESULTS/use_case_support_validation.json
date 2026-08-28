@@ -1,0 +1,24 @@
+{
+  "generated_at": "2026-08-25T18:35:47",
+  "use_cases_inspected": 56,
+  "expected_use_cases": 56,
+  "expected_count_match": true,
+  "central_reference_uc": "UC 8.1",
+  "tiers": {
+    "Central reference": 1,
+    "Strong support": 18,
+    "Complementary support": 31,
+    "Context only": 6,
+    "Not recommended": 0
+  },
+  "missing_sections": [],
+  "generated_files": [
+    "RESULTS\\use_case_support_matrix.csv",
+    "RESULTS\\use_case_support_report.md",
+    "RESULTS\\use_case_support_validation.json"
+  ],
+  "docs_modified_check": {
+    "docs_use_cases_written_by_script": false,
+    "note": "The script reads docs/use_cases and writes only under UC_SUPORT/RESULTS."
+  }
+}
