@@ -1,0 +1,207 @@
+target_class,model_version,compound_name,covered_by_selected,covering_selected_samples
+Aliphatic,strict_metal,"1,1,1-Trichloroethane",True,E7
+Aliphatic,strict_metal,"1,1,2,2-Tetrachloroethane",True,BD163;E7
+Aliphatic,strict_metal,"1,1,2-Trichloroethane",True,BD127;BD163
+Aliphatic,strict_metal,"1,1-Dimethylhydrazine",True,E7
+Aliphatic,strict_metal,"1,2,3-Trichloropropane",True,BD127;BD163
+Aliphatic,strict_metal,"1,2-Dichloroethane",True,BD127;BD163
+Aliphatic,strict_metal,"1,2-Epoxybutane",True,E7
+Aliphatic,strict_metal,"1,3-Dichloro-2-propanol",True,BD127;BD163
+Aliphatic,strict_metal,"1,4-Dioxane",True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,"2,4-Hexadienal",False,
+Aliphatic,strict_metal,2-Ethoxyethanol,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,2-Nitropropane,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,"3-Carboxy-cis,cis-muconate",True,BD127;E7
+Aliphatic,strict_metal,3-Chloro-2-methylpropene,True,BD127;BD163
+Aliphatic,strict_metal,4-(N-Nitrosomethylamino)-1-(3-pyridyl)-1-butanone,True,BD163
+Aliphatic,strict_metal,4-Methylimidazole,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Acetaldehyde,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Acetamide,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Acetone,True,BD117
+Aliphatic,strict_metal,Acrylamide,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Acrylonitrile,True,BD127
+Aliphatic,strict_metal,Aziridine,True,BD117;BD163;E7
+Aliphatic,strict_metal,BHC,True,BD127
+Aliphatic,strict_metal,Bis(2-chloroethyl)ether,True,BD127;BD163
+Aliphatic,strict_metal,Chloral,True,BD163
+Aliphatic,strict_metal,Chloral hydrate,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Chloroform,True,BD127;BD163;E7
+Aliphatic,strict_metal,Cyclohexyl isocyanide,True,BD127
+Aliphatic,strict_metal,Digoxin,True,BD127;BD163
+Aliphatic,strict_metal,Epichlorohydrin,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Ethanol,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Ethyl acrylate,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Ethyl methanesulfonate,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Ethylene glycol,True,E7
+Aliphatic,strict_metal,Ethylene oxide,True,BD117
+Aliphatic,strict_metal,Formaldehyde,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Glu-P-1,True,BD163
+Aliphatic,strict_metal,Glycidaldehyde,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Methane,True,BD117;BD127;E7
+Aliphatic,strict_metal,Methyl bromide,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Methyl chloride,True,BD127;BD163;E7
+Aliphatic,strict_metal,Methyl isobutyl ketone,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Methyl tert-butyl ether,True,BD117;BD163;E7
+Aliphatic,strict_metal,Methylnitrosourea,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,"N,N-Dimethylformamide",False,
+Aliphatic,strict_metal,N-Nitrosomorpholine,False,
+Aliphatic,strict_metal,Propylthiouracil,True,BD163
+Aliphatic,strict_metal,Streptozocin,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Thioacetamide,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Thiouracil,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Trichloroethene,True,BD127;BD163;E7
+Aliphatic,strict_metal,Vinyl acetate,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,Vinyl fluoride,True,BD127
+Aliphatic,strict_metal,alpha-Chlorohydrin,True,BD117;BD127;BD163;E7
+Aliphatic,strict_metal,alpha-Hexachlorocyclohexane,True,BD127;BD163
+Aliphatic,strict_metal,"beta-1,2,3,4,5,6-Hexachlorocyclohexane",True,BD127;BD163
+Aliphatic,strict_metal,beta-Butyrolactone,True,BD127
+Aliphatic,strict_metal,"cis-1,3-Dichloropropene",True,BD127;BD163
+Aliphatic,strict_metal,"trans-1,3-Dichloropropene",True,BD127;BD163
+Aliphatic,relaxed,"1,1,1-Trichloroethane",True,E7
+Aliphatic,relaxed,"1,1,2,2-Tetrachloroethane",True,BD163;CB13;E7
+Aliphatic,relaxed,"1,1,2-Trichloroethane",True,BD127;BD145;BD163
+Aliphatic,relaxed,"1,1-Dimethylhydrazine",True,BD145;BD67;CB13;E7
+Aliphatic,relaxed,"1,2,3-Trichloropropane",True,BD127;BD145;BD163
+Aliphatic,relaxed,"1,2-Dichloroethane",True,BD127;BD145;BD163
+Aliphatic,relaxed,"1,2-Epoxybutane",True,E7
+Aliphatic,relaxed,"1,3-Dichloro-2-propanol",True,BD127;BD163;CB13
+Aliphatic,relaxed,"1,4-Dioxane",True,BD117;BD127;BD163;BD67;CB13;E7
+Aliphatic,relaxed,"2,4-Hexadienal",True,CB13
+Aliphatic,relaxed,2-Ethoxyethanol,True,BD117;BD127;BD163;BD67;CB13;E7
+Aliphatic,relaxed,2-Nitropropane,True,BD117;BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,"3-Carboxy-cis,cis-muconate",True,BD127;BD145;E7
+Aliphatic,relaxed,3-Chloro-2-methylpropene,True,BD127;BD145;BD163
+Aliphatic,relaxed,4-(N-Nitrosomethylamino)-1-(3-pyridyl)-1-butanone,True,BD163
+Aliphatic,relaxed,4-Methylimidazole,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Acetaldehyde,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Acetamide,True,BD117;BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,Acetone,True,BD117;BD145
+Aliphatic,relaxed,Acrylamide,True,BD117;BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,Acrylonitrile,True,BD127;BD145
+Aliphatic,relaxed,Aziridine,True,BD117;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,BHC,True,BD127;BD145;BD67
+Aliphatic,relaxed,Bis(2-chloroethyl)ether,True,BD127;BD145;BD163
+Aliphatic,relaxed,Chloral,True,BD163
+Aliphatic,relaxed,Chloral hydrate,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Chloroform,True,BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,Cyclohexyl isocyanide,True,BD127;BD145;BD67
+Aliphatic,relaxed,Digoxin,True,BD127;BD145;BD163;BD67;CB13
+Aliphatic,relaxed,Epichlorohydrin,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Ethanol,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Ethyl acrylate,True,BD117;BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,Ethyl methanesulfonate,True,BD117;BD127;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Ethylene glycol,True,E7
+Aliphatic,relaxed,Ethylene oxide,True,BD117
+Aliphatic,relaxed,Formaldehyde,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Glu-P-1,True,BD163;CB13
+Aliphatic,relaxed,Glycidaldehyde,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Methane,True,BD117;BD127;BD145;BD67;CB13;E7
+Aliphatic,relaxed,Methyl bromide,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Methyl chloride,True,BD127;BD145;BD163;E7
+Aliphatic,relaxed,Methyl isobutyl ketone,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Methyl tert-butyl ether,True,BD117;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Methylnitrosourea,True,BD117;BD127;BD145;BD163;CB13;E7
+Aliphatic,relaxed,"N,N-Dimethylformamide",True,BD145
+Aliphatic,relaxed,N-Nitrosomorpholine,True,BD67
+Aliphatic,relaxed,Propylthiouracil,True,BD163
+Aliphatic,relaxed,Streptozocin,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Thioacetamide,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Thiouracil,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Trichloroethene,True,BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,Vinyl acetate,True,BD117;BD127;BD145;BD163;BD67;E7
+Aliphatic,relaxed,Vinyl fluoride,True,BD127;BD145;BD67;CB13
+Aliphatic,relaxed,alpha-Chlorohydrin,True,BD117;BD127;BD145;BD163;BD67;CB13;E7
+Aliphatic,relaxed,alpha-Hexachlorocyclohexane,True,BD127;BD145;BD163
+Aliphatic,relaxed,"beta-1,2,3,4,5,6-Hexachlorocyclohexane",True,BD127;BD145;BD163
+Aliphatic,relaxed,beta-Butyrolactone,True,BD127;BD145;BD67
+Aliphatic,relaxed,"cis-1,3-Dichloropropene",True,BD127;BD145;BD163
+Aliphatic,relaxed,"trans-1,3-Dichloropropene",True,BD127;BD145;BD163
+Polyaromatic,strict_metal,"(+)-(3S,4R)-cis-3,4-Dihydroxy-3,4-dihydrofluorene",True,BD61
+Polyaromatic,strict_metal,1-Hydroxy-2-naphthoate,True,BD61
+Polyaromatic,strict_metal,"2,2',4,4',6,6'-Hexachlorobiphenyl",True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"2,2',4,4'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"2,2',5,5'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"2,3,3',4,5-Pentachlorobiphenyl",True,BD158
+Polyaromatic,strict_metal,2-Naphthylamine,True,BD120;BD158;BD61
+Polyaromatic,strict_metal,"3,3'-Dimethoxybenzidine",True,BD117;BD120;BD61
+Polyaromatic,strict_metal,"3,3'-Dimethylbenzidine",True,BD120
+Polyaromatic,strict_metal,"3,4,3',4'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"3,4,5,3',4',5'-Hexachlorobiphenyl",True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"4,4'-Methylenebis(N,N-dimethylaniline)",True,BD158
+Polyaromatic,strict_metal,Acenaphthene,True,BD120;BD61
+Polyaromatic,strict_metal,Amsacrine,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,Anthracene,True,BD61
+Polyaromatic,strict_metal,"Anthracene-cis-1,2-dihydrodiol",True,BD61
+Polyaromatic,strict_metal,Aristolochic acid,True,BD158
+Polyaromatic,strict_metal,Arylmercury,True,BD120;BD158;BD61
+Polyaromatic,strict_metal,Auramine,True,BD117
+Polyaromatic,strict_metal,Benzo[a]pyrene,True,BD120;BD61
+Polyaromatic,strict_metal,"Benzo[a]pyrene-cis-9,10-dihydrodiol",True,BD61
+Polyaromatic,strict_metal,Benzo[k]fluoranthene,True,BD158
+Polyaromatic,strict_metal,Benzophenone,True,BD120
+Polyaromatic,strict_metal,Cypermethrin,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,Disperse Blue 1,True,BD117
+Polyaromatic,strict_metal,Etoposide,True,BD120;BD158;BD61
+Polyaromatic,strict_metal,Fluoranthene,True,BD120;BD61
+Polyaromatic,strict_metal,Fluoren-9-ol,True,BD61
+Polyaromatic,strict_metal,Fluorene,True,BD61
+Polyaromatic,strict_metal,Methoxychlor,True,BD117
+Polyaromatic,strict_metal,Mitomycin,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,Mitoxantrone,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,"N,N'-Diacetylbenzidine",True,BD158;BD61
+Polyaromatic,strict_metal,Nafenopin,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,Naphthalene,True,BD120;BD61
+Polyaromatic,strict_metal,"Naphthalene-1,2-diol",True,BD61
+Polyaromatic,strict_metal,Nitrofen,True,BD117;BD120;BD158
+Polyaromatic,strict_metal,Ochratoxin A,True,BD120
+Polyaromatic,strict_metal,Phenolphthalein,True,BD120
+Polyaromatic,strict_metal,Phenytoin,False,
+Polyaromatic,strict_metal,Sulfasalazine,True,BD117;BD120;BD158;BD61
+Polyaromatic,strict_metal,Tamoxifen,True,BD120
+Polyaromatic,strict_metal,para-(Dimethylamino)azobenzene,True,BD120
+Polyaromatic,strict_metal,para-Aminoazobenzene,True,BD117;BD120;BD158;BD61
+Polyaromatic,relaxed,"(+)-(3S,4R)-cis-3,4-Dihydroxy-3,4-dihydrofluorene",True,BD61
+Polyaromatic,relaxed,1-Hydroxy-2-naphthoate,True,BD61
+Polyaromatic,relaxed,"2,2',4,4',6,6'-Hexachlorobiphenyl",True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"2,2',4,4'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"2,2',5,5'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"2,3,3',4,5-Pentachlorobiphenyl",True,BD158;CB13
+Polyaromatic,relaxed,2-Naphthylamine,True,BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"3,3'-Dimethoxybenzidine",True,BD117;BD120;BD61
+Polyaromatic,relaxed,"3,3'-Dimethylbenzidine",True,BD120
+Polyaromatic,relaxed,"3,4,3',4'-Tetrachlorobiphenyl",True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"3,4,5,3',4',5'-Hexachlorobiphenyl",True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"4,4'-Methylenebis(N,N-dimethylaniline)",True,BD158;CB13
+Polyaromatic,relaxed,Acenaphthene,True,BD120;BD61;CB13
+Polyaromatic,relaxed,Amsacrine,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Anthracene,True,BD61
+Polyaromatic,relaxed,"Anthracene-cis-1,2-dihydrodiol",True,BD61
+Polyaromatic,relaxed,Aristolochic acid,True,BD158;CB13
+Polyaromatic,relaxed,Arylmercury,True,BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Auramine,True,BD117
+Polyaromatic,relaxed,Benzo[a]pyrene,True,BD120;BD61
+Polyaromatic,relaxed,"Benzo[a]pyrene-cis-9,10-dihydrodiol",True,BD61
+Polyaromatic,relaxed,Benzo[k]fluoranthene,True,BD158;CB13
+Polyaromatic,relaxed,Benzophenone,True,BD120
+Polyaromatic,relaxed,Cypermethrin,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Disperse Blue 1,True,BD117
+Polyaromatic,relaxed,Etoposide,True,BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Fluoranthene,True,BD120;BD61;CB13
+Polyaromatic,relaxed,Fluoren-9-ol,True,BD61
+Polyaromatic,relaxed,Fluorene,True,BD61
+Polyaromatic,relaxed,Methoxychlor,True,BD117
+Polyaromatic,relaxed,Mitomycin,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Mitoxantrone,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,"N,N'-Diacetylbenzidine",True,BD158;BD61;CB13
+Polyaromatic,relaxed,Nafenopin,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Naphthalene,True,BD120;BD61
+Polyaromatic,relaxed,"Naphthalene-1,2-diol",True,BD61
+Polyaromatic,relaxed,Nitrofen,True,BD117;BD120;BD158
+Polyaromatic,relaxed,Ochratoxin A,True,BD120;CB13
+Polyaromatic,relaxed,Phenolphthalein,True,BD120
+Polyaromatic,relaxed,Phenytoin,True,CB13
+Polyaromatic,relaxed,Sulfasalazine,True,BD117;BD120;BD158;BD61;CB13
+Polyaromatic,relaxed,Tamoxifen,True,BD120
+Polyaromatic,relaxed,para-(Dimethylamino)azobenzene,True,BD120
+Polyaromatic,relaxed,para-Aminoazobenzene,True,BD117;BD120;BD158;BD61;CB13

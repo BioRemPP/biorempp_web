@@ -1,0 +1,25 @@
+sample,in_official_metal_image,official_metal_image_group,in_raw_uc81_metal_csv,raw_uc81_metal_groups,source_status
+AP1BH01-1,False,,True,Group 2,raw_only
+BD117,True,Metal_Group_9,True,Group 16,both
+BD120,True,Metal_Group_4,False,,image_only
+BD126,True,Metal_Group_4,False,,image_only
+BD127,True,Metal_Group_4,False,,image_only
+BD132,True,Metal_Group_4,False,,image_only
+BD139,True,Metal_Group_4,False,,image_only
+BD143,False,,True,Group 18,raw_only
+BD145,False,,True,Group 19,raw_only
+BD149,False,,True,Group 18,raw_only
+BD158,True,Metal_Group_1,False,,image_only
+BD160,True,Metal_Group_4,True,Group 18,both
+BD162,True,Metal_Group_4,False,,image_only
+BD163,True,Metal_Group_12,True,Group 25,both
+BD48,True,Metal_Group_1,True,Group 1,both
+BD50,True,Metal_Group_4,False,,image_only
+BD54,True,Metal_Group_1,True,Group 1,both
+BD61,True,Metal_Group_4,True,Group 2,both
+BD67,False,,True,Group 10,raw_only
+BD69,False,,True,Group 11,raw_only
+BD9,True,Metal_Group_4,False,,image_only
+BG1,True,Metal_Group_4,False,,image_only
+CB13,False,,True,Group 26,raw_only
+E7,True,Metal_Group_1,True,Group 1,both

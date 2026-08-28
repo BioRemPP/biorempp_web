@@ -1,0 +1,47 @@
+{
+  "dcpip_isolates": 53,
+  "annotated_samples": 51,
+  "ko_subset_samples": 51,
+  "dcpip_only_isolates": [
+    "BD130",
+    "BD78"
+  ],
+  "metal_authority_samples": 17,
+  "metal_authority_group_count": 4,
+  "raw_uc81_metal_samples": 14,
+  "metal_image_only_samples": [
+    "BD120",
+    "BD126",
+    "BD127",
+    "BD132",
+    "BD139",
+    "BD158",
+    "BD162",
+    "BD50",
+    "BD9",
+    "BG1"
+  ],
+  "metal_raw_only_samples": [
+    "AP1BH01-1",
+    "BD143",
+    "BD145",
+    "BD149",
+    "BD67",
+    "BD69",
+    "CB13"
+  ],
+  "target_classes": [
+    "Aliphatic",
+    "Polyaromatic"
+  ],
+  "outputs": [
+    "isolate_consolidated_metrics.csv",
+    "consortium_representatives.csv",
+    "consortium_coverage_by_compound.csv",
+    "class_guilds_audit.csv",
+    "uc81_metal_source_reconciliation.csv",
+    "consortia_model_report.md",
+    "validation_summary.json"
+  ],
+  "source_divergence_note": "UC8.1_METAL.png is the authority for Metal optimized groups. UC-8-1_biorempp_df_20260812_203350.csv is retained as source context but is not used as the authority for the Metal universe."
+}
