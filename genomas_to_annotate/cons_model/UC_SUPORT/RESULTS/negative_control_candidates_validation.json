@@ -1,0 +1,19 @@
+{
+  "source_biorempp": "C:\\Users\\Douglas\\Documents\\biorempp_web\\BioPotExA\\biorempp_web\\genomas_to_annotate\\cons_model\\TABLE_RESULTS\\BioRemPP_Results (9).csv",
+  "source_dcpip_metrics": "C:\\Users\\Douglas\\Documents\\biorempp_web\\BioPotExA\\biorempp_web\\genomas_to_annotate\\cons_model\\CONSORTIA_MODEL_RESULTS\\isolate_consolidated_metrics.csv",
+  "n_aliphatic_ranked": 51,
+  "n_aromatic_ranked": 51,
+  "n_combined_ranked": 51,
+  "top_combined_samples": [
+    "BD2",
+    "BD161",
+    "BD5",
+    "BD106",
+    "BD83",
+    "BD67",
+    "BD108",
+    "BD96",
+    "BD147",
+    "BD95"
+  ]
+}

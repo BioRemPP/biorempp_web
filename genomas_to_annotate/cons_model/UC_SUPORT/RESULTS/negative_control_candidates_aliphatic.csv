@@ -1,0 +1,52 @@
+sample,taxon,target_class,primary_dcpip_metric,unique_gene_count,unique_ko_count,unique_compound_count,evidence_rows,PL_mean,PP_mean,overall_mean,metal_authority,in_aliphatic_strict,in_polyaromatic_strict,low_gene_rank,low_dcpip_rank,negative_control_score
+BD2,Staphylococcus,Aliphatic,PL_mean,35,35,21,71,28.313333,11.99,22.872222,False,False,False,2.0,1.0,1.5
+BD161,Rossellomorea,Aliphatic,PL_mean,50,50,38,145,32.665,47.571667,40.118333,False,False,False,11.0,2.0,6.5
+BD95,Stutzerimonas frequens,Aliphatic,PL_mean,51,51,33,133,36.696667,45.26,39.551111,False,False,False,16.5,3.0,9.75
+BD96,Stutzerimonas frequens,Aliphatic,PL_mean,51,51,33,133,41.065,39.035,40.388333,False,False,False,16.5,4.0,10.25
+BD83,Bacillus,Aliphatic,PL_mean,51,51,33,133,49.168333,23.978333,36.573333,False,False,False,16.5,6.0,11.25
+BD5,Dermacoccus nishinomiyaensis,Aliphatic,PL_mean,38,38,26,86,67.105,47.27,57.1875,False,False,False,3.5,26.0,14.75
+BD101,Stutzerimonas balearica,Aliphatic,PL_mean,51,51,33,133,58.198333,39.634167,48.91625,False,False,False,16.5,13.0,14.75
+BD147,Cellulomonas,Aliphatic,PL_mean,16,16,17,45,71.496667,63.041667,67.269167,False,False,False,1.0,29.0,15.0
+BD165,Bacillus paralicheniformis,Aliphatic,PL_mean,52,52,31,110,50.71,65.803333,58.256667,False,False,False,23.5,8.0,15.75
+BD121,Bacillus paralicheniformis,Aliphatic,PL_mean,52,52,31,110,51.116667,33.193333,42.155,False,False,False,23.5,9.0,16.25
+BD108,Stutzerimonas balearica,Aliphatic,PL_mean,51,51,33,133,60.52,33.64,47.08,False,False,False,16.5,19.0,17.75
+BD67,Ochrobactrum,Aliphatic,PL_mean,52,52,33,128,56.5,39.363333,47.931667,False,False,False,23.5,12.0,17.75
+BD143,Bacillus stratosphericus,Aliphatic,PL_mean,51,51,41,158,63.146667,63.828333,63.4875,False,False,False,16.5,21.0,18.75
+BD8,Rothia,Aliphatic,PL_mean,39,39,27,88,74.555,64.9,69.7275,False,False,False,5.5,33.0,19.25
+BD106,Stutzerimonas frequens,Aliphatic,PL_mean,58,58,33,144,43.99,19.493333,31.741667,False,False,False,35.0,5.0,20.0
+BD77,Stutzerimonas balearica,Aliphatic,PL_mean,51,51,33,133,66.703333,49.876667,58.29,False,False,False,16.5,24.0,20.25
+BD1,Micococcus luteus,Aliphatic,PL_mean,38,38,26,86,78.843333,78.623333,78.733333,False,False,False,3.5,40.0,21.75
+BD50,Bacillus safensis,Aliphatic,PL_mean,48,48,41,147,76.326667,70.641667,73.484167,True,False,False,9.5,35.0,22.25
+BD126,Bacillus,Aliphatic,PL_mean,53,53,39,150,60.261667,39.048333,49.655,True,False,False,28.5,17.0,22.75
+BD151,Bacillus,Aliphatic,PL_mean,45,45,25,91,78.438333,67.093333,72.765833,False,False,False,7.5,39.0,23.25
+BD127,Achromobacter,Aliphatic,PL_mean,56,56,43,170,59.206667,22.225833,40.71625,True,True,False,32.0,15.0,23.5
+BD117,Micococcus luteus,Aliphatic,PL_mean,39,39,27,79,79.18,76.653333,77.916667,True,True,True,5.5,43.0,24.25
+BD152,Bacillus,Aliphatic,PL_mean,45,45,25,91,78.868333,67.093333,72.980833,False,False,False,7.5,41.0,24.25
+BD9,Bacillus amyloliquefaciens,Aliphatic,PL_mean,53,53,30,120,61.633333,48.266667,54.95,True,False,False,28.5,20.0,24.25
+BD48,Bacillus safensis,Aliphatic,PL_mean,60,60,34,172,49.901667,33.371667,41.636667,True,False,False,42.0,7.0,24.5
+BD162,Bacillus safensis,Aliphatic,PL_mean,53,53,30,120,63.493333,74.49,68.991667,True,False,False,28.5,22.0,25.25
+BD129,Bacillus paralicheniformis,Aliphatic,PL_mean,52,52,31,110,70.841667,52.22,61.530833,False,False,False,23.5,28.0,25.75
+BD81,Bacillus,Aliphatic,PL_mean,53,53,39,150,70.241667,54.409167,62.325417,False,False,False,28.5,27.0,27.75
+BD139,Brevibacillus brevis,Aliphatic,PL_mean,62,62,26,125,53.068333,56.67,54.869167,True,False,False,45.5,10.0,27.75
+BD132,Bacillus safensis,Aliphatic,PL_mean,48,48,41,147,82.385,81.658333,82.021667,True,False,False,9.5,48.0,28.75
+BD160,Bacillus stratosphericus,Aliphatic,PL_mean,51,51,41,158,79.013333,75.588333,77.300833,True,False,False,16.5,42.0,29.25
+BD141,Brevibacillus brevis,Aliphatic,PL_mean,62,62,26,125,59.121667,31.445,45.283333,False,False,False,45.5,14.0,29.75
+BD158,Salinicola,Aliphatic,PL_mean,58,58,30,150,66.925,58.537167,62.731083,True,False,True,35.0,25.0,30.0
+BD149,Bacillus stratosphericus,Aliphatic,PL_mean,51,51,41,158,81.365,72.403333,76.884167,False,False,False,16.5,44.0,30.25
+BD140,Brevibacillus brevis,Aliphatic,PL_mean,62,62,26,125,59.243333,44.2775,51.760417,False,False,False,45.5,16.0,30.75
+BD145,Tistrella,Aliphatic,PL_mean,71,71,43,217,54.173333,55.903333,55.038333,False,False,False,51.0,11.0,31.0
+BD72,Bacillus tropicus,Aliphatic,PL_mean,58,58,33,136,72.978333,58.686667,65.8325,False,False,False,35.0,30.0,32.5
+BD107,Stutzerimonas balearica,Aliphatic,PL_mean,51,51,33,133,82.665,74.113333,78.389167,False,False,False,16.5,49.0,32.75
+BG1,Bacillus amyloliquefaciens,Aliphatic,PL_mean,53,53,30,120,77.563333,75.416667,76.49,True,False,False,28.5,38.0,33.25
+BD166,Bacillus megaterium,Aliphatic,PL_mean,64,64,43,188,60.44,74.846667,67.643333,False,False,False,49.0,18.0,33.5
+BD73,Bacillus tropicus,Aliphatic,PL_mean,58,58,33,136,76.573333,53.666667,65.12,False,False,False,35.0,36.0,35.5
+AP1BH01-1,Ochrobactrum,Aliphatic,PL_mean,59,59,31,152,74.116667,52.038333,63.0775,False,False,False,39.0,32.0,35.5
+BD163,Bacillus megaterium,Aliphatic,PL_mean,64,64,43,194,64.050833,63.431667,63.74125,True,True,False,49.0,23.0,36.0
+CB13,Enterobacter,Aliphatic,PL_mean,59,59,28,139,76.581667,56.1,66.340833,False,False,False,39.0,37.0,38.0
+BD120,Bacillus subtilis,Aliphatic,PL_mean,53,53,39,150,83.971667,81.81,82.890833,True,False,True,28.5,51.0,39.75
+BD137,Brevibacillus brevis,Aliphatic,PL_mean,62,62,26,125,75.078333,50.448333,62.763333,False,False,False,45.5,34.0,39.75
+BD69,Citrobacter,Aliphatic,PL_mean,64,64,30,167,73.208333,51.861667,62.535,False,False,False,49.0,31.0,40.0
+BD105,Stutzerimonas frequens,Aliphatic,PL_mean,58,58,33,144,82.04,67.845,74.9425,False,False,False,35.0,46.0,40.5
+BD61,Ochrobactrum,Aliphatic,PL_mean,59,59,31,152,81.595,59.635,70.615,True,False,True,39.0,45.0,42.0
+BD54,Acinetobacter,Aliphatic,PL_mean,60,60,34,172,82.225,69.691667,75.958333,True,False,False,42.0,47.0,44.5
+E7,Acinetobacter,Aliphatic,PL_mean,60,60,34,172,82.906667,56.771667,69.839167,True,True,False,42.0,50.0,46.0

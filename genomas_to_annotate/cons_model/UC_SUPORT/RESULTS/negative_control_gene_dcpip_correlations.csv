@@ -1,0 +1,7 @@
+target_class,gene_count_metric,dcpip_metric,n_samples,pearson_r,spearman_r
+Aliphatic,unique_gene_count,PL_mean,51,-0.025415840728237316,-0.056982579895337844
+Aliphatic,unique_gene_count,PP_mean,51,-0.09431550138965979,-0.13931918804360527
+Aliphatic,unique_gene_count,overall_mean,51,-0.07561267999031898,-0.11969982837439179
+Aromatic,unique_gene_count,PL_mean,51,-0.020950748555496373,-0.09777373733721459
+Aromatic,unique_gene_count,PP_mean,51,-0.06548484433202525,-0.12186765252290732
+Aromatic,unique_gene_count,overall_mean,51,-0.058008437352946064,-0.13309228401830048
