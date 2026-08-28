@@ -1,0 +1,4036 @@
+Sample,ko,pathname,genesymbol
+E7,K00128,Cl. alkane and Cl.alkene,ALDH
+E7,K00626,Benzoate,ACAT
+E7,K01800,Styrene,maiA
+E7,K01782,Benzoate,fadJ
+E7,K01782,Caprolactam,fadJ
+E7,K00481,Aromatic,pobA
+E7,K00481,Benzoate,pobA
+E7,K01075,Benzoate,E3.1.2.23
+E7,K01501,Styrene,E3.5.5.1
+E7,K01501,Aminobenzoate,E3.5.5.1
+E7,K00799,Cytochrome P450,GST
+E7,K05784,Xylene,benC-xylZ
+E7,K05784,Benzoate,benC-xylZ
+E7,K05784,Aromatic,benC-xylZ
+E7,K05784,Fluorobenzoate,benC-xylZ
+E7,K05710,Aromatic,hcaC
+E7,K05599,Aminobenzoate,antA
+E7,K03863,Aminobenzoate,vanB
+E7,K00001,Naphthalene,E1.1.1.1
+E7,K00001,Cytochrome P450,E1.1.1.1
+E7,K00001,Aromatic,E1.1.1.1
+E7,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+E7,K00074,Benzoate,paaH
+E7,K00121,Aromatic,frmA
+E7,K00121,Naphthalene,frmA
+E7,K00121,Cytochrome P450,frmA
+E7,K00121,Cl. alkane and Cl.alkene,frmA
+E7,K00252,Benzoate,GCDH
+E7,K00448,PAH,pcaG
+E7,K00448,Aromatic,pcaG
+E7,K00448,Benzoate,pcaG
+E7,K00449,PAH,pcaH
+E7,K00449,Aromatic,pcaH
+E7,K00449,Benzoate,pcaH
+E7,K00496,Caprolactam,alkB1_2
+E7,K00529,Aromatic,hcaD
+E7,K00632,Benzoate,fadA
+E7,K00632,Ethylbenzene,fadA
+E7,K01032,Benzoate,pcaJ
+E7,K01055,Benzoate,pcaD
+E7,K01055,Aromatic,pcaD
+E7,K01061,Toluene,E3.1.1.45
+E7,K01061,Fluorobenzoate,E3.1.1.45
+E7,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+E7,K01426,Aminobenzoate,E3.5.1.4
+E7,K01426,Styrene,E3.5.1.4
+E7,K01428,Atrazine,ureC
+E7,K01429,Atrazine,ureB
+E7,K01430,Atrazine,ureA
+E7,K01457,Atrazine,atzF
+E7,K01555,Styrene,FAH
+E7,K01607,Benzoate,pcaC
+E7,K01607,Aromatic,pcaC
+E7,K01692,Benzoate,paaF
+E7,K01692,Aminobenzoate,paaF
+E7,K01692,Caprolactam,paaF
+E7,K01826,Aromatic,hpaF
+E7,K01856,Fluorobenzoate,catB
+E7,K01856,Benzoate,catB
+E7,K01856,Aromatic,catB
+E7,K01856,Cl. cyclohexane and Cl. benzene,catB
+E7,K01856,Toluene,catB
+E7,K01857,Aromatic,pcaB
+E7,K01857,Benzoate,pcaB
+E7,K01941,Atrazine,uca
+E7,K03333,Steroid,choD
+E7,K03379,Aromatic,chnB
+E7,K03379,Caprolactam,chnB
+E7,K03381,Cl. cyclohexane and Cl. benzene,catA
+E7,K03381,Toluene,catA
+E7,K03381,Benzoate,catA
+E7,K03381,Fluorobenzoate,catA
+E7,K03381,Aromatic,catA
+E7,K03464,Aromatic,catC
+E7,K03464,Benzoate,catC
+E7,K03862,Aminobenzoate,vanA
+E7,K05549,Fluorobenzoate,benA-xylX
+E7,K05549,Aromatic,benA-xylX
+E7,K05549,Xylene,benA-xylX
+E7,K05549,Benzoate,benA-xylX
+E7,K05550,Benzoate,benB-xylY
+E7,K05550,Fluorobenzoate,benB-xylY
+E7,K05550,Xylene,benB-xylY
+E7,K05550,Aromatic,benB-xylY
+E7,K05600,Aminobenzoate,antB
+E7,K05783,Aromatic,benD-xylL
+E7,K05783,Benzoate,benD-xylL
+E7,K05783,Xylene,benD-xylL
+E7,K05783,Fluorobenzoate,benD-xylL
+E7,K06446,Caprolactam,DCAA
+E7,K10679,Nitrotoluene,nfnB
+E7,K10680,Nitrotoluene,nemA
+E7,K11311,Aminobenzoate,antC
+E7,K13954,Naphthalene,yiaY
+E7,K13954,Aromatic,yiaY
+E7,K13954,Cl. alkane and Cl.alkene,yiaY
+E7,K14731,Aromatic,mlhB
+E7,K14731,Caprolactam,mlhB
+E7,K16242,Aromatic,dmpN
+E7,K16242,Benzoate,dmpN
+E7,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+E7,K16242,Toluene,dmpN
+E7,K16243,Aromatic,dmpL
+E7,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+E7,K16243,Toluene,dmpL
+E7,K16243,Benzoate,dmpL
+E7,K16244,Toluene,dmpM
+E7,K16244,Benzoate,dmpM
+E7,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+E7,K16244,Aromatic,dmpM
+E7,K16245,Benzoate,dmpO
+E7,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+E7,K16245,Aromatic,dmpO
+E7,K16245,Toluene,dmpO
+E7,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+E7,K16249,Aromatic,dmpK
+E7,K16249,Benzoate,dmpK
+E7,K16249,Toluene,dmpK
+E7,K18242,Naphthalene,nagG
+E7,K21105,PAH,E3.1.1.102
+E7,K21802,Aminobenzoate,vdh
+E7,K01031,Benzoate,pcaI
+E7,K07823,Benzoate,pcaF
+E7,K16161,Aromatic,mmoC
+E7,K00146,Styrene,feaB
+E7,K01825,Caprolactam,fadB
+E7,K01825,Benzoate,fadB
+E7,K05712,Aromatic,mhpA
+E7,K10617,Xylene,cymB
+E7,K10617,Aromatic,cymB
+E7,K14581,Nitrotoluene,nahAa
+E7,K14581,Aminobenzoate,nahAa
+E7,K14581,Ethylbenzene,nahAa
+E7,K14581,Naphthalene,nahAa
+E7,K14581,PAH,nahAa
+E7,K14581,Aromatic,nahAa
+E7,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+E7,K16246,Toluene,dmpP
+E7,K16246,Aromatic,dmpP
+E7,K16246,Benzoate,dmpP
+E7,K18248,Aminobenzoate,andAb
+AP1BH01-1,K00001,Naphthalene,E1.1.1.1
+AP1BH01-1,K00001,Cytochrome P450,E1.1.1.1
+AP1BH01-1,K00001,Aromatic,E1.1.1.1
+AP1BH01-1,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+AP1BH01-1,K00128,Cl. alkane and Cl.alkene,ALDH
+AP1BH01-1,K00626,Benzoate,ACAT
+AP1BH01-1,K01426,Aminobenzoate,E3.5.1.4
+AP1BH01-1,K01426,Styrene,E3.5.1.4
+AP1BH01-1,K01692,Benzoate,paaF
+AP1BH01-1,K01692,Aminobenzoate,paaF
+AP1BH01-1,K01692,Caprolactam,paaF
+AP1BH01-1,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+AP1BH01-1,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+AP1BH01-1,K01501,Styrene,E3.5.5.1
+AP1BH01-1,K01501,Aminobenzoate,E3.5.5.1
+AP1BH01-1,K01430,Atrazine,ureA
+AP1BH01-1,K01053,Aromatic,gnl
+AP1BH01-1,K01053,Caprolactam,gnl
+AP1BH01-1,K01055,Benzoate,pcaD
+AP1BH01-1,K01055,Aromatic,pcaD
+AP1BH01-1,K00141,Aromatic,xylC
+AP1BH01-1,K00141,Toluene,xylC
+AP1BH01-1,K00141,Aminobenzoate,xylC
+AP1BH01-1,K00141,Xylene,xylC
+AP1BH01-1,K00074,Benzoate,paaH
+AP1BH01-1,K00121,Aromatic,frmA
+AP1BH01-1,K00121,Naphthalene,frmA
+AP1BH01-1,K00121,Cytochrome P450,frmA
+AP1BH01-1,K00121,Cl. alkane and Cl.alkene,frmA
+AP1BH01-1,K00148,Cl. alkane and Cl.alkene,fdhA
+AP1BH01-1,K00252,Benzoate,GCDH
+AP1BH01-1,K00448,PAH,pcaG
+AP1BH01-1,K00448,Aromatic,pcaG
+AP1BH01-1,K00448,Benzoate,pcaG
+AP1BH01-1,K00449,PAH,pcaH
+AP1BH01-1,K00449,Aromatic,pcaH
+AP1BH01-1,K00449,Benzoate,pcaH
+AP1BH01-1,K00480,Aromatic,E1.14.13.1
+AP1BH01-1,K00480,Dioxin,E1.14.13.1
+AP1BH01-1,K00480,Naphthalene,E1.14.13.1
+AP1BH01-1,K00480,PAH,E1.14.13.1
+AP1BH01-1,K00481,Aromatic,pobA
+AP1BH01-1,K00481,Benzoate,pobA
+AP1BH01-1,K00529,Aromatic,hcaD
+AP1BH01-1,K00799,Cytochrome P450,GST
+AP1BH01-1,K01026,Styrene,pct
+AP1BH01-1,K01031,Benzoate,pcaI
+AP1BH01-1,K01032,Benzoate,pcaJ
+AP1BH01-1,K01061,Toluene,E3.1.1.45
+AP1BH01-1,K01061,Fluorobenzoate,E3.1.1.45
+AP1BH01-1,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+AP1BH01-1,K01428,Atrazine,ureC
+AP1BH01-1,K01429,Atrazine,ureB
+AP1BH01-1,K01607,Benzoate,pcaC
+AP1BH01-1,K01607,Aromatic,pcaC
+AP1BH01-1,K01782,Benzoate,fadJ
+AP1BH01-1,K01782,Caprolactam,fadJ
+AP1BH01-1,K01826,Aromatic,hpaF
+AP1BH01-1,K01857,Aromatic,pcaB
+AP1BH01-1,K01857,Benzoate,pcaB
+AP1BH01-1,K03186,Aromatic,ubiX
+AP1BH01-1,K03186,Aminobenzoate,ubiX
+AP1BH01-1,K05797,Toluene,pchF
+AP1BH01-1,K07104,Benzoate,catE
+AP1BH01-1,K07104,Xylene,catE
+AP1BH01-1,K07104,Aromatic,catE
+AP1BH01-1,K07104,Styrene,catE
+AP1BH01-1,K07104,Cl. cyclohexane and Cl. benzene,catE
+AP1BH01-1,K10680,Nitrotoluene,nemA
+AP1BH01-1,K13953,Aromatic,adhP
+AP1BH01-1,K13953,Naphthalene,adhP
+AP1BH01-1,K13953,Cytochrome P450,adhP
+AP1BH01-1,K13953,Cl. alkane and Cl.alkene,adhP
+AP1BH01-1,K16048,Steroid,hsaB
+AP1BH01-1,K07823,Benzoate,pcaF
+AP1BH01-1,K00632,Benzoate,fadA
+AP1BH01-1,K00632,Ethylbenzene,fadA
+AP1BH01-1,K14048,Atrazine,ureAB
+AP1BH01-1,K14581,Nitrotoluene,nahAa
+AP1BH01-1,K14581,Aminobenzoate,nahAa
+AP1BH01-1,K14581,Ethylbenzene,nahAa
+AP1BH01-1,K14581,Naphthalene,nahAa
+AP1BH01-1,K14581,PAH,nahAa
+AP1BH01-1,K14581,Aromatic,nahAa
+AP1BH01-1,K14727,Benzoate,pcaL
+AP1BH01-1,K14727,Aromatic,pcaL
+AP1BH01-1,K21802,Aminobenzoate,vdh
+BD1,K00626,Benzoate,ACAT
+BD1,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD1,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD1,K01075,Benzoate,E3.1.2.23
+BD1,K00001,Naphthalene,E1.1.1.1
+BD1,K00001,Cytochrome P450,E1.1.1.1
+BD1,K00001,Aromatic,E1.1.1.1
+BD1,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD1,K01430,Atrazine,ureA
+BD1,K00074,Benzoate,paaH
+BD1,K00148,Cl. alkane and Cl.alkene,fdhA
+BD1,K00252,Benzoate,GCDH
+BD1,K00446,Benzoate,dmpB
+BD1,K00446,Aromatic,dmpB
+BD1,K00446,Xylene,dmpB
+BD1,K00446,Styrene,dmpB
+BD1,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD1,K01426,Aminobenzoate,E3.5.1.4
+BD1,K01426,Styrene,E3.5.1.4
+BD1,K01428,Atrazine,ureC
+BD1,K01512,Aminobenzoate,acyP
+BD1,K01692,Benzoate,paaF
+BD1,K01692,Aminobenzoate,paaF
+BD1,K01692,Caprolactam,paaF
+BD1,K01782,Benzoate,fadJ
+BD1,K01782,Caprolactam,fadJ
+BD1,K03333,Steroid,choD
+BD1,K05710,Aromatic,hcaC
+BD1,K05921,Aromatic,hpaG
+BD1,K10215,Aminobenzoate,ethA
+BD1,K13953,Aromatic,adhP
+BD1,K13953,Naphthalene,adhP
+BD1,K13953,Cytochrome P450,adhP
+BD1,K13953,Cl. alkane and Cl.alkene,adhP
+BD1,K00151,Aromatic,hpaE
+BD1,K00632,Benzoate,fadA
+BD1,K00632,Ethylbenzene,fadA
+BD1,K14048,Atrazine,ureAB
+BD5,K00626,Benzoate,ACAT
+BD5,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD5,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD5,K01075,Benzoate,E3.1.2.23
+BD5,K00001,Naphthalene,E1.1.1.1
+BD5,K00001,Cytochrome P450,E1.1.1.1
+BD5,K00001,Aromatic,E1.1.1.1
+BD5,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD5,K01430,Atrazine,ureA
+BD5,K00074,Benzoate,paaH
+BD5,K00148,Cl. alkane and Cl.alkene,fdhA
+BD5,K00252,Benzoate,GCDH
+BD5,K00446,Benzoate,dmpB
+BD5,K00446,Aromatic,dmpB
+BD5,K00446,Xylene,dmpB
+BD5,K00446,Styrene,dmpB
+BD5,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD5,K01426,Aminobenzoate,E3.5.1.4
+BD5,K01426,Styrene,E3.5.1.4
+BD5,K01428,Atrazine,ureC
+BD5,K01512,Aminobenzoate,acyP
+BD5,K01692,Benzoate,paaF
+BD5,K01692,Aminobenzoate,paaF
+BD5,K01692,Caprolactam,paaF
+BD5,K01782,Benzoate,fadJ
+BD5,K01782,Caprolactam,fadJ
+BD5,K03333,Steroid,choD
+BD5,K05710,Aromatic,hcaC
+BD5,K05921,Aromatic,hpaG
+BD5,K10215,Aminobenzoate,ethA
+BD5,K13953,Aromatic,adhP
+BD5,K13953,Naphthalene,adhP
+BD5,K13953,Cytochrome P450,adhP
+BD5,K13953,Cl. alkane and Cl.alkene,adhP
+BD5,K00151,Aromatic,hpaE
+BD5,K00632,Benzoate,fadA
+BD5,K00632,Ethylbenzene,fadA
+BD5,K14048,Atrazine,ureAB
+BD8,K00626,Benzoate,ACAT
+BD8,K01430,Atrazine,ureA
+BD8,K01607,Benzoate,pcaC
+BD8,K01607,Aromatic,pcaC
+BD8,K16045,Steroid,hsd
+BD8,K00001,Naphthalene,E1.1.1.1
+BD8,K00001,Cytochrome P450,E1.1.1.1
+BD8,K00001,Aromatic,E1.1.1.1
+BD8,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD8,K00074,Benzoate,paaH
+BD8,K00146,Styrene,feaB
+BD8,K00151,Aromatic,hpaE
+BD8,K00252,Benzoate,GCDH
+BD8,K00448,PAH,pcaG
+BD8,K00448,Aromatic,pcaG
+BD8,K00448,Benzoate,pcaG
+BD8,K00449,PAH,pcaH
+BD8,K00449,Aromatic,pcaH
+BD8,K00449,Benzoate,pcaH
+BD8,K01031,Benzoate,pcaI
+BD8,K01426,Aminobenzoate,E3.5.1.4
+BD8,K01426,Styrene,E3.5.1.4
+BD8,K01428,Atrazine,ureC
+BD8,K01429,Atrazine,ureB
+BD8,K01512,Aminobenzoate,acyP
+BD8,K01692,Benzoate,paaF
+BD8,K01692,Aminobenzoate,paaF
+BD8,K01692,Caprolactam,paaF
+BD8,K01782,Benzoate,fadJ
+BD8,K01782,Caprolactam,fadJ
+BD8,K01857,Aromatic,pcaB
+BD8,K01857,Benzoate,pcaB
+BD8,K03333,Steroid,choD
+BD8,K03380,Toluene,E1.14.13.7
+BD8,K03380,Aminobenzoate,E1.14.13.7
+BD8,K10680,Nitrotoluene,nemA
+BD8,K13953,Aromatic,adhP
+BD8,K13953,Naphthalene,adhP
+BD8,K13953,Cytochrome P450,adhP
+BD8,K13953,Cl. alkane and Cl.alkene,adhP
+BD8,K00632,Benzoate,fadA
+BD8,K00632,Ethylbenzene,fadA
+BD8,K01032,Benzoate,pcaJ
+BD8,K14048,Atrazine,ureAB
+BD8,K14727,Benzoate,pcaL
+BD8,K14727,Aromatic,pcaL
+BD120,K00001,Naphthalene,E1.1.1.1
+BD120,K00001,Cytochrome P450,E1.1.1.1
+BD120,K00001,Aromatic,E1.1.1.1
+BD120,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD120,K00074,Benzoate,paaH
+BD120,K00121,Aromatic,frmA
+BD120,K00121,Naphthalene,frmA
+BD120,K00121,Cytochrome P450,frmA
+BD120,K00121,Cl. alkane and Cl.alkene,frmA
+BD120,K00148,Cl. alkane and Cl.alkene,fdhA
+BD120,K00128,Cl. alkane and Cl.alkene,ALDH
+BD120,K00146,Styrene,feaB
+BD120,K21802,Aminobenzoate,vdh
+BD120,K00483,Aromatic,hpaB
+BD120,K00626,Benzoate,ACAT
+BD120,K00632,Benzoate,fadA
+BD120,K00632,Ethylbenzene,fadA
+BD120,K01034,Aminobenzoate,atoD
+BD120,K01035,Aminobenzoate,atoA
+BD120,K01101,Aminobenzoate,E3.1.3.41
+BD120,K01428,Atrazine,ureC
+BD120,K01429,Atrazine,ureB
+BD120,K01430,Atrazine,ureA
+BD120,K01512,Aminobenzoate,acyP
+BD120,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD120,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD120,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD120,K01563,Cl. alkane and Cl.alkene,dhaA
+BD120,K01607,Benzoate,pcaC
+BD120,K01607,Aromatic,pcaC
+BD120,K01612,Aromatic,bsdC
+BD120,K01612,Aminobenzoate,bsdC
+BD120,K16874,Furfural,hmfF
+BD120,K01821,Benzoate,praC
+BD120,K01821,Dioxin,praC
+BD120,K01821,Xylene,praC
+BD120,K01821,Aromatic,praC
+BD120,K03186,Aromatic,ubiX
+BD120,K03186,Aminobenzoate,ubiX
+BD120,K15765,Toluene,tmoF
+BD120,K15765,Aromatic,tmoF
+BD120,K07104,Benzoate,catE
+BD120,K07104,Xylene,catE
+BD120,K07104,Aromatic,catE
+BD120,K07104,Styrene,catE
+BD120,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD120,K07516,Benzoate,fadN
+BD120,K10678,Nitrotoluene,nfsA
+BD120,K13767,Benzoate,fadB
+BD120,K14338,Aminobenzoate,cypD_E
+BD120,K21759,Aromatic,bsdD
+BD120,K21759,Aminobenzoate,bsdD
+BD121,K00074,Benzoate,paaH
+BD121,K00121,Aromatic,frmA
+BD121,K00121,Naphthalene,frmA
+BD121,K00121,Cytochrome P450,frmA
+BD121,K00121,Cl. alkane and Cl.alkene,frmA
+BD121,K00128,Cl. alkane and Cl.alkene,ALDH
+BD121,K00146,Styrene,feaB
+BD121,K21802,Aminobenzoate,vdh
+BD121,K00455,Aromatic,hpaD
+BD121,K00481,Aromatic,pobA
+BD121,K00481,Benzoate,pobA
+BD121,K00626,Benzoate,ACAT
+BD121,K00632,Benzoate,fadA
+BD121,K00632,Ethylbenzene,fadA
+BD121,K01034,Aminobenzoate,atoD
+BD121,K01035,Aminobenzoate,atoA
+BD121,K01101,Aminobenzoate,E3.1.3.41
+BD121,K01426,Aminobenzoate,E3.5.1.4
+BD121,K01426,Styrene,E3.5.1.4
+BD121,K01428,Atrazine,ureC
+BD121,K01429,Atrazine,ureB
+BD121,K01430,Atrazine,ureA
+BD121,K01512,Aminobenzoate,acyP
+BD121,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD121,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD121,K01612,Aromatic,bsdC
+BD121,K01612,Aminobenzoate,bsdC
+BD121,K16874,Furfural,hmfF
+BD121,K01617,Xylene,dmpH
+BD121,K01617,Aromatic,dmpH
+BD121,K01617,Benzoate,dmpH
+BD121,K01617,Dioxin,dmpH
+BD121,K01821,Benzoate,praC
+BD121,K01821,Dioxin,praC
+BD121,K01821,Xylene,praC
+BD121,K01821,Aromatic,praC
+BD121,K03186,Aromatic,ubiX
+BD121,K03186,Aminobenzoate,ubiX
+BD121,K04072,Cl. alkane and Cl.alkene,adhE
+BD121,K04072,Aromatic,adhE
+BD121,K04072,Naphthalene,adhE
+BD121,K15765,Toluene,tmoF
+BD121,K15765,Aromatic,tmoF
+BD121,K07104,Benzoate,catE
+BD121,K07104,Xylene,catE
+BD121,K07104,Aromatic,catE
+BD121,K07104,Styrene,catE
+BD121,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD121,K07516,Benzoate,fadN
+BD121,K10217,Aromatic,dmpC
+BD121,K10217,Benzoate,dmpC
+BD121,K10217,Xylene,dmpC
+BD121,K10218,Benzoate,ligK
+BD121,K13767,Benzoate,fadB
+BD121,K14338,Aminobenzoate,cypD_E
+BD121,K21759,Aromatic,bsdD
+BD121,K21759,Aminobenzoate,bsdD
+BD126,K00001,Naphthalene,E1.1.1.1
+BD126,K00001,Cytochrome P450,E1.1.1.1
+BD126,K00001,Aromatic,E1.1.1.1
+BD126,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD126,K00074,Benzoate,paaH
+BD126,K00121,Aromatic,frmA
+BD126,K00121,Naphthalene,frmA
+BD126,K00121,Cytochrome P450,frmA
+BD126,K00121,Cl. alkane and Cl.alkene,frmA
+BD126,K00148,Cl. alkane and Cl.alkene,fdhA
+BD126,K00128,Cl. alkane and Cl.alkene,ALDH
+BD126,K00146,Styrene,feaB
+BD126,K21802,Aminobenzoate,vdh
+BD126,K00483,Aromatic,hpaB
+BD126,K00626,Benzoate,ACAT
+BD126,K00632,Benzoate,fadA
+BD126,K00632,Ethylbenzene,fadA
+BD126,K01034,Aminobenzoate,atoD
+BD126,K01035,Aminobenzoate,atoA
+BD126,K01101,Aminobenzoate,E3.1.3.41
+BD126,K01428,Atrazine,ureC
+BD126,K01429,Atrazine,ureB
+BD126,K01430,Atrazine,ureA
+BD126,K01512,Aminobenzoate,acyP
+BD126,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD126,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD126,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD126,K01563,Cl. alkane and Cl.alkene,dhaA
+BD126,K01607,Benzoate,pcaC
+BD126,K01607,Aromatic,pcaC
+BD126,K01612,Aromatic,bsdC
+BD126,K01612,Aminobenzoate,bsdC
+BD126,K16874,Furfural,hmfF
+BD126,K01821,Benzoate,praC
+BD126,K01821,Dioxin,praC
+BD126,K01821,Xylene,praC
+BD126,K01821,Aromatic,praC
+BD126,K03186,Aromatic,ubiX
+BD126,K03186,Aminobenzoate,ubiX
+BD126,K15765,Toluene,tmoF
+BD126,K15765,Aromatic,tmoF
+BD126,K07104,Benzoate,catE
+BD126,K07104,Xylene,catE
+BD126,K07104,Aromatic,catE
+BD126,K07104,Styrene,catE
+BD126,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD126,K07516,Benzoate,fadN
+BD126,K10678,Nitrotoluene,nfsA
+BD126,K13767,Benzoate,fadB
+BD126,K14338,Aminobenzoate,cypD_E
+BD126,K21759,Aromatic,bsdD
+BD126,K21759,Aminobenzoate,bsdD
+BD127,K07535,Benzoate,badH
+BD127,K07535,Aromatic,badH
+BD127,K10617,Xylene,cymB
+BD127,K10617,Aromatic,cymB
+BD127,K00074,Benzoate,paaH
+BD127,K01782,Benzoate,fadJ
+BD127,K01782,Caprolactam,fadJ
+BD127,K00121,Aromatic,frmA
+BD127,K00121,Naphthalene,frmA
+BD127,K00121,Cytochrome P450,frmA
+BD127,K00121,Cl. alkane and Cl.alkene,frmA
+BD127,K00128,Cl. alkane and Cl.alkene,ALDH
+BD127,K00146,Styrene,feaB
+BD127,K00151,Aromatic,hpaE
+BD127,K09461,Aminobenzoate,E1.14.13.40
+BD127,K00252,Benzoate,GCDH
+BD127,K00451,Styrene,HGD
+BD127,K00455,Aromatic,hpaD
+BD127,K00480,Aromatic,E1.14.13.1
+BD127,K00480,Dioxin,E1.14.13.1
+BD127,K00480,Naphthalene,E1.14.13.1
+BD127,K00480,PAH,E1.14.13.1
+BD127,K22270,Benzoate,nagX
+BD127,K15511,Benzoate,boxA
+BD127,K00529,Aromatic,hcaD
+BD127,K00626,Benzoate,ACAT
+BD127,K00632,Benzoate,fadA
+BD127,K00632,Ethylbenzene,fadA
+BD127,K00799,Cytochrome P450,GST
+BD127,K01039,Styrene,gctA
+BD127,K01031,Benzoate,pcaI
+BD127,K01032,Benzoate,pcaJ
+BD127,K01040,Styrene,gctB
+BD127,K01053,Aromatic,gnl
+BD127,K01053,Caprolactam,gnl
+BD127,K01055,Benzoate,pcaD
+BD127,K01055,Aromatic,pcaD
+BD127,K01061,Toluene,E3.1.1.45
+BD127,K01061,Fluorobenzoate,E3.1.1.45
+BD127,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD127,K01075,Benzoate,E3.1.2.23
+BD127,K01426,Aminobenzoate,E3.5.1.4
+BD127,K01426,Styrene,E3.5.1.4
+BD127,K01457,Atrazine,atzF
+BD127,K01941,Atrazine,uca
+BD127,K01501,Styrene,E3.5.5.1
+BD127,K01501,Aminobenzoate,E3.5.5.1
+BD127,K01502,Styrene,E3.5.5.7
+BD127,K01512,Aminobenzoate,acyP
+BD127,K01555,Styrene,FAH
+BD127,K01561,Cl. cyclohexane and Cl. benzene,dehH
+BD127,K01561,Cl. alkane and Cl.alkene,dehH
+BD127,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD127,K01563,Cl. alkane and Cl.alkene,dhaA
+BD127,K01607,Benzoate,pcaC
+BD127,K01607,Aromatic,pcaC
+BD127,K01692,Benzoate,paaF
+BD127,K01692,Aminobenzoate,paaF
+BD127,K01692,Caprolactam,paaF
+BD127,K07534,Benzoate,badK
+BD127,K07534,Aromatic,badK
+BD127,K01857,Aromatic,pcaB
+BD127,K01857,Benzoate,pcaB
+BD127,K07516,Benzoate,fadN
+BD127,K01800,Styrene,maiA
+BD127,K01821,Benzoate,praC
+BD127,K01821,Dioxin,praC
+BD127,K01821,Xylene,praC
+BD127,K01821,Aromatic,praC
+BD127,K01826,Aromatic,hpaF
+BD127,K01856,Fluorobenzoate,catB
+BD127,K01856,Benzoate,catB
+BD127,K01856,Aromatic,catB
+BD127,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD127,K01856,Toluene,catB
+BD127,K20712,Aminobenzoate,glnA
+BD127,K19837,Atrazine,atzE
+BD127,K03186,Aromatic,ubiX
+BD127,K03186,Aminobenzoate,ubiX
+BD127,K03464,Aromatic,catC
+BD127,K03464,Benzoate,catC
+BD127,K04110,Benzoate,badA
+BD127,K04110,Aminobenzoate,badA
+BD127,K05712,Aromatic,mhpA
+BD127,K05921,Aromatic,hpaG
+BD127,K06446,Caprolactam,DCAA
+BD127,K07549,Toluene,bbsA
+BD127,K07549,Aromatic,bbsA
+BD127,K08295,Aminobenzoate,abmG
+BD127,K10218,Benzoate,ligK
+BD127,K10221,Aminobenzoate,ligI
+BD127,K10221,Benzoate,ligI
+BD127,K10680,Nitrotoluene,nemA
+BD127,K13953,Aromatic,adhP
+BD127,K13953,Naphthalene,adhP
+BD127,K13953,Cytochrome P450,adhP
+BD127,K13953,Cl. alkane and Cl.alkene,adhP
+BD127,K19961,Aromatic,chnD
+BD127,K19961,Caprolactam,chnD
+BD127,K14578,Ethylbenzene,nahAb
+BD127,K14578,Aminobenzoate,nahAb
+BD127,K14578,Nitrotoluene,nahAb
+BD127,K14578,PAH,nahAb
+BD127,K14578,Aromatic,nahAb
+BD127,K14578,Naphthalene,nahAb
+BD127,K14748,Ethylbenzene,etbAa
+BD127,K14748,Aromatic,etbAa
+BD127,K15512,Benzoate,boxB
+BD127,K15513,Benzoate,boxC
+BD127,K16303,Aromatic,cmtAc
+BD127,K16303,Xylene,cmtAc
+BD127,K16319,Aminobenzoate,andAc
+BD127,K18242,Naphthalene,nagG
+BD127,K16320,Aminobenzoate,andAd
+BD127,K18243,Naphthalene,nagH
+BD127,K18199,Caprolactam,inhA
+BD127,K18248,Aminobenzoate,andAb
+BD129,K00074,Benzoate,paaH
+BD129,K00121,Aromatic,frmA
+BD129,K00121,Naphthalene,frmA
+BD129,K00121,Cytochrome P450,frmA
+BD129,K00121,Cl. alkane and Cl.alkene,frmA
+BD129,K00128,Cl. alkane and Cl.alkene,ALDH
+BD129,K00146,Styrene,feaB
+BD129,K21802,Aminobenzoate,vdh
+BD129,K00455,Aromatic,hpaD
+BD129,K00481,Aromatic,pobA
+BD129,K00481,Benzoate,pobA
+BD129,K00626,Benzoate,ACAT
+BD129,K00632,Benzoate,fadA
+BD129,K00632,Ethylbenzene,fadA
+BD129,K01034,Aminobenzoate,atoD
+BD129,K01035,Aminobenzoate,atoA
+BD129,K01101,Aminobenzoate,E3.1.3.41
+BD129,K01426,Aminobenzoate,E3.5.1.4
+BD129,K01426,Styrene,E3.5.1.4
+BD129,K01428,Atrazine,ureC
+BD129,K01429,Atrazine,ureB
+BD129,K01430,Atrazine,ureA
+BD129,K01512,Aminobenzoate,acyP
+BD129,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD129,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD129,K01612,Aromatic,bsdC
+BD129,K01612,Aminobenzoate,bsdC
+BD129,K16874,Furfural,hmfF
+BD129,K01617,Xylene,dmpH
+BD129,K01617,Aromatic,dmpH
+BD129,K01617,Benzoate,dmpH
+BD129,K01617,Dioxin,dmpH
+BD129,K01821,Benzoate,praC
+BD129,K01821,Dioxin,praC
+BD129,K01821,Xylene,praC
+BD129,K01821,Aromatic,praC
+BD129,K03186,Aromatic,ubiX
+BD129,K03186,Aminobenzoate,ubiX
+BD129,K04072,Cl. alkane and Cl.alkene,adhE
+BD129,K04072,Aromatic,adhE
+BD129,K04072,Naphthalene,adhE
+BD129,K15765,Toluene,tmoF
+BD129,K15765,Aromatic,tmoF
+BD129,K07104,Benzoate,catE
+BD129,K07104,Xylene,catE
+BD129,K07104,Aromatic,catE
+BD129,K07104,Styrene,catE
+BD129,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD129,K07516,Benzoate,fadN
+BD129,K10217,Aromatic,dmpC
+BD129,K10217,Benzoate,dmpC
+BD129,K10217,Xylene,dmpC
+BD129,K10218,Benzoate,ligK
+BD129,K13767,Benzoate,fadB
+BD129,K14338,Aminobenzoate,cypD_E
+BD129,K21759,Aromatic,bsdD
+BD129,K21759,Aminobenzoate,bsdD
+BD132,K00001,Naphthalene,E1.1.1.1
+BD132,K00001,Cytochrome P450,E1.1.1.1
+BD132,K00001,Aromatic,E1.1.1.1
+BD132,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD132,K00074,Benzoate,paaH
+BD132,K00121,Aromatic,frmA
+BD132,K00121,Naphthalene,frmA
+BD132,K00121,Cytochrome P450,frmA
+BD132,K00121,Cl. alkane and Cl.alkene,frmA
+BD132,K00128,Cl. alkane and Cl.alkene,ALDH
+BD132,K00146,Styrene,feaB
+BD132,K00148,Cl. alkane and Cl.alkene,fdhA
+BD132,K00626,Benzoate,ACAT
+BD132,K00632,Benzoate,fadA
+BD132,K00632,Ethylbenzene,fadA
+BD132,K01034,Aminobenzoate,atoD
+BD132,K01035,Aminobenzoate,atoA
+BD132,K01101,Aminobenzoate,E3.1.3.41
+BD132,K01426,Aminobenzoate,E3.5.1.4
+BD132,K01426,Styrene,E3.5.1.4
+BD132,K01512,Aminobenzoate,acyP
+BD132,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD132,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD132,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD132,K01563,Cl. alkane and Cl.alkene,dhaA
+BD132,K01607,Benzoate,pcaC
+BD132,K01607,Aromatic,pcaC
+BD132,K01821,Benzoate,praC
+BD132,K01821,Dioxin,praC
+BD132,K01821,Xylene,praC
+BD132,K01821,Aromatic,praC
+BD132,K15765,Toluene,tmoF
+BD132,K15765,Aromatic,tmoF
+BD132,K07104,Benzoate,catE
+BD132,K07104,Xylene,catE
+BD132,K07104,Aromatic,catE
+BD132,K07104,Styrene,catE
+BD132,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD132,K07516,Benzoate,fadN
+BD132,K10218,Benzoate,ligK
+BD132,K13767,Benzoate,fadB
+BD132,K14338,Aminobenzoate,cypD_E
+BD166,K00001,Naphthalene,E1.1.1.1
+BD166,K00001,Cytochrome P450,E1.1.1.1
+BD166,K00001,Aromatic,E1.1.1.1
+BD166,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD166,K00074,Benzoate,paaH
+BD166,K00121,Aromatic,frmA
+BD166,K00121,Naphthalene,frmA
+BD166,K00121,Cytochrome P450,frmA
+BD166,K00121,Cl. alkane and Cl.alkene,frmA
+BD166,K00128,Cl. alkane and Cl.alkene,ALDH
+BD166,K00146,Styrene,feaB
+BD166,K00252,Benzoate,GCDH
+BD166,K00483,Aromatic,hpaB
+BD166,K00626,Benzoate,ACAT
+BD166,K00632,Benzoate,fadA
+BD166,K00632,Ethylbenzene,fadA
+BD166,K01034,Aminobenzoate,atoD
+BD166,K01035,Aminobenzoate,atoA
+BD166,K01101,Aminobenzoate,E3.1.3.41
+BD166,K01426,Aminobenzoate,E3.5.1.4
+BD166,K01426,Styrene,E3.5.1.4
+BD166,K01428,Atrazine,ureC
+BD166,K01429,Atrazine,ureB
+BD166,K01430,Atrazine,ureA
+BD166,K01457,Atrazine,atzF
+BD166,K01512,Aminobenzoate,acyP
+BD166,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD166,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD166,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD166,K01563,Cl. alkane and Cl.alkene,dhaA
+BD166,K01607,Benzoate,pcaC
+BD166,K01607,Aromatic,pcaC
+BD166,K01612,Aromatic,bsdC
+BD166,K01612,Aminobenzoate,bsdC
+BD166,K01666,Xylene,mhpE
+BD166,K01666,Dioxin,mhpE
+BD166,K01666,Benzoate,mhpE
+BD166,K01666,Aromatic,mhpE
+BD166,K01821,Benzoate,praC
+BD166,K01821,Dioxin,praC
+BD166,K01821,Xylene,praC
+BD166,K01821,Aromatic,praC
+BD166,K01941,Atrazine,uca
+BD166,K03186,Aromatic,ubiX
+BD166,K03186,Aminobenzoate,ubiX
+BD166,K15765,Toluene,tmoF
+BD166,K15765,Aromatic,tmoF
+BD166,K05921,Aromatic,hpaG
+BD166,K06446,Caprolactam,DCAA
+BD166,K07104,Benzoate,catE
+BD166,K07104,Xylene,catE
+BD166,K07104,Aromatic,catE
+BD166,K07104,Styrene,catE
+BD166,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD166,K07516,Benzoate,fadN
+BD166,K10218,Benzoate,ligK
+BD166,K10680,Nitrotoluene,nemA
+BD166,K13767,Benzoate,fadB
+BD166,K13954,Naphthalene,yiaY
+BD166,K13954,Aromatic,yiaY
+BD166,K13954,Cl. alkane and Cl.alkene,yiaY
+BD166,K14338,Aminobenzoate,cypD_E
+BD166,K21759,Aromatic,bsdD
+BD166,K21759,Aminobenzoate,bsdD
+BD48,K00001,Naphthalene,E1.1.1.1
+BD48,K00001,Cytochrome P450,E1.1.1.1
+BD48,K00001,Aromatic,E1.1.1.1
+BD48,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD48,K10617,Xylene,cymB
+BD48,K10617,Aromatic,cymB
+BD48,K00074,Benzoate,paaH
+BD48,K00121,Aromatic,frmA
+BD48,K00121,Naphthalene,frmA
+BD48,K00121,Cytochrome P450,frmA
+BD48,K00121,Cl. alkane and Cl.alkene,frmA
+BD48,K00128,Cl. alkane and Cl.alkene,ALDH
+BD48,K00146,Styrene,feaB
+BD48,K00252,Benzoate,GCDH
+BD48,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD48,K16246,Toluene,dmpP
+BD48,K16246,Aromatic,dmpP
+BD48,K16246,Benzoate,dmpP
+BD48,K00529,Aromatic,hcaD
+BD48,K00448,PAH,pcaG
+BD48,K00448,Aromatic,pcaG
+BD48,K00448,Benzoate,pcaG
+BD48,K00449,PAH,pcaH
+BD48,K00449,Aromatic,pcaH
+BD48,K00449,Benzoate,pcaH
+BD48,K00481,Aromatic,pobA
+BD48,K00481,Benzoate,pobA
+BD48,K05712,Aromatic,mhpA
+BD48,K00496,Caprolactam,alkB1_2
+BD48,K00626,Benzoate,ACAT
+BD48,K00632,Benzoate,fadA
+BD48,K00632,Ethylbenzene,fadA
+BD48,K07823,Benzoate,pcaF
+BD48,K00799,Cytochrome P450,GST
+BD48,K01031,Benzoate,pcaI
+BD48,K01032,Benzoate,pcaJ
+BD48,K01055,Benzoate,pcaD
+BD48,K01055,Aromatic,pcaD
+BD48,K01061,Toluene,E3.1.1.45
+BD48,K01061,Fluorobenzoate,E3.1.1.45
+BD48,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD48,K01075,Benzoate,E3.1.2.23
+BD48,K01426,Aminobenzoate,E3.5.1.4
+BD48,K01426,Styrene,E3.5.1.4
+BD48,K01428,Atrazine,ureC
+BD48,K01429,Atrazine,ureB
+BD48,K01430,Atrazine,ureA
+BD48,K01457,Atrazine,atzF
+BD48,K01501,Styrene,E3.5.5.1
+BD48,K01501,Aminobenzoate,E3.5.5.1
+BD48,K01555,Styrene,FAH
+BD48,K01607,Benzoate,pcaC
+BD48,K01607,Aromatic,pcaC
+BD48,K01692,Benzoate,paaF
+BD48,K01692,Aminobenzoate,paaF
+BD48,K01692,Caprolactam,paaF
+BD48,K01782,Benzoate,fadJ
+BD48,K01782,Caprolactam,fadJ
+BD48,K01825,Caprolactam,fadB
+BD48,K01825,Benzoate,fadB
+BD48,K01800,Styrene,maiA
+BD48,K01826,Aromatic,hpaF
+BD48,K01856,Fluorobenzoate,catB
+BD48,K01856,Benzoate,catB
+BD48,K01856,Aromatic,catB
+BD48,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD48,K01856,Toluene,catB
+BD48,K01857,Aromatic,pcaB
+BD48,K01857,Benzoate,pcaB
+BD48,K01941,Atrazine,uca
+BD48,K03333,Steroid,choD
+BD48,K03379,Aromatic,chnB
+BD48,K03379,Caprolactam,chnB
+BD48,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD48,K03381,Toluene,catA
+BD48,K03381,Benzoate,catA
+BD48,K03381,Fluorobenzoate,catA
+BD48,K03381,Aromatic,catA
+BD48,K03464,Aromatic,catC
+BD48,K03464,Benzoate,catC
+BD48,K03862,Aminobenzoate,vanA
+BD48,K03863,Aminobenzoate,vanB
+BD48,K05549,Fluorobenzoate,benA-xylX
+BD48,K05549,Aromatic,benA-xylX
+BD48,K05549,Xylene,benA-xylX
+BD48,K05549,Benzoate,benA-xylX
+BD48,K05550,Benzoate,benB-xylY
+BD48,K05550,Fluorobenzoate,benB-xylY
+BD48,K05550,Xylene,benB-xylY
+BD48,K05550,Aromatic,benB-xylY
+BD48,K05599,Aminobenzoate,antA
+BD48,K05600,Aminobenzoate,antB
+BD48,K05710,Aromatic,hcaC
+BD48,K18248,Aminobenzoate,andAb
+BD48,K05783,Aromatic,benD-xylL
+BD48,K05783,Benzoate,benD-xylL
+BD48,K05783,Xylene,benD-xylL
+BD48,K05783,Fluorobenzoate,benD-xylL
+BD48,K05784,Xylene,benC-xylZ
+BD48,K05784,Benzoate,benC-xylZ
+BD48,K05784,Aromatic,benC-xylZ
+BD48,K05784,Fluorobenzoate,benC-xylZ
+BD48,K14581,Nitrotoluene,nahAa
+BD48,K14581,Aminobenzoate,nahAa
+BD48,K14581,Ethylbenzene,nahAa
+BD48,K14581,Naphthalene,nahAa
+BD48,K14581,PAH,nahAa
+BD48,K14581,Aromatic,nahAa
+BD48,K16161,Aromatic,mmoC
+BD48,K06446,Caprolactam,DCAA
+BD48,K10679,Nitrotoluene,nfnB
+BD48,K10680,Nitrotoluene,nemA
+BD48,K11311,Aminobenzoate,antC
+BD48,K13954,Naphthalene,yiaY
+BD48,K13954,Aromatic,yiaY
+BD48,K13954,Cl. alkane and Cl.alkene,yiaY
+BD48,K14731,Aromatic,mlhB
+BD48,K14731,Caprolactam,mlhB
+BD48,K16242,Aromatic,dmpN
+BD48,K16242,Benzoate,dmpN
+BD48,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD48,K16242,Toluene,dmpN
+BD48,K16243,Aromatic,dmpL
+BD48,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD48,K16243,Toluene,dmpL
+BD48,K16243,Benzoate,dmpL
+BD48,K16244,Toluene,dmpM
+BD48,K16244,Benzoate,dmpM
+BD48,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD48,K16244,Aromatic,dmpM
+BD48,K16245,Benzoate,dmpO
+BD48,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD48,K16245,Aromatic,dmpO
+BD48,K16245,Toluene,dmpO
+BD48,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD48,K16249,Aromatic,dmpK
+BD48,K16249,Benzoate,dmpK
+BD48,K16249,Toluene,dmpK
+BD48,K18242,Naphthalene,nagG
+BD48,K21105,PAH,E3.1.1.102
+BD48,K21802,Aminobenzoate,vdh
+BD50,K00001,Naphthalene,E1.1.1.1
+BD50,K00001,Cytochrome P450,E1.1.1.1
+BD50,K00001,Aromatic,E1.1.1.1
+BD50,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD50,K00074,Benzoate,paaH
+BD50,K00121,Aromatic,frmA
+BD50,K00121,Naphthalene,frmA
+BD50,K00121,Cytochrome P450,frmA
+BD50,K00121,Cl. alkane and Cl.alkene,frmA
+BD50,K00128,Cl. alkane and Cl.alkene,ALDH
+BD50,K00146,Styrene,feaB
+BD50,K00148,Cl. alkane and Cl.alkene,fdhA
+BD50,K00626,Benzoate,ACAT
+BD50,K00632,Benzoate,fadA
+BD50,K00632,Ethylbenzene,fadA
+BD50,K01034,Aminobenzoate,atoD
+BD50,K01035,Aminobenzoate,atoA
+BD50,K01101,Aminobenzoate,E3.1.3.41
+BD50,K01426,Aminobenzoate,E3.5.1.4
+BD50,K01426,Styrene,E3.5.1.4
+BD50,K01512,Aminobenzoate,acyP
+BD50,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD50,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD50,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD50,K01563,Cl. alkane and Cl.alkene,dhaA
+BD50,K01607,Benzoate,pcaC
+BD50,K01607,Aromatic,pcaC
+BD50,K01821,Benzoate,praC
+BD50,K01821,Dioxin,praC
+BD50,K01821,Xylene,praC
+BD50,K01821,Aromatic,praC
+BD50,K15765,Toluene,tmoF
+BD50,K15765,Aromatic,tmoF
+BD50,K07104,Benzoate,catE
+BD50,K07104,Xylene,catE
+BD50,K07104,Aromatic,catE
+BD50,K07104,Styrene,catE
+BD50,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD50,K07516,Benzoate,fadN
+BD50,K10218,Benzoate,ligK
+BD50,K13767,Benzoate,fadB
+BD50,K14338,Aminobenzoate,cypD_E
+BD54,K00001,Naphthalene,E1.1.1.1
+BD54,K00001,Cytochrome P450,E1.1.1.1
+BD54,K00001,Aromatic,E1.1.1.1
+BD54,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD54,K10617,Xylene,cymB
+BD54,K10617,Aromatic,cymB
+BD54,K00074,Benzoate,paaH
+BD54,K00121,Aromatic,frmA
+BD54,K00121,Naphthalene,frmA
+BD54,K00121,Cytochrome P450,frmA
+BD54,K00121,Cl. alkane and Cl.alkene,frmA
+BD54,K00128,Cl. alkane and Cl.alkene,ALDH
+BD54,K00146,Styrene,feaB
+BD54,K00252,Benzoate,GCDH
+BD54,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD54,K16246,Toluene,dmpP
+BD54,K16246,Aromatic,dmpP
+BD54,K16246,Benzoate,dmpP
+BD54,K00529,Aromatic,hcaD
+BD54,K00448,PAH,pcaG
+BD54,K00448,Aromatic,pcaG
+BD54,K00448,Benzoate,pcaG
+BD54,K00449,PAH,pcaH
+BD54,K00449,Aromatic,pcaH
+BD54,K00449,Benzoate,pcaH
+BD54,K00481,Aromatic,pobA
+BD54,K00481,Benzoate,pobA
+BD54,K05712,Aromatic,mhpA
+BD54,K00496,Caprolactam,alkB1_2
+BD54,K00626,Benzoate,ACAT
+BD54,K00632,Benzoate,fadA
+BD54,K00632,Ethylbenzene,fadA
+BD54,K07823,Benzoate,pcaF
+BD54,K00799,Cytochrome P450,GST
+BD54,K01031,Benzoate,pcaI
+BD54,K01032,Benzoate,pcaJ
+BD54,K01055,Benzoate,pcaD
+BD54,K01055,Aromatic,pcaD
+BD54,K01061,Toluene,E3.1.1.45
+BD54,K01061,Fluorobenzoate,E3.1.1.45
+BD54,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD54,K01075,Benzoate,E3.1.2.23
+BD54,K01426,Aminobenzoate,E3.5.1.4
+BD54,K01426,Styrene,E3.5.1.4
+BD54,K01428,Atrazine,ureC
+BD54,K01429,Atrazine,ureB
+BD54,K01430,Atrazine,ureA
+BD54,K01457,Atrazine,atzF
+BD54,K01501,Styrene,E3.5.5.1
+BD54,K01501,Aminobenzoate,E3.5.5.1
+BD54,K01555,Styrene,FAH
+BD54,K01607,Benzoate,pcaC
+BD54,K01607,Aromatic,pcaC
+BD54,K01692,Benzoate,paaF
+BD54,K01692,Aminobenzoate,paaF
+BD54,K01692,Caprolactam,paaF
+BD54,K01782,Benzoate,fadJ
+BD54,K01782,Caprolactam,fadJ
+BD54,K01825,Caprolactam,fadB
+BD54,K01825,Benzoate,fadB
+BD54,K01800,Styrene,maiA
+BD54,K01826,Aromatic,hpaF
+BD54,K01856,Fluorobenzoate,catB
+BD54,K01856,Benzoate,catB
+BD54,K01856,Aromatic,catB
+BD54,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD54,K01856,Toluene,catB
+BD54,K01857,Aromatic,pcaB
+BD54,K01857,Benzoate,pcaB
+BD54,K01941,Atrazine,uca
+BD54,K03333,Steroid,choD
+BD54,K03379,Aromatic,chnB
+BD54,K03379,Caprolactam,chnB
+BD54,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD54,K03381,Toluene,catA
+BD54,K03381,Benzoate,catA
+BD54,K03381,Fluorobenzoate,catA
+BD54,K03381,Aromatic,catA
+BD54,K03464,Aromatic,catC
+BD54,K03464,Benzoate,catC
+BD54,K03862,Aminobenzoate,vanA
+BD54,K03863,Aminobenzoate,vanB
+BD54,K05549,Fluorobenzoate,benA-xylX
+BD54,K05549,Aromatic,benA-xylX
+BD54,K05549,Xylene,benA-xylX
+BD54,K05549,Benzoate,benA-xylX
+BD54,K05550,Benzoate,benB-xylY
+BD54,K05550,Fluorobenzoate,benB-xylY
+BD54,K05550,Xylene,benB-xylY
+BD54,K05550,Aromatic,benB-xylY
+BD54,K05599,Aminobenzoate,antA
+BD54,K05600,Aminobenzoate,antB
+BD54,K05710,Aromatic,hcaC
+BD54,K18248,Aminobenzoate,andAb
+BD54,K05783,Aromatic,benD-xylL
+BD54,K05783,Benzoate,benD-xylL
+BD54,K05783,Xylene,benD-xylL
+BD54,K05783,Fluorobenzoate,benD-xylL
+BD54,K05784,Xylene,benC-xylZ
+BD54,K05784,Benzoate,benC-xylZ
+BD54,K05784,Aromatic,benC-xylZ
+BD54,K05784,Fluorobenzoate,benC-xylZ
+BD54,K14581,Nitrotoluene,nahAa
+BD54,K14581,Aminobenzoate,nahAa
+BD54,K14581,Ethylbenzene,nahAa
+BD54,K14581,Naphthalene,nahAa
+BD54,K14581,PAH,nahAa
+BD54,K14581,Aromatic,nahAa
+BD54,K16161,Aromatic,mmoC
+BD54,K06446,Caprolactam,DCAA
+BD54,K10679,Nitrotoluene,nfnB
+BD54,K10680,Nitrotoluene,nemA
+BD54,K11311,Aminobenzoate,antC
+BD54,K13954,Naphthalene,yiaY
+BD54,K13954,Aromatic,yiaY
+BD54,K13954,Cl. alkane and Cl.alkene,yiaY
+BD54,K14731,Aromatic,mlhB
+BD54,K14731,Caprolactam,mlhB
+BD54,K16242,Aromatic,dmpN
+BD54,K16242,Benzoate,dmpN
+BD54,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD54,K16242,Toluene,dmpN
+BD54,K16243,Aromatic,dmpL
+BD54,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD54,K16243,Toluene,dmpL
+BD54,K16243,Benzoate,dmpL
+BD54,K16244,Toluene,dmpM
+BD54,K16244,Benzoate,dmpM
+BD54,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD54,K16244,Aromatic,dmpM
+BD54,K16245,Benzoate,dmpO
+BD54,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD54,K16245,Aromatic,dmpO
+BD54,K16245,Toluene,dmpO
+BD54,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD54,K16249,Aromatic,dmpK
+BD54,K16249,Benzoate,dmpK
+BD54,K16249,Toluene,dmpK
+BD54,K18242,Naphthalene,nagG
+BD54,K21105,PAH,E3.1.1.102
+BD54,K21802,Aminobenzoate,vdh
+BD61,K00001,Naphthalene,E1.1.1.1
+BD61,K00001,Cytochrome P450,E1.1.1.1
+BD61,K00001,Aromatic,E1.1.1.1
+BD61,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD61,K00074,Benzoate,paaH
+BD61,K00121,Aromatic,frmA
+BD61,K00121,Naphthalene,frmA
+BD61,K00121,Cytochrome P450,frmA
+BD61,K00121,Cl. alkane and Cl.alkene,frmA
+BD61,K00128,Cl. alkane and Cl.alkene,ALDH
+BD61,K00141,Aromatic,xylC
+BD61,K00141,Toluene,xylC
+BD61,K00141,Aminobenzoate,xylC
+BD61,K00141,Xylene,xylC
+BD61,K21802,Aminobenzoate,vdh
+BD61,K00148,Cl. alkane and Cl.alkene,fdhA
+BD61,K00252,Benzoate,GCDH
+BD61,K00448,PAH,pcaG
+BD61,K00448,Aromatic,pcaG
+BD61,K00448,Benzoate,pcaG
+BD61,K00449,PAH,pcaH
+BD61,K00449,Aromatic,pcaH
+BD61,K00449,Benzoate,pcaH
+BD61,K00480,Aromatic,E1.14.13.1
+BD61,K00480,Dioxin,E1.14.13.1
+BD61,K00480,Naphthalene,E1.14.13.1
+BD61,K00480,PAH,E1.14.13.1
+BD61,K00481,Aromatic,pobA
+BD61,K00481,Benzoate,pobA
+BD61,K14581,Nitrotoluene,nahAa
+BD61,K14581,Aminobenzoate,nahAa
+BD61,K14581,Ethylbenzene,nahAa
+BD61,K14581,Naphthalene,nahAa
+BD61,K14581,PAH,nahAa
+BD61,K14581,Aromatic,nahAa
+BD61,K00529,Aromatic,hcaD
+BD61,K00626,Benzoate,ACAT
+BD61,K00632,Benzoate,fadA
+BD61,K00632,Ethylbenzene,fadA
+BD61,K07823,Benzoate,pcaF
+BD61,K00799,Cytochrome P450,GST
+BD61,K01026,Styrene,pct
+BD61,K01031,Benzoate,pcaI
+BD61,K01032,Benzoate,pcaJ
+BD61,K01053,Aromatic,gnl
+BD61,K01053,Caprolactam,gnl
+BD61,K01055,Benzoate,pcaD
+BD61,K01055,Aromatic,pcaD
+BD61,K14727,Benzoate,pcaL
+BD61,K14727,Aromatic,pcaL
+BD61,K01061,Toluene,E3.1.1.45
+BD61,K01061,Fluorobenzoate,E3.1.1.45
+BD61,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD61,K01426,Aminobenzoate,E3.5.1.4
+BD61,K01426,Styrene,E3.5.1.4
+BD61,K01428,Atrazine,ureC
+BD61,K01429,Atrazine,ureB
+BD61,K01430,Atrazine,ureA
+BD61,K14048,Atrazine,ureAB
+BD61,K01501,Styrene,E3.5.5.1
+BD61,K01501,Aminobenzoate,E3.5.5.1
+BD61,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD61,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD61,K01607,Benzoate,pcaC
+BD61,K01607,Aromatic,pcaC
+BD61,K01692,Benzoate,paaF
+BD61,K01692,Aminobenzoate,paaF
+BD61,K01692,Caprolactam,paaF
+BD61,K01782,Benzoate,fadJ
+BD61,K01782,Caprolactam,fadJ
+BD61,K01826,Aromatic,hpaF
+BD61,K01857,Aromatic,pcaB
+BD61,K01857,Benzoate,pcaB
+BD61,K03186,Aromatic,ubiX
+BD61,K03186,Aminobenzoate,ubiX
+BD61,K05797,Toluene,pchF
+BD61,K07104,Benzoate,catE
+BD61,K07104,Xylene,catE
+BD61,K07104,Aromatic,catE
+BD61,K07104,Styrene,catE
+BD61,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD61,K10680,Nitrotoluene,nemA
+BD61,K13953,Aromatic,adhP
+BD61,K13953,Naphthalene,adhP
+BD61,K13953,Cytochrome P450,adhP
+BD61,K13953,Cl. alkane and Cl.alkene,adhP
+BD61,K16048,Steroid,hsaB
+BD67,K00001,Naphthalene,E1.1.1.1
+BD67,K00001,Cytochrome P450,E1.1.1.1
+BD67,K00001,Aromatic,E1.1.1.1
+BD67,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD67,K00074,Benzoate,paaH
+BD67,K00121,Aromatic,frmA
+BD67,K00121,Naphthalene,frmA
+BD67,K00121,Cytochrome P450,frmA
+BD67,K00121,Cl. alkane and Cl.alkene,frmA
+BD67,K00128,Cl. alkane and Cl.alkene,ALDH
+BD67,K00148,Cl. alkane and Cl.alkene,fdhA
+BD67,K00252,Benzoate,GCDH
+BD67,K00480,Aromatic,E1.14.13.1
+BD67,K00480,Dioxin,E1.14.13.1
+BD67,K00480,Naphthalene,E1.14.13.1
+BD67,K00480,PAH,E1.14.13.1
+BD67,K14581,Nitrotoluene,nahAa
+BD67,K14581,Aminobenzoate,nahAa
+BD67,K14581,Ethylbenzene,nahAa
+BD67,K14581,Naphthalene,nahAa
+BD67,K14581,PAH,nahAa
+BD67,K14581,Aromatic,nahAa
+BD67,K00529,Aromatic,hcaD
+BD67,K00626,Benzoate,ACAT
+BD67,K00799,Cytochrome P450,GST
+BD67,K01026,Styrene,pct
+BD67,K01053,Aromatic,gnl
+BD67,K01053,Caprolactam,gnl
+BD67,K01426,Aminobenzoate,E3.5.1.4
+BD67,K01426,Styrene,E3.5.1.4
+BD67,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD67,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD67,K01692,Benzoate,paaF
+BD67,K01692,Aminobenzoate,paaF
+BD67,K01692,Caprolactam,paaF
+BD67,K01782,Benzoate,fadJ
+BD67,K01782,Caprolactam,fadJ
+BD67,K01826,Aromatic,hpaF
+BD67,K03186,Aromatic,ubiX
+BD67,K03186,Aminobenzoate,ubiX
+BD67,K07104,Benzoate,catE
+BD67,K07104,Xylene,catE
+BD67,K07104,Aromatic,catE
+BD67,K07104,Styrene,catE
+BD67,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD67,K10680,Nitrotoluene,nemA
+BD67,K16048,Steroid,hsaB
+BD67,K18199,Caprolactam,inhA
+BD69,K00001,Naphthalene,E1.1.1.1
+BD69,K00001,Cytochrome P450,E1.1.1.1
+BD69,K00001,Aromatic,E1.1.1.1
+BD69,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD69,K13954,Naphthalene,yiaY
+BD69,K13954,Aromatic,yiaY
+BD69,K13954,Cl. alkane and Cl.alkene,yiaY
+BD69,K00121,Aromatic,frmA
+BD69,K00121,Naphthalene,frmA
+BD69,K00121,Cytochrome P450,frmA
+BD69,K00121,Cl. alkane and Cl.alkene,frmA
+BD69,K00196,Nitrotoluene,cooF
+BD69,K04117,Benzoate,aliB
+BD69,K00448,PAH,pcaG
+BD69,K00448,Aromatic,pcaG
+BD69,K00448,Benzoate,pcaG
+BD69,K00449,PAH,pcaH
+BD69,K00449,Aromatic,pcaH
+BD69,K00449,Benzoate,pcaH
+BD69,K00480,Aromatic,E1.14.13.1
+BD69,K00480,Dioxin,E1.14.13.1
+BD69,K00480,Naphthalene,E1.14.13.1
+BD69,K00480,PAH,E1.14.13.1
+BD69,K22270,Benzoate,nagX
+BD69,K00481,Aromatic,pobA
+BD69,K00481,Benzoate,pobA
+BD69,K05712,Aromatic,mhpA
+BD69,K00626,Benzoate,ACAT
+BD69,K00632,Benzoate,fadA
+BD69,K00632,Ethylbenzene,fadA
+BD69,K07823,Benzoate,pcaF
+BD69,K00799,Cytochrome P450,GST
+BD69,K01026,Styrene,pct
+BD69,K19709,Aminobenzoate,ydiF
+BD69,K01031,Benzoate,pcaI
+BD69,K01035,Aminobenzoate,atoA
+BD69,K01032,Benzoate,pcaJ
+BD69,K01034,Aminobenzoate,atoD
+BD69,K01055,Benzoate,pcaD
+BD69,K01055,Aromatic,pcaD
+BD69,K01061,Toluene,E3.1.1.45
+BD69,K01061,Fluorobenzoate,E3.1.1.45
+BD69,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD69,K01075,Benzoate,E3.1.2.23
+BD69,K01101,Aminobenzoate,E3.1.3.41
+BD69,K01428,Atrazine,ureC
+BD69,K01429,Atrazine,ureB
+BD69,K01430,Atrazine,ureA
+BD69,K14048,Atrazine,ureAB
+BD69,K01457,Atrazine,atzF
+BD69,K01941,Atrazine,uca
+BD69,K01512,Aminobenzoate,acyP
+BD69,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD69,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD69,K01607,Benzoate,pcaC
+BD69,K01607,Aromatic,pcaC
+BD69,K01612,Aromatic,bsdC
+BD69,K01612,Aminobenzoate,bsdC
+BD69,K01782,Benzoate,fadJ
+BD69,K01782,Caprolactam,fadJ
+BD69,K01825,Caprolactam,fadB
+BD69,K01825,Benzoate,fadB
+BD69,K01800,Styrene,maiA
+BD69,K01821,Benzoate,praC
+BD69,K01821,Dioxin,praC
+BD69,K01821,Xylene,praC
+BD69,K01821,Aromatic,praC
+BD69,K01856,Fluorobenzoate,catB
+BD69,K01856,Benzoate,catB
+BD69,K01856,Aromatic,catB
+BD69,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD69,K01856,Toluene,catB
+BD69,K01857,Aromatic,pcaB
+BD69,K01857,Benzoate,pcaB
+BD69,K03186,Aromatic,ubiX
+BD69,K03186,Aminobenzoate,ubiX
+BD69,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD69,K03381,Toluene,catA
+BD69,K03381,Benzoate,catA
+BD69,K03381,Fluorobenzoate,catA
+BD69,K03381,Aromatic,catA
+BD69,K03464,Aromatic,catC
+BD69,K03464,Benzoate,catC
+BD69,K04072,Cl. alkane and Cl.alkene,adhE
+BD69,K04072,Aromatic,adhE
+BD69,K04072,Naphthalene,adhE
+BD69,K04116,Benzoate,aliA
+BD69,K05549,Fluorobenzoate,benA-xylX
+BD69,K05549,Aromatic,benA-xylX
+BD69,K05549,Xylene,benA-xylX
+BD69,K05549,Benzoate,benA-xylX
+BD69,K05550,Benzoate,benB-xylY
+BD69,K05550,Fluorobenzoate,benB-xylY
+BD69,K05550,Xylene,benB-xylY
+BD69,K05550,Aromatic,benB-xylY
+BD69,K05783,Aromatic,benD-xylL
+BD69,K05783,Benzoate,benD-xylL
+BD69,K05783,Xylene,benD-xylL
+BD69,K05783,Fluorobenzoate,benD-xylL
+BD69,K05784,Xylene,benC-xylZ
+BD69,K05784,Benzoate,benC-xylZ
+BD69,K05784,Aromatic,benC-xylZ
+BD69,K05784,Fluorobenzoate,benC-xylZ
+BD69,K14581,Nitrotoluene,nahAa
+BD69,K14581,Aminobenzoate,nahAa
+BD69,K14581,Ethylbenzene,nahAa
+BD69,K14581,Naphthalene,nahAa
+BD69,K14581,PAH,nahAa
+BD69,K14581,Aromatic,nahAa
+BD69,K16161,Aromatic,mmoC
+BD69,K06281,Nitrotoluene,hyaB
+BD69,K06282,Nitrotoluene,hyaA
+BD69,K10678,Nitrotoluene,nfsA
+BD69,K10679,Nitrotoluene,nfnB
+BD69,K10680,Nitrotoluene,nemA
+BD69,K16878,Furfural,hmfB
+BD69,K14731,Aromatic,mlhB
+BD69,K14731,Caprolactam,mlhB
+BD69,K21759,Aromatic,bsdD
+BD69,K21759,Aminobenzoate,bsdD
+BD72,K00001,Naphthalene,E1.1.1.1
+BD72,K00001,Cytochrome P450,E1.1.1.1
+BD72,K00001,Aromatic,E1.1.1.1
+BD72,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD72,K13953,Aromatic,adhP
+BD72,K13953,Naphthalene,adhP
+BD72,K13953,Cytochrome P450,adhP
+BD72,K13953,Cl. alkane and Cl.alkene,adhP
+BD72,K00074,Benzoate,paaH
+BD72,K00121,Aromatic,frmA
+BD72,K00121,Naphthalene,frmA
+BD72,K00121,Cytochrome P450,frmA
+BD72,K00121,Cl. alkane and Cl.alkene,frmA
+BD72,K00128,Cl. alkane and Cl.alkene,ALDH
+BD72,K00146,Styrene,feaB
+BD72,K00451,Styrene,HGD
+BD72,K00483,Aromatic,hpaB
+BD72,K16901,Aromatic,K16901
+BD72,K00626,Benzoate,ACAT
+BD72,K00632,Benzoate,fadA
+BD72,K00632,Ethylbenzene,fadA
+BD72,K01034,Aminobenzoate,atoD
+BD72,K01035,Aminobenzoate,atoA
+BD72,K01055,Benzoate,pcaD
+BD72,K01055,Aromatic,pcaD
+BD72,K01101,Aminobenzoate,E3.1.3.41
+BD72,K01426,Aminobenzoate,E3.5.1.4
+BD72,K01426,Styrene,E3.5.1.4
+BD72,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD72,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD72,K01607,Benzoate,pcaC
+BD72,K01607,Aromatic,pcaC
+BD72,K01617,Xylene,dmpH
+BD72,K01617,Aromatic,dmpH
+BD72,K01617,Benzoate,dmpH
+BD72,K01617,Dioxin,dmpH
+BD72,K01666,Xylene,mhpE
+BD72,K01666,Dioxin,mhpE
+BD72,K01666,Benzoate,mhpE
+BD72,K01666,Aromatic,mhpE
+BD72,K01821,Benzoate,praC
+BD72,K01821,Dioxin,praC
+BD72,K01821,Xylene,praC
+BD72,K01821,Aromatic,praC
+BD72,K02554,Dioxin,mhpD
+BD72,K02554,Aromatic,mhpD
+BD72,K02554,Xylene,mhpD
+BD72,K02554,Benzoate,mhpD
+BD72,K04072,Cl. alkane and Cl.alkene,adhE
+BD72,K04072,Aromatic,adhE
+BD72,K04072,Naphthalene,adhE
+BD72,K04073,Xylene,mhpF
+BD72,K04073,Benzoate,mhpF
+BD72,K04073,Dioxin,mhpF
+BD72,K04073,Aromatic,mhpF
+BD72,K15765,Toluene,tmoF
+BD72,K15765,Aromatic,tmoF
+BD72,K07104,Benzoate,catE
+BD72,K07104,Xylene,catE
+BD72,K07104,Aromatic,catE
+BD72,K07104,Styrene,catE
+BD72,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD72,K07516,Benzoate,fadN
+BD72,K10217,Aromatic,dmpC
+BD72,K10217,Benzoate,dmpC
+BD72,K10217,Xylene,dmpC
+BD72,K10680,Nitrotoluene,nemA
+BD72,K13767,Benzoate,fadB
+BD72,K14338,Aminobenzoate,cypD_E
+BD72,K16171,Styrene,faaH
+BD73,K00001,Naphthalene,E1.1.1.1
+BD73,K00001,Cytochrome P450,E1.1.1.1
+BD73,K00001,Aromatic,E1.1.1.1
+BD73,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD73,K13953,Aromatic,adhP
+BD73,K13953,Naphthalene,adhP
+BD73,K13953,Cytochrome P450,adhP
+BD73,K13953,Cl. alkane and Cl.alkene,adhP
+BD73,K00074,Benzoate,paaH
+BD73,K00121,Aromatic,frmA
+BD73,K00121,Naphthalene,frmA
+BD73,K00121,Cytochrome P450,frmA
+BD73,K00121,Cl. alkane and Cl.alkene,frmA
+BD73,K00128,Cl. alkane and Cl.alkene,ALDH
+BD73,K00146,Styrene,feaB
+BD73,K00451,Styrene,HGD
+BD73,K00483,Aromatic,hpaB
+BD73,K16901,Aromatic,K16901
+BD73,K00626,Benzoate,ACAT
+BD73,K00632,Benzoate,fadA
+BD73,K00632,Ethylbenzene,fadA
+BD73,K01034,Aminobenzoate,atoD
+BD73,K01035,Aminobenzoate,atoA
+BD73,K01055,Benzoate,pcaD
+BD73,K01055,Aromatic,pcaD
+BD73,K01101,Aminobenzoate,E3.1.3.41
+BD73,K01426,Aminobenzoate,E3.5.1.4
+BD73,K01426,Styrene,E3.5.1.4
+BD73,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD73,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD73,K01607,Benzoate,pcaC
+BD73,K01607,Aromatic,pcaC
+BD73,K01617,Xylene,dmpH
+BD73,K01617,Aromatic,dmpH
+BD73,K01617,Benzoate,dmpH
+BD73,K01617,Dioxin,dmpH
+BD73,K01666,Xylene,mhpE
+BD73,K01666,Dioxin,mhpE
+BD73,K01666,Benzoate,mhpE
+BD73,K01666,Aromatic,mhpE
+BD73,K01821,Benzoate,praC
+BD73,K01821,Dioxin,praC
+BD73,K01821,Xylene,praC
+BD73,K01821,Aromatic,praC
+BD73,K02554,Dioxin,mhpD
+BD73,K02554,Aromatic,mhpD
+BD73,K02554,Xylene,mhpD
+BD73,K02554,Benzoate,mhpD
+BD73,K04072,Cl. alkane and Cl.alkene,adhE
+BD73,K04072,Aromatic,adhE
+BD73,K04072,Naphthalene,adhE
+BD73,K04073,Xylene,mhpF
+BD73,K04073,Benzoate,mhpF
+BD73,K04073,Dioxin,mhpF
+BD73,K04073,Aromatic,mhpF
+BD73,K15765,Toluene,tmoF
+BD73,K15765,Aromatic,tmoF
+BD73,K07104,Benzoate,catE
+BD73,K07104,Xylene,catE
+BD73,K07104,Aromatic,catE
+BD73,K07104,Styrene,catE
+BD73,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD73,K07516,Benzoate,fadN
+BD73,K10217,Aromatic,dmpC
+BD73,K10217,Benzoate,dmpC
+BD73,K10217,Xylene,dmpC
+BD73,K10680,Nitrotoluene,nemA
+BD73,K13767,Benzoate,fadB
+BD73,K14338,Aminobenzoate,cypD_E
+BD73,K16171,Styrene,faaH
+BD77,K00001,Naphthalene,E1.1.1.1
+BD77,K00001,Cytochrome P450,E1.1.1.1
+BD77,K00001,Aromatic,E1.1.1.1
+BD77,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD77,K13953,Aromatic,adhP
+BD77,K13953,Naphthalene,adhP
+BD77,K13953,Cytochrome P450,adhP
+BD77,K13953,Cl. alkane and Cl.alkene,adhP
+BD77,K00074,Benzoate,paaH
+BD77,K00114,Cl. alkane and Cl.alkene,exaA
+BD77,K00121,Aromatic,frmA
+BD77,K00121,Naphthalene,frmA
+BD77,K00121,Cytochrome P450,frmA
+BD77,K00121,Cl. alkane and Cl.alkene,frmA
+BD77,K00128,Cl. alkane and Cl.alkene,ALDH
+BD77,K00151,Aromatic,hpaE
+BD77,K10217,Aromatic,dmpC
+BD77,K10217,Benzoate,dmpC
+BD77,K10217,Xylene,dmpC
+BD77,K00252,Benzoate,GCDH
+BD77,K10680,Nitrotoluene,nemA
+BD77,K01061,Toluene,E3.1.1.45
+BD77,K01061,Fluorobenzoate,E3.1.1.45
+BD77,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD77,K00446,Benzoate,dmpB
+BD77,K00446,Aromatic,dmpB
+BD77,K00446,Xylene,dmpB
+BD77,K00446,Styrene,dmpB
+BD77,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD77,K00451,Styrene,HGD
+BD77,K00626,Benzoate,ACAT
+BD77,K00632,Benzoate,fadA
+BD77,K00632,Ethylbenzene,fadA
+BD77,K00799,Cytochrome P450,GST
+BD77,K01039,Styrene,gctA
+BD77,K01040,Styrene,gctB
+BD77,K01055,Benzoate,pcaD
+BD77,K01055,Aromatic,pcaD
+BD77,K14727,Benzoate,pcaL
+BD77,K14727,Aromatic,pcaL
+BD77,K01075,Benzoate,E3.1.2.23
+BD77,K01426,Aminobenzoate,E3.5.1.4
+BD77,K01426,Styrene,E3.5.1.4
+BD77,K01428,Atrazine,ureC
+BD77,K01429,Atrazine,ureB
+BD77,K01430,Atrazine,ureA
+BD77,K01457,Atrazine,atzF
+BD77,K01501,Styrene,E3.5.5.1
+BD77,K01501,Aminobenzoate,E3.5.5.1
+BD77,K01607,Benzoate,pcaC
+BD77,K01607,Aromatic,pcaC
+BD77,K01617,Xylene,dmpH
+BD77,K01617,Aromatic,dmpH
+BD77,K01617,Benzoate,dmpH
+BD77,K01617,Dioxin,dmpH
+BD77,K01666,Xylene,mhpE
+BD77,K01666,Dioxin,mhpE
+BD77,K01666,Benzoate,mhpE
+BD77,K01666,Aromatic,mhpE
+BD77,K18365,Dioxin,bphI
+BD77,K18365,Xylene,bphI
+BD77,K18365,Aromatic,bphI
+BD77,K18365,Benzoate,bphI
+BD77,K01692,Benzoate,paaF
+BD77,K01692,Aminobenzoate,paaF
+BD77,K01692,Caprolactam,paaF
+BD77,K01782,Benzoate,fadJ
+BD77,K01782,Caprolactam,fadJ
+BD77,K01825,Caprolactam,fadB
+BD77,K01825,Benzoate,fadB
+BD77,K01800,Styrene,maiA
+BD77,K01821,Benzoate,praC
+BD77,K01821,Dioxin,praC
+BD77,K01821,Xylene,praC
+BD77,K01821,Aromatic,praC
+BD77,K01856,Fluorobenzoate,catB
+BD77,K01856,Benzoate,catB
+BD77,K01856,Aromatic,catB
+BD77,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD77,K01856,Toluene,catB
+BD77,K01941,Atrazine,uca
+BD77,K15983,Steroid,kshB
+BD77,K03186,Aromatic,ubiX
+BD77,K03186,Aminobenzoate,ubiX
+BD77,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD77,K03381,Toluene,catA
+BD77,K03381,Benzoate,catA
+BD77,K03381,Fluorobenzoate,catA
+BD77,K03381,Aromatic,catA
+BD77,K03464,Aromatic,catC
+BD77,K03464,Benzoate,catC
+BD77,K05296,Steroid,E1.1.1.51
+BD77,K05549,Fluorobenzoate,benA-xylX
+BD77,K05549,Aromatic,benA-xylX
+BD77,K05549,Xylene,benA-xylX
+BD77,K05549,Benzoate,benA-xylX
+BD77,K05550,Benzoate,benB-xylY
+BD77,K05550,Fluorobenzoate,benB-xylY
+BD77,K05550,Xylene,benB-xylY
+BD77,K05550,Aromatic,benB-xylY
+BD77,K05783,Aromatic,benD-xylL
+BD77,K05783,Benzoate,benD-xylL
+BD77,K05783,Xylene,benD-xylL
+BD77,K05783,Fluorobenzoate,benD-xylL
+BD77,K05784,Xylene,benC-xylZ
+BD77,K05784,Benzoate,benC-xylZ
+BD77,K05784,Aromatic,benC-xylZ
+BD77,K05784,Fluorobenzoate,benC-xylZ
+BD77,K14581,Nitrotoluene,nahAa
+BD77,K14581,Aminobenzoate,nahAa
+BD77,K14581,Ethylbenzene,nahAa
+BD77,K14581,Naphthalene,nahAa
+BD77,K14581,PAH,nahAa
+BD77,K14581,Aromatic,nahAa
+BD77,K16161,Aromatic,mmoC
+BD77,K05898,Steroid,kstD
+BD77,K07516,Benzoate,fadN
+BD77,K07823,Benzoate,pcaF
+BD77,K10216,Benzoate,dmpD
+BD77,K10216,Styrene,dmpD
+BD77,K10216,Xylene,dmpD
+BD77,K10216,Aromatic,dmpD
+BD77,K15982,Steroid,kshA
+BD77,K16047,Steroid,hsaA
+BD77,K16048,Steroid,hsaB
+BD77,K16049,Aromatic,hsaC
+BD77,K16049,Steroid,hsaC
+BD77,K16050,Aromatic,hsaD
+BD77,K16050,Steroid,hsaD
+BD77,K16171,Styrene,faaH
+BD77,K16242,Aromatic,dmpN
+BD77,K16242,Benzoate,dmpN
+BD77,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD77,K16242,Toluene,dmpN
+BD77,K16243,Aromatic,dmpL
+BD77,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD77,K16243,Toluene,dmpL
+BD77,K16243,Benzoate,dmpL
+BD77,K16244,Toluene,dmpM
+BD77,K16244,Benzoate,dmpM
+BD77,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD77,K16244,Aromatic,dmpM
+BD77,K16245,Benzoate,dmpO
+BD77,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD77,K16245,Aromatic,dmpO
+BD77,K16245,Toluene,dmpO
+BD77,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD77,K16246,Toluene,dmpP
+BD77,K16246,Aromatic,dmpP
+BD77,K16246,Benzoate,dmpP
+BD77,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD77,K16249,Aromatic,dmpK
+BD77,K16249,Benzoate,dmpK
+BD77,K16249,Toluene,dmpK
+BD77,K18364,Aromatic,bphH
+BD77,K18364,Dioxin,bphH
+BD77,K18364,Xylene,bphH
+BD77,K18364,Benzoate,bphH
+BD77,K18366,Dioxin,bphJ
+BD77,K18366,Benzoate,bphJ
+BD77,K18366,Xylene,bphJ
+BD77,K18366,Aromatic,bphJ
+BD77,K18687,Steroid,fadD3
+BD81,K00001,Naphthalene,E1.1.1.1
+BD81,K00001,Cytochrome P450,E1.1.1.1
+BD81,K00001,Aromatic,E1.1.1.1
+BD81,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD81,K00074,Benzoate,paaH
+BD81,K00121,Aromatic,frmA
+BD81,K00121,Naphthalene,frmA
+BD81,K00121,Cytochrome P450,frmA
+BD81,K00121,Cl. alkane and Cl.alkene,frmA
+BD81,K00148,Cl. alkane and Cl.alkene,fdhA
+BD81,K00128,Cl. alkane and Cl.alkene,ALDH
+BD81,K00146,Styrene,feaB
+BD81,K21802,Aminobenzoate,vdh
+BD81,K00483,Aromatic,hpaB
+BD81,K00626,Benzoate,ACAT
+BD81,K00632,Benzoate,fadA
+BD81,K00632,Ethylbenzene,fadA
+BD81,K01034,Aminobenzoate,atoD
+BD81,K01035,Aminobenzoate,atoA
+BD81,K01101,Aminobenzoate,E3.1.3.41
+BD81,K01428,Atrazine,ureC
+BD81,K01429,Atrazine,ureB
+BD81,K01430,Atrazine,ureA
+BD81,K01512,Aminobenzoate,acyP
+BD81,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD81,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD81,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD81,K01563,Cl. alkane and Cl.alkene,dhaA
+BD81,K01607,Benzoate,pcaC
+BD81,K01607,Aromatic,pcaC
+BD81,K01612,Aromatic,bsdC
+BD81,K01612,Aminobenzoate,bsdC
+BD81,K16874,Furfural,hmfF
+BD81,K01821,Benzoate,praC
+BD81,K01821,Dioxin,praC
+BD81,K01821,Xylene,praC
+BD81,K01821,Aromatic,praC
+BD81,K03186,Aromatic,ubiX
+BD81,K03186,Aminobenzoate,ubiX
+BD81,K15765,Toluene,tmoF
+BD81,K15765,Aromatic,tmoF
+BD81,K07104,Benzoate,catE
+BD81,K07104,Xylene,catE
+BD81,K07104,Aromatic,catE
+BD81,K07104,Styrene,catE
+BD81,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD81,K07516,Benzoate,fadN
+BD81,K10678,Nitrotoluene,nfsA
+BD81,K13767,Benzoate,fadB
+BD81,K14338,Aminobenzoate,cypD_E
+BD81,K21759,Aromatic,bsdD
+BD81,K21759,Aminobenzoate,bsdD
+BD83,K00001,Naphthalene,E1.1.1.1
+BD83,K00001,Cytochrome P450,E1.1.1.1
+BD83,K00001,Aromatic,E1.1.1.1
+BD83,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD83,K13953,Aromatic,adhP
+BD83,K13953,Naphthalene,adhP
+BD83,K13953,Cytochrome P450,adhP
+BD83,K13953,Cl. alkane and Cl.alkene,adhP
+BD83,K00074,Benzoate,paaH
+BD83,K00114,Cl. alkane and Cl.alkene,exaA
+BD83,K00121,Aromatic,frmA
+BD83,K00121,Naphthalene,frmA
+BD83,K00121,Cytochrome P450,frmA
+BD83,K00121,Cl. alkane and Cl.alkene,frmA
+BD83,K00128,Cl. alkane and Cl.alkene,ALDH
+BD83,K00151,Aromatic,hpaE
+BD83,K10217,Aromatic,dmpC
+BD83,K10217,Benzoate,dmpC
+BD83,K10217,Xylene,dmpC
+BD83,K00252,Benzoate,GCDH
+BD83,K10680,Nitrotoluene,nemA
+BD83,K01061,Toluene,E3.1.1.45
+BD83,K01061,Fluorobenzoate,E3.1.1.45
+BD83,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD83,K00446,Benzoate,dmpB
+BD83,K00446,Aromatic,dmpB
+BD83,K00446,Xylene,dmpB
+BD83,K00446,Styrene,dmpB
+BD83,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD83,K00451,Styrene,HGD
+BD83,K00626,Benzoate,ACAT
+BD83,K00632,Benzoate,fadA
+BD83,K00632,Ethylbenzene,fadA
+BD83,K00799,Cytochrome P450,GST
+BD83,K01039,Styrene,gctA
+BD83,K01040,Styrene,gctB
+BD83,K01055,Benzoate,pcaD
+BD83,K01055,Aromatic,pcaD
+BD83,K14727,Benzoate,pcaL
+BD83,K14727,Aromatic,pcaL
+BD83,K01075,Benzoate,E3.1.2.23
+BD83,K01426,Aminobenzoate,E3.5.1.4
+BD83,K01426,Styrene,E3.5.1.4
+BD83,K01428,Atrazine,ureC
+BD83,K01429,Atrazine,ureB
+BD83,K01430,Atrazine,ureA
+BD83,K01457,Atrazine,atzF
+BD83,K01501,Styrene,E3.5.5.1
+BD83,K01501,Aminobenzoate,E3.5.5.1
+BD83,K01607,Benzoate,pcaC
+BD83,K01607,Aromatic,pcaC
+BD83,K01617,Xylene,dmpH
+BD83,K01617,Aromatic,dmpH
+BD83,K01617,Benzoate,dmpH
+BD83,K01617,Dioxin,dmpH
+BD83,K01666,Xylene,mhpE
+BD83,K01666,Dioxin,mhpE
+BD83,K01666,Benzoate,mhpE
+BD83,K01666,Aromatic,mhpE
+BD83,K18365,Dioxin,bphI
+BD83,K18365,Xylene,bphI
+BD83,K18365,Aromatic,bphI
+BD83,K18365,Benzoate,bphI
+BD83,K01692,Benzoate,paaF
+BD83,K01692,Aminobenzoate,paaF
+BD83,K01692,Caprolactam,paaF
+BD83,K01782,Benzoate,fadJ
+BD83,K01782,Caprolactam,fadJ
+BD83,K01825,Caprolactam,fadB
+BD83,K01825,Benzoate,fadB
+BD83,K01800,Styrene,maiA
+BD83,K01821,Benzoate,praC
+BD83,K01821,Dioxin,praC
+BD83,K01821,Xylene,praC
+BD83,K01821,Aromatic,praC
+BD83,K01856,Fluorobenzoate,catB
+BD83,K01856,Benzoate,catB
+BD83,K01856,Aromatic,catB
+BD83,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD83,K01856,Toluene,catB
+BD83,K01941,Atrazine,uca
+BD83,K15983,Steroid,kshB
+BD83,K03186,Aromatic,ubiX
+BD83,K03186,Aminobenzoate,ubiX
+BD83,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD83,K03381,Toluene,catA
+BD83,K03381,Benzoate,catA
+BD83,K03381,Fluorobenzoate,catA
+BD83,K03381,Aromatic,catA
+BD83,K03464,Aromatic,catC
+BD83,K03464,Benzoate,catC
+BD83,K05296,Steroid,E1.1.1.51
+BD83,K05549,Fluorobenzoate,benA-xylX
+BD83,K05549,Aromatic,benA-xylX
+BD83,K05549,Xylene,benA-xylX
+BD83,K05549,Benzoate,benA-xylX
+BD83,K05550,Benzoate,benB-xylY
+BD83,K05550,Fluorobenzoate,benB-xylY
+BD83,K05550,Xylene,benB-xylY
+BD83,K05550,Aromatic,benB-xylY
+BD83,K05783,Aromatic,benD-xylL
+BD83,K05783,Benzoate,benD-xylL
+BD83,K05783,Xylene,benD-xylL
+BD83,K05783,Fluorobenzoate,benD-xylL
+BD83,K05784,Xylene,benC-xylZ
+BD83,K05784,Benzoate,benC-xylZ
+BD83,K05784,Aromatic,benC-xylZ
+BD83,K05784,Fluorobenzoate,benC-xylZ
+BD83,K14581,Nitrotoluene,nahAa
+BD83,K14581,Aminobenzoate,nahAa
+BD83,K14581,Ethylbenzene,nahAa
+BD83,K14581,Naphthalene,nahAa
+BD83,K14581,PAH,nahAa
+BD83,K14581,Aromatic,nahAa
+BD83,K16161,Aromatic,mmoC
+BD83,K05898,Steroid,kstD
+BD83,K07516,Benzoate,fadN
+BD83,K07823,Benzoate,pcaF
+BD83,K10216,Benzoate,dmpD
+BD83,K10216,Styrene,dmpD
+BD83,K10216,Xylene,dmpD
+BD83,K10216,Aromatic,dmpD
+BD83,K15982,Steroid,kshA
+BD83,K16047,Steroid,hsaA
+BD83,K16048,Steroid,hsaB
+BD83,K16049,Aromatic,hsaC
+BD83,K16049,Steroid,hsaC
+BD83,K16050,Aromatic,hsaD
+BD83,K16050,Steroid,hsaD
+BD83,K16171,Styrene,faaH
+BD83,K16242,Aromatic,dmpN
+BD83,K16242,Benzoate,dmpN
+BD83,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD83,K16242,Toluene,dmpN
+BD83,K16243,Aromatic,dmpL
+BD83,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD83,K16243,Toluene,dmpL
+BD83,K16243,Benzoate,dmpL
+BD83,K16244,Toluene,dmpM
+BD83,K16244,Benzoate,dmpM
+BD83,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD83,K16244,Aromatic,dmpM
+BD83,K16245,Benzoate,dmpO
+BD83,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD83,K16245,Aromatic,dmpO
+BD83,K16245,Toluene,dmpO
+BD83,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD83,K16246,Toluene,dmpP
+BD83,K16246,Aromatic,dmpP
+BD83,K16246,Benzoate,dmpP
+BD83,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD83,K16249,Aromatic,dmpK
+BD83,K16249,Benzoate,dmpK
+BD83,K16249,Toluene,dmpK
+BD83,K18364,Aromatic,bphH
+BD83,K18364,Dioxin,bphH
+BD83,K18364,Xylene,bphH
+BD83,K18364,Benzoate,bphH
+BD83,K18366,Dioxin,bphJ
+BD83,K18366,Benzoate,bphJ
+BD83,K18366,Xylene,bphJ
+BD83,K18366,Aromatic,bphJ
+BD83,K18687,Steroid,fadD3
+BD95,K00001,Naphthalene,E1.1.1.1
+BD95,K00001,Cytochrome P450,E1.1.1.1
+BD95,K00001,Aromatic,E1.1.1.1
+BD95,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD95,K13953,Aromatic,adhP
+BD95,K13953,Naphthalene,adhP
+BD95,K13953,Cytochrome P450,adhP
+BD95,K13953,Cl. alkane and Cl.alkene,adhP
+BD95,K00074,Benzoate,paaH
+BD95,K00114,Cl. alkane and Cl.alkene,exaA
+BD95,K00121,Aromatic,frmA
+BD95,K00121,Naphthalene,frmA
+BD95,K00121,Cytochrome P450,frmA
+BD95,K00121,Cl. alkane and Cl.alkene,frmA
+BD95,K00128,Cl. alkane and Cl.alkene,ALDH
+BD95,K00151,Aromatic,hpaE
+BD95,K10217,Aromatic,dmpC
+BD95,K10217,Benzoate,dmpC
+BD95,K10217,Xylene,dmpC
+BD95,K00252,Benzoate,GCDH
+BD95,K10680,Nitrotoluene,nemA
+BD95,K01061,Toluene,E3.1.1.45
+BD95,K01061,Fluorobenzoate,E3.1.1.45
+BD95,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD95,K00446,Benzoate,dmpB
+BD95,K00446,Aromatic,dmpB
+BD95,K00446,Xylene,dmpB
+BD95,K00446,Styrene,dmpB
+BD95,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD95,K00451,Styrene,HGD
+BD95,K00626,Benzoate,ACAT
+BD95,K00632,Benzoate,fadA
+BD95,K00632,Ethylbenzene,fadA
+BD95,K00799,Cytochrome P450,GST
+BD95,K01039,Styrene,gctA
+BD95,K01040,Styrene,gctB
+BD95,K01055,Benzoate,pcaD
+BD95,K01055,Aromatic,pcaD
+BD95,K14727,Benzoate,pcaL
+BD95,K14727,Aromatic,pcaL
+BD95,K01075,Benzoate,E3.1.2.23
+BD95,K01426,Aminobenzoate,E3.5.1.4
+BD95,K01426,Styrene,E3.5.1.4
+BD95,K01428,Atrazine,ureC
+BD95,K01429,Atrazine,ureB
+BD95,K01430,Atrazine,ureA
+BD95,K01457,Atrazine,atzF
+BD95,K01501,Styrene,E3.5.5.1
+BD95,K01501,Aminobenzoate,E3.5.5.1
+BD95,K01607,Benzoate,pcaC
+BD95,K01607,Aromatic,pcaC
+BD95,K01617,Xylene,dmpH
+BD95,K01617,Aromatic,dmpH
+BD95,K01617,Benzoate,dmpH
+BD95,K01617,Dioxin,dmpH
+BD95,K01666,Xylene,mhpE
+BD95,K01666,Dioxin,mhpE
+BD95,K01666,Benzoate,mhpE
+BD95,K01666,Aromatic,mhpE
+BD95,K18365,Dioxin,bphI
+BD95,K18365,Xylene,bphI
+BD95,K18365,Aromatic,bphI
+BD95,K18365,Benzoate,bphI
+BD95,K01692,Benzoate,paaF
+BD95,K01692,Aminobenzoate,paaF
+BD95,K01692,Caprolactam,paaF
+BD95,K01782,Benzoate,fadJ
+BD95,K01782,Caprolactam,fadJ
+BD95,K01825,Caprolactam,fadB
+BD95,K01825,Benzoate,fadB
+BD95,K01800,Styrene,maiA
+BD95,K01821,Benzoate,praC
+BD95,K01821,Dioxin,praC
+BD95,K01821,Xylene,praC
+BD95,K01821,Aromatic,praC
+BD95,K01856,Fluorobenzoate,catB
+BD95,K01856,Benzoate,catB
+BD95,K01856,Aromatic,catB
+BD95,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD95,K01856,Toluene,catB
+BD95,K01941,Atrazine,uca
+BD95,K15983,Steroid,kshB
+BD95,K03186,Aromatic,ubiX
+BD95,K03186,Aminobenzoate,ubiX
+BD95,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD95,K03381,Toluene,catA
+BD95,K03381,Benzoate,catA
+BD95,K03381,Fluorobenzoate,catA
+BD95,K03381,Aromatic,catA
+BD95,K03464,Aromatic,catC
+BD95,K03464,Benzoate,catC
+BD95,K05296,Steroid,E1.1.1.51
+BD95,K05549,Fluorobenzoate,benA-xylX
+BD95,K05549,Aromatic,benA-xylX
+BD95,K05549,Xylene,benA-xylX
+BD95,K05549,Benzoate,benA-xylX
+BD95,K05550,Benzoate,benB-xylY
+BD95,K05550,Fluorobenzoate,benB-xylY
+BD95,K05550,Xylene,benB-xylY
+BD95,K05550,Aromatic,benB-xylY
+BD95,K05783,Aromatic,benD-xylL
+BD95,K05783,Benzoate,benD-xylL
+BD95,K05783,Xylene,benD-xylL
+BD95,K05783,Fluorobenzoate,benD-xylL
+BD95,K05784,Xylene,benC-xylZ
+BD95,K05784,Benzoate,benC-xylZ
+BD95,K05784,Aromatic,benC-xylZ
+BD95,K05784,Fluorobenzoate,benC-xylZ
+BD95,K14581,Nitrotoluene,nahAa
+BD95,K14581,Aminobenzoate,nahAa
+BD95,K14581,Ethylbenzene,nahAa
+BD95,K14581,Naphthalene,nahAa
+BD95,K14581,PAH,nahAa
+BD95,K14581,Aromatic,nahAa
+BD95,K16161,Aromatic,mmoC
+BD95,K05898,Steroid,kstD
+BD95,K07516,Benzoate,fadN
+BD95,K07823,Benzoate,pcaF
+BD95,K10216,Benzoate,dmpD
+BD95,K10216,Styrene,dmpD
+BD95,K10216,Xylene,dmpD
+BD95,K10216,Aromatic,dmpD
+BD95,K15982,Steroid,kshA
+BD95,K16047,Steroid,hsaA
+BD95,K16048,Steroid,hsaB
+BD95,K16049,Aromatic,hsaC
+BD95,K16049,Steroid,hsaC
+BD95,K16050,Aromatic,hsaD
+BD95,K16050,Steroid,hsaD
+BD95,K16171,Styrene,faaH
+BD95,K16242,Aromatic,dmpN
+BD95,K16242,Benzoate,dmpN
+BD95,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD95,K16242,Toluene,dmpN
+BD95,K16243,Aromatic,dmpL
+BD95,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD95,K16243,Toluene,dmpL
+BD95,K16243,Benzoate,dmpL
+BD95,K16244,Toluene,dmpM
+BD95,K16244,Benzoate,dmpM
+BD95,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD95,K16244,Aromatic,dmpM
+BD95,K16245,Benzoate,dmpO
+BD95,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD95,K16245,Aromatic,dmpO
+BD95,K16245,Toluene,dmpO
+BD95,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD95,K16246,Toluene,dmpP
+BD95,K16246,Aromatic,dmpP
+BD95,K16246,Benzoate,dmpP
+BD95,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD95,K16249,Aromatic,dmpK
+BD95,K16249,Benzoate,dmpK
+BD95,K16249,Toluene,dmpK
+BD95,K18364,Aromatic,bphH
+BD95,K18364,Dioxin,bphH
+BD95,K18364,Xylene,bphH
+BD95,K18364,Benzoate,bphH
+BD95,K18366,Dioxin,bphJ
+BD95,K18366,Benzoate,bphJ
+BD95,K18366,Xylene,bphJ
+BD95,K18366,Aromatic,bphJ
+BD95,K18687,Steroid,fadD3
+BD96,K00001,Naphthalene,E1.1.1.1
+BD96,K00001,Cytochrome P450,E1.1.1.1
+BD96,K00001,Aromatic,E1.1.1.1
+BD96,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD96,K13953,Aromatic,adhP
+BD96,K13953,Naphthalene,adhP
+BD96,K13953,Cytochrome P450,adhP
+BD96,K13953,Cl. alkane and Cl.alkene,adhP
+BD96,K00074,Benzoate,paaH
+BD96,K00114,Cl. alkane and Cl.alkene,exaA
+BD96,K00121,Aromatic,frmA
+BD96,K00121,Naphthalene,frmA
+BD96,K00121,Cytochrome P450,frmA
+BD96,K00121,Cl. alkane and Cl.alkene,frmA
+BD96,K00128,Cl. alkane and Cl.alkene,ALDH
+BD96,K00151,Aromatic,hpaE
+BD96,K10217,Aromatic,dmpC
+BD96,K10217,Benzoate,dmpC
+BD96,K10217,Xylene,dmpC
+BD96,K00252,Benzoate,GCDH
+BD96,K10680,Nitrotoluene,nemA
+BD96,K01061,Toluene,E3.1.1.45
+BD96,K01061,Fluorobenzoate,E3.1.1.45
+BD96,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD96,K00446,Benzoate,dmpB
+BD96,K00446,Aromatic,dmpB
+BD96,K00446,Xylene,dmpB
+BD96,K00446,Styrene,dmpB
+BD96,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD96,K00451,Styrene,HGD
+BD96,K00626,Benzoate,ACAT
+BD96,K00632,Benzoate,fadA
+BD96,K00632,Ethylbenzene,fadA
+BD96,K00799,Cytochrome P450,GST
+BD96,K01039,Styrene,gctA
+BD96,K01040,Styrene,gctB
+BD96,K01055,Benzoate,pcaD
+BD96,K01055,Aromatic,pcaD
+BD96,K14727,Benzoate,pcaL
+BD96,K14727,Aromatic,pcaL
+BD96,K01075,Benzoate,E3.1.2.23
+BD96,K01426,Aminobenzoate,E3.5.1.4
+BD96,K01426,Styrene,E3.5.1.4
+BD96,K01428,Atrazine,ureC
+BD96,K01429,Atrazine,ureB
+BD96,K01430,Atrazine,ureA
+BD96,K01457,Atrazine,atzF
+BD96,K01501,Styrene,E3.5.5.1
+BD96,K01501,Aminobenzoate,E3.5.5.1
+BD96,K01607,Benzoate,pcaC
+BD96,K01607,Aromatic,pcaC
+BD96,K01617,Xylene,dmpH
+BD96,K01617,Aromatic,dmpH
+BD96,K01617,Benzoate,dmpH
+BD96,K01617,Dioxin,dmpH
+BD96,K01666,Xylene,mhpE
+BD96,K01666,Dioxin,mhpE
+BD96,K01666,Benzoate,mhpE
+BD96,K01666,Aromatic,mhpE
+BD96,K18365,Dioxin,bphI
+BD96,K18365,Xylene,bphI
+BD96,K18365,Aromatic,bphI
+BD96,K18365,Benzoate,bphI
+BD96,K01692,Benzoate,paaF
+BD96,K01692,Aminobenzoate,paaF
+BD96,K01692,Caprolactam,paaF
+BD96,K01782,Benzoate,fadJ
+BD96,K01782,Caprolactam,fadJ
+BD96,K01825,Caprolactam,fadB
+BD96,K01825,Benzoate,fadB
+BD96,K01800,Styrene,maiA
+BD96,K01821,Benzoate,praC
+BD96,K01821,Dioxin,praC
+BD96,K01821,Xylene,praC
+BD96,K01821,Aromatic,praC
+BD96,K01856,Fluorobenzoate,catB
+BD96,K01856,Benzoate,catB
+BD96,K01856,Aromatic,catB
+BD96,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD96,K01856,Toluene,catB
+BD96,K01941,Atrazine,uca
+BD96,K15983,Steroid,kshB
+BD96,K03186,Aromatic,ubiX
+BD96,K03186,Aminobenzoate,ubiX
+BD96,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD96,K03381,Toluene,catA
+BD96,K03381,Benzoate,catA
+BD96,K03381,Fluorobenzoate,catA
+BD96,K03381,Aromatic,catA
+BD96,K03464,Aromatic,catC
+BD96,K03464,Benzoate,catC
+BD96,K05296,Steroid,E1.1.1.51
+BD96,K05549,Fluorobenzoate,benA-xylX
+BD96,K05549,Aromatic,benA-xylX
+BD96,K05549,Xylene,benA-xylX
+BD96,K05549,Benzoate,benA-xylX
+BD96,K05550,Benzoate,benB-xylY
+BD96,K05550,Fluorobenzoate,benB-xylY
+BD96,K05550,Xylene,benB-xylY
+BD96,K05550,Aromatic,benB-xylY
+BD96,K05783,Aromatic,benD-xylL
+BD96,K05783,Benzoate,benD-xylL
+BD96,K05783,Xylene,benD-xylL
+BD96,K05783,Fluorobenzoate,benD-xylL
+BD96,K05784,Xylene,benC-xylZ
+BD96,K05784,Benzoate,benC-xylZ
+BD96,K05784,Aromatic,benC-xylZ
+BD96,K05784,Fluorobenzoate,benC-xylZ
+BD96,K14581,Nitrotoluene,nahAa
+BD96,K14581,Aminobenzoate,nahAa
+BD96,K14581,Ethylbenzene,nahAa
+BD96,K14581,Naphthalene,nahAa
+BD96,K14581,PAH,nahAa
+BD96,K14581,Aromatic,nahAa
+BD96,K16161,Aromatic,mmoC
+BD96,K05898,Steroid,kstD
+BD96,K07516,Benzoate,fadN
+BD96,K07823,Benzoate,pcaF
+BD96,K10216,Benzoate,dmpD
+BD96,K10216,Styrene,dmpD
+BD96,K10216,Xylene,dmpD
+BD96,K10216,Aromatic,dmpD
+BD96,K15982,Steroid,kshA
+BD96,K16047,Steroid,hsaA
+BD96,K16048,Steroid,hsaB
+BD96,K16049,Aromatic,hsaC
+BD96,K16049,Steroid,hsaC
+BD96,K16050,Aromatic,hsaD
+BD96,K16050,Steroid,hsaD
+BD96,K16171,Styrene,faaH
+BD96,K16242,Aromatic,dmpN
+BD96,K16242,Benzoate,dmpN
+BD96,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD96,K16242,Toluene,dmpN
+BD96,K16243,Aromatic,dmpL
+BD96,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD96,K16243,Toluene,dmpL
+BD96,K16243,Benzoate,dmpL
+BD96,K16244,Toluene,dmpM
+BD96,K16244,Benzoate,dmpM
+BD96,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD96,K16244,Aromatic,dmpM
+BD96,K16245,Benzoate,dmpO
+BD96,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD96,K16245,Aromatic,dmpO
+BD96,K16245,Toluene,dmpO
+BD96,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD96,K16246,Toluene,dmpP
+BD96,K16246,Aromatic,dmpP
+BD96,K16246,Benzoate,dmpP
+BD96,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD96,K16249,Aromatic,dmpK
+BD96,K16249,Benzoate,dmpK
+BD96,K16249,Toluene,dmpK
+BD96,K18364,Aromatic,bphH
+BD96,K18364,Dioxin,bphH
+BD96,K18364,Xylene,bphH
+BD96,K18364,Benzoate,bphH
+BD96,K18366,Dioxin,bphJ
+BD96,K18366,Benzoate,bphJ
+BD96,K18366,Xylene,bphJ
+BD96,K18366,Aromatic,bphJ
+BD96,K18687,Steroid,fadD3
+BD101,K00001,Naphthalene,E1.1.1.1
+BD101,K00001,Cytochrome P450,E1.1.1.1
+BD101,K00001,Aromatic,E1.1.1.1
+BD101,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD101,K13953,Aromatic,adhP
+BD101,K13953,Naphthalene,adhP
+BD101,K13953,Cytochrome P450,adhP
+BD101,K13953,Cl. alkane and Cl.alkene,adhP
+BD101,K00074,Benzoate,paaH
+BD101,K00114,Cl. alkane and Cl.alkene,exaA
+BD101,K00121,Aromatic,frmA
+BD101,K00121,Naphthalene,frmA
+BD101,K00121,Cytochrome P450,frmA
+BD101,K00121,Cl. alkane and Cl.alkene,frmA
+BD101,K00128,Cl. alkane and Cl.alkene,ALDH
+BD101,K00151,Aromatic,hpaE
+BD101,K10217,Aromatic,dmpC
+BD101,K10217,Benzoate,dmpC
+BD101,K10217,Xylene,dmpC
+BD101,K00252,Benzoate,GCDH
+BD101,K10680,Nitrotoluene,nemA
+BD101,K01061,Toluene,E3.1.1.45
+BD101,K01061,Fluorobenzoate,E3.1.1.45
+BD101,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD101,K00446,Benzoate,dmpB
+BD101,K00446,Aromatic,dmpB
+BD101,K00446,Xylene,dmpB
+BD101,K00446,Styrene,dmpB
+BD101,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD101,K00451,Styrene,HGD
+BD101,K00626,Benzoate,ACAT
+BD101,K00632,Benzoate,fadA
+BD101,K00632,Ethylbenzene,fadA
+BD101,K00799,Cytochrome P450,GST
+BD101,K01039,Styrene,gctA
+BD101,K01040,Styrene,gctB
+BD101,K01055,Benzoate,pcaD
+BD101,K01055,Aromatic,pcaD
+BD101,K14727,Benzoate,pcaL
+BD101,K14727,Aromatic,pcaL
+BD101,K01075,Benzoate,E3.1.2.23
+BD101,K01426,Aminobenzoate,E3.5.1.4
+BD101,K01426,Styrene,E3.5.1.4
+BD101,K01428,Atrazine,ureC
+BD101,K01429,Atrazine,ureB
+BD101,K01430,Atrazine,ureA
+BD101,K01457,Atrazine,atzF
+BD101,K01501,Styrene,E3.5.5.1
+BD101,K01501,Aminobenzoate,E3.5.5.1
+BD101,K01607,Benzoate,pcaC
+BD101,K01607,Aromatic,pcaC
+BD101,K01617,Xylene,dmpH
+BD101,K01617,Aromatic,dmpH
+BD101,K01617,Benzoate,dmpH
+BD101,K01617,Dioxin,dmpH
+BD101,K01666,Xylene,mhpE
+BD101,K01666,Dioxin,mhpE
+BD101,K01666,Benzoate,mhpE
+BD101,K01666,Aromatic,mhpE
+BD101,K18365,Dioxin,bphI
+BD101,K18365,Xylene,bphI
+BD101,K18365,Aromatic,bphI
+BD101,K18365,Benzoate,bphI
+BD101,K01692,Benzoate,paaF
+BD101,K01692,Aminobenzoate,paaF
+BD101,K01692,Caprolactam,paaF
+BD101,K01782,Benzoate,fadJ
+BD101,K01782,Caprolactam,fadJ
+BD101,K01825,Caprolactam,fadB
+BD101,K01825,Benzoate,fadB
+BD101,K01800,Styrene,maiA
+BD101,K01821,Benzoate,praC
+BD101,K01821,Dioxin,praC
+BD101,K01821,Xylene,praC
+BD101,K01821,Aromatic,praC
+BD101,K01856,Fluorobenzoate,catB
+BD101,K01856,Benzoate,catB
+BD101,K01856,Aromatic,catB
+BD101,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD101,K01856,Toluene,catB
+BD101,K01941,Atrazine,uca
+BD101,K15983,Steroid,kshB
+BD101,K03186,Aromatic,ubiX
+BD101,K03186,Aminobenzoate,ubiX
+BD101,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD101,K03381,Toluene,catA
+BD101,K03381,Benzoate,catA
+BD101,K03381,Fluorobenzoate,catA
+BD101,K03381,Aromatic,catA
+BD101,K03464,Aromatic,catC
+BD101,K03464,Benzoate,catC
+BD101,K05296,Steroid,E1.1.1.51
+BD101,K05549,Fluorobenzoate,benA-xylX
+BD101,K05549,Aromatic,benA-xylX
+BD101,K05549,Xylene,benA-xylX
+BD101,K05549,Benzoate,benA-xylX
+BD101,K05550,Benzoate,benB-xylY
+BD101,K05550,Fluorobenzoate,benB-xylY
+BD101,K05550,Xylene,benB-xylY
+BD101,K05550,Aromatic,benB-xylY
+BD101,K05783,Aromatic,benD-xylL
+BD101,K05783,Benzoate,benD-xylL
+BD101,K05783,Xylene,benD-xylL
+BD101,K05783,Fluorobenzoate,benD-xylL
+BD101,K05784,Xylene,benC-xylZ
+BD101,K05784,Benzoate,benC-xylZ
+BD101,K05784,Aromatic,benC-xylZ
+BD101,K05784,Fluorobenzoate,benC-xylZ
+BD101,K14581,Nitrotoluene,nahAa
+BD101,K14581,Aminobenzoate,nahAa
+BD101,K14581,Ethylbenzene,nahAa
+BD101,K14581,Naphthalene,nahAa
+BD101,K14581,PAH,nahAa
+BD101,K14581,Aromatic,nahAa
+BD101,K16161,Aromatic,mmoC
+BD101,K05898,Steroid,kstD
+BD101,K07516,Benzoate,fadN
+BD101,K07823,Benzoate,pcaF
+BD101,K10216,Benzoate,dmpD
+BD101,K10216,Styrene,dmpD
+BD101,K10216,Xylene,dmpD
+BD101,K10216,Aromatic,dmpD
+BD101,K15982,Steroid,kshA
+BD101,K16047,Steroid,hsaA
+BD101,K16048,Steroid,hsaB
+BD101,K16049,Aromatic,hsaC
+BD101,K16049,Steroid,hsaC
+BD101,K16050,Aromatic,hsaD
+BD101,K16050,Steroid,hsaD
+BD101,K16171,Styrene,faaH
+BD101,K16242,Aromatic,dmpN
+BD101,K16242,Benzoate,dmpN
+BD101,K16242,Cl. cyclohexane and Cl. benzene,dmpN
+BD101,K16242,Toluene,dmpN
+BD101,K16243,Aromatic,dmpL
+BD101,K16243,Cl. cyclohexane and Cl. benzene,dmpL
+BD101,K16243,Toluene,dmpL
+BD101,K16243,Benzoate,dmpL
+BD101,K16244,Toluene,dmpM
+BD101,K16244,Benzoate,dmpM
+BD101,K16244,Cl. cyclohexane and Cl. benzene,dmpM
+BD101,K16244,Aromatic,dmpM
+BD101,K16245,Benzoate,dmpO
+BD101,K16245,Cl. cyclohexane and Cl. benzene,dmpO
+BD101,K16245,Aromatic,dmpO
+BD101,K16245,Toluene,dmpO
+BD101,K16246,Cl. cyclohexane and Cl. benzene,dmpP
+BD101,K16246,Toluene,dmpP
+BD101,K16246,Aromatic,dmpP
+BD101,K16246,Benzoate,dmpP
+BD101,K16249,Cl. cyclohexane and Cl. benzene,dmpK
+BD101,K16249,Aromatic,dmpK
+BD101,K16249,Benzoate,dmpK
+BD101,K16249,Toluene,dmpK
+BD101,K18364,Aromatic,bphH
+BD101,K18364,Dioxin,bphH
+BD101,K18364,Xylene,bphH
+BD101,K18364,Benzoate,bphH
+BD101,K18366,Dioxin,bphJ
+BD101,K18366,Benzoate,bphJ
+BD101,K18366,Xylene,bphJ
+BD101,K18366,Aromatic,bphJ
+BD101,K18687,Steroid,fadD3
+BD105,K00001,Naphthalene,E1.1.1.1
+BD105,K00001,Cytochrome P450,E1.1.1.1
+BD105,K00001,Aromatic,E1.1.1.1
+BD105,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD105,K13953,Aromatic,adhP
+BD105,K13953,Naphthalene,adhP
+BD105,K13953,Cytochrome P450,adhP
+BD105,K13953,Cl. alkane and Cl.alkene,adhP
+BD105,K00074,Benzoate,paaH
+BD105,K00114,Cl. alkane and Cl.alkene,exaA
+BD105,K00121,Aromatic,frmA
+BD105,K00121,Naphthalene,frmA
+BD105,K00121,Cytochrome P450,frmA
+BD105,K00121,Cl. alkane and Cl.alkene,frmA
+BD105,K00128,Cl. alkane and Cl.alkene,ALDH
+BD105,K00252,Benzoate,GCDH
+BD105,K10680,Nitrotoluene,nemA
+BD105,K01061,Toluene,E3.1.1.45
+BD105,K01061,Fluorobenzoate,E3.1.1.45
+BD105,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD105,K00451,Styrene,HGD
+BD105,K00626,Benzoate,ACAT
+BD105,K00632,Benzoate,fadA
+BD105,K00632,Ethylbenzene,fadA
+BD105,K00799,Cytochrome P450,GST
+BD105,K01039,Styrene,gctA
+BD105,K01040,Styrene,gctB
+BD105,K01055,Benzoate,pcaD
+BD105,K01055,Aromatic,pcaD
+BD105,K01075,Benzoate,E3.1.2.23
+BD105,K01426,Aminobenzoate,E3.5.1.4
+BD105,K01426,Styrene,E3.5.1.4
+BD105,K01428,Atrazine,ureC
+BD105,K01429,Atrazine,ureB
+BD105,K01430,Atrazine,ureA
+BD105,K01457,Atrazine,atzF
+BD105,K01501,Styrene,E3.5.5.1
+BD105,K01501,Aminobenzoate,E3.5.5.1
+BD105,K01607,Benzoate,pcaC
+BD105,K01607,Aromatic,pcaC
+BD105,K01666,Xylene,mhpE
+BD105,K01666,Dioxin,mhpE
+BD105,K01666,Benzoate,mhpE
+BD105,K01666,Aromatic,mhpE
+BD105,K18365,Dioxin,bphI
+BD105,K18365,Xylene,bphI
+BD105,K18365,Aromatic,bphI
+BD105,K18365,Benzoate,bphI
+BD105,K01692,Benzoate,paaF
+BD105,K01692,Aminobenzoate,paaF
+BD105,K01692,Caprolactam,paaF
+BD105,K01782,Benzoate,fadJ
+BD105,K01782,Caprolactam,fadJ
+BD105,K01825,Caprolactam,fadB
+BD105,K01825,Benzoate,fadB
+BD105,K01800,Styrene,maiA
+BD105,K01856,Fluorobenzoate,catB
+BD105,K01856,Benzoate,catB
+BD105,K01856,Aromatic,catB
+BD105,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD105,K01856,Toluene,catB
+BD105,K01941,Atrazine,uca
+BD105,K15983,Steroid,kshB
+BD105,K03186,Aromatic,ubiX
+BD105,K03186,Aminobenzoate,ubiX
+BD105,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD105,K03381,Toluene,catA
+BD105,K03381,Benzoate,catA
+BD105,K03381,Fluorobenzoate,catA
+BD105,K03381,Aromatic,catA
+BD105,K03464,Aromatic,catC
+BD105,K03464,Benzoate,catC
+BD105,K05296,Steroid,E1.1.1.51
+BD105,K05549,Fluorobenzoate,benA-xylX
+BD105,K05549,Aromatic,benA-xylX
+BD105,K05549,Xylene,benA-xylX
+BD105,K05549,Benzoate,benA-xylX
+BD105,K05550,Benzoate,benB-xylY
+BD105,K05550,Fluorobenzoate,benB-xylY
+BD105,K05550,Xylene,benB-xylY
+BD105,K05550,Aromatic,benB-xylY
+BD105,K05783,Aromatic,benD-xylL
+BD105,K05783,Benzoate,benD-xylL
+BD105,K05783,Xylene,benD-xylL
+BD105,K05783,Fluorobenzoate,benD-xylL
+BD105,K05784,Xylene,benC-xylZ
+BD105,K05784,Benzoate,benC-xylZ
+BD105,K05784,Aromatic,benC-xylZ
+BD105,K05784,Fluorobenzoate,benC-xylZ
+BD105,K14581,Nitrotoluene,nahAa
+BD105,K14581,Aminobenzoate,nahAa
+BD105,K14581,Ethylbenzene,nahAa
+BD105,K14581,Naphthalene,nahAa
+BD105,K14581,PAH,nahAa
+BD105,K14581,Aromatic,nahAa
+BD105,K16161,Aromatic,mmoC
+BD105,K05898,Steroid,kstD
+BD105,K07516,Benzoate,fadN
+BD105,K07823,Benzoate,pcaF
+BD105,K15982,Steroid,kshA
+BD105,K16047,Steroid,hsaA
+BD105,K16048,Steroid,hsaB
+BD105,K16049,Aromatic,hsaC
+BD105,K16049,Steroid,hsaC
+BD105,K16050,Aromatic,hsaD
+BD105,K16050,Steroid,hsaD
+BD105,K16171,Styrene,faaH
+BD105,K18364,Aromatic,bphH
+BD105,K18364,Dioxin,bphH
+BD105,K18364,Xylene,bphH
+BD105,K18364,Benzoate,bphH
+BD105,K18366,Dioxin,bphJ
+BD105,K18366,Benzoate,bphJ
+BD105,K18366,Xylene,bphJ
+BD105,K18366,Aromatic,bphJ
+BD105,K18687,Steroid,fadD3
+BD106,K00001,Naphthalene,E1.1.1.1
+BD106,K00001,Cytochrome P450,E1.1.1.1
+BD106,K00001,Aromatic,E1.1.1.1
+BD106,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD106,K13953,Aromatic,adhP
+BD106,K13953,Naphthalene,adhP
+BD106,K13953,Cytochrome P450,adhP
+BD106,K13953,Cl. alkane and Cl.alkene,adhP
+BD106,K00074,Benzoate,paaH
+BD106,K00114,Cl. alkane and Cl.alkene,exaA
+BD106,K00121,Aromatic,frmA
+BD106,K00121,Naphthalene,frmA
+BD106,K00121,Cytochrome P450,frmA
+BD106,K00121,Cl. alkane and Cl.alkene,frmA
+BD106,K00128,Cl. alkane and Cl.alkene,ALDH
+BD106,K00252,Benzoate,GCDH
+BD106,K10680,Nitrotoluene,nemA
+BD106,K01061,Toluene,E3.1.1.45
+BD106,K01061,Fluorobenzoate,E3.1.1.45
+BD106,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD106,K00451,Styrene,HGD
+BD106,K00626,Benzoate,ACAT
+BD106,K00632,Benzoate,fadA
+BD106,K00632,Ethylbenzene,fadA
+BD106,K00799,Cytochrome P450,GST
+BD106,K01039,Styrene,gctA
+BD106,K01040,Styrene,gctB
+BD106,K01055,Benzoate,pcaD
+BD106,K01055,Aromatic,pcaD
+BD106,K01075,Benzoate,E3.1.2.23
+BD106,K01426,Aminobenzoate,E3.5.1.4
+BD106,K01426,Styrene,E3.5.1.4
+BD106,K01428,Atrazine,ureC
+BD106,K01429,Atrazine,ureB
+BD106,K01430,Atrazine,ureA
+BD106,K01457,Atrazine,atzF
+BD106,K01501,Styrene,E3.5.5.1
+BD106,K01501,Aminobenzoate,E3.5.5.1
+BD106,K01607,Benzoate,pcaC
+BD106,K01607,Aromatic,pcaC
+BD106,K01666,Xylene,mhpE
+BD106,K01666,Dioxin,mhpE
+BD106,K01666,Benzoate,mhpE
+BD106,K01666,Aromatic,mhpE
+BD106,K18365,Dioxin,bphI
+BD106,K18365,Xylene,bphI
+BD106,K18365,Aromatic,bphI
+BD106,K18365,Benzoate,bphI
+BD106,K01692,Benzoate,paaF
+BD106,K01692,Aminobenzoate,paaF
+BD106,K01692,Caprolactam,paaF
+BD106,K01782,Benzoate,fadJ
+BD106,K01782,Caprolactam,fadJ
+BD106,K01825,Caprolactam,fadB
+BD106,K01825,Benzoate,fadB
+BD106,K01800,Styrene,maiA
+BD106,K01856,Fluorobenzoate,catB
+BD106,K01856,Benzoate,catB
+BD106,K01856,Aromatic,catB
+BD106,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD106,K01856,Toluene,catB
+BD106,K01941,Atrazine,uca
+BD106,K15983,Steroid,kshB
+BD106,K03186,Aromatic,ubiX
+BD106,K03186,Aminobenzoate,ubiX
+BD106,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD106,K03381,Toluene,catA
+BD106,K03381,Benzoate,catA
+BD106,K03381,Fluorobenzoate,catA
+BD106,K03381,Aromatic,catA
+BD106,K03464,Aromatic,catC
+BD106,K03464,Benzoate,catC
+BD106,K05296,Steroid,E1.1.1.51
+BD106,K05549,Fluorobenzoate,benA-xylX
+BD106,K05549,Aromatic,benA-xylX
+BD106,K05549,Xylene,benA-xylX
+BD106,K05549,Benzoate,benA-xylX
+BD106,K05550,Benzoate,benB-xylY
+BD106,K05550,Fluorobenzoate,benB-xylY
+BD106,K05550,Xylene,benB-xylY
+BD106,K05550,Aromatic,benB-xylY
+BD106,K05783,Aromatic,benD-xylL
+BD106,K05783,Benzoate,benD-xylL
+BD106,K05783,Xylene,benD-xylL
+BD106,K05783,Fluorobenzoate,benD-xylL
+BD106,K05784,Xylene,benC-xylZ
+BD106,K05784,Benzoate,benC-xylZ
+BD106,K05784,Aromatic,benC-xylZ
+BD106,K05784,Fluorobenzoate,benC-xylZ
+BD106,K14581,Nitrotoluene,nahAa
+BD106,K14581,Aminobenzoate,nahAa
+BD106,K14581,Ethylbenzene,nahAa
+BD106,K14581,Naphthalene,nahAa
+BD106,K14581,PAH,nahAa
+BD106,K14581,Aromatic,nahAa
+BD106,K16161,Aromatic,mmoC
+BD106,K05898,Steroid,kstD
+BD106,K07516,Benzoate,fadN
+BD106,K07823,Benzoate,pcaF
+BD106,K15982,Steroid,kshA
+BD106,K16047,Steroid,hsaA
+BD106,K16048,Steroid,hsaB
+BD106,K16049,Aromatic,hsaC
+BD106,K16049,Steroid,hsaC
+BD106,K16050,Aromatic,hsaD
+BD106,K16050,Steroid,hsaD
+BD106,K16171,Styrene,faaH
+BD106,K18364,Aromatic,bphH
+BD106,K18364,Dioxin,bphH
+BD106,K18364,Xylene,bphH
+BD106,K18364,Benzoate,bphH
+BD106,K18366,Dioxin,bphJ
+BD106,K18366,Benzoate,bphJ
+BD106,K18366,Xylene,bphJ
+BD106,K18366,Aromatic,bphJ
+BD106,K18687,Steroid,fadD3
+BD107,K00001,Naphthalene,E1.1.1.1
+BD107,K00001,Cytochrome P450,E1.1.1.1
+BD107,K00001,Aromatic,E1.1.1.1
+BD107,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD107,K13953,Aromatic,adhP
+BD107,K13953,Naphthalene,adhP
+BD107,K13953,Cytochrome P450,adhP
+BD107,K13953,Cl. alkane and Cl.alkene,adhP
+BD107,K00074,Benzoate,paaH
+BD107,K00114,Cl. alkane and Cl.alkene,exaA
+BD107,K00121,Aromatic,frmA
+BD107,K00121,Naphthalene,frmA
+BD107,K00121,Cytochrome P450,frmA
+BD107,K00121,Cl. alkane and Cl.alkene,frmA
+BD107,K00128,Cl. alkane and Cl.alkene,ALDH
+BD107,K01576,Aminobenzoate,mdlC
+BD107,K00252,Benzoate,GCDH
+BD107,K10680,Nitrotoluene,nemA
+BD107,K01061,Toluene,E3.1.1.45
+BD107,K01061,Fluorobenzoate,E3.1.1.45
+BD107,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD107,K00451,Styrene,HGD
+BD107,K00626,Benzoate,ACAT
+BD107,K00632,Benzoate,fadA
+BD107,K00632,Ethylbenzene,fadA
+BD107,K00799,Cytochrome P450,GST
+BD107,K01039,Styrene,gctA
+BD107,K01040,Styrene,gctB
+BD107,K01055,Benzoate,pcaD
+BD107,K01055,Aromatic,pcaD
+BD107,K14727,Benzoate,pcaL
+BD107,K14727,Aromatic,pcaL
+BD107,K01075,Benzoate,E3.1.2.23
+BD107,K01426,Aminobenzoate,E3.5.1.4
+BD107,K01426,Styrene,E3.5.1.4
+BD107,K01428,Atrazine,ureC
+BD107,K01429,Atrazine,ureB
+BD107,K01430,Atrazine,ureA
+BD107,K01457,Atrazine,atzF
+BD107,K01501,Styrene,E3.5.5.1
+BD107,K01501,Aminobenzoate,E3.5.5.1
+BD107,K01607,Benzoate,pcaC
+BD107,K01607,Aromatic,pcaC
+BD107,K01666,Xylene,mhpE
+BD107,K01666,Dioxin,mhpE
+BD107,K01666,Benzoate,mhpE
+BD107,K01666,Aromatic,mhpE
+BD107,K18365,Dioxin,bphI
+BD107,K18365,Xylene,bphI
+BD107,K18365,Aromatic,bphI
+BD107,K18365,Benzoate,bphI
+BD107,K01692,Benzoate,paaF
+BD107,K01692,Aminobenzoate,paaF
+BD107,K01692,Caprolactam,paaF
+BD107,K01782,Benzoate,fadJ
+BD107,K01782,Caprolactam,fadJ
+BD107,K01825,Caprolactam,fadB
+BD107,K01825,Benzoate,fadB
+BD107,K01800,Styrene,maiA
+BD107,K01856,Fluorobenzoate,catB
+BD107,K01856,Benzoate,catB
+BD107,K01856,Aromatic,catB
+BD107,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD107,K01856,Toluene,catB
+BD107,K01941,Atrazine,uca
+BD107,K15983,Steroid,kshB
+BD107,K03186,Aromatic,ubiX
+BD107,K03186,Aminobenzoate,ubiX
+BD107,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD107,K03381,Toluene,catA
+BD107,K03381,Benzoate,catA
+BD107,K03381,Fluorobenzoate,catA
+BD107,K03381,Aromatic,catA
+BD107,K03464,Aromatic,catC
+BD107,K03464,Benzoate,catC
+BD107,K05296,Steroid,E1.1.1.51
+BD107,K05549,Fluorobenzoate,benA-xylX
+BD107,K05549,Aromatic,benA-xylX
+BD107,K05549,Xylene,benA-xylX
+BD107,K05549,Benzoate,benA-xylX
+BD107,K05550,Benzoate,benB-xylY
+BD107,K05550,Fluorobenzoate,benB-xylY
+BD107,K05550,Xylene,benB-xylY
+BD107,K05550,Aromatic,benB-xylY
+BD107,K05783,Aromatic,benD-xylL
+BD107,K05783,Benzoate,benD-xylL
+BD107,K05783,Xylene,benD-xylL
+BD107,K05783,Fluorobenzoate,benD-xylL
+BD107,K05784,Xylene,benC-xylZ
+BD107,K05784,Benzoate,benC-xylZ
+BD107,K05784,Aromatic,benC-xylZ
+BD107,K05784,Fluorobenzoate,benC-xylZ
+BD107,K14581,Nitrotoluene,nahAa
+BD107,K14581,Aminobenzoate,nahAa
+BD107,K14581,Ethylbenzene,nahAa
+BD107,K14581,Naphthalene,nahAa
+BD107,K14581,PAH,nahAa
+BD107,K14581,Aromatic,nahAa
+BD107,K16161,Aromatic,mmoC
+BD107,K05898,Steroid,kstD
+BD107,K07516,Benzoate,fadN
+BD107,K07823,Benzoate,pcaF
+BD107,K10679,Nitrotoluene,nfnB
+BD107,K15982,Steroid,kshA
+BD107,K16047,Steroid,hsaA
+BD107,K16048,Steroid,hsaB
+BD107,K16049,Aromatic,hsaC
+BD107,K16049,Steroid,hsaC
+BD107,K16050,Aromatic,hsaD
+BD107,K16050,Steroid,hsaD
+BD107,K16171,Styrene,faaH
+BD107,K18364,Aromatic,bphH
+BD107,K18364,Dioxin,bphH
+BD107,K18364,Xylene,bphH
+BD107,K18364,Benzoate,bphH
+BD107,K18366,Dioxin,bphJ
+BD107,K18366,Benzoate,bphJ
+BD107,K18366,Xylene,bphJ
+BD107,K18366,Aromatic,bphJ
+BD107,K18687,Steroid,fadD3
+BD108,K00001,Naphthalene,E1.1.1.1
+BD108,K00001,Cytochrome P450,E1.1.1.1
+BD108,K00001,Aromatic,E1.1.1.1
+BD108,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD108,K13953,Aromatic,adhP
+BD108,K13953,Naphthalene,adhP
+BD108,K13953,Cytochrome P450,adhP
+BD108,K13953,Cl. alkane and Cl.alkene,adhP
+BD108,K00074,Benzoate,paaH
+BD108,K00114,Cl. alkane and Cl.alkene,exaA
+BD108,K00121,Aromatic,frmA
+BD108,K00121,Naphthalene,frmA
+BD108,K00121,Cytochrome P450,frmA
+BD108,K00121,Cl. alkane and Cl.alkene,frmA
+BD108,K00128,Cl. alkane and Cl.alkene,ALDH
+BD108,K01576,Aminobenzoate,mdlC
+BD108,K00252,Benzoate,GCDH
+BD108,K10680,Nitrotoluene,nemA
+BD108,K01061,Toluene,E3.1.1.45
+BD108,K01061,Fluorobenzoate,E3.1.1.45
+BD108,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD108,K00451,Styrene,HGD
+BD108,K00626,Benzoate,ACAT
+BD108,K00632,Benzoate,fadA
+BD108,K00632,Ethylbenzene,fadA
+BD108,K00799,Cytochrome P450,GST
+BD108,K01039,Styrene,gctA
+BD108,K01040,Styrene,gctB
+BD108,K01055,Benzoate,pcaD
+BD108,K01055,Aromatic,pcaD
+BD108,K14727,Benzoate,pcaL
+BD108,K14727,Aromatic,pcaL
+BD108,K01075,Benzoate,E3.1.2.23
+BD108,K01426,Aminobenzoate,E3.5.1.4
+BD108,K01426,Styrene,E3.5.1.4
+BD108,K01428,Atrazine,ureC
+BD108,K01429,Atrazine,ureB
+BD108,K01430,Atrazine,ureA
+BD108,K01457,Atrazine,atzF
+BD108,K01501,Styrene,E3.5.5.1
+BD108,K01501,Aminobenzoate,E3.5.5.1
+BD108,K01607,Benzoate,pcaC
+BD108,K01607,Aromatic,pcaC
+BD108,K01666,Xylene,mhpE
+BD108,K01666,Dioxin,mhpE
+BD108,K01666,Benzoate,mhpE
+BD108,K01666,Aromatic,mhpE
+BD108,K18365,Dioxin,bphI
+BD108,K18365,Xylene,bphI
+BD108,K18365,Aromatic,bphI
+BD108,K18365,Benzoate,bphI
+BD108,K01692,Benzoate,paaF
+BD108,K01692,Aminobenzoate,paaF
+BD108,K01692,Caprolactam,paaF
+BD108,K01782,Benzoate,fadJ
+BD108,K01782,Caprolactam,fadJ
+BD108,K01825,Caprolactam,fadB
+BD108,K01825,Benzoate,fadB
+BD108,K01800,Styrene,maiA
+BD108,K01856,Fluorobenzoate,catB
+BD108,K01856,Benzoate,catB
+BD108,K01856,Aromatic,catB
+BD108,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD108,K01856,Toluene,catB
+BD108,K01941,Atrazine,uca
+BD108,K15983,Steroid,kshB
+BD108,K03186,Aromatic,ubiX
+BD108,K03186,Aminobenzoate,ubiX
+BD108,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD108,K03381,Toluene,catA
+BD108,K03381,Benzoate,catA
+BD108,K03381,Fluorobenzoate,catA
+BD108,K03381,Aromatic,catA
+BD108,K03464,Aromatic,catC
+BD108,K03464,Benzoate,catC
+BD108,K05296,Steroid,E1.1.1.51
+BD108,K05549,Fluorobenzoate,benA-xylX
+BD108,K05549,Aromatic,benA-xylX
+BD108,K05549,Xylene,benA-xylX
+BD108,K05549,Benzoate,benA-xylX
+BD108,K05550,Benzoate,benB-xylY
+BD108,K05550,Fluorobenzoate,benB-xylY
+BD108,K05550,Xylene,benB-xylY
+BD108,K05550,Aromatic,benB-xylY
+BD108,K05783,Aromatic,benD-xylL
+BD108,K05783,Benzoate,benD-xylL
+BD108,K05783,Xylene,benD-xylL
+BD108,K05783,Fluorobenzoate,benD-xylL
+BD108,K05784,Xylene,benC-xylZ
+BD108,K05784,Benzoate,benC-xylZ
+BD108,K05784,Aromatic,benC-xylZ
+BD108,K05784,Fluorobenzoate,benC-xylZ
+BD108,K14581,Nitrotoluene,nahAa
+BD108,K14581,Aminobenzoate,nahAa
+BD108,K14581,Ethylbenzene,nahAa
+BD108,K14581,Naphthalene,nahAa
+BD108,K14581,PAH,nahAa
+BD108,K14581,Aromatic,nahAa
+BD108,K16161,Aromatic,mmoC
+BD108,K05898,Steroid,kstD
+BD108,K07516,Benzoate,fadN
+BD108,K07823,Benzoate,pcaF
+BD108,K10679,Nitrotoluene,nfnB
+BD108,K15982,Steroid,kshA
+BD108,K16047,Steroid,hsaA
+BD108,K16048,Steroid,hsaB
+BD108,K16049,Aromatic,hsaC
+BD108,K16049,Steroid,hsaC
+BD108,K16050,Aromatic,hsaD
+BD108,K16050,Steroid,hsaD
+BD108,K16171,Styrene,faaH
+BD108,K18364,Aromatic,bphH
+BD108,K18364,Dioxin,bphH
+BD108,K18364,Xylene,bphH
+BD108,K18364,Benzoate,bphH
+BD108,K18366,Dioxin,bphJ
+BD108,K18366,Benzoate,bphJ
+BD108,K18366,Xylene,bphJ
+BD108,K18366,Aromatic,bphJ
+BD108,K18687,Steroid,fadD3
+BD117,K00001,Naphthalene,E1.1.1.1
+BD117,K00001,Cytochrome P450,E1.1.1.1
+BD117,K00001,Aromatic,E1.1.1.1
+BD117,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD117,K00074,Benzoate,paaH
+BD117,K00128,Cl. alkane and Cl.alkene,ALDH
+BD117,K00148,Cl. alkane and Cl.alkene,fdhA
+BD117,K00151,Aromatic,hpaE
+BD117,K00252,Benzoate,GCDH
+BD117,K00529,Aromatic,hcaD
+BD117,K22363,Cl. alkane and Cl.alkene,etnE
+BD117,K00626,Benzoate,ACAT
+BD117,K00632,Benzoate,fadA
+BD117,K00632,Ethylbenzene,fadA
+BD117,K01061,Toluene,E3.1.1.45
+BD117,K01061,Fluorobenzoate,E3.1.1.45
+BD117,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD117,K01426,Aminobenzoate,E3.5.1.4
+BD117,K01426,Styrene,E3.5.1.4
+BD117,K01428,Atrazine,ureC
+BD117,K01429,Atrazine,ureB
+BD117,K14048,Atrazine,ureAB
+BD117,K01430,Atrazine,ureA
+BD117,K01692,Benzoate,paaF
+BD117,K01692,Aminobenzoate,paaF
+BD117,K01692,Caprolactam,paaF
+BD117,K01782,Benzoate,fadJ
+BD117,K01782,Caprolactam,fadJ
+BD117,K03380,Toluene,E1.14.13.7
+BD117,K03380,Aminobenzoate,E1.14.13.7
+BD117,K05710,Aromatic,hcaC
+BD117,K10215,Aminobenzoate,ethA
+BD117,K10680,Nitrotoluene,nemA
+BD117,K13953,Aromatic,adhP
+BD117,K13953,Naphthalene,adhP
+BD117,K13953,Cytochrome P450,adhP
+BD117,K13953,Cl. alkane and Cl.alkene,adhP
+BD117,K16045,Steroid,hsd
+BD140,K00001,Naphthalene,E1.1.1.1
+BD140,K00001,Cytochrome P450,E1.1.1.1
+BD140,K00001,Aromatic,E1.1.1.1
+BD140,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD140,K00074,Benzoate,paaH
+BD140,K00121,Aromatic,frmA
+BD140,K00121,Naphthalene,frmA
+BD140,K00121,Cytochrome P450,frmA
+BD140,K00121,Cl. alkane and Cl.alkene,frmA
+BD140,K00128,Cl. alkane and Cl.alkene,ALDH
+BD140,K10217,Aromatic,dmpC
+BD140,K10217,Benzoate,dmpC
+BD140,K10217,Xylene,dmpC
+BD140,K21802,Aminobenzoate,vdh
+BD140,K00451,Styrene,HGD
+BD140,K00483,Aromatic,hpaB
+BD140,K16901,Aromatic,K16901
+BD140,K00626,Benzoate,ACAT
+BD140,K00632,Benzoate,fadA
+BD140,K00632,Ethylbenzene,fadA
+BD140,K01035,Aminobenzoate,atoA
+BD140,K01034,Aminobenzoate,atoD
+BD140,K01101,Aminobenzoate,E3.1.3.41
+BD140,K01426,Aminobenzoate,E3.5.1.4
+BD140,K01426,Styrene,E3.5.1.4
+BD140,K01501,Styrene,E3.5.5.1
+BD140,K01501,Aminobenzoate,E3.5.5.1
+BD140,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD140,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD140,K01617,Xylene,dmpH
+BD140,K01617,Aromatic,dmpH
+BD140,K01617,Benzoate,dmpH
+BD140,K01617,Dioxin,dmpH
+BD140,K01666,Xylene,mhpE
+BD140,K01666,Dioxin,mhpE
+BD140,K01666,Benzoate,mhpE
+BD140,K01666,Aromatic,mhpE
+BD140,K01692,Benzoate,paaF
+BD140,K01692,Aminobenzoate,paaF
+BD140,K01692,Caprolactam,paaF
+BD140,K02554,Dioxin,mhpD
+BD140,K02554,Aromatic,mhpD
+BD140,K02554,Xylene,mhpD
+BD140,K02554,Benzoate,mhpD
+BD140,K03186,Aromatic,ubiX
+BD140,K03186,Aminobenzoate,ubiX
+BD140,K04073,Xylene,mhpF
+BD140,K04073,Benzoate,mhpF
+BD140,K04073,Dioxin,mhpF
+BD140,K04073,Aromatic,mhpF
+BD140,K15765,Toluene,tmoF
+BD140,K15765,Aromatic,tmoF
+BD140,K05921,Aromatic,hpaG
+BD140,K07516,Benzoate,fadN
+BD140,K13767,Benzoate,fadB
+BD140,K13953,Aromatic,adhP
+BD140,K13953,Naphthalene,adhP
+BD140,K13953,Cytochrome P450,adhP
+BD140,K13953,Cl. alkane and Cl.alkene,adhP
+BD140,K16171,Styrene,faaH
+BD139,K00001,Naphthalene,E1.1.1.1
+BD139,K00001,Cytochrome P450,E1.1.1.1
+BD139,K00001,Aromatic,E1.1.1.1
+BD139,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD139,K00128,Cl. alkane and Cl.alkene,ALDH
+BD139,K01426,Aminobenzoate,E3.5.1.4
+BD139,K01426,Styrene,E3.5.1.4
+BD139,K00626,Benzoate,ACAT
+BD139,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD139,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD139,K00483,Aromatic,hpaB
+BD139,K00074,Benzoate,paaH
+BD139,K00121,Aromatic,frmA
+BD139,K00121,Naphthalene,frmA
+BD139,K00121,Cytochrome P450,frmA
+BD139,K00121,Cl. alkane and Cl.alkene,frmA
+BD139,K00451,Styrene,HGD
+BD139,K00632,Benzoate,fadA
+BD139,K00632,Ethylbenzene,fadA
+BD139,K01034,Aminobenzoate,atoD
+BD139,K01035,Aminobenzoate,atoA
+BD139,K01101,Aminobenzoate,E3.1.3.41
+BD139,K01501,Styrene,E3.5.5.1
+BD139,K01501,Aminobenzoate,E3.5.5.1
+BD139,K01617,Xylene,dmpH
+BD139,K01617,Aromatic,dmpH
+BD139,K01617,Benzoate,dmpH
+BD139,K01617,Dioxin,dmpH
+BD139,K01666,Xylene,mhpE
+BD139,K01666,Dioxin,mhpE
+BD139,K01666,Benzoate,mhpE
+BD139,K01666,Aromatic,mhpE
+BD139,K01692,Benzoate,paaF
+BD139,K01692,Aminobenzoate,paaF
+BD139,K01692,Caprolactam,paaF
+BD139,K02554,Dioxin,mhpD
+BD139,K02554,Aromatic,mhpD
+BD139,K02554,Xylene,mhpD
+BD139,K02554,Benzoate,mhpD
+BD139,K03186,Aromatic,ubiX
+BD139,K03186,Aminobenzoate,ubiX
+BD139,K04073,Xylene,mhpF
+BD139,K04073,Benzoate,mhpF
+BD139,K04073,Dioxin,mhpF
+BD139,K04073,Aromatic,mhpF
+BD139,K05921,Aromatic,hpaG
+BD139,K07516,Benzoate,fadN
+BD139,K13767,Benzoate,fadB
+BD139,K13953,Aromatic,adhP
+BD139,K13953,Naphthalene,adhP
+BD139,K13953,Cytochrome P450,adhP
+BD139,K13953,Cl. alkane and Cl.alkene,adhP
+BD139,K16171,Styrene,faaH
+BD139,K10217,Aromatic,dmpC
+BD139,K10217,Benzoate,dmpC
+BD139,K10217,Xylene,dmpC
+BD139,K15765,Toluene,tmoF
+BD139,K15765,Aromatic,tmoF
+BD139,K16901,Aromatic,K16901
+BD139,K21802,Aminobenzoate,vdh
+BD141,K00001,Naphthalene,E1.1.1.1
+BD141,K00001,Cytochrome P450,E1.1.1.1
+BD141,K00001,Aromatic,E1.1.1.1
+BD141,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD141,K00074,Benzoate,paaH
+BD141,K00121,Aromatic,frmA
+BD141,K00121,Naphthalene,frmA
+BD141,K00121,Cytochrome P450,frmA
+BD141,K00121,Cl. alkane and Cl.alkene,frmA
+BD141,K00128,Cl. alkane and Cl.alkene,ALDH
+BD141,K10217,Aromatic,dmpC
+BD141,K10217,Benzoate,dmpC
+BD141,K10217,Xylene,dmpC
+BD141,K21802,Aminobenzoate,vdh
+BD141,K00451,Styrene,HGD
+BD141,K00483,Aromatic,hpaB
+BD141,K16901,Aromatic,K16901
+BD141,K00626,Benzoate,ACAT
+BD141,K00632,Benzoate,fadA
+BD141,K00632,Ethylbenzene,fadA
+BD141,K01035,Aminobenzoate,atoA
+BD141,K01034,Aminobenzoate,atoD
+BD141,K01101,Aminobenzoate,E3.1.3.41
+BD141,K01426,Aminobenzoate,E3.5.1.4
+BD141,K01426,Styrene,E3.5.1.4
+BD141,K01501,Styrene,E3.5.5.1
+BD141,K01501,Aminobenzoate,E3.5.5.1
+BD141,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD141,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD141,K01617,Xylene,dmpH
+BD141,K01617,Aromatic,dmpH
+BD141,K01617,Benzoate,dmpH
+BD141,K01617,Dioxin,dmpH
+BD141,K01666,Xylene,mhpE
+BD141,K01666,Dioxin,mhpE
+BD141,K01666,Benzoate,mhpE
+BD141,K01666,Aromatic,mhpE
+BD141,K01692,Benzoate,paaF
+BD141,K01692,Aminobenzoate,paaF
+BD141,K01692,Caprolactam,paaF
+BD141,K02554,Dioxin,mhpD
+BD141,K02554,Aromatic,mhpD
+BD141,K02554,Xylene,mhpD
+BD141,K02554,Benzoate,mhpD
+BD141,K03186,Aromatic,ubiX
+BD141,K03186,Aminobenzoate,ubiX
+BD141,K04073,Xylene,mhpF
+BD141,K04073,Benzoate,mhpF
+BD141,K04073,Dioxin,mhpF
+BD141,K04073,Aromatic,mhpF
+BD141,K15765,Toluene,tmoF
+BD141,K15765,Aromatic,tmoF
+BD141,K05921,Aromatic,hpaG
+BD141,K07516,Benzoate,fadN
+BD141,K13767,Benzoate,fadB
+BD141,K13953,Aromatic,adhP
+BD141,K13953,Naphthalene,adhP
+BD141,K13953,Cytochrome P450,adhP
+BD141,K13953,Cl. alkane and Cl.alkene,adhP
+BD141,K16171,Styrene,faaH
+BD143,K00001,Naphthalene,E1.1.1.1
+BD143,K00001,Cytochrome P450,E1.1.1.1
+BD143,K00001,Aromatic,E1.1.1.1
+BD143,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD143,K00055,Xylene,E1.1.1.90
+BD143,K00055,Toluene,E1.1.1.90
+BD143,K00055,Aromatic,E1.1.1.90
+BD143,K00074,Benzoate,paaH
+BD143,K00121,Aromatic,frmA
+BD143,K00121,Naphthalene,frmA
+BD143,K00121,Cytochrome P450,frmA
+BD143,K00121,Cl. alkane and Cl.alkene,frmA
+BD143,K00128,Cl. alkane and Cl.alkene,ALDH
+BD143,K00146,Styrene,feaB
+BD143,K00148,Cl. alkane and Cl.alkene,fdhA
+BD143,K00626,Benzoate,ACAT
+BD143,K00632,Benzoate,fadA
+BD143,K00632,Ethylbenzene,fadA
+BD143,K01034,Aminobenzoate,atoD
+BD143,K01035,Aminobenzoate,atoA
+BD143,K01101,Aminobenzoate,E3.1.3.41
+BD143,K01426,Aminobenzoate,E3.5.1.4
+BD143,K01426,Styrene,E3.5.1.4
+BD143,K01512,Aminobenzoate,acyP
+BD143,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD143,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD143,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD143,K01563,Cl. alkane and Cl.alkene,dhaA
+BD143,K01607,Benzoate,pcaC
+BD143,K01607,Aromatic,pcaC
+BD143,K01821,Benzoate,praC
+BD143,K01821,Dioxin,praC
+BD143,K01821,Xylene,praC
+BD143,K01821,Aromatic,praC
+BD143,K15765,Toluene,tmoF
+BD143,K15765,Aromatic,tmoF
+BD143,K07104,Benzoate,catE
+BD143,K07104,Xylene,catE
+BD143,K07104,Aromatic,catE
+BD143,K07104,Styrene,catE
+BD143,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD143,K07516,Benzoate,fadN
+BD143,K10218,Benzoate,ligK
+BD143,K13767,Benzoate,fadB
+BD143,K13954,Naphthalene,yiaY
+BD143,K13954,Aromatic,yiaY
+BD143,K13954,Cl. alkane and Cl.alkene,yiaY
+BD143,K14338,Aminobenzoate,cypD_E
+BD145,K00074,Benzoate,paaH
+BD145,K04108,Aminobenzoate,hcrA
+BD145,K04108,Aromatic,hcrA
+BD145,K04108,Benzoate,hcrA
+BD145,K00121,Aromatic,frmA
+BD145,K00121,Naphthalene,frmA
+BD145,K00121,Cytochrome P450,frmA
+BD145,K00121,Cl. alkane and Cl.alkene,frmA
+BD145,K00128,Cl. alkane and Cl.alkene,ALDH
+BD145,K00151,Aromatic,hpaE
+BD145,K10217,Aromatic,dmpC
+BD145,K10217,Benzoate,dmpC
+BD145,K10217,Xylene,dmpC
+BD145,K00252,Benzoate,GCDH
+BD145,K00448,PAH,pcaG
+BD145,K00448,Aromatic,pcaG
+BD145,K00448,Benzoate,pcaG
+BD145,K00449,PAH,pcaH
+BD145,K00449,Aromatic,pcaH
+BD145,K00449,Benzoate,pcaH
+BD145,K00451,Styrene,HGD
+BD145,K14748,Ethylbenzene,etbAa
+BD145,K14748,Aromatic,etbAa
+BD145,K00481,Aromatic,pobA
+BD145,K00481,Benzoate,pobA
+BD145,K00529,Aromatic,hcaD
+BD145,K00626,Benzoate,ACAT
+BD145,K00632,Benzoate,fadA
+BD145,K00632,Ethylbenzene,fadA
+BD145,K07823,Benzoate,pcaF
+BD145,K16876,Furfural,hmfD
+BD145,K00799,Cytochrome P450,GST
+BD145,K01034,Aminobenzoate,atoD
+BD145,K01035,Aminobenzoate,atoA
+BD145,K01053,Aromatic,gnl
+BD145,K01053,Caprolactam,gnl
+BD145,K01055,Benzoate,pcaD
+BD145,K01055,Aromatic,pcaD
+BD145,K01061,Toluene,E3.1.1.45
+BD145,K01061,Fluorobenzoate,E3.1.1.45
+BD145,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD145,K01426,Aminobenzoate,E3.5.1.4
+BD145,K01426,Styrene,E3.5.1.4
+BD145,K01428,Atrazine,ureC
+BD145,K01429,Atrazine,ureB
+BD145,K01430,Atrazine,ureA
+BD145,K01457,Atrazine,atzF
+BD145,K01501,Styrene,E3.5.5.1
+BD145,K01501,Aminobenzoate,E3.5.5.1
+BD145,K01502,Styrene,E3.5.5.7
+BD145,K01512,Aminobenzoate,acyP
+BD145,K01555,Styrene,FAH
+BD145,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD145,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD145,K01561,Cl. cyclohexane and Cl. benzene,dehH
+BD145,K01561,Cl. alkane and Cl.alkene,dehH
+BD145,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD145,K01563,Cl. alkane and Cl.alkene,dhaA
+BD145,K01576,Aminobenzoate,mdlC
+BD145,K01607,Benzoate,pcaC
+BD145,K01607,Aromatic,pcaC
+BD145,K01666,Xylene,mhpE
+BD145,K01666,Dioxin,mhpE
+BD145,K01666,Benzoate,mhpE
+BD145,K01666,Aromatic,mhpE
+BD145,K18365,Dioxin,bphI
+BD145,K18365,Xylene,bphI
+BD145,K18365,Aromatic,bphI
+BD145,K18365,Benzoate,bphI
+BD145,K01692,Benzoate,paaF
+BD145,K01692,Aminobenzoate,paaF
+BD145,K01692,Caprolactam,paaF
+BD145,K01721,Styrene,nthA
+BD145,K01721,Fluorobenzoate,nthA
+BD145,K01721,Aminobenzoate,nthA
+BD145,K01821,Benzoate,praC
+BD145,K01821,Dioxin,praC
+BD145,K01821,Xylene,praC
+BD145,K01821,Aromatic,praC
+BD145,K01856,Fluorobenzoate,catB
+BD145,K01856,Benzoate,catB
+BD145,K01856,Aromatic,catB
+BD145,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD145,K01856,Toluene,catB
+BD145,K01857,Aromatic,pcaB
+BD145,K01857,Benzoate,pcaB
+BD145,K02554,Dioxin,mhpD
+BD145,K02554,Aromatic,mhpD
+BD145,K02554,Xylene,mhpD
+BD145,K02554,Benzoate,mhpD
+BD145,K03186,Aromatic,ubiX
+BD145,K03186,Aminobenzoate,ubiX
+BD145,K04073,Xylene,mhpF
+BD145,K04073,Benzoate,mhpF
+BD145,K04073,Dioxin,mhpF
+BD145,K04073,Aromatic,mhpF
+BD145,K04116,Benzoate,aliA
+BD145,K06446,Caprolactam,DCAA
+BD145,K07516,Benzoate,fadN
+BD145,K10216,Benzoate,dmpD
+BD145,K10216,Styrene,dmpD
+BD145,K10216,Xylene,dmpD
+BD145,K10216,Aromatic,dmpD
+BD145,K10621,Benzoate,cmtC
+BD145,K10621,Xylene,cmtC
+BD145,K10621,Aromatic,cmtC
+BD145,K10622,Benzoate,cmtD
+BD145,K10622,Aromatic,cmtD
+BD145,K10622,Xylene,cmtD
+BD145,K10680,Nitrotoluene,nemA
+BD145,K14519,Caprolactam,aldH
+BD145,K14519,Aromatic,aldH
+BD145,K13953,Aromatic,adhP
+BD145,K13953,Naphthalene,adhP
+BD145,K13953,Cytochrome P450,adhP
+BD145,K13953,Cl. alkane and Cl.alkene,adhP
+BD145,K14520,Bisphenol,hapE
+BD145,K14578,Ethylbenzene,nahAb
+BD145,K14578,Aminobenzoate,nahAb
+BD145,K14578,Nitrotoluene,nahAb
+BD145,K14578,PAH,nahAb
+BD145,K14578,Aromatic,nahAb
+BD145,K14578,Naphthalene,nahAb
+BD145,K14749,Ethylbenzene,etbAb
+BD145,K14749,Aromatic,etbAb
+BD145,K16171,Styrene,faaH
+BD145,K16319,Aminobenzoate,andAc
+BD145,K18242,Naphthalene,nagG
+BD145,K16320,Aminobenzoate,andAd
+BD145,K18243,Naphthalene,nagH
+BD145,K18199,Caprolactam,inhA
+BD145,K20807,Fluorobenzoate,nthB
+BD145,K20807,Aminobenzoate,nthB
+BD145,K20807,Styrene,nthB
+BD147,K00001,Naphthalene,E1.1.1.1
+BD147,K00001,Cytochrome P450,E1.1.1.1
+BD147,K00001,Aromatic,E1.1.1.1
+BD147,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD147,K01026,Styrene,pct
+BD147,K01512,Aminobenzoate,acyP
+BD147,K01607,Benzoate,pcaC
+BD147,K01607,Aromatic,pcaC
+BD147,K04072,Cl. alkane and Cl.alkene,adhE
+BD147,K04072,Aromatic,adhE
+BD147,K04072,Naphthalene,adhE
+BD147,K05710,Aromatic,hcaC
+BD147,K06446,Caprolactam,DCAA
+BD147,K07104,Benzoate,catE
+BD147,K07104,Xylene,catE
+BD147,K07104,Aromatic,catE
+BD147,K07104,Styrene,catE
+BD147,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD149,K00001,Naphthalene,E1.1.1.1
+BD149,K00001,Cytochrome P450,E1.1.1.1
+BD149,K00001,Aromatic,E1.1.1.1
+BD149,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD149,K00055,Xylene,E1.1.1.90
+BD149,K00055,Toluene,E1.1.1.90
+BD149,K00055,Aromatic,E1.1.1.90
+BD149,K00074,Benzoate,paaH
+BD149,K00121,Aromatic,frmA
+BD149,K00121,Naphthalene,frmA
+BD149,K00121,Cytochrome P450,frmA
+BD149,K00121,Cl. alkane and Cl.alkene,frmA
+BD149,K00128,Cl. alkane and Cl.alkene,ALDH
+BD149,K00146,Styrene,feaB
+BD149,K00148,Cl. alkane and Cl.alkene,fdhA
+BD149,K00626,Benzoate,ACAT
+BD149,K00632,Benzoate,fadA
+BD149,K00632,Ethylbenzene,fadA
+BD149,K01034,Aminobenzoate,atoD
+BD149,K01035,Aminobenzoate,atoA
+BD149,K01101,Aminobenzoate,E3.1.3.41
+BD149,K01426,Aminobenzoate,E3.5.1.4
+BD149,K01426,Styrene,E3.5.1.4
+BD149,K01512,Aminobenzoate,acyP
+BD149,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD149,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD149,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD149,K01563,Cl. alkane and Cl.alkene,dhaA
+BD149,K01607,Benzoate,pcaC
+BD149,K01607,Aromatic,pcaC
+BD149,K01821,Benzoate,praC
+BD149,K01821,Dioxin,praC
+BD149,K01821,Xylene,praC
+BD149,K01821,Aromatic,praC
+BD149,K15765,Toluene,tmoF
+BD149,K15765,Aromatic,tmoF
+BD149,K07104,Benzoate,catE
+BD149,K07104,Xylene,catE
+BD149,K07104,Aromatic,catE
+BD149,K07104,Styrene,catE
+BD149,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD149,K07516,Benzoate,fadN
+BD149,K10218,Benzoate,ligK
+BD149,K13767,Benzoate,fadB
+BD149,K13954,Naphthalene,yiaY
+BD149,K13954,Aromatic,yiaY
+BD149,K13954,Cl. alkane and Cl.alkene,yiaY
+BD149,K14338,Aminobenzoate,cypD_E
+BD151,K00001,Naphthalene,E1.1.1.1
+BD151,K00001,Cytochrome P450,E1.1.1.1
+BD151,K00001,Aromatic,E1.1.1.1
+BD151,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD151,K00074,Benzoate,paaH
+BD151,K00121,Aromatic,frmA
+BD151,K00121,Naphthalene,frmA
+BD151,K00121,Cytochrome P450,frmA
+BD151,K00121,Cl. alkane and Cl.alkene,frmA
+BD151,K00128,Cl. alkane and Cl.alkene,ALDH
+BD151,K00451,Styrene,HGD
+BD151,K00483,Aromatic,hpaB
+BD151,K00626,Benzoate,ACAT
+BD151,K00632,Benzoate,fadA
+BD151,K00632,Ethylbenzene,fadA
+BD151,K01034,Aminobenzoate,atoD
+BD151,K01035,Aminobenzoate,atoA
+BD151,K01101,Aminobenzoate,E3.1.3.41
+BD151,K01426,Aminobenzoate,E3.5.1.4
+BD151,K01426,Styrene,E3.5.1.4
+BD151,K01512,Aminobenzoate,acyP
+BD151,K01692,Benzoate,paaF
+BD151,K01692,Aminobenzoate,paaF
+BD151,K01692,Caprolactam,paaF
+BD151,K01821,Benzoate,praC
+BD151,K01821,Dioxin,praC
+BD151,K01821,Xylene,praC
+BD151,K01821,Aromatic,praC
+BD151,K15765,Toluene,tmoF
+BD151,K15765,Aromatic,tmoF
+BD151,K07104,Benzoate,catE
+BD151,K07104,Xylene,catE
+BD151,K07104,Aromatic,catE
+BD151,K07104,Styrene,catE
+BD151,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD151,K07516,Benzoate,fadN
+BD151,K10678,Nitrotoluene,nfsA
+BD151,K13767,Benzoate,fadB
+BD151,K16171,Styrene,faaH
+BD152,K00001,Naphthalene,E1.1.1.1
+BD152,K00001,Cytochrome P450,E1.1.1.1
+BD152,K00001,Aromatic,E1.1.1.1
+BD152,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD152,K00074,Benzoate,paaH
+BD152,K00121,Aromatic,frmA
+BD152,K00121,Naphthalene,frmA
+BD152,K00121,Cytochrome P450,frmA
+BD152,K00121,Cl. alkane and Cl.alkene,frmA
+BD152,K00128,Cl. alkane and Cl.alkene,ALDH
+BD152,K00451,Styrene,HGD
+BD152,K00483,Aromatic,hpaB
+BD152,K00626,Benzoate,ACAT
+BD152,K00632,Benzoate,fadA
+BD152,K00632,Ethylbenzene,fadA
+BD152,K01034,Aminobenzoate,atoD
+BD152,K01035,Aminobenzoate,atoA
+BD152,K01101,Aminobenzoate,E3.1.3.41
+BD152,K01426,Aminobenzoate,E3.5.1.4
+BD152,K01426,Styrene,E3.5.1.4
+BD152,K01512,Aminobenzoate,acyP
+BD152,K01692,Benzoate,paaF
+BD152,K01692,Aminobenzoate,paaF
+BD152,K01692,Caprolactam,paaF
+BD152,K01821,Benzoate,praC
+BD152,K01821,Dioxin,praC
+BD152,K01821,Xylene,praC
+BD152,K01821,Aromatic,praC
+BD152,K15765,Toluene,tmoF
+BD152,K15765,Aromatic,tmoF
+BD152,K07104,Benzoate,catE
+BD152,K07104,Xylene,catE
+BD152,K07104,Aromatic,catE
+BD152,K07104,Styrene,catE
+BD152,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD152,K07516,Benzoate,fadN
+BD152,K10678,Nitrotoluene,nfsA
+BD152,K13767,Benzoate,fadB
+BD152,K16171,Styrene,faaH
+BD158,K00001,Naphthalene,E1.1.1.1
+BD158,K00001,Cytochrome P450,E1.1.1.1
+BD158,K00001,Aromatic,E1.1.1.1
+BD158,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD158,K15054,Aminobenzoate,mdlB
+BD158,K00121,Aromatic,frmA
+BD158,K00121,Naphthalene,frmA
+BD158,K00121,Cytochrome P450,frmA
+BD158,K00121,Cl. alkane and Cl.alkene,frmA
+BD158,K00128,Cl. alkane and Cl.alkene,ALDH
+BD158,K00146,Styrene,feaB
+BD158,K00151,Aromatic,hpaE
+BD158,K10217,Aromatic,dmpC
+BD158,K10217,Benzoate,dmpC
+BD158,K10217,Xylene,dmpC
+BD158,K00141,Aromatic,xylC
+BD158,K00141,Toluene,xylC
+BD158,K00141,Aminobenzoate,xylC
+BD158,K00141,Xylene,xylC
+BD158,K00148,Cl. alkane and Cl.alkene,fdhA
+BD158,K00252,Benzoate,GCDH
+BD158,K00446,Benzoate,dmpB
+BD158,K00446,Aromatic,dmpB
+BD158,K00446,Xylene,dmpB
+BD158,K00446,Styrene,dmpB
+BD158,K00446,Cl. cyclohexane and Cl. benzene,dmpB
+BD158,K00448,PAH,pcaG
+BD158,K00448,Aromatic,pcaG
+BD158,K00448,Benzoate,pcaG
+BD158,K00449,PAH,pcaH
+BD158,K00449,Aromatic,pcaH
+BD158,K00449,Benzoate,pcaH
+BD158,K00455,Aromatic,hpaD
+BD158,K00481,Aromatic,pobA
+BD158,K00481,Benzoate,pobA
+BD158,K05712,Aromatic,mhpA
+BD158,K00529,Aromatic,hcaD
+BD158,K18227,Aromatic,cmtAa
+BD158,K18227,Xylene,cmtAa
+BD158,K00626,Benzoate,ACAT
+BD158,K00632,Benzoate,fadA
+BD158,K00632,Ethylbenzene,fadA
+BD158,K00799,Cytochrome P450,GST
+BD158,K01039,Styrene,gctA
+BD158,K01040,Styrene,gctB
+BD158,K01053,Aromatic,gnl
+BD158,K01053,Caprolactam,gnl
+BD158,K01055,Benzoate,pcaD
+BD158,K01055,Aromatic,pcaD
+BD158,K14727,Benzoate,pcaL
+BD158,K14727,Aromatic,pcaL
+BD158,K01061,Toluene,E3.1.1.45
+BD158,K01061,Fluorobenzoate,E3.1.1.45
+BD158,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+BD158,K14731,Aromatic,mlhB
+BD158,K14731,Caprolactam,mlhB
+BD158,K01075,Benzoate,E3.1.2.23
+BD158,K01101,Aminobenzoate,E3.1.3.41
+BD158,K01426,Aminobenzoate,E3.5.1.4
+BD158,K01426,Styrene,E3.5.1.4
+BD158,K01428,Atrazine,ureC
+BD158,K01429,Atrazine,ureB
+BD158,K14048,Atrazine,ureAB
+BD158,K01430,Atrazine,ureA
+BD158,K01457,Atrazine,atzF
+BD158,K01512,Aminobenzoate,acyP
+BD158,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD158,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD158,K01781,Aminobenzoate,mdlA
+BD158,K01782,Benzoate,fadJ
+BD158,K01782,Caprolactam,fadJ
+BD158,K01825,Caprolactam,fadB
+BD158,K01825,Benzoate,fadB
+BD158,K01826,Aromatic,hpaF
+BD158,K01856,Fluorobenzoate,catB
+BD158,K01856,Benzoate,catB
+BD158,K01856,Aromatic,catB
+BD158,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD158,K01856,Toluene,catB
+BD158,K01857,Aromatic,pcaB
+BD158,K01857,Benzoate,pcaB
+BD158,K01941,Atrazine,uca
+BD158,K15983,Steroid,kshB
+BD158,K03186,Aromatic,ubiX
+BD158,K03186,Aminobenzoate,ubiX
+BD158,K03380,Toluene,E1.14.13.7
+BD158,K03380,Aminobenzoate,E1.14.13.7
+BD158,K03862,Aminobenzoate,vanA
+BD158,K10218,Benzoate,ligK
+BD158,K10680,Nitrotoluene,nemA
+BD158,K16879,Furfural,hmfC
+BD158,K13953,Aromatic,adhP
+BD158,K13953,Naphthalene,adhP
+BD158,K13953,Cytochrome P450,adhP
+BD158,K13953,Cl. alkane and Cl.alkene,adhP
+BD160,K00001,Naphthalene,E1.1.1.1
+BD160,K00001,Cytochrome P450,E1.1.1.1
+BD160,K00001,Aromatic,E1.1.1.1
+BD160,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD160,K00055,Xylene,E1.1.1.90
+BD160,K00055,Toluene,E1.1.1.90
+BD160,K00055,Aromatic,E1.1.1.90
+BD160,K00074,Benzoate,paaH
+BD160,K00121,Aromatic,frmA
+BD160,K00121,Naphthalene,frmA
+BD160,K00121,Cytochrome P450,frmA
+BD160,K00121,Cl. alkane and Cl.alkene,frmA
+BD160,K00128,Cl. alkane and Cl.alkene,ALDH
+BD160,K00146,Styrene,feaB
+BD160,K00148,Cl. alkane and Cl.alkene,fdhA
+BD160,K00626,Benzoate,ACAT
+BD160,K00632,Benzoate,fadA
+BD160,K00632,Ethylbenzene,fadA
+BD160,K01034,Aminobenzoate,atoD
+BD160,K01035,Aminobenzoate,atoA
+BD160,K01101,Aminobenzoate,E3.1.3.41
+BD160,K01426,Aminobenzoate,E3.5.1.4
+BD160,K01426,Styrene,E3.5.1.4
+BD160,K01512,Aminobenzoate,acyP
+BD160,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD160,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD160,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD160,K01563,Cl. alkane and Cl.alkene,dhaA
+BD160,K01607,Benzoate,pcaC
+BD160,K01607,Aromatic,pcaC
+BD160,K01821,Benzoate,praC
+BD160,K01821,Dioxin,praC
+BD160,K01821,Xylene,praC
+BD160,K01821,Aromatic,praC
+BD160,K15765,Toluene,tmoF
+BD160,K15765,Aromatic,tmoF
+BD160,K07104,Benzoate,catE
+BD160,K07104,Xylene,catE
+BD160,K07104,Aromatic,catE
+BD160,K07104,Styrene,catE
+BD160,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD160,K07516,Benzoate,fadN
+BD160,K10218,Benzoate,ligK
+BD160,K13767,Benzoate,fadB
+BD160,K13954,Naphthalene,yiaY
+BD160,K13954,Aromatic,yiaY
+BD160,K13954,Cl. alkane and Cl.alkene,yiaY
+BD160,K14338,Aminobenzoate,cypD_E
+BD161,K00001,Naphthalene,E1.1.1.1
+BD161,K00001,Cytochrome P450,E1.1.1.1
+BD161,K00001,Aromatic,E1.1.1.1
+BD161,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD161,K00074,Benzoate,paaH
+BD161,K00121,Aromatic,frmA
+BD161,K00121,Naphthalene,frmA
+BD161,K00121,Cytochrome P450,frmA
+BD161,K00121,Cl. alkane and Cl.alkene,frmA
+BD161,K00128,Cl. alkane and Cl.alkene,ALDH
+BD161,K21802,Aminobenzoate,vdh
+BD161,K00451,Styrene,HGD
+BD161,K00626,Benzoate,ACAT
+BD161,K00632,Benzoate,fadA
+BD161,K00632,Ethylbenzene,fadA
+BD161,K01034,Aminobenzoate,atoD
+BD161,K01035,Aminobenzoate,atoA
+BD161,K01101,Aminobenzoate,E3.1.3.41
+BD161,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD161,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD161,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD161,K01563,Cl. alkane and Cl.alkene,dhaA
+BD161,K01607,Benzoate,pcaC
+BD161,K01607,Aromatic,pcaC
+BD161,K01692,Benzoate,paaF
+BD161,K01692,Aminobenzoate,paaF
+BD161,K01692,Caprolactam,paaF
+BD161,K01821,Benzoate,praC
+BD161,K01821,Dioxin,praC
+BD161,K01821,Xylene,praC
+BD161,K01821,Aromatic,praC
+BD161,K15765,Toluene,tmoF
+BD161,K15765,Aromatic,tmoF
+BD161,K07104,Benzoate,catE
+BD161,K07104,Xylene,catE
+BD161,K07104,Aromatic,catE
+BD161,K07104,Styrene,catE
+BD161,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD161,K07516,Benzoate,fadN
+BD161,K10218,Benzoate,ligK
+BD161,K13767,Benzoate,fadB
+BD161,K14338,Aminobenzoate,cypD_E
+BD161,K16171,Styrene,faaH
+BD162,K00001,Naphthalene,E1.1.1.1
+BD162,K00001,Cytochrome P450,E1.1.1.1
+BD162,K00001,Aromatic,E1.1.1.1
+BD162,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD162,K13953,Aromatic,adhP
+BD162,K13953,Naphthalene,adhP
+BD162,K13953,Cytochrome P450,adhP
+BD162,K13953,Cl. alkane and Cl.alkene,adhP
+BD162,K00074,Benzoate,paaH
+BD162,K00121,Aromatic,frmA
+BD162,K00121,Naphthalene,frmA
+BD162,K00121,Cytochrome P450,frmA
+BD162,K00121,Cl. alkane and Cl.alkene,frmA
+BD162,K00128,Cl. alkane and Cl.alkene,ALDH
+BD162,K00146,Styrene,feaB
+BD162,K21802,Aminobenzoate,vdh
+BD162,K00483,Aromatic,hpaB
+BD162,K00626,Benzoate,ACAT
+BD162,K00632,Benzoate,fadA
+BD162,K00632,Ethylbenzene,fadA
+BD162,K01034,Aminobenzoate,atoD
+BD162,K01035,Aminobenzoate,atoA
+BD162,K01101,Aminobenzoate,E3.1.3.41
+BD162,K01428,Atrazine,ureC
+BD162,K01429,Atrazine,ureB
+BD162,K01430,Atrazine,ureA
+BD162,K01512,Aminobenzoate,acyP
+BD162,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD162,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD162,K01607,Benzoate,pcaC
+BD162,K01607,Aromatic,pcaC
+BD162,K01612,Aromatic,bsdC
+BD162,K01612,Aminobenzoate,bsdC
+BD162,K16874,Furfural,hmfF
+BD162,K01821,Benzoate,praC
+BD162,K01821,Dioxin,praC
+BD162,K01821,Xylene,praC
+BD162,K01821,Aromatic,praC
+BD162,K03186,Aromatic,ubiX
+BD162,K03186,Aminobenzoate,ubiX
+BD162,K15765,Toluene,tmoF
+BD162,K15765,Aromatic,tmoF
+BD162,K07104,Benzoate,catE
+BD162,K07104,Xylene,catE
+BD162,K07104,Aromatic,catE
+BD162,K07104,Styrene,catE
+BD162,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD162,K07516,Benzoate,fadN
+BD162,K10678,Nitrotoluene,nfsA
+BD162,K13767,Benzoate,fadB
+BD162,K14338,Aminobenzoate,cypD_E
+BD162,K21759,Aromatic,bsdD
+BD162,K21759,Aminobenzoate,bsdD
+BD163,K00001,Naphthalene,E1.1.1.1
+BD163,K00001,Cytochrome P450,E1.1.1.1
+BD163,K00001,Aromatic,E1.1.1.1
+BD163,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD163,K00074,Benzoate,paaH
+BD163,K00121,Aromatic,frmA
+BD163,K00121,Naphthalene,frmA
+BD163,K00121,Cytochrome P450,frmA
+BD163,K00121,Cl. alkane and Cl.alkene,frmA
+BD163,K00128,Cl. alkane and Cl.alkene,ALDH
+BD163,K00146,Styrene,feaB
+BD163,K00483,Aromatic,hpaB
+BD163,K00626,Benzoate,ACAT
+BD163,K00632,Benzoate,fadA
+BD163,K00632,Ethylbenzene,fadA
+BD163,K01034,Aminobenzoate,atoD
+BD163,K01035,Aminobenzoate,atoA
+BD163,K01101,Aminobenzoate,E3.1.3.41
+BD163,K01426,Aminobenzoate,E3.5.1.4
+BD163,K01426,Styrene,E3.5.1.4
+BD163,K01428,Atrazine,ureC
+BD163,K01429,Atrazine,ureB
+BD163,K01430,Atrazine,ureA
+BD163,K01457,Atrazine,atzF
+BD163,K01501,Styrene,E3.5.5.1
+BD163,K01501,Aminobenzoate,E3.5.5.1
+BD163,K01512,Aminobenzoate,acyP
+BD163,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD163,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD163,K01563,Cl. cyclohexane and Cl. benzene,dhaA
+BD163,K01563,Cl. alkane and Cl.alkene,dhaA
+BD163,K01607,Benzoate,pcaC
+BD163,K01607,Aromatic,pcaC
+BD163,K01612,Aromatic,bsdC
+BD163,K01612,Aminobenzoate,bsdC
+BD163,K01666,Xylene,mhpE
+BD163,K01666,Dioxin,mhpE
+BD163,K01666,Benzoate,mhpE
+BD163,K01666,Aromatic,mhpE
+BD163,K01821,Benzoate,praC
+BD163,K01821,Dioxin,praC
+BD163,K01821,Xylene,praC
+BD163,K01821,Aromatic,praC
+BD163,K01856,Fluorobenzoate,catB
+BD163,K01856,Benzoate,catB
+BD163,K01856,Aromatic,catB
+BD163,K01856,Cl. cyclohexane and Cl. benzene,catB
+BD163,K01856,Toluene,catB
+BD163,K01941,Atrazine,uca
+BD163,K03186,Aromatic,ubiX
+BD163,K03186,Aminobenzoate,ubiX
+BD163,K03381,Cl. cyclohexane and Cl. benzene,catA
+BD163,K03381,Toluene,catA
+BD163,K03381,Benzoate,catA
+BD163,K03381,Fluorobenzoate,catA
+BD163,K03381,Aromatic,catA
+BD163,K15765,Toluene,tmoF
+BD163,K15765,Aromatic,tmoF
+BD163,K05921,Aromatic,hpaG
+BD163,K07104,Benzoate,catE
+BD163,K07104,Xylene,catE
+BD163,K07104,Aromatic,catE
+BD163,K07104,Styrene,catE
+BD163,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD163,K07516,Benzoate,fadN
+BD163,K10218,Benzoate,ligK
+BD163,K10680,Nitrotoluene,nemA
+BD163,K13767,Benzoate,fadB
+BD163,K13954,Naphthalene,yiaY
+BD163,K13954,Aromatic,yiaY
+BD163,K13954,Cl. alkane and Cl.alkene,yiaY
+BD163,K14338,Aminobenzoate,cypD_E
+BD163,K21759,Aromatic,bsdD
+BD163,K21759,Aminobenzoate,bsdD
+BG1,K00001,Naphthalene,E1.1.1.1
+BG1,K00001,Cytochrome P450,E1.1.1.1
+BG1,K00001,Aromatic,E1.1.1.1
+BG1,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BG1,K13953,Aromatic,adhP
+BG1,K13953,Naphthalene,adhP
+BG1,K13953,Cytochrome P450,adhP
+BG1,K13953,Cl. alkane and Cl.alkene,adhP
+BG1,K00074,Benzoate,paaH
+BG1,K00121,Aromatic,frmA
+BG1,K00121,Naphthalene,frmA
+BG1,K00121,Cytochrome P450,frmA
+BG1,K00121,Cl. alkane and Cl.alkene,frmA
+BG1,K00128,Cl. alkane and Cl.alkene,ALDH
+BG1,K00146,Styrene,feaB
+BG1,K21802,Aminobenzoate,vdh
+BG1,K00483,Aromatic,hpaB
+BG1,K00626,Benzoate,ACAT
+BG1,K00632,Benzoate,fadA
+BG1,K00632,Ethylbenzene,fadA
+BG1,K01034,Aminobenzoate,atoD
+BG1,K01035,Aminobenzoate,atoA
+BG1,K01101,Aminobenzoate,E3.1.3.41
+BG1,K01428,Atrazine,ureC
+BG1,K01429,Atrazine,ureB
+BG1,K01430,Atrazine,ureA
+BG1,K01512,Aminobenzoate,acyP
+BG1,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BG1,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BG1,K01607,Benzoate,pcaC
+BG1,K01607,Aromatic,pcaC
+BG1,K01612,Aromatic,bsdC
+BG1,K01612,Aminobenzoate,bsdC
+BG1,K16874,Furfural,hmfF
+BG1,K01821,Benzoate,praC
+BG1,K01821,Dioxin,praC
+BG1,K01821,Xylene,praC
+BG1,K01821,Aromatic,praC
+BG1,K03186,Aromatic,ubiX
+BG1,K03186,Aminobenzoate,ubiX
+BG1,K15765,Toluene,tmoF
+BG1,K15765,Aromatic,tmoF
+BG1,K07104,Benzoate,catE
+BG1,K07104,Xylene,catE
+BG1,K07104,Aromatic,catE
+BG1,K07104,Styrene,catE
+BG1,K07104,Cl. cyclohexane and Cl. benzene,catE
+BG1,K07516,Benzoate,fadN
+BG1,K10678,Nitrotoluene,nfsA
+BG1,K13767,Benzoate,fadB
+BG1,K14338,Aminobenzoate,cypD_E
+BG1,K21759,Aromatic,bsdD
+BG1,K21759,Aminobenzoate,bsdD
+CB13,K00001,Naphthalene,E1.1.1.1
+CB13,K00001,Cytochrome P450,E1.1.1.1
+CB13,K00001,Aromatic,E1.1.1.1
+CB13,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+CB13,K13953,Aromatic,adhP
+CB13,K13953,Naphthalene,adhP
+CB13,K13953,Cytochrome P450,adhP
+CB13,K13953,Cl. alkane and Cl.alkene,adhP
+CB13,K00002,Aromatic,AKR1A1
+CB13,K00002,Caprolactam,AKR1A1
+CB13,K00074,Benzoate,paaH
+CB13,K00121,Aromatic,frmA
+CB13,K00121,Naphthalene,frmA
+CB13,K00121,Cytochrome P450,frmA
+CB13,K00121,Cl. alkane and Cl.alkene,frmA
+CB13,K00146,Styrene,feaB
+CB13,K00148,Cl. alkane and Cl.alkene,fdhA
+CB13,K00151,Aromatic,hpaE
+CB13,K01576,Aminobenzoate,mdlC
+CB13,K00196,Nitrotoluene,cooF
+CB13,K00455,Aromatic,hpaD
+CB13,K00483,Aromatic,hpaB
+CB13,K00484,Aromatic,hpaC
+CB13,K00626,Benzoate,ACAT
+CB13,K00632,Benzoate,fadA
+CB13,K00632,Ethylbenzene,fadA
+CB13,K00799,Cytochrome P450,GST
+CB13,K01061,Toluene,E3.1.1.45
+CB13,K01061,Fluorobenzoate,E3.1.1.45
+CB13,K01061,Cl. cyclohexane and Cl. benzene,E3.1.1.45
+CB13,K01075,Benzoate,E3.1.2.23
+CB13,K01101,Aminobenzoate,E3.1.3.41
+CB13,K01428,Atrazine,ureC
+CB13,K01429,Atrazine,ureB
+CB13,K01430,Atrazine,ureA
+CB13,K14048,Atrazine,ureAB
+CB13,K01457,Atrazine,atzF
+CB13,K01941,Atrazine,uca
+CB13,K01512,Aminobenzoate,acyP
+CB13,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+CB13,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+CB13,K01612,Aromatic,bsdC
+CB13,K01612,Aminobenzoate,bsdC
+CB13,K01617,Xylene,dmpH
+CB13,K01617,Aromatic,dmpH
+CB13,K01617,Benzoate,dmpH
+CB13,K01617,Dioxin,dmpH
+CB13,K01692,Benzoate,paaF
+CB13,K01692,Aminobenzoate,paaF
+CB13,K01692,Caprolactam,paaF
+CB13,K01782,Benzoate,fadJ
+CB13,K01782,Caprolactam,fadJ
+CB13,K01825,Caprolactam,fadB
+CB13,K01825,Benzoate,fadB
+CB13,K01821,Benzoate,praC
+CB13,K01821,Dioxin,praC
+CB13,K01821,Xylene,praC
+CB13,K01821,Aromatic,praC
+CB13,K01826,Aromatic,hpaF
+CB13,K01856,Fluorobenzoate,catB
+CB13,K01856,Benzoate,catB
+CB13,K01856,Aromatic,catB
+CB13,K01856,Cl. cyclohexane and Cl. benzene,catB
+CB13,K01856,Toluene,catB
+CB13,K19837,Atrazine,atzE
+CB13,K03186,Aromatic,ubiX
+CB13,K03186,Aminobenzoate,ubiX
+CB13,K03863,Aminobenzoate,vanB
+CB13,K04072,Cl. alkane and Cl.alkene,adhE
+CB13,K04072,Aromatic,adhE
+CB13,K04072,Naphthalene,adhE
+CB13,K05921,Aromatic,hpaG
+CB13,K10678,Nitrotoluene,nfsA
+CB13,K10679,Nitrotoluene,nfnB
+CB13,K10680,Nitrotoluene,nemA
+CB13,K15054,Aminobenzoate,mdlB
+CB13,K21759,Aromatic,bsdD
+CB13,K21759,Aminobenzoate,bsdD
+BD137,K00001,Naphthalene,E1.1.1.1
+BD137,K00001,Cytochrome P450,E1.1.1.1
+BD137,K00001,Aromatic,E1.1.1.1
+BD137,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD137,K00074,Benzoate,paaH
+BD137,K00121,Aromatic,frmA
+BD137,K00121,Naphthalene,frmA
+BD137,K00121,Cytochrome P450,frmA
+BD137,K00121,Cl. alkane and Cl.alkene,frmA
+BD137,K00128,Cl. alkane and Cl.alkene,ALDH
+BD137,K10217,Aromatic,dmpC
+BD137,K10217,Benzoate,dmpC
+BD137,K10217,Xylene,dmpC
+BD137,K21802,Aminobenzoate,vdh
+BD137,K00451,Styrene,HGD
+BD137,K00483,Aromatic,hpaB
+BD137,K16901,Aromatic,K16901
+BD137,K00626,Benzoate,ACAT
+BD137,K00632,Benzoate,fadA
+BD137,K00632,Ethylbenzene,fadA
+BD137,K01035,Aminobenzoate,atoA
+BD137,K01034,Aminobenzoate,atoD
+BD137,K01101,Aminobenzoate,E3.1.3.41
+BD137,K01426,Aminobenzoate,E3.5.1.4
+BD137,K01426,Styrene,E3.5.1.4
+BD137,K01501,Styrene,E3.5.5.1
+BD137,K01501,Aminobenzoate,E3.5.5.1
+BD137,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD137,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD137,K01617,Xylene,dmpH
+BD137,K01617,Aromatic,dmpH
+BD137,K01617,Benzoate,dmpH
+BD137,K01617,Dioxin,dmpH
+BD137,K01666,Xylene,mhpE
+BD137,K01666,Dioxin,mhpE
+BD137,K01666,Benzoate,mhpE
+BD137,K01666,Aromatic,mhpE
+BD137,K01692,Benzoate,paaF
+BD137,K01692,Aminobenzoate,paaF
+BD137,K01692,Caprolactam,paaF
+BD137,K02554,Dioxin,mhpD
+BD137,K02554,Aromatic,mhpD
+BD137,K02554,Xylene,mhpD
+BD137,K02554,Benzoate,mhpD
+BD137,K03186,Aromatic,ubiX
+BD137,K03186,Aminobenzoate,ubiX
+BD137,K04073,Xylene,mhpF
+BD137,K04073,Benzoate,mhpF
+BD137,K04073,Dioxin,mhpF
+BD137,K04073,Aromatic,mhpF
+BD137,K15765,Toluene,tmoF
+BD137,K15765,Aromatic,tmoF
+BD137,K05921,Aromatic,hpaG
+BD137,K07516,Benzoate,fadN
+BD137,K13767,Benzoate,fadB
+BD137,K13953,Aromatic,adhP
+BD137,K13953,Naphthalene,adhP
+BD137,K13953,Cytochrome P450,adhP
+BD137,K13953,Cl. alkane and Cl.alkene,adhP
+BD137,K16171,Styrene,faaH
+BD165,K00074,Benzoate,paaH
+BD165,K00121,Aromatic,frmA
+BD165,K00121,Naphthalene,frmA
+BD165,K00121,Cytochrome P450,frmA
+BD165,K00121,Cl. alkane and Cl.alkene,frmA
+BD165,K00128,Cl. alkane and Cl.alkene,ALDH
+BD165,K00146,Styrene,feaB
+BD165,K21802,Aminobenzoate,vdh
+BD165,K00455,Aromatic,hpaD
+BD165,K00481,Aromatic,pobA
+BD165,K00481,Benzoate,pobA
+BD165,K00626,Benzoate,ACAT
+BD165,K00632,Benzoate,fadA
+BD165,K00632,Ethylbenzene,fadA
+BD165,K01034,Aminobenzoate,atoD
+BD165,K01035,Aminobenzoate,atoA
+BD165,K01101,Aminobenzoate,E3.1.3.41
+BD165,K01426,Aminobenzoate,E3.5.1.4
+BD165,K01426,Styrene,E3.5.1.4
+BD165,K01428,Atrazine,ureC
+BD165,K01429,Atrazine,ureB
+BD165,K01430,Atrazine,ureA
+BD165,K01512,Aminobenzoate,acyP
+BD165,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD165,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD165,K01612,Aromatic,bsdC
+BD165,K01612,Aminobenzoate,bsdC
+BD165,K16874,Furfural,hmfF
+BD165,K01617,Xylene,dmpH
+BD165,K01617,Aromatic,dmpH
+BD165,K01617,Benzoate,dmpH
+BD165,K01617,Dioxin,dmpH
+BD165,K01821,Benzoate,praC
+BD165,K01821,Dioxin,praC
+BD165,K01821,Xylene,praC
+BD165,K01821,Aromatic,praC
+BD165,K03186,Aromatic,ubiX
+BD165,K03186,Aminobenzoate,ubiX
+BD165,K04072,Cl. alkane and Cl.alkene,adhE
+BD165,K04072,Aromatic,adhE
+BD165,K04072,Naphthalene,adhE
+BD165,K15765,Toluene,tmoF
+BD165,K15765,Aromatic,tmoF
+BD165,K07104,Benzoate,catE
+BD165,K07104,Xylene,catE
+BD165,K07104,Aromatic,catE
+BD165,K07104,Styrene,catE
+BD165,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD165,K07516,Benzoate,fadN
+BD165,K10217,Aromatic,dmpC
+BD165,K10217,Benzoate,dmpC
+BD165,K10217,Xylene,dmpC
+BD165,K10218,Benzoate,ligK
+BD165,K13767,Benzoate,fadB
+BD165,K14338,Aminobenzoate,cypD_E
+BD165,K21759,Aromatic,bsdD
+BD165,K21759,Aminobenzoate,bsdD
+BD9,K00128,Cl. alkane and Cl.alkene,ALDH
+BD9,K01612,Aromatic,bsdC
+BD9,K01612,Aminobenzoate,bsdC
+BD9,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD9,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD9,K00001,Naphthalene,E1.1.1.1
+BD9,K00001,Cytochrome P450,E1.1.1.1
+BD9,K00001,Aromatic,E1.1.1.1
+BD9,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD9,K10678,Nitrotoluene,nfsA
+BD9,K00074,Benzoate,paaH
+BD9,K00121,Aromatic,frmA
+BD9,K00121,Naphthalene,frmA
+BD9,K00121,Cytochrome P450,frmA
+BD9,K00121,Cl. alkane and Cl.alkene,frmA
+BD9,K00483,Aromatic,hpaB
+BD9,K00626,Benzoate,ACAT
+BD9,K00632,Benzoate,fadA
+BD9,K00632,Ethylbenzene,fadA
+BD9,K01034,Aminobenzoate,atoD
+BD9,K01035,Aminobenzoate,atoA
+BD9,K01101,Aminobenzoate,E3.1.3.41
+BD9,K01428,Atrazine,ureC
+BD9,K01429,Atrazine,ureB
+BD9,K01430,Atrazine,ureA
+BD9,K01512,Aminobenzoate,acyP
+BD9,K01607,Benzoate,pcaC
+BD9,K01607,Aromatic,pcaC
+BD9,K01821,Benzoate,praC
+BD9,K01821,Dioxin,praC
+BD9,K01821,Xylene,praC
+BD9,K01821,Aromatic,praC
+BD9,K03186,Aromatic,ubiX
+BD9,K03186,Aminobenzoate,ubiX
+BD9,K07104,Benzoate,catE
+BD9,K07104,Xylene,catE
+BD9,K07104,Aromatic,catE
+BD9,K07104,Styrene,catE
+BD9,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD9,K07516,Benzoate,fadN
+BD9,K13767,Benzoate,fadB
+BD9,K14338,Aminobenzoate,cypD_E
+BD9,K21759,Aromatic,bsdD
+BD9,K21759,Aminobenzoate,bsdD
+BD9,K16874,Furfural,hmfF
+BD9,K00146,Styrene,feaB
+BD9,K13953,Aromatic,adhP
+BD9,K13953,Naphthalene,adhP
+BD9,K13953,Cytochrome P450,adhP
+BD9,K13953,Cl. alkane and Cl.alkene,adhP
+BD9,K15765,Toluene,tmoF
+BD9,K15765,Aromatic,tmoF
+BD9,K21802,Aminobenzoate,vdh
+BD2,K00001,Naphthalene,E1.1.1.1
+BD2,K00001,Cytochrome P450,E1.1.1.1
+BD2,K00001,Aromatic,E1.1.1.1
+BD2,K00001,Cl. alkane and Cl.alkene,E1.1.1.1
+BD2,K01560,Cl. alkane and Cl.alkene,E3.8.1.2
+BD2,K01560,Cl. cyclohexane and Cl. benzene,E3.8.1.2
+BD2,K00121,Aromatic,frmA
+BD2,K00121,Naphthalene,frmA
+BD2,K00121,Cytochrome P450,frmA
+BD2,K00121,Cl. alkane and Cl.alkene,frmA
+BD2,K00128,Cl. alkane and Cl.alkene,ALDH
+BD2,K00626,Benzoate,ACAT
+BD2,K01101,Aminobenzoate,E3.1.3.41
+BD2,K01428,Atrazine,ureC
+BD2,K01429,Atrazine,ureB
+BD2,K01430,Atrazine,ureA
+BD2,K01512,Aminobenzoate,acyP
+BD2,K01821,Benzoate,praC
+BD2,K01821,Dioxin,praC
+BD2,K01821,Xylene,praC
+BD2,K01821,Aromatic,praC
+BD2,K07104,Benzoate,catE
+BD2,K07104,Xylene,catE
+BD2,K07104,Aromatic,catE
+BD2,K07104,Styrene,catE
+BD2,K07104,Cl. cyclohexane and Cl. benzene,catE
+BD2,K15765,Toluene,tmoF
+BD2,K15765,Aromatic,tmoF
