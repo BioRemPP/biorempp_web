@@ -1,0 +1,768 @@
+{
+  "schema_version": "1.0",
+  "document_type": "dcpip_repeated_consolidated_measurements_by_record",
+  "experiment": {
+    "name": "validacao_dcpip_petroleos_isolados_repetido_consolidado",
+    "assay": "DCPIP",
+    "experiment_date": "2025-04-17",
+    "metric_name": "percentual",
+    "unit": "%",
+    "source_label": "DCPIP REPETINDO PRINCIPAIS ISOLADOS - 17/04/25",
+    "source_note": "Tabela de repeticao dos principais isolados com resultados consolidados para alguns valores anteriormente faltantes.",
+    "missing_value_policy": "Celulas marcadas com '-' na tabela original devem ser registradas como null.",
+    "decimal_policy": "Valores com virgula decimal foram convertidos para ponto decimal numerico em JSON.",
+    "duplicate_isolate_policy": "Linhas repetidas para o mesmo isolate_code foram preservadas como registros separados por record_id."
+  },
+  "treatments": [
+    {
+      "code": "PL1",
+      "petroleum_type": "leve",
+      "source_id": 1,
+      "source_origin": "nosso",
+      "description": "Petroleo leve do grupo/projeto."
+    },
+    {
+      "code": "PL2",
+      "petroleum_type": "leve",
+      "source_id": 2,
+      "source_origin": "patricia",
+      "description": "Petroleo leve obtido pela Patricia."
+    },
+    {
+      "code": "PP1",
+      "petroleum_type": "pesado",
+      "source_id": 1,
+      "source_origin": "nosso",
+      "description": "Petroleo pesado do grupo/projeto."
+    },
+    {
+      "code": "PP2",
+      "petroleum_type": "pesado",
+      "source_id": 2,
+      "source_origin": "patricia",
+      "description": "Petroleo pesado obtido pela Patricia."
+    }
+  ],
+  "records": [
+    {
+      "record_id": "BG1",
+      "table_row_index": 1,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BG1",
+      "taxon": "Bacillus amyloliquefaciens",
+      "source_label": "BG1 - Bacillus amyloliquefaciens",
+      "measurements": {
+        "PL1": [
+          70.47,
+          70.97,
+          67.27
+        ],
+        "PL2": [
+          85.32,
+          83.27,
+          88.08
+        ],
+        "PP1": [
+          71.78,
+          84.7,
+          83.61
+        ],
+        "PP2": [
+          69.26,
+          69.85,
+          73.3
+        ]
+      }
+    },
+    {
+      "record_id": "BD5",
+      "table_row_index": 2,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD5",
+      "taxon": "Dermacoccus nishinomiyaensis",
+      "source_label": "BD5 - Dermacoccus nishinomiyaensis",
+      "measurements": {
+        "PL1": [
+          70.47,
+          80.44,
+          80.14
+        ],
+        "PL2": [
+          83.26,
+          76.62,
+          83.42
+        ],
+        "PP1": [
+          79.67,
+          75.57,
+          75.41
+        ],
+        "PP2": [
+          63.85,
+          61.86,
+          76.46
+        ]
+      }
+    },
+    {
+      "record_id": "E7",
+      "table_row_index": 3,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "E7",
+      "taxon": "Acinetobacter",
+      "source_label": "E7 - Acinetobacter",
+      "measurements": {
+        "PL1": [
+          76.17,
+          86.09,
+          76.98
+        ],
+        "PL2": [
+          84.58,
+          83.46,
+          90.16
+        ],
+        "PP1": [
+          75.52,
+          29.91,
+          29.74
+        ],
+        "PP2": [
+          28.38,
+          71.39,
+          67.72
+        ]
+      }
+    },
+    {
+      "record_id": "BD8",
+      "table_row_index": 4,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD8",
+      "taxon": "Rothia",
+      "source_label": "BD8 - Rothia",
+      "measurements": {
+        "PL1": [
+          67.62,
+          71.17,
+          72.23
+        ],
+        "PL2": [
+          80.62,
+          73.95,
+          81.74
+        ],
+        "PP1": [
+          71.58,
+          75.11,
+          69.56
+        ],
+        "PP2": [
+          55.07,
+          60.31,
+          57.77
+        ]
+      }
+    },
+    {
+      "record_id": "CB13",
+      "table_row_index": 5,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "CB13",
+      "taxon": "Enterobacter",
+      "source_label": "CB13 - Enterobacter",
+      "measurements": {
+        "PL1": [
+          75.91,
+          72.18,
+          69.3
+        ],
+        "PL2": [
+          85.61,
+          72.81,
+          83.68
+        ],
+        "PP1": [
+          60.79,
+          56.39,
+          58.08
+        ],
+        "PP2": [
+          44.59,
+          45.88,
+          70.87
+        ]
+      }
+    },
+    {
+      "record_id": "AP1BH01-1",
+      "table_row_index": 6,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "AP1BH01-1",
+      "taxon": "Ochrobactrum",
+      "source_label": "AP1BH01-1 - Ochrobactrum",
+      "measurements": {
+        "PL1": [
+          62.18,
+          75.4,
+          52.6
+        ],
+        "PL2": [
+          81.06,
+          84.6,
+          88.86
+        ],
+        "PP1": [
+          76.56,
+          37.67,
+          62.3
+        ],
+        "PP2": [
+          33.11,
+          48.71,
+          53.88
+        ]
+      }
+    },
+    {
+      "record_id": "BD61",
+      "table_row_index": 7,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD61",
+      "taxon": "Ochrobactrum",
+      "source_label": "BD61 - Ochrobactrum",
+      "measurements": {
+        "PL1": [
+          75.13,
+          74.19,
+          81.04
+        ],
+        "PL2": [
+          87.08,
+          86.12,
+          86.01
+        ],
+        "PP1": [
+          71.58,
+          75.11,
+          69.56
+        ],
+        "PP2": [
+          12.16,
+          75.52,
+          53.88
+        ]
+      }
+    },
+    {
+      "record_id": "BD54",
+      "table_row_index": 8,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD54",
+      "taxon": "Acinetobacter",
+      "source_label": "BD54 - Acinetobacter",
+      "measurements": {
+        "PL1": [
+          76.42,
+          77.82,
+          78.33
+        ],
+        "PL2": [
+          87.08,
+          85.36,
+          88.34
+        ],
+        "PP1": [
+          83.4,
+          75.34,
+          80.8
+        ],
+        "PP2": [
+          63.85,
+          53.35,
+          61.41
+        ]
+      }
+    },
+    {
+      "record_id": "BD132",
+      "table_row_index": 9,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD132",
+      "taxon": "Bacillus safensis",
+      "source_label": "BD132 - Bacillus safensis",
+      "measurements": {
+        "PL1": [
+          78.76,
+          80.44,
+          79.23
+        ],
+        "PL2": [
+          84.29,
+          81.56,
+          90.03
+        ],
+        "PP1": [
+          85.48,
+          85.62,
+          83.61
+        ],
+        "PP2": [
+          76.69,
+          76.03,
+          82.52
+        ]
+      }
+    },
+    {
+      "record_id": "BD72",
+      "table_row_index": 10,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD72",
+      "taxon": "Bacillus tropicus",
+      "source_label": "BD72 - Bacillus tropicus",
+      "measurements": {
+        "PL1": [
+          73.58,
+          79.03,
+          97.7
+        ],
+        "PL2": [
+          89.57,
+          88.21,
+          84.33
+        ],
+        "PP1": [
+          82.16,
+          79.22,
+          77.05
+        ],
+        "PP2": [
+          69.26,
+          82.22,
+          81.31
+        ]
+      }
+    },
+    {
+      "record_id": "BD120",
+      "table_row_index": 11,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD120",
+      "taxon": "Bacillus subtilis",
+      "source_label": "BD120 - Bacillus subtilis",
+      "measurements": {
+        "PL1": [
+          82.12,
+          85.48,
+          78.78
+        ],
+        "PL2": [
+          86.05,
+          80.99,
+          90.41
+        ],
+        "PP1": [
+          86.51,
+          85.62,
+          85.01
+        ],
+        "PP2": [
+          74.66,
+          76.29,
+          82.77
+        ]
+      }
+    },
+    {
+      "record_id": "BD105",
+      "table_row_index": 12,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD105",
+      "taxon": "Stutzerimonas frequens",
+      "source_label": "BD105 - Stutzerimonas frequens",
+      "measurements": {
+        "PL1": [
+          73.32,
+          79.23,
+          78.1
+        ],
+        "PL2": [
+          88.55,
+          83.27,
+          89.77
+        ],
+        "PP1": [
+          79.25,
+          65.75,
+          74.24
+        ],
+        "PP2": [
+          57.09,
+          65.21,
+          65.53
+        ]
+      }
+    },
+    {
+      "record_id": "BD107",
+      "table_row_index": 13,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD107",
+      "taxon": "Stutzerimonas balearica",
+      "source_label": "BD107 - Stutzerimonas balearica",
+      "measurements": {
+        "PL1": [
+          76.94,
+          84.07,
+          80.36
+        ],
+        "PL2": [
+          88.11,
+          77.0,
+          89.51
+        ],
+        "PP1": [
+          80.08,
+          69.63,
+          61.12
+        ],
+        "PP2": [
+          -12.16,
+          76.29,
+          79.61
+        ]
+      }
+    },
+    {
+      "record_id": "BD165",
+      "table_row_index": 14,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD165",
+      "taxon": "Bacillus paralicheniformis",
+      "source_label": "BD165 - Bacillus paralicheniformis",
+      "measurements": {
+        "PL1": [
+          67.37,
+          65.47,
+          37.84
+        ],
+        "PL2": [
+          34.92,
+          71.63,
+          27.03
+        ],
+        "PP1": [
+          77.48,
+          83.95,
+          61.0
+        ],
+        "PP2": [
+          80.73,
+          76.22,
+          15.44
+        ]
+      }
+    },
+    {
+      "record_id": "BD147",
+      "table_row_index": 15,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD147",
+      "taxon": "Cellulomonas",
+      "source_label": "BD147 - Cellulomonas",
+      "measurements": {
+        "PL1": [
+          79.58,
+          87.97,
+          61.0
+        ],
+        "PL2": [
+          87.98,
+          90.97,
+          76.45
+        ],
+        "PP1": [
+          80.73,
+          81.38,
+          54.83
+        ],
+        "PP2": [
+          86.45,
+          83.81,
+          56.76
+        ]
+      }
+    },
+    {
+      "record_id": "BD107_2",
+      "table_row_index": 16,
+      "repeat_record_index_for_isolate": 2,
+      "isolate_code": "BD107",
+      "taxon": "Stutzerimonas balearica",
+      "source_label": "BD107 - Stutzerimonas balearica",
+      "measurements": {
+        "PL1": [
+          77.86,
+          85.67,
+          50.97
+        ],
+        "PL2": [
+          76.53,
+          91.26,
+          33.98
+        ],
+        "PP1": [
+          78.82,
+          84.81,
+          64.86
+        ],
+        "PP2": [
+          72.14,
+          82.66,
+          61.39
+        ]
+      }
+    },
+    {
+      "record_id": "BD151",
+      "table_row_index": 17,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD151",
+      "taxon": "Bacillus",
+      "source_label": "BD151 - Bacillus",
+      "measurements": {
+        "PL1": [
+          80.15,
+          86.25,
+          63.71
+        ],
+        "PL2": [
+          85.88,
+          85.53,
+          69.11
+        ],
+        "PP1": [
+          75.95,
+          84.96,
+          61.78
+        ],
+        "PP2": [
+          78.05,
+          78.65,
+          23.17
+        ]
+      }
+    },
+    {
+      "record_id": "BD158",
+      "table_row_index": 18,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD158",
+      "taxon": "Salinicola",
+      "source_label": "BD158 - Salinicola",
+      "measurements": {
+        "PL1": [
+          66.03,
+          81.23,
+          55.6
+        ],
+        "PL2": [
+          69.27,
+          73.21,
+          29.73
+        ],
+        "PP1": [
+          84.35,
+          88.11,
+          69.88
+        ],
+        "PP2": [
+          78.05,
+          81.95,
+          55.6
+        ]
+      }
+    },
+    {
+      "record_id": "BD152",
+      "table_row_index": 19,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD152",
+      "taxon": "Bacillus",
+      "source_label": "BD152 - Bacillus",
+      "measurements": {
+        "PL1": [
+          82.25,
+          85.96,
+          64.48
+        ],
+        "PL2": [
+          86.83,
+          99.11,
+          75.68
+        ],
+        "PP1": [
+          82.82,
+          84.81,
+          69.88
+        ],
+        "PP2": [
+          79.96,
+          81.81,
+          53.67
+        ]
+      }
+    },
+    {
+      "record_id": "BD137",
+      "table_row_index": 20,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD137",
+      "taxon": "Brevibacillus brevis",
+      "source_label": "BD137 - Brevibacillus brevis",
+      "measurements": {
+        "PL1": [
+          73.47,
+          78.94,
+          66.8
+        ],
+        "PL2": [
+          84.54,
+          88.4,
+          73.36
+        ],
+        "PP1": [
+          87.02,
+          90.11,
+          61.78
+        ],
+        "PP2": [
+          70.42,
+          69.91,
+          43.24
+        ]
+      }
+    },
+    {
+      "record_id": "BD166",
+      "table_row_index": 21,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD166",
+      "taxon": "Bacillus megaterium",
+      "source_label": "BD166 - Bacillus megaterium",
+      "measurements": {
+        "PL1": [
+          45.42,
+          51.43,
+          32.05
+        ],
+        "PL2": [
+          82.25,
+          77.36,
+          74.13
+        ],
+        "PP1": [
+          80.15,
+          80.37,
+          60.23
+        ],
+        "PP2": [
+          86.07,
+          84.96,
+          57.3
+        ]
+      }
+    },
+    {
+      "record_id": "BD139",
+      "table_row_index": 22,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD139",
+      "taxon": "Brevibacillus brevis",
+      "source_label": "BD139 - Brevibacillus brevis",
+      "measurements": {
+        "PL1": [
+          76.34,
+          83.52,
+          55.98
+        ],
+        "PL2": [
+          84.16,
+          84.81,
+          70.27
+        ],
+        "PP1": [
+          78.63,
+          86.25,
+          63.32
+        ],
+        "PP2": [
+          85.5,
+          87.82,
+          50.58
+        ]
+      }
+    },
+    {
+      "record_id": "BD117",
+      "table_row_index": 23,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD117",
+      "taxon": "Micococcus luteus",
+      "source_label": "BD117 - Micococcus luteus",
+      "measurements": {
+        "PL1": [
+          79.58,
+          87.68,
+          66.02
+        ],
+        "PL2": [
+          80.53,
+          88.68,
+          72.59
+        ],
+        "PP1": [
+          79.2,
+          84.38,
+          60.23
+        ],
+        "PP2": [
+          83.4,
+          85.53,
+          67.18
+        ]
+      }
+    },
+    {
+      "record_id": "BD1",
+      "table_row_index": 24,
+      "repeat_record_index_for_isolate": 1,
+      "isolate_code": "BD1",
+      "taxon": "Micococcus luteus",
+      "source_label": "BD1 - Micococcus luteus",
+      "measurements": {
+        "PL1": [
+          80.73,
+          85.39,
+          55.6
+        ],
+        "PL2": [
+          88.17,
+          90.97,
+          72.2
+        ],
+        "PP1": [
+          81.3,
+          87.97,
+          68.73
+        ],
+        "PP2": [
+          83.78,
+          86.25,
+          63.71
+        ]
+      }
+    }
+  ]
+}
