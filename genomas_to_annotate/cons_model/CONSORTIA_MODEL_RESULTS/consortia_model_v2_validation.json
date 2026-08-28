@@ -1,0 +1,56 @@
+{
+  "candidate_universe_size": 17,
+  "candidate_universe": [
+    "BD117",
+    "BD120",
+    "BD126",
+    "BD127",
+    "BD132",
+    "BD139",
+    "BD158",
+    "BD160",
+    "BD162",
+    "BD163",
+    "BD48",
+    "BD50",
+    "BD54",
+    "BD61",
+    "BD9",
+    "BG1",
+    "E7"
+  ],
+  "target_classes": [
+    "Aliphatic",
+    "Polyaromatic"
+  ],
+  "trios_evaluated_per_class": {
+    "Aliphatic": 680,
+    "Polyaromatic": 680
+  },
+  "selected_trios": {
+    "Aliphatic": [
+      "BD127",
+      "BD54",
+      "BG1"
+    ],
+    "Polyaromatic": [
+      "BD120",
+      "BD158",
+      "BD61"
+    ]
+  },
+  "selected_coverage_pct": {
+    "Aliphatic": 93.22033898305085,
+    "Polyaromatic": 90.9090909090909
+  },
+  "score_weights": {
+    "compound_coverage": 0.3,
+    "ko_coverage": 0.1,
+    "target_dcpip_mean": 0.1,
+    "overall_dcpip_mean": 0.05,
+    "minimum_compound_leave_one_out_loss": 0.2,
+    "minimum_gene_leave_one_out_loss": 0.1,
+    "compound_complementarity": 0.1,
+    "gene_complementarity": 0.05
+  }
+}
